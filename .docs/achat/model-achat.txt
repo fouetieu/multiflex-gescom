@@ -1,0 +1,747 @@
+# MODÈLE DE DONNÉES COMPLET - MODULE ACHATS
+# ERP MULTIFLEX - Version avec enrichissements
+# Les propriétés marquées avec 🆕 sont les nouvelles ajoutées suite à l'analyse
+
+```yaml
+# ==============================================================================
+# DEMANDES D'ACHAT (Purchase Requisitions)
+# ==============================================================================
+
+purchase_requisitions:
+  id: "uuid"                                    # Unique identifier
+  requisitionNumber: "string"                    # Format: DA-YYYY-XXXXX (auto-generated)
+  requisitionDate: "date"                        # Request date
+  status: "RequisitionStatus"                    # Enum: DRAFT, PENDING_VALIDATION, VALIDATED, REJECTED, PROCESSED
+  
+  # Requesting Information
+  requesterId: "EntityReference"                 # Employee who creates the request
+  needOriginatorId: "EntityReference"            # 🆕 Person who initiated the need (may differ from requester)
+  needOriginatorName: "string"                   # 🆕 Name of need originator (denormalized)
+  needJustification: "text"                      # 🆕 Detailed justification of the need
+  departmentId: "EntityReference"                # Requesting department
+  companyId: "EntityReference"                   # Company making the request
+  
+  # Request Details
+  priority: "Priority"                           # Enum: LOW, NORMAL, HIGH, URGENT
+  requestedDeliveryDate: "date"                  # Desired delivery date
+  deliveryLocationId: "EntityReference"          # Delivery location reference
+  budgetLineId: "EntityReference"                # Budget line (currently disabled but kept for future)
+  
+  # Amounts
+  totalEstimatedAmount: "decimal"                # Total estimated amount (calculated)
+  currency: "string"                             # Currency code (XAF default)
+  
+  # Lines
+  lines: "PurchaseRequisitionLine[]"             # Array of requisition lines
+  
+  # Validation
+  validationWorkflow: "ValidationWorkflow"       # Validation workflow details
+  rejectionReason: "text"                        # Reason if rejected
+  validatedBy: "EntityReference"                 # Validator reference
+  validationDate: "timestamp"                    # Validation timestamp
+  
+  # Links
+  purchaseOrderIds: "uuid[]"                     # Generated purchase orders
+  
+  # Documents
+  attachments: "DocumentAttachment[]"            # Attached documents (quotes, specifications)
+  
+  # Audit
+  createdBy: "EntityReference"                   # Creator
+  createdAt: "timestamp"                         # Creation timestamp
+  updatedBy: "EntityReference"                   # Last modifier
+  updatedAt: "timestamp"                         # Last modification timestamp
+  deletedAt: "timestamp"                         # Soft delete timestamp
+
+# Sub-object: Purchase Requisition Line
+PurchaseRequisitionLine:
+  lineNumber: "integer"                          # Line number
+  productId: "EntityReference"                   # Product reference (optional if freeText)
+  productCode: "string"                          # Product code
+  productName: "string"                          # Product name
+  freeTextDescription: "text"                    # Free description if product not in catalog
+  quantity: "decimal"                            # Requested quantity
+  unit: "string"                                 # Unit of measure
+  estimatedUnitPrice: "decimal"                  # Estimated unit price
+  estimatedTotalPrice: "decimal"                 # Line total (calculated)
+  suggestedSupplierId: "EntityReference"         # Suggested supplier (optional)
+  notes: "text"                                  # Line-specific notes
+
+# ==============================================================================
+# BONS DE COMMANDE FOURNISSEUR (Purchase Orders)
+# ==============================================================================
+
+purchase_orders:
+  id: "uuid"                                    # Unique identifier
+  orderNumber: "string"                         # Format: BCF-YYYY-XXXXX (auto-generated)
+  orderDate: "date"                             # Order date
+  status: "PurchaseOrderStatus"                 # Enum: DRAFT, SENT, ACKNOWLEDGED, PARTIALLY_RECEIVED, RECEIVED, CANCELLED, CLOSED
+  orderType: "PurchaseOrderType"                # Enum: STANDARD, BLANKET, CONTRACT, INTERNAL
+  fiscalYear: "integer"                         # Fiscal year (calculated from orderDate)
+  
+  # Parties
+  supplierId: "EntityReference"                 # Supplier reference
+  supplierName: "string"                        # Supplier name (denormalized)
+  supplierType: "SupplierType"                  # Enum: EXTERNAL, INTERNAL_GROUP
+  buyingCompanyId: "EntityReference"            # Purchasing company
+  buyerId: "EntityReference"                    # Buyer/Purchaser
+  
+  # Source Information
+  requisitionIds: "uuid[]"                      # Source requisitions
+  needOriginatorId: "EntityReference"           # 🆕 Original need originator (from DA)
+  needOriginatorName: "string"                  # 🆕 Name (denormalized)
+  
+  # Fiscal Compliance
+  taxRegime: "TaxRegime"                        # 🆕 Enum: REEL, SIMPLIFIE, LIBERATOIRE, MICRO, EXONERE
+  nonLiabilityCertificate: "NonLiabilityCertificate"  # 🆕 Certificate details
+  
+  # Delivery Information
+  requestedDeliveryDate: "date"                 # Requested delivery date
+  deliveryLocationId: "EntityReference"         # Delivery location
+  deliveryAddress: "Address"                    # Full delivery address
+  incoterms: "string"                          # Incoterms (EXW, FOB, CIF, etc.)
+  transportMode: "TransportMode"                # Enum: ROAD, RAIL, AIR, SEA, MULTIMODAL
+  
+  # Financial Information
+  paymentTerms: "PaymentTerms"                  # Payment terms details
+  paymentMode: "PaymentMode"                    # Enum: CASH, CHECK, TRANSFER, MOBILE_MONEY
+  currency: "string"                            # Currency code
+  exchangeRate: "decimal"                       # Exchange rate if not local currency
+  
+  # Amounts
+  totalAmountHT: "decimal"                      # Total excluding tax
+  totalTaxAmount: "decimal"                     # Total tax amount
+  totalAmountTTC: "decimal"                     # Total including tax
+  
+  # Lines
+  lines: "PurchaseOrderLine[]"                  # Order lines
+  
+  # Documents
+  attachments: "DocumentAttachment[]"           # Attached documents
+  amendmentNumber: "integer"                    # Amendment number if modified
+  amendmentReason: "text"                       # Reason for amendment
+  
+  # Validation
+  approvalWorkflow: "ValidationWorkflow"        # Approval workflow
+  approvedBy: "EntityReference"                 # Final approver
+  approvalDate: "timestamp"                     # Approval timestamp
+  
+  # Communication
+  sentDate: "timestamp"                         # Date sent to supplier
+  sentBy: "EntityReference"                     # Person who sent
+  sentMethod: "SendMethod"                      # Enum: EMAIL, FAX, EDI, MANUAL
+  acknowledgedDate: "timestamp"                 # Supplier acknowledgment date
+  
+  # Links
+  receptionIds: "uuid[]"                        # Related receptions
+  invoiceIds: "uuid[]"                         # Related invoices
+  
+  # Performance
+  onTimeDelivery: "boolean"                     # Delivered on time flag
+  qualityScore: "integer"                       # Quality score (0-100)
+  
+  # Audit
+  createdBy: "EntityReference"
+  createdAt: "timestamp"
+  updatedBy: "EntityReference"
+  updatedAt: "timestamp"
+  closedAt: "timestamp"                         # Closing timestamp
+  closedBy: "EntityReference"                   # Person who closed
+
+# Sub-object: Non-Liability Certificate
+NonLiabilityCertificate:                        # 🆕 New sub-object
+  certificateNumber: "string"                   # Certificate reference number
+  issueDate: "date"                            # Issue date
+  expiryDate: "date"                           # Expiry date
+  issuingAuthority: "string"                   # Issuing authority name
+  documentUrl: "string"                        # Document storage URL
+  status: "CertificateStatus"                  # Enum: VALID, EXPIRING_SOON, EXPIRED
+  lastVerificationDate: "timestamp"            # Last verification date
+
+# Sub-object: Purchase Order Line
+PurchaseOrderLine:
+  lineNumber: "integer"                         # Line number
+  productId: "EntityReference"                  # Product reference
+  productCode: "string"                        # Product code
+  productName: "string"                        # Product name
+  description: "text"                           # Detailed description
+  quantity: "decimal"                          # Ordered quantity
+  unit: "string"                               # Unit of measure
+  unitPrice: "decimal"                         # Negotiated unit price
+  discount: "decimal"                          # Discount percentage
+  taxRate: "decimal"                           # Tax rate
+  totalHT: "decimal"                           # Line total excluding tax
+  totalTTC: "decimal"                          # Line total including tax
+  requestedDeliveryDate: "date"                # Line-specific delivery date
+  requisitionLineRef: "string"                 # Reference to source DA line
+  notes: "text"                                # Line notes
+
+# ==============================================================================
+# BONS DE RÉCEPTION (Reception Documents)
+# ==============================================================================
+
+reception_documents:
+  id: "uuid"                                    # Unique identifier
+  receptionNumber: "string"                     # Format: BR-YYYY-XXXXX (auto-generated)
+  receptionDate: "date"                         # Reception date
+  receptionTimestamp: "timestamp"               # Exact reception timestamp
+  status: "ReceptionStatus"                     # Enum: DRAFT, AWAITING_QUALITY_CONTROL, PARTIAL_ACCEPTANCE, FULLY_ACCEPTED, REJECTED, CLOSED_WITH_DISCREPANCIES
+  
+  # Source Documents
+  purchaseOrderId: "uuid"                       # Source purchase order
+  purchaseOrderNumber: "string"                 # PO number (denormalized)
+  supplierDeliveryNote: "string"                # Supplier's delivery note number
+  
+  # Parties
+  supplierId: "EntityReference"                 # Supplier reference
+  supplierName: "string"                        # Supplier name (denormalized)
+  receivingCompanyId: "EntityReference"         # Receiving company
+  receivingLocationId: "EntityReference"        # Receiving warehouse/location
+  warehouseKeeperId: "EntityReference"          # Warehouse keeper who received
+  
+  # Delivery Information - ENHANCED
+  deliveryInfo: "DeliveryInfo"                  # 🆕 Enhanced delivery information
+  
+  # Quality Control
+  qualityControl: "QualityControl"              # 🆕 Quality control details
+  needOriginatorValidation: "OriginatorValidation"  # 🆕 Validation by need originator
+  
+  # Lines
+  lines: "ReceptionLine[]"                      # Reception lines
+  
+  # Discrepancies
+  hasDiscrepancies: "boolean"                   # Flag for discrepancies
+  discrepancies: "Discrepancy[]"                # List of discrepancies
+  
+  # Documents
+  attachments: "DocumentAttachment[]"           # Attached documents
+  photos: "string[]"                           # Photos URLs
+  
+  # Stock Impact
+  stockMovementIds: "uuid[]"                    # Generated stock movements
+  
+  # Audit
+  createdBy: "EntityReference"
+  createdAt: "timestamp"
+  updatedBy: "EntityReference"
+  updatedAt: "timestamp"
+  validatedBy: "EntityReference"
+  validationDate: "timestamp"
+
+# Sub-object: Enhanced Delivery Information
+DeliveryInfo:                                   # 🆕 New enhanced sub-object
+  # Driver Information
+  driverName: "string"                         # Driver full name
+  driverIdNumber: "string"                     # 🆕 Driver ID card number
+  driverIdPhotoFront: "string"                 # 🆕 Driver ID photo front URL
+  driverIdPhotoBack: "string"                  # 🆕 Driver ID photo back URL
+  driverPhoto: "string"                        # 🆕 Driver portrait photo URL
+  driverPhone: "string"                        # Driver phone number
+  
+  # Vehicle Information
+  vehiclePlateNumber: "string"                 # Vehicle registration number
+  vehicleType: "string"                        # Vehicle type
+  vehiclePhotos: "string[]"                    # 🆕 Vehicle photos URLs
+  
+  # Loading/Unloading Personnel
+  loadingAtOurCost: "boolean"                  # 🆕 Flag if loading at our cost
+  loaders: "LoaderInfo[]"                      # 🆕 Array of loader information
+  
+  # Timing
+  arrivalTimestamp: "timestamp"                # Arrival timestamp
+  unloadingStartTime: "timestamp"              # 🆕 Unloading start time
+  unloadingEndTime: "timestamp"                # 🆕 Unloading end time
+  departureTimestamp: "timestamp"              # Departure timestamp
+
+# Sub-object: Loader Information
+LoaderInfo:                                     # 🆕 New sub-object
+  loaderName: "string"                         # Loader full name
+  loaderIdNumber: "string"                     # Loader ID card number
+  loaderIdPhoto: "string"                      # Loader ID photo URL
+  loaderPhoto: "string"                        # Loader portrait photo URL
+  loaderPhone: "string"                        # Loader phone number
+
+# Sub-object: Quality Control
+QualityControl:                                 # 🆕 New sub-object
+  required: "boolean"                          # Quality control required flag
+  sampleNumber: "string"                       # Sample number (ECH-YYYY-XXXXX-TYPE)
+  samplingDate: "timestamp"                    # Sampling timestamp
+  labReportUrl: "string"                       # Laboratory report URL
+  labReportDate: "date"                        # Lab report date
+  testParameters: "TestParameter[]"            # Test parameters and results
+  overallStatus: "QCStatus"                    # Enum: PENDING, CONFORM, NON_CONFORM, CONDITIONAL
+  validatedBy: "EntityReference"               # QC validator
+  validationDate: "timestamp"                  # QC validation date
+  validationComments: "text"                   # Validation comments
+
+# Sub-object: Test Parameter
+TestParameter:                                  # 🆕 New sub-object
+  parameter: "string"                          # Parameter name (pH, viscosity, etc.)
+  unit: "string"                              # Unit of measure
+  method: "string"                            # Test method (ISO standard)
+  measuredValue: "decimal"                    # Measured value
+  normMin: "decimal"                          # Minimum norm
+  normMax: "decimal"                          # Maximum norm
+  status: "TestStatus"                        # Enum: CONFORM, NON_CONFORM
+  critical: "boolean"                         # Critical parameter flag
+
+# Sub-object: Originator Validation
+OriginatorValidation:                          # 🆕 New sub-object
+  requiredValidation: "boolean"               # Validation required flag
+  validatorId: "EntityReference"              # Need originator who validates
+  validationStatus: "ValidationStatus"        # Enum: PENDING, APPROVED, REJECTED
+  validationDate: "timestamp"                 # Validation timestamp
+  comments: "text"                           # Validation comments
+
+# Sub-object: Reception Line
+ReceptionLine:
+  lineNumber: "integer"                        # Line number
+  purchaseOrderLineRef: "integer"              # Reference to PO line
+  productId: "EntityReference"                 # Product reference
+  productCode: "string"                       # Product code
+  productName: "string"                       # Product name
+  orderedQuantity: "decimal"                  # Ordered quantity
+  receivedQuantity: "decimal"                 # Received quantity
+  acceptedQuantity: "decimal"                 # Accepted quantity
+  rejectedQuantity: "decimal"                 # Rejected quantity
+  unit: "string"                              # Unit of measure
+  batchNumber: "string"                       # Batch/lot number
+  serialNumbers: "string[]"                   # Serial numbers if applicable
+  expiryDate: "date"                         # Expiry date if applicable
+  qualityStatus: "QualityStatus"             # Enum: OK, DAMAGED, NON_CONFORM
+  quarantine: "boolean"                      # Quarantine flag
+  storageLocation: "EntityReference"         # Storage location
+  notes: "text"                              # Line notes
+  photos: "string[]"                         # Product photos URLs
+
+# ==============================================================================
+# FACTURES FOURNISSEUR (Supplier Invoices)
+# ==============================================================================
+
+supplier_invoices:
+  id: "uuid"                                   # Unique identifier
+  internalInvoiceNumber: "string"              # Internal reference (auto-generated)
+  supplierInvoiceNumber: "string"              # Supplier's invoice number
+  invoiceDate: "date"                         # Invoice date
+  dueDate: "date"                            # Payment due date
+  status: "InvoiceStatus"                     # Enum: DRAFT, TO_RECONCILE, RECONCILED, APPROVED, DISPUTED, PAID, CANCELLED
+  invoiceType: "InvoiceType"                  # Enum: STANDARD, CREDIT_NOTE, TRANSPORT, ADVANCE
+  
+  # Parties
+  supplierId: "EntityReference"               # Supplier reference
+  supplierName: "string"                      # Supplier name (denormalized)
+  supplierType: "SupplierType"                # Enum: EXTERNAL, INTERNAL_GROUP
+  buyingCompanyId: "EntityReference"          # Buying company
+  
+  # Fiscal Information
+  taxRegime: "TaxRegime"                      # 🆕 Supplier tax regime
+  nonLiabilityStatus: "CertificateStatus"     # 🆕 Non-liability certificate status
+  
+  # Source Documents
+  purchaseOrderIds: "uuid[]"                  # Related purchase orders
+  receptionIds: "uuid[]"                      # Related receptions
+  
+  # Financial Information
+  currency: "string"                          # Currency code
+  exchangeRate: "decimal"                     # Exchange rate
+  paymentTerms: "PaymentTerms"                # Payment terms
+  paymentMode: "PaymentMode"                  # Payment mode
+  
+  # Amounts
+  subtotalHT: "decimal"                       # Subtotal excluding tax
+  discountAmount: "decimal"                   # Total discount
+  taxableAmount: "decimal"                    # Taxable amount
+  taxAmount: "decimal"                        # Tax amount
+  totalTTC: "decimal"                         # Total including tax
+  
+  # Lines
+  lines: "InvoiceLine[]"                      # Invoice lines
+  
+  # Three-Way Matching
+  threeWayMatchStatus: "MatchStatus"          # Enum: PENDING, MATCHED, PARTIAL_MATCH, MISMATCH
+  matchingDate: "timestamp"                   # Matching date
+  matchedBy: "EntityReference"                # Person who performed matching
+  matchingDiscrepancies: "MatchDiscrepancy[]" # Matching discrepancies
+  
+  # Approval Workflow
+  approvalRequired: "boolean"                 # Approval required flag
+  approvalWorkflow: "ValidationWorkflow"      # Approval workflow
+  approvedBy: "EntityReference"               # Approver
+  approvalDate: "timestamp"                   # Approval date
+  
+  # Payment Information
+  paymentStatus: "PaymentStatus"              # Enum: UNPAID, PARTIALLY_PAID, PAID
+  paymentReferences: "PaymentReference[]"     # Payment references
+  
+  # Documents
+  invoiceDocumentUrl: "string"                # Invoice document URL
+  attachments: "DocumentAttachment[]"         # Other attachments
+  
+  # Disputes
+  hasDispute: "boolean"                       # Dispute flag
+  disputeIds: "uuid[]"                       # Related disputes
+  
+  # Accounting
+  accountingEntryId: "string"                # Accounting entry reference
+  costCenter: "EntityReference"              # Cost center
+  analyticalCodes: "AnalyticalCode[]"        # Analytical codes
+  
+  # Audit
+  createdBy: "EntityReference"
+  createdAt: "timestamp"
+  updatedBy: "EntityReference"
+  updatedAt: "timestamp"
+  postedBy: "EntityReference"                # Posted to accounting by
+  postedAt: "timestamp"                      # Posting timestamp
+
+# Sub-object: Invoice Line
+InvoiceLine:
+  lineNumber: "integer"                       # Line number
+  purchaseOrderLineRef: "string"              # Reference to PO line
+  receptionLineRef: "string"                  # Reference to reception line
+  productId: "EntityReference"                # Product reference
+  productCode: "string"                      # Product code
+  productName: "string"                      # Product name
+  description: "text"                        # Description
+  quantity: "decimal"                        # Invoiced quantity
+  unit: "string"                             # Unit of measure
+  unitPrice: "decimal"                       # Unit price
+  discount: "decimal"                        # Discount percentage
+  taxRate: "decimal"                         # Tax rate
+  totalHT: "decimal"                         # Line total excluding tax
+  totalTTC: "decimal"                        # Line total including tax
+  accountingCode: "string"                   # Accounting code
+  analyticalCodes: "AnalyticalCode[]"        # Analytical codes
+
+# ==============================================================================
+# FACTURES TRANSPORT (Transport Invoices)
+# ==============================================================================
+
+transport_invoices:                            # 🆕 New entity
+  id: "uuid"                                  # Unique identifier
+  invoiceNumber: "string"                     # Format: FTR-YYYY-XXXXX
+  invoiceDate: "date"                        # Invoice date
+  status: "InvoiceStatus"                    # Invoice status
+  
+  # Related Documents
+  purchaseOrderId: "uuid"                    # Related purchase order
+  receptionId: "uuid"                        # Related reception
+  mainInvoiceId: "uuid"                      # Related main invoice (if any)
+  
+  # Transporter Information
+  transporterId: "EntityReference"           # Transporter (can be different from supplier)
+  transporterName: "string"                  # Transporter name
+  transportType: "TransportType"             # Enum: OWN_FLEET, THIRD_PARTY, SUPPLIER
+  
+  # Transport Details
+  vehicleType: "string"                      # Vehicle type
+  vehiclePlateNumber: "string"               # Vehicle registration
+  distance: "decimal"                        # Distance in km
+  weight: "decimal"                          # Weight in kg
+  volume: "decimal"                          # Volume in m³
+  
+  # Route Information
+  originAddress: "Address"                   # Origin address
+  destinationAddress: "Address"              # Destination address
+  departureDate: "timestamp"                 # Departure timestamp
+  arrivalDate: "timestamp"                   # Arrival timestamp
+  
+  # Financial Information
+  rateType: "RateType"                       # Enum: FIXED, PER_KM, PER_KG, PER_VOLUME
+  rate: "decimal"                           # Rate value
+  baseAmount: "decimal"                     # Base amount
+  fuelSurcharge: "decimal"                  # Fuel surcharge
+  otherCharges: "decimal"                   # Other charges
+  totalHT: "decimal"                        # Total excluding tax
+  taxRate: "decimal"                        # Tax rate (19.25%)
+  taxAmount: "decimal"                      # Tax amount
+  totalTTC: "decimal"                       # Total including tax
+  
+  # Documents
+  transportDocumentNumber: "string"          # Transport document number
+  attachments: "DocumentAttachment[]"        # Attached documents
+  
+  # Accounting
+  accountingCode: "string"                  # Account 624 (Transport costs)
+  costCenter: "EntityReference"             # Cost center
+  
+  # Audit
+  createdBy: "EntityReference"
+  createdAt: "timestamp"
+  updatedBy: "EntityReference"
+  updatedAt: "timestamp"
+
+# ==============================================================================
+# LITIGES (Disputes)
+# ==============================================================================
+
+purchase_disputes:
+  id: "uuid"                                  # Unique identifier
+  disputeNumber: "string"                     # Format: LIT-YYYY-XXXXX
+  disputeDate: "date"                        # Dispute creation date
+  status: "DisputeStatus"                    # Enum: OPEN, IN_PROGRESS, RESOLVED, REJECTED, ESCALATED
+  priority: "Priority"                       # Enum: LOW, NORMAL, HIGH, CRITICAL
+  
+  # Type and Category
+  disputeType: "DisputeType"                 # Enum: QUANTITY, QUALITY, PRICE, DELIVERY, DAMAGE, OTHER
+  category: "DisputeCategory"                # Enum: RECEPTION, INVOICE, PAYMENT, SERVICE
+  
+  # Related Documents
+  purchaseOrderId: "uuid"                    # Related purchase order
+  receptionId: "uuid"                        # Related reception (if applicable)
+  invoiceId: "uuid"                         # Related invoice (if applicable)
+  
+  # Parties
+  supplierId: "EntityReference"              # Supplier involved
+  supplierName: "string"                     # Supplier name
+  raisedBy: "EntityReference"                # Person who raised dispute
+  assignedTo: "EntityReference"              # Person handling dispute
+  
+  # Dispute Details
+  description: "text"                        # Detailed description
+  expectedValue: "text"                     # What was expected
+  actualValue: "text"                       # What was received/found
+  discrepancyAmount: "decimal"              # Financial impact
+  
+  # Evidence
+  photos: "string[]"                        # 🆕 Photos as evidence
+  documents: "DocumentAttachment[]"         # Supporting documents
+  
+  # Resolution
+  requestedAction: "RequestedAction"        # Enum: CREDIT_NOTE, REPLACEMENT, REFUND, DISCOUNT
+  resolutionDescription: "text"             # Resolution description
+  resolutionDate: "date"                   # Resolution date
+  creditNoteId: "uuid"                     # Credit note if applicable
+  replacementOrderId: "uuid"               # Replacement order if applicable
+  
+  # Communication
+  supplierResponse: "text"                 # Supplier's response
+  internalNotes: "text"                   # Internal notes
+  correspondences: "Correspondence[]"     # Email/communication history
+  
+  # Escalation
+  escalated: "boolean"                    # Escalation flag
+  escalationLevel: "integer"              # Escalation level (1, 2, 3)
+  escalatedTo: "EntityReference"          # Escalated to whom
+  escalationDate: "timestamp"             # Escalation date
+  
+  # Audit
+  createdBy: "EntityReference"
+  createdAt: "timestamp"
+  updatedBy: "EntityReference"
+  updatedAt: "timestamp"
+  closedBy: "EntityReference"
+  closedAt: "timestamp"
+
+# ==============================================================================
+# ÉCHANTILLONS QUALITÉ (Quality Samples)
+# ==============================================================================
+
+quality_samples:                              # 🆕 New entity
+  id: "uuid"                                 # Unique identifier
+  sampleNumber: "string"                     # Format: ECH-YYYY-XXXXX-TYPE
+  sampleType: "SampleType"                   # Enum: MP (Raw Material), PF (Finished Product), EMB (Packaging)
+  
+  # Source
+  receptionId: "uuid"                        # Related reception
+  productId: "EntityReference"               # Product sampled
+  batchNumber: "string"                      # Batch number
+  
+  # Sampling Information
+  samplingDate: "timestamp"                  # Sampling date and time
+  sampledBy: "EntityReference"               # Person who took sample
+  sampleQuantity: "decimal"                  # Sample quantity
+  sampleUnit: "string"                       # Sample unit
+  
+  # Storage
+  storageLocation: "string"                  # Where sample is stored
+  storageConditions: "string"                # Storage conditions
+  retentionPeriodDays: "integer"            # Retention period in days
+  disposalDate: "date"                      # Planned disposal date
+  
+  # Testing
+  testTemplate: "EntityReference"            # Test template used
+  labAssigned: "string"                     # Laboratory assigned
+  testRequestDate: "date"                   # Test request date
+  testCompletionDate: "date"                # Test completion date
+  
+  # Results
+  testResults: "TestParameter[]"            # Test results
+  overallStatus: "QCStatus"                 # Overall status
+  certificateUrl: "string"                  # Test certificate URL
+  
+  # Audit
+  createdBy: "EntityReference"
+  createdAt: "timestamp"
+  disposedBy: "EntityReference"
+  disposedAt: "timestamp"
+
+# ==============================================================================
+# SHARED ENUMERATIONS
+# ==============================================================================
+
+# Document and Status Enums
+DocumentType: "REQUISITION | PURCHASE_ORDER | RECEPTION | INVOICE | CREDIT_NOTE | TRANSPORT_INVOICE"
+RequisitionStatus: "DRAFT | PENDING_VALIDATION | VALIDATED | REJECTED | PROCESSED"
+PurchaseOrderStatus: "DRAFT | SENT | ACKNOWLEDGED | PARTIALLY_RECEIVED | RECEIVED | CANCELLED | CLOSED"
+ReceptionStatus: "DRAFT | AWAITING_QUALITY_CONTROL | PARTIAL_ACCEPTANCE | FULLY_ACCEPTED | REJECTED | CLOSED_WITH_DISCREPANCIES"
+InvoiceStatus: "DRAFT | TO_RECONCILE | RECONCILED | APPROVED | DISPUTED | PAID | CANCELLED"
+DisputeStatus: "OPEN | IN_PROGRESS | RESOLVED | REJECTED | ESCALATED"
+
+# Business Enums
+Priority: "LOW | NORMAL | HIGH | URGENT | CRITICAL"
+SupplierType: "EXTERNAL | INTERNAL_GROUP"
+PurchaseOrderType: "STANDARD | BLANKET | CONTRACT | INTERNAL"
+InvoiceType: "STANDARD | CREDIT_NOTE | TRANSPORT | ADVANCE"
+PaymentMode: "CASH | CHECK | TRANSFER | MOBILE_MONEY"
+TransportMode: "ROAD | RAIL | AIR | SEA | MULTIMODAL"
+SendMethod: "EMAIL | FAX | EDI | MANUAL"
+
+# Tax and Compliance Enums 🆕
+TaxRegime: "REEL | SIMPLIFIE | LIBERATOIRE | MICRO | EXONERE"
+CertificateStatus: "VALID | EXPIRING_SOON | EXPIRED"
+
+# Quality Control Enums 🆕
+QCStatus: "PENDING | CONFORM | NON_CONFORM | CONDITIONAL"
+TestStatus: "CONFORM | NON_CONFORM"
+QualityStatus: "OK | DAMAGED | NON_CONFORM"
+ValidationStatus: "PENDING | APPROVED | REJECTED"
+SampleType: "MP | PF | EMB"
+
+# Dispute Enums
+DisputeType: "QUANTITY | QUALITY | PRICE | DELIVERY | DAMAGE | OTHER"
+DisputeCategory: "RECEPTION | INVOICE | PAYMENT | SERVICE"
+RequestedAction: "CREDIT_NOTE | REPLACEMENT | REFUND | DISCOUNT"
+
+# Transport Enums 🆕
+TransportType: "OWN_FLEET | THIRD_PARTY | SUPPLIER"
+RateType: "FIXED | PER_KM | PER_KG | PER_VOLUME"
+
+# Matching Enums
+MatchStatus: "PENDING | MATCHED | PARTIAL_MATCH | MISMATCH"
+PaymentStatus: "UNPAID | PARTIALLY_PAID | PAID"
+
+# ==============================================================================
+# SHARED SUB-OBJECTS
+# ==============================================================================
+
+EntityReference:
+  id: "string"                               # Entity ID (ObjectId or UUID)
+  type: "string"                            # Entity type
+  name: "string"                            # Display name (denormalized)
+  code: "string"                            # Code if applicable
+
+Address:
+  street: "string"
+  city: "string"
+  postalCode: "string"
+  region: "string"
+  country: "string"
+  coordinates: "GeoCoordinates"
+
+GeoCoordinates:
+  latitude: "decimal"
+  longitude: "decimal"
+
+PaymentTerms:
+  type: "string"                            # NET30, NET60, 2/10NET30, etc.
+  days: "integer"                          # Payment days
+  discountRate: "decimal"                  # Early payment discount
+  discountDays: "integer"                  # Days for discount
+
+ValidationWorkflow:
+  workflowId: "string"
+  currentStep: "integer"
+  steps: "WorkflowStep[]"
+  startDate: "timestamp"
+  completionDate: "timestamp"
+
+WorkflowStep:
+  stepNumber: "integer"
+  approverRole: "string"
+  approverId: "EntityReference"
+  status: "string"
+  comments: "text"
+  actionDate: "timestamp"
+
+DocumentAttachment:
+  documentId: "string"
+  documentName: "string"
+  documentType: "string"
+  documentUrl: "string"
+  uploadedBy: "EntityReference"
+  uploadedAt: "timestamp"
+  size: "integer"
+  mimeType: "string"
+
+AnalyticalCode:
+  dimension: "string"                      # COST_CENTER, PROJECT, ACTIVITY
+  code: "string"
+  name: "string"
+  percentage: "decimal"
+
+PaymentReference:
+  paymentId: "string"
+  paymentDate: "date"
+  paymentAmount: "decimal"
+  paymentMethod: "string"
+  reference: "string"
+
+MatchDiscrepancy:
+  type: "string"                          # QUANTITY, PRICE, PRODUCT
+  expectedValue: "string"
+  actualValue: "string"
+  difference: "string"
+  impact: "decimal"
+
+Correspondence:
+  date: "timestamp"
+  from: "string"
+  to: "string"
+  subject: "string"
+  message: "text"
+  attachments: "string[]"
+```
+
+# ==============================================================================
+# NOTES SUR LES NOUVELLES PROPRIÉTÉS
+# ==============================================================================
+
+## Propriétés ajoutées suite à l'analyse (marquées 🆕) :
+
+### 1. **Gestion de l'émetteur du besoin**
+- `needOriginatorId` et `needOriginatorName` dans purchase_requisitions et purchase_orders
+- `needJustification` pour traçabilité complète
+- `OriginatorValidation` pour validation qualité obligatoire
+
+### 2. **Conformité fiscale**
+- `taxRegime` pour le régime d'imposition
+- `NonLiabilityCertificate` objet complet pour attestation non-redevance
+- `nonLiabilityStatus` pour blocage paiements
+
+### 3. **Informations livraison enrichies**
+- `DeliveryInfo` avec photos et CNI chauffeur/chargeurs
+- `LoaderInfo` pour chaque chargeur si à nos frais
+- Timestamps précis pour calcul temps déchargement
+
+### 4. **Contrôle qualité laboratoire**
+- `QualityControl` objet structuré
+- `TestParameter` pour chaque test
+- `quality_samples` entité complète pour traçabilité échantillons
+
+### 5. **Factures transport**
+- `transport_invoices` nouvelle entité
+- Gestion séparée des coûts logistiques
+- Lien avec documents principaux
+
+### 6. **Améliorations traçabilité**
+- Photos obligatoires dans disputes
+- Validation par émetteur du besoin
+- Horodatage précis partout
+
+## Points clés de conformité :
+- ✅ Pas de validation budgétaire (champs conservés mais non utilisés)
+- ✅ Transactions internes gérées comme externes
+- ✅ Listes de prix pour tous (pas de prix transfert)
+- ✅ Conformité fiscale camerounaise intégrée
+- ✅ Traçabilité maximale avec photos/documents

@@ -1,0 +1,935 @@
+# USER STORIES DÉTAILLÉES - MODULE ACHATS
+## ERP MULTIFLEX - Version complète avec enrichissements livraison
+
+---
+
+## 📋 SECTION 1 : GESTION DES DEMANDES D'ACHAT (DA)
+
+### US-ACH-001 : Créer une demande d'achat manuelle
+
+**EN TANT QUE** Demandeur (tout employé habilité)  
+**JE VEUX** créer une demande d'achat pour exprimer un besoin  
+**AFIN DE** formaliser et tracer mes besoins en approvisionnement
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Je peux accéder au formulaire de création de DA depuis le menu Achats
+- ✅ Je peux saisir les informations générales :
+  - Date de la demande (auto-remplie)
+  - Département demandeur
+  - Priorité (Basse/Normale/Haute/Urgente)
+  - Date de livraison souhaitée
+  - Motif détaillé du besoin
+- ✅ Je peux identifier l'émetteur du besoin (peut être différent du créateur)
+- ✅ Je peux ajouter plusieurs lignes d'articles :
+  - Recherche article par code/nom
+  - Description libre si article non catalogué
+  - Quantité demandée
+  - Prix unitaire estimé
+  - Fournisseur suggéré (optionnel)
+- ✅ Je peux joindre des documents (devis, spécifications techniques)
+- ✅ Le système calcule automatiquement le montant total estimé
+- ✅ Je peux enregistrer en brouillon pour modification ultérieure
+- ✅ Je peux soumettre pour validation
+- ✅ Je reçois une notification de confirmation avec le numéro de DA
+
+**RÈGLES DE GESTION :**
+- RG-ACH-001 : Numérotation automatique format DA-YYYY-XXXXX
+- RG-ACH-002 : L'émetteur du besoin doit être identifié et notifié
+- RG-ACH-003 : Date livraison souhaitée >= Date demande + délai minimum (paramétrable)
+- RG-ACH-004 : Statut initial = BROUILLON jusqu'à soumission
+
+---
+
+### US-ACH-002 : Valider une demande d'achat
+
+**EN TANT QUE** Responsable hiérarchique / Responsable achats  
+**JE VEUX** valider ou rejeter les demandes d'achat de mon équipe  
+**AFIN DE** contrôler les dépenses et autoriser les achats
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Je vois la liste des DA en attente de ma validation
+- ✅ Je peux filtrer par : département, priorité, montant, date
+- ✅ Je peux consulter le détail complet de chaque DA
+- ✅ Je peux voir l'historique des validations précédentes
+- ✅ Je peux ajouter un commentaire de validation/rejet
+- ✅ Actions disponibles :
+  - Valider → passage au statut VALIDÉE
+  - Rejeter → retour au demandeur avec motif
+  - Demander complément → notification au demandeur
+- ✅ Si montant > seuil, escalade automatique au N+1
+- ✅ Notification envoyée au demandeur et à l'émetteur du besoin
+- ✅ Les DA validées deviennent disponibles pour transformation en BCF
+
+**RÈGLES DE GESTION :**
+- RG-ACH-005 : Workflow de validation selon montants (paramétrable)
+- RG-ACH-006 : Pas de validation budgétaire pour l'instant (désactivée)
+- RG-ACH-007 : L'émetteur du besoin est notifié à chaque étape
+
+---
+
+### US-ACH-003 : Consulter mes demandes d'achat
+
+**EN TANT QUE** Demandeur  
+**JE VEUX** consulter l'historique et le statut de mes demandes d'achat  
+**AFIN DE** suivre l'avancement de mes demandes
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Je vois la liste de toutes mes DA (créées ou où je suis émetteur)
+- ✅ Colonnes affichées : N° DA, Date, Articles, Montant, Priorité, Statut, Actions
+- ✅ Filtres disponibles : Période, Statut, Priorité, Montant
+- ✅ Indicateurs visuels des statuts :
+  - 📝 Brouillon (gris)
+  - ⏳ En attente validation (jaune)
+  - ✅ Validée (vert)
+  - ❌ Rejetée (rouge)
+  - 🔄 Transformée en BCF (bleu)
+- ✅ Actions selon statut :
+  - Brouillon : Modifier, Supprimer, Soumettre
+  - Rejetée : Consulter motif, Dupliquer pour correction
+  - Validée : Voir BCF associé
+- ✅ Export possible en Excel/PDF
+- ✅ Recherche par numéro ou mots-clés
+
+**RÈGLES DE GESTION :**
+- RG-ACH-008 : Seul le créateur peut modifier/supprimer un brouillon
+- RG-ACH-009 : Une DA validée ne peut plus être modifiée
+- RG-ACH-010 : Conservation historique 5 ans minimum
+
+---
+
+### US-ACH-004 : Transformer DA en BCF (Multi-DA)
+
+**EN TANT QUE** Acheteur  
+**JE VEUX** transformer une ou plusieurs DA validées en bon de commande fournisseur  
+**AFIN DE** passer commande auprès du fournisseur
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Je peux sélectionner une ou plusieurs DA validées
+- ✅ Regroupement intelligent par :
+  - Fournisseur suggéré
+  - Catégorie d'articles
+  - Urgence de livraison
+- ✅ Alerte si DA de départements différents (confirmation requise)
+- ✅ Je peux ajuster :
+  - Le fournisseur final
+  - Les quantités
+  - Les prix négociés
+  - Les conditions de livraison
+- ✅ Récapitulatif de fusion affiché :
+  - Liste des DA sources
+  - Ventilation par département
+  - Total consolidé
+- ✅ Lien de traçabilité DA → BCF maintenu
+- ✅ Statut DA passe à "TRAITÉE"
+- ✅ Notification aux demandeurs et émetteurs concernés
+
+**RÈGLES DE GESTION :**
+- RG-ACH-011 : Une DA peut générer plusieurs BCF (splitting)
+- RG-ACH-012 : Plusieurs DA peuvent générer un BCF (grouping)
+- RG-ACH-013 : Traçabilité complète DA ↔ BCF obligatoire
+
+---
+
+## 📋 SECTION 2 : GESTION DES BONS DE COMMANDE FOURNISSEUR (BCF)
+
+### US-ACH-005 : Créer un BCF direct
+
+**EN TANT QUE** Acheteur  
+**JE VEUX** créer un bon de commande fournisseur directement ou depuis des DA  
+**AFIN DE** commander des produits auprès d'un fournisseur
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Deux modes de création :
+  - Depuis DA validées (pré-remplissage)
+  - Création directe (saisie manuelle)
+- ✅ Onglets de saisie :
+  - **Informations générales** : N° BCF auto, Date, Entreprise acheteuse
+  - **Fournisseur** : Sélection avec affichage score, catégorie, conditions
+  - **Articles** : Lignes avec recherche produit, prix, quantités
+  - **Livraison** : Date, lieu, mode, transporteur
+  - **Fiscal** : Régime fiscal, attestation non-redevance
+  - **Documents** : Pièces jointes (devis, specs)
+- ✅ Sélection fournisseur avec indicateurs :
+  - Type (Externe/Interne groupe)
+  - Score performance (étoiles)
+  - Conditions commerciales
+  - Attestation non-redevance (validité)
+- ✅ Si fournisseur interne :
+  - Application liste de prix inter-groupe
+  - Indication "Transaction inter-sociétés"
+- ✅ Calculs automatiques : Totaux HT, TVA, TTC
+- ✅ Validation des seuils et autorisations
+- ✅ Envoi possible par email au fournisseur
+
+**RÈGLES DE GESTION :**
+- RG-ACH-014 : Numérotation BCF-YYYY-XXXXX
+- RG-ACH-015 : Attestation non-redevance obligatoire si > 100,000 XAF
+- RG-ACH-016 : Prix via liste de prix fournisseur ou prix catalogue
+- RG-ACH-017 : Transactions internes suivent le même processus
+
+---
+
+### US-ACH-006 : BCF Inter-compagnies
+
+**EN TANT QUE** Acheteur  
+**JE VEUX** créer un BCF pour une société du groupe IOLA  
+**AFIN DE** commander en interne avec traçabilité complète
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Détection automatique "Fournisseur interne" 
+- ✅ Application liste de prix inter-groupe configurée
+- ✅ Même workflow que fournisseur externe :
+  - Validation hiérarchique requise
+  - Contrôles et approbations
+  - Rapprochement 3-way obligatoire
+- ✅ Spécificités internes :
+  - Documents récupérables depuis système vendeur
+  - Pas de commission commerciale
+  - Compensation inter-sociétés possible
+- ✅ Création de litiges si écarts (comme externe)
+- ✅ Indicateur visuel "Transaction Groupe 🏠"
+- ✅ Reporting séparé transactions internes
+
+**RÈGLES DE GESTION :**
+- RG-ACH-018 : Pas de prix de transfert, utilisation listes de prix
+- RG-ACH-019 : Même rigueur que transactions externes
+- RG-ACH-020 : Litiges inter-sociétés avec notification double
+
+---
+
+### US-ACH-007 : Modifier un BCF
+
+**EN TANT QUE** Acheteur  
+**JE VEUX** modifier un bon de commande non encore réceptionné  
+**AFIN DE** ajuster la commande selon les besoins
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Modification possible si statut = BROUILLON ou ENVOYÉ
+- ✅ Éléments modifiables :
+  - Quantités (avec justification si envoyé)
+  - Dates de livraison
+  - Conditions de paiement
+  - Ajout/suppression de lignes
+- ✅ Éléments non modifiables :
+  - Fournisseur
+  - Entreprise acheteuse
+  - N° BCF
+- ✅ Si BCF envoyé :
+  - Création automatique d'un avenant
+  - Notification au fournisseur
+  - Historique des modifications tracé
+- ✅ Re-validation requise si montant augmente > 10%
+- ✅ Mise à jour automatique des DA sources
+
+**RÈGLES DE GESTION :**
+- RG-ACH-021 : BCF avec réception partielle = modification limitée
+- RG-ACH-022 : Toute modification tracée dans l'audit trail
+- RG-ACH-023 : Avenant numéroté BCF-YYYY-XXXXX-An
+
+---
+
+### US-ACH-008 : Envoyer BCF au fournisseur
+
+**EN TANT QUE** Acheteur  
+**JE VEUX** envoyer le bon de commande au fournisseur  
+**AFIN DE** confirmer officiellement la commande
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Aperçu PDF du BCF avant envoi
+- ✅ Paramètres d'envoi :
+  - Email principal (depuis fiche fournisseur)
+  - Emails en copie (paramétrable)
+  - Objet personnalisable
+  - Message d'accompagnement
+- ✅ Pièces jointes automatiques :
+  - BCF en PDF
+  - Conditions générales d'achat
+  - Documents techniques si applicable
+- ✅ Options d'envoi :
+  - Email direct
+  - Export PDF pour envoi manuel
+  - EDI si configuré
+- ✅ Confirmation de lecture demandée
+- ✅ Statut passe à "ENVOYÉ"
+- ✅ Horodatage et trace d'envoi
+- ✅ Relance possible si pas d'accusé réception
+
+**RÈGLES DE GESTION :**
+- RG-ACH-024 : Email obligatoire dans fiche fournisseur
+- RG-ACH-025 : Copie automatique à l'acheteur
+- RG-ACH-026 : Conservation preuve d'envoi 10 ans
+
+---
+
+## 📋 SECTION 3 : GESTION DES RÉCEPTIONS
+
+### US-ACH-009 : Créer un bon de réception (ENRICHI)
+
+**EN TANT QUE** Magasinier  
+**JE VEUX** enregistrer la réception des marchandises commandées  
+**AFIN DE** mettre à jour les stocks et constater la livraison
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Sélection du BCF à réceptionner (liste des BCF en attente)
+- ✅ **Section Informations générales** :
+  - N° BR auto-généré
+  - Date et heure de réception (timestamp précis)
+  - N° BL fournisseur
+  - Entrepôt de réception
+  - Magasinier responsable
+- ✅ **Section Informations de livraison ENRICHIE** :
+  - **Chauffeur livreur** :
+    - Nom complet (obligatoire)
+    - N° CNI (obligatoire)
+    - Photo CNI recto-verso (capture ou upload)
+    - Photo du chauffeur (capture webcam/mobile)
+    - Téléphone (obligatoire)
+  - **Véhicule** :
+    - Immatriculation
+    - Type de véhicule
+    - Photos du véhicule (avant/arrière)
+  - **Si chargement/déchargement à nos frais** :
+    - **Par chargeur** :
+      - Nom complet
+      - N° CNI
+      - Photo CNI
+      - Photo de la personne
+      - Téléphone
+    - Possibilité d'ajouter plusieurs chargeurs
+  - Heure début et fin de déchargement
+- ✅ **Section Articles** :
+  - Liste des articles du BCF
+  - Par article :
+    - Quantité commandée (affichée)
+    - Quantité reçue (à saisir)
+    - État : OK/Endommagé/Non-conforme
+    - N° lot si applicable
+    - Date de péremption si applicable
+    - Photos des produits
+    - Mise en quarantaine (checkbox)
+- ✅ **Section Contrôle Qualité** (si requis) :
+  - Génération auto N° échantillon
+  - Upload rapport laboratoire
+  - Saisie résultats tests
+- ✅ Calcul automatique des écarts
+- ✅ Création litiges si écarts > tolérance
+- ✅ Mise à jour stock immédiate ou différée (si quarantaine)
+
+**RÈGLES DE GESTION :**
+- RG-ACH-027 : BR-YYYY-XXXXX numérotation
+- RG-ACH-028 : Photos obligatoires pour chauffeur et CNI
+- RG-ACH-029 : Si chargeur à nos frais, documentation complète obligatoire
+- RG-ACH-030 : Écart > 2% génère litige automatique
+- RG-ACH-031 : Timestamp précis pour calcul temps déchargement
+
+---
+
+### US-ACH-010 : Gérer les écarts de réception
+
+**EN TANT QUE** Magasinier / Responsable achats  
+**JE VEUX** traiter les écarts entre commande et réception  
+**AFIN DE** résoudre les litiges avec le fournisseur
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Détection automatique des écarts :
+  - Quantité (commandé vs reçu)
+  - Qualité (conforme vs non-conforme)
+  - Articles non commandés
+- ✅ Classification des écarts :
+  - ✅ Acceptable (< tolérance 2%)
+  - ⚠️ À valider (2-5%)
+  - 🔴 Bloquant (> 5% ou article non commandé)
+- ✅ Actions possibles :
+  - Accepter l'écart
+  - Créer un litige
+  - Refuser la réception
+  - Demander complément livraison
+- ✅ Création dossier litige :
+  - Type écart
+  - Description détaillée
+  - Photos/preuves (obligatoire)
+  - Montant réclamé
+  - Action souhaitée (avoir/complément/retour)
+- ✅ Workflow de résolution :
+  - Notification fournisseur
+  - Suivi des échanges
+  - Validation résolution
+- ✅ Impact automatique sur paiement (blocage si litige)
+
+**RÈGLES DE GESTION :**
+- RG-ACH-032 : Photos obligatoires pour tout litige
+- RG-ACH-033 : Litige bloque le paiement jusqu'à résolution
+- RG-ACH-034 : Délai de déclaration : 48h après réception
+- RG-ACH-035 : Escalade si non résolu après 7 jours
+
+---
+
+### US-ACH-011 : Contrôle qualité réception
+
+**EN TANT QUE** Responsable qualité  
+**JE VEUX** valider la qualité des produits reçus  
+**AFIN DE** garantir la conformité avant mise en stock
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Liste des réceptions en attente de contrôle
+- ✅ Génération automatique N° échantillon (ECH-YYYY-XXXXX)
+- ✅ Paramètres de test selon :
+  - Configuration famille produit
+  - Spécifications produit
+  - Exigences fournisseur
+- ✅ Saisie des résultats :
+  - Par paramètre testé
+  - Valeur mesurée vs norme
+  - Statut (Conforme/Non-conforme)
+  - Méthode de test utilisée
+- ✅ Upload rapport laboratoire (PDF)
+- ✅ Décision finale :
+  - ✅ Accepté → Libération stock
+  - ⚠️ Accepté avec réserve → Stock utilisable avec restriction
+  - ❌ Refusé → Retour fournisseur
+  - 🔄 Re-test requis → Nouveau prélèvement
+- ✅ Signature électronique du responsable
+- ✅ Traçabilité complète des tests
+
+**RÈGLES DE GESTION :**
+- RG-ACH-036 : Stock en quarantaine jusqu'à validation
+- RG-ACH-037 : Rapport labo obligatoire pour produits critiques
+- RG-ACH-038 : Conservation échantillons 90 jours minimum
+- RG-ACH-039 : Non-conformité → notification immédiate achats
+
+---
+
+## 📋 SECTION 4 : GESTION DES FACTURES FOURNISSEUR
+
+### US-ACH-012 : Saisir une facture fournisseur
+
+**EN TANT QUE** Comptable  
+**JE VEUX** enregistrer les factures reçues des fournisseurs  
+**AFIN DE** constater les dettes et préparer les paiements
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Deux modes de saisie :
+  - Manuelle (fournisseur externe)
+  - Import automatique (fournisseur interne groupe)
+- ✅ Informations à saisir :
+  - N° facture fournisseur
+  - Date facture
+  - Date d'échéance
+  - BCF lié (sélection)
+  - BR liés (multi-sélection)
+- ✅ Si fournisseur interne :
+  - Option "Récupérer facture" depuis système émetteur
+  - Pré-remplissage automatique
+  - Possibilité de modifier avec justification
+- ✅ Lignes de facture :
+  - Import depuis BCF/BR
+  - Ajustement prix/quantités
+  - Calcul TVA selon régime fiscal
+- ✅ Upload scan facture (PDF/Image)
+- ✅ Vérification attestation non-redevance
+- ✅ Imputation comptable automatique
+- ✅ Statut initial : "À RAPPROCHER"
+
+**RÈGLES DE GESTION :**
+- RG-ACH-040 : Blocage si pas d'attestation valide > 100K
+- RG-ACH-041 : TVA calculée selon régime fiscal fournisseur
+- RG-ACH-042 : Facture interne récupérée = même montants
+
+---
+
+### US-ACH-013 : Rapprochement 3-way
+
+**EN TANT QUE** Comptable  
+**JE VEUX** rapprocher commande, réception et facture  
+**AFIN DE** valider la facture avant paiement
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Interface trois colonnes :
+  - BCF (Commandé)
+  - BR (Reçu)
+  - Facture (Facturé)
+- ✅ Comparaison automatique ligne par ligne :
+  - Articles
+  - Quantités
+  - Prix unitaires
+  - Totaux
+- ✅ Signalement visuel des écarts :
+  - ✅ Vert : Correspondance parfaite
+  - 🟡 Jaune : Écart dans tolérance
+  - 🔴 Rouge : Écart hors tolérance
+- ✅ Si fournisseur interne :
+  - Documents pré-importés
+  - Vérification obligatoire quand même
+  - Création litiges inter-sociétés si écarts
+- ✅ Tolérances paramétrables :
+  - Quantité : 2%
+  - Prix : 1%
+- ✅ Actions selon résultat :
+  - Tout correspond → Bon à payer automatique
+  - Écarts tolérés → Validation manager requise
+  - Écarts majeurs → Blocage et litige
+- ✅ Justification obligatoire si validation avec écarts
+- ✅ Génération rapport de rapprochement
+
+**RÈGLES DE GESTION :**
+- RG-ACH-043 : 3-way obligatoire même pour internes
+- RG-ACH-044 : Écart = litige même si fournisseur interne
+- RG-ACH-045 : Validation tracée avec signature électronique
+- RG-ACH-046 : Historique rapprochements conservé
+
+---
+
+### US-ACH-014 : Gérer les avoirs fournisseur
+
+**EN TANT QUE** Comptable  
+**JE VEUX** enregistrer les avoirs reçus des fournisseurs  
+**AFIN DE** ajuster les montants dus
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Création avoir depuis :
+  - Facture d'origine
+  - Litige résolu
+  - Retour marchandise
+- ✅ Informations avoir :
+  - N° avoir fournisseur
+  - Date avoir
+  - Montant HT/TTC
+  - Motif (liste déroulante)
+  - Lien facture origine
+- ✅ Types de motifs :
+  - Écart quantité
+  - Écart prix
+  - Produit défectueux
+  - Retour marchandise
+  - Remise commerciale
+  - Erreur facturation
+- ✅ Impact automatique :
+  - Réduction solde fournisseur
+  - Écriture comptable
+  - Mise à jour litiges
+- ✅ Upload document avoir
+- ✅ Validation workflow si montant important
+
+**RÈGLES DE GESTION :**
+- RG-ACH-047 : Avoir lié obligatoirement à facture origine
+- RG-ACH-048 : Clôture automatique litige si avoir complet
+- RG-ACH-049 : Avoir partiel maintient litige ouvert
+
+---
+
+## 📋 SECTION 5 : GESTION DES FOURNISSEURS
+
+### US-ACH-015 : Créer une fiche fournisseur
+
+**EN TANT QUE** Responsable achats  
+**JE VEUX** créer et maintenir les fiches fournisseurs  
+**AFIN DE** gérer ma base fournisseurs
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ **Onglet Identité** :
+  - Type (Externe/Interne groupe)
+  - Code auto-généré (FOU-YYYY-XXXXX)
+  - Raison sociale
+  - Forme juridique
+  - N° RCCM, NUI, Contribuable
+  - Capital social
+  - Adresse complète
+- ✅ **Onglet Fiscal** :
+  - Régime d'imposition (obligatoire)
+  - Attestation non-redevance (upload + dates validité)
+  - N° TVA intracommunautaire
+  - Exonérations particulières
+- ✅ **Onglet Commercial** :
+  - Conditions d'achat négociées
+  - Liste de prix associée
+  - Devise
+  - Incoterms
+  - Délais de livraison
+  - Mode de paiement préféré
+  - Montant minimum commande
+- ✅ **Onglet Bancaire** :
+  - Coordonnées bancaires
+  - IBAN/RIB
+  - Swift
+- ✅ **Onglet Contacts** :
+  - Contacts multiples avec rôles
+  - Email, téléphone
+  - Contact principal identifié
+- ✅ **Onglet Évaluation** :
+  - Scores performance (Qualité/Délai/Prix/Service)
+  - Historique évaluations
+  - Certifications (ISO, etc.)
+- ✅ **Onglet Documents** :
+  - Kbis
+  - Attestations diverses
+  - Contrats cadres
+  - CGV fournisseur
+
+**RÈGLES DE GESTION :**
+- RG-ACH-050 : Attestation non-redevance obligatoire
+- RG-ACH-051 : Alerte 30j avant expiration documents
+- RG-ACH-052 : Fournisseur interne = pas de commission
+
+---
+
+### US-ACH-016 : Évaluer performance fournisseur
+
+**EN TANT QUE** Responsable achats  
+**JE VEUX** évaluer régulièrement mes fournisseurs  
+**AFIN DE** optimiser mon panel fournisseurs
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Évaluation périodique (mensuelle/trimestrielle)
+- ✅ Critères d'évaluation :
+  - **Qualité** (0-100) :
+    - Taux conformité livraisons
+    - Nombre retours/litiges
+    - Certifications à jour
+  - **Délais** (0-100) :
+    - Taux livraison à temps
+    - Délai moyen vs promis
+    - Réactivité aux urgences
+  - **Prix** (0-100) :
+    - Compétitivité vs marché
+    - Évolution prix
+    - Remises obtenues
+  - **Service** (0-100) :
+    - Réactivité communication
+    - Résolution litiges
+    - Flexibilité
+- ✅ Score global calculé (moyenne pondérée)
+- ✅ Classification automatique :
+  - A : Excellent (> 85)
+  - B : Bon (70-85)
+  - C : Acceptable (50-70)
+  - D : À améliorer (< 50)
+- ✅ Plan d'action si score < seuil
+- ✅ Historique des évaluations
+- ✅ Comparaison entre fournisseurs
+
+**RÈGLES DE GESTION :**
+- RG-ACH-053 : Évaluation obligatoire si > 10 commandes/an
+- RG-ACH-054 : Score < 50 → plan amélioration obligatoire
+- RG-ACH-055 : Score < 30 → blocage nouveaux BCF
+
+---
+
+### US-ACH-017 : Bloquer/Débloquer fournisseur
+
+**EN TANT QUE** Responsable achats / Direction  
+**JE VEUX** bloquer temporairement ou définitivement un fournisseur  
+**AFIN DE** protéger l'entreprise des fournisseurs à risque
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Motifs de blocage :
+  - Non-conformités répétées
+  - Impayés/litiges non résolus
+  - Documents expirés
+  - Fraude/suspicion
+  - Performance insuffisante
+  - Décision stratégique
+- ✅ Types de blocage :
+  - Temporaire (avec date fin)
+  - Définitif
+  - Partiel (certains produits)
+- ✅ Impacts du blocage :
+  - Impossibilité créer nouveau BCF
+  - Alerte sur BCF en cours
+  - Notification équipe achats
+  - Apparition liste noire
+- ✅ Workflow déblocage :
+  - Demande motivée
+  - Validation Direction
+  - Conditions de déblocage
+- ✅ Historique blocages/déblocages tracé
+
+**RÈGLES DE GESTION :**
+- RG-ACH-056 : BCF en cours maintenus si blocage
+- RG-ACH-057 : Déblocage nécessite 2 validations
+- RG-ACH-058 : Fournisseur interne non blocable
+
+---
+
+## 📋 SECTION 6 : NOUVELLES USER STORIES (Suite aux analyses)
+
+### US-ACH-050 : Gérer l'attestation de non-redevance fournisseur
+
+**EN TANT QUE** Responsable Achats  
+**JE VEUX** charger et vérifier l'attestation de non-redevance du fournisseur  
+**AFIN DE** m'assurer de la conformité fiscale avant paiement
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Section dédiée dans fiche fournisseur
+- ✅ Upload document (PDF, JPG, PNG)
+- ✅ Champs obligatoires :
+  - N° attestation
+  - Date émission
+  - Date expiration
+  - Autorité émettrice
+- ✅ Statut visuel :
+  - ✅ Valide (vert)
+  - 🟡 Expire bientôt (< 30j)
+  - 🔴 Expirée
+- ✅ Alertes automatiques :
+  - Email à J-60
+  - Notification système J-30
+  - Blocage paiements à J-0
+- ✅ Contrôle lors création BCF
+- ✅ Historique attestations conservé
+- ✅ Rapport fournisseurs sans attestation
+
+**RÈGLES DE GESTION :**
+- RG-ACH-100 : Pas de paiement > 100,000 XAF sans attestation valide
+- RG-ACH-101 : Notification automatique service fiscal
+- RG-ACH-102 : Attestation visible dans tous documents
+
+---
+
+### US-ACH-051 : Identifier l'émetteur du besoin
+
+**EN TANT QUE** Responsable Achats  
+**JE VEUX** identifier qui a émis le besoin d'achat initial  
+**AFIN DE** assurer la traçabilité et la validation qualité
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Champ "Émetteur du besoin" dans DA (obligatoire)
+- ✅ Peut être différent du créateur DA
+- ✅ Recherche par nom/matricule/département
+- ✅ L'émetteur est copié dans :
+  - BCF
+  - BR (pour validation qualité)
+- ✅ Workflow notifications :
+  - À la création DA
+  - À la validation DA
+  - À la réception
+  - À la validation qualité
+- ✅ L'émetteur valide obligatoirement :
+  - Spécifications techniques
+  - Qualité à réception
+- ✅ Dashboard "Mes besoins émis"
+
+**RÈGLES DE GESTION :**
+- RG-ACH-103 : Émetteur valide obligatoirement la qualité
+- RG-ACH-104 : Pas de paiement sans validation émetteur
+- RG-ACH-105 : Émetteur peut déléguer validation
+
+---
+
+### US-ACH-052 : Gérer le contrôle qualité laboratoire
+
+**EN TANT QUE** Responsable Qualité  
+**JE VEUX** enregistrer les résultats du contrôle laboratoire  
+**AFIN DE** valider la conformité des produits reçus
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Section "Contrôle Laboratoire" dans BR
+- ✅ Génération auto N° échantillon :
+  - Format : ECH-YYYY-XXXXX-TYPE
+  - Séquence auto-incrémentée
+  - Type selon produit (MP/PF/EMB)
+- ✅ Paramètres test selon 3 niveaux :
+  - Famille produit (config globale)
+  - Produit spécifique (surcharge)
+  - Exigences fournisseur (ajouts)
+- ✅ Saisie résultats :
+  - Liste paramètres pré-définis
+  - Valeur mesurée
+  - Norme min/max
+  - Statut auto (Conforme/Non-conforme)
+  - Méthode test utilisée
+- ✅ Upload rapport labo (PDF obligatoire)
+- ✅ Décision finale avec signature
+- ✅ Impact sur stock :
+  - Conforme → Libération
+  - Non-conforme → Blocage + retour
+
+**RÈGLES DE GESTION :**
+- RG-ACH-106 : Stock bloqué jusqu'à validation labo
+- RG-ACH-107 : Retour auto si non-conforme critique
+- RG-ACH-108 : Conservation échantillon 90 jours
+
+---
+
+### US-ACH-053 : Créer une facture transport fournisseur
+
+**EN TANT QUE** Comptable  
+**JE VEUX** créer une facture séparée pour le transport  
+**AFIN DE** suivre les coûts logistiques séparément
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Option lors de la réception :
+  - "Transport à notre charge" (checkbox)
+  - Si oui → Création facture transport
+- ✅ Informations facture transport :
+  - Transporteur (peut ≠ fournisseur)
+  - N° facture transport
+  - Lien BCF/BR principal
+  - Distance (km)
+  - Type véhicule
+  - Tarif (fixe ou au km)
+- ✅ Calcul automatique :
+  - Montant HT transport
+  - TVA 19.25%
+  - Total TTC
+- ✅ Imputation comptable :
+  - Compte 624 (Transport)
+  - Centre de coût
+- ✅ Rapprochement :
+  - Avec bon transport
+  - Avec facture transporteur
+- ✅ Consolidation reporting :
+  - Coût total = Marchandise + Transport
+  - Analyse coûts logistiques
+
+**RÈGLES DE GESTION :**
+- RG-ACH-109 : Si transport > 50,000 XAF → facture séparée
+- RG-ACH-110 : TVA applicable sur transport
+- RG-ACH-111 : Peut être payée séparément
+
+---
+
+## 📋 SECTION 7 : TABLEAUX DE BORD ET REPORTING
+
+### US-ACH-018 : Dashboard achats global
+
+**EN TANT QUE** Direction / Responsable achats  
+**JE VEUX** voir une vue d'ensemble de l'activité achats  
+**AFIN DE** piloter la performance achats
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ KPIs principaux :
+  - Volume achats (montant/nombre)
+  - Évolution vs N-1
+  - Délai moyen traitement
+  - Taux litiges
+  - Économies réalisées
+- ✅ Widgets graphiques :
+  - Évolution mensuelle achats
+  - Top 10 fournisseurs
+  - Répartition par catégorie
+  - Statut commandes en cours
+- ✅ Alertes temps réel :
+  - Commandes en retard
+  - Attestations expirées
+  - Litiges non résolus
+  - Budget dépassé
+- ✅ Drill-down vers détails
+- ✅ Export PDF/Excel
+- ✅ Personnalisation widgets
+- ✅ Rafraîchissement temps réel
+
+**RÈGLES DE GESTION :**
+- RG-ACH-112 : Données consolidées toutes sociétés
+- RG-ACH-113 : Séparation achats externes/internes
+- RG-ACH-114 : Accès selon profil utilisateur
+
+---
+
+### US-ACH-019 : Rapport commandes en cours
+
+**EN TANT QUE** Acheteur  
+**JE VEUX** suivre l'état de toutes les commandes actives  
+**AFIN DE** anticiper les retards et relancer si nécessaire
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Liste des BCF statut ≠ CLÔTURÉ
+- ✅ Colonnes affichées :
+  - N° BCF
+  - Fournisseur (avec type 🏢/🏠)
+  - Date commande
+  - Date livraison prévue
+  - Montant
+  - % réceptionné
+  - Statut
+  - Jours retard
+- ✅ Filtres multiples :
+  - Période
+  - Fournisseur
+  - Statut
+  - Retard (oui/non)
+  - Société acheteuse
+  - Type (externe/interne)
+- ✅ Indicateurs visuels :
+  - 🟢 Dans les temps
+  - 🟡 J-3 avant échéance
+  - 🔴 En retard
+- ✅ Actions rapides :
+  - Relancer fournisseur
+  - Voir détails
+  - Créer litige
+- ✅ Export avec mise en forme
+
+**RÈGLES DE GESTION :**
+- RG-ACH-115 : Calcul jours ouvrés pour retards
+- RG-ACH-116 : Email auto si retard > 5 jours
+- RG-ACH-117 : Escalade manager si retard > 10 jours
+
+---
+
+### US-ACH-020 : Analyse des dépenses
+
+**EN TANT QUE** Contrôleur de gestion  
+**JE VEUX** analyser la structure et l'évolution des dépenses  
+**AFIN DE** identifier les économies potentielles
+
+**CRITÈRES D'ACCEPTATION :**
+- ✅ Analyses disponibles :
+  - Par catégorie produits
+  - Par fournisseur
+  - Par département demandeur
+  - Par société acheteuse
+  - Évolution temporelle
+- ✅ Métriques calculées :
+  - Spend analysis (Pareto)
+  - Évolution prix moyens
+  - Taux concentration fournisseurs
+  - Économies vs budget
+- ✅ Comparaisons :
+  - Vs année précédente
+  - Vs budget
+  - Entre sociétés
+  - Externe vs interne
+- ✅ Identification opportunités :
+  - Regroupement commandes
+  - Négociation volumes
+  - Substitution fournisseurs
+  - Standardisation produits
+- ✅ Rapports automatiques mensuels
+- ✅ Drill-down jusqu'à la ligne BCF
+
+**RÈGLES DE GESTION :**
+- RG-ACH-118 : Consolidation multi-sociétés
+- RG-ACH-119 : Séparation achats productifs/non-productifs
+- RG-ACH-120 : Calcul TCO (coût total possession)
+
+---
+
+## 📊 RÉSUMÉ DES USER STORIES
+
+### Statistiques
+- **Total User Stories** : 20 principales + 4 nouvelles = **24 US**
+- **Par priorité** :
+  - P0 (Critique) : 8
+  - P1 (Important) : 12  
+  - P2 (Souhaitable) : 4
+
+### Couverture fonctionnelle
+- ✅ Cycle complet Procure-to-Pay
+- ✅ Gestion documentaire complète
+- ✅ Conformité fiscale (attestations, régimes)
+- ✅ Traçabilité renforcée (photos, CNI, émetteur)
+- ✅ Contrôle qualité laboratoire
+- ✅ Transactions internes comme externes
+- ✅ Rapprochement 3-way universel
+- ✅ Tableaux de bord temps réel
+
+### Points clés de conformité
+- ✅ Photos et CNI obligatoires (chauffeur + chargeurs)
+- ✅ Attestation non-redevance avec blocage > 100K
+- ✅ Émetteur du besoin = validateur qualité
+- ✅ Régime fiscal pour calcul TVA
+- ✅ Facture transport séparée si applicable
+- ✅ Pas de prix transfert, utilisation listes de prix
+- ✅ Pas de validation budgétaire (désactivée)
+
+Cette documentation complète garantit que le module Achats de l'ERP Multiflex répond intégralement aux exigences du Groupe IOLA avec une traçabilité et une conformité maximales.
