@@ -636,19 +636,164 @@
                                             <tr>
                                                 <th style="width: 30px;">#</th>
                                                 <th>Article</th>
-                                                <th style="width: 80px;">Cmd</th>
-                                                <th style="width: 80px;">Déjà</th>
-                                                <th style="width: 80px;">Reçu</th>
-                                                <th style="width: 80px;">Statut</th>
-                                                <th style="width: 100px;">N° Lot</th>
-                                                <th style="width: 60px;">Quaran.</th>
-                                                <th style="width: 60px;">Photos</th>
+                                                <th style="width: 80px;">Qté Cmd</th>
+                                                <th style="width: 80px;">Qté Reçue</th>
+                                                <th style="width: 90px;">État</th>
+                                                <th style="width: 100px;">Qualité</th>
+                                                <th style="width: 80px;">Accepté</th>
                                             </tr>
                                         </thead>
                                         <tbody id="articles-tbody">
                                             <!-- Articles loaded dynamically -->
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    <label style="display: flex; align-items: center; gap: 8px;">
+                                        <input type="checkbox" id="quality-control-required">
+                                        CONTRÔLE QUALITÉ GLOBAL
+                                    </label>
+                                </h4>
+                                
+                                <div id="quality-control-section" style="display: none;">
+                                    <div class="form-group">
+                                        <label class="form-label">Type de contrôle</label>
+                                        <div style="display: flex; gap: 20px; align-items: center;">
+                                            <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;">
+                                                <input type="radio" name="control-type" value="VISUAL">
+                                                Visuel
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;">
+                                                <input type="radio" name="control-type" value="DOCUMENTARY">
+                                                Documentaire
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;">
+                                                <input type="radio" name="control-type" value="LABORATORY" checked>
+                                                Laboratoire
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Statut global</label>
+                                        <select class="form-select" id="quality-status">
+                                            <option value="PENDING">En attente</option>
+                                            <option value="CONFORM">Conforme</option>
+                                            <option value="NON_CONFORM">Non conforme</option>
+                                            <option value="PARTIAL">Partiel</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Observations générales</label>
+                                        <textarea class="form-textarea" id="quality-comments" placeholder="Réception globalement conforme. Article CHEM-003 mis en quarantaine suite à emballage endommagé..."></textarea>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Documents qualité</label>
+                                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                            <button type="button" class="btn btn-secondary" onclick="uploadQualityDoc('lab-report')">
+                                                <i class="fa-solid fa-paperclip"></i>
+                                                Rapport labo
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" onclick="uploadQualityDoc('certificate')">
+                                                <i class="fa-solid fa-paperclip"></i>
+                                                Certificat conformité
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    <label style="display: flex; align-items: center; gap: 8px;">
+                                        <input type="checkbox" id="validation-required">
+                                        VALIDATION ÉMETTEUR DU BESOIN
+                                    </label>
+                                </h4>
+                                
+                                <div id="validation-section" style="display: none;">
+                                    <div class="form-group">
+                                        <label class="form-label">Émetteur initial</label>
+                                        <input type="text" class="form-input" value="Paul MBARGA (Production)" readonly style="background: #F3F4F6;">
+                                    </div>
+                                    
+                                    <div class="alert-warning">
+                                        <i class="fa-solid fa-info-circle"></i>
+                                        <div>⚠️ Notification envoyée pour validation qualité produits</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    ÉCARTS ET LITIGES
+                                </h4>
+                                
+                                <div id="gaps-detected" style="display: none;">
+                                    <div class="alert-warning" style="margin-bottom: 16px;">
+                                        <i class="fa-solid fa-exclamation-triangle"></i>
+                                        <div>
+                                            <strong>⚠️ Écarts détectés:</strong>
+                                            <ul id="gaps-list" style="margin: 8px 0 0 20px; font-size: 12px;"></ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Action</label>
+                                        <div style="display: flex; gap: 20px; align-items: center;">
+                                            <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;">
+                                                <input type="radio" name="gap-action" value="ACCEPT">
+                                                Accepter écarts
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;">
+                                                <input type="radio" name="gap-action" value="DISPUTE" checked>
+                                                Créer litige
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;">
+                                                <input type="radio" name="gap-action" value="NEGOTIATE">
+                                                Négocier avoir
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Commentaire litige</label>
+                                        <textarea class="form-textarea" id="dispute-comment" placeholder="Quantités manquantes et produit CHEM-003 endommagé. Demande avoir ou remplacement."></textarea>
+                                    </div>
+                                </div>
+                                
+                                <div id="no-gaps" style="color: #10B981; font-weight: 600;">
+                                    <i class="fa-solid fa-check-circle"></i>
+                                    Aucun écart détecté - Livraison conforme
+                                </div>
+                            </div>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    DOCUMENTS ATTACHÉS
+                                </h4>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">✅ BL Fournisseur (Obligatoire)</label>
+                                    <input type="file" class="form-input" id="bl-file" accept=".pdf,.jpg,.png">
+                                    <div id="bl-preview" style="margin-top: 8px; font-size: 12px; color: #10B981;"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">✅ Photos Livraison (Obligatoire - min. 3 photos)</label>
+                                    <input type="file" class="form-input" id="photos-file" accept=".jpg,.png" multiple>
+                                    <div id="photos-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">📎 Rapport Qualité (Optionnel)</label>
+                                    <input type="file" class="form-input" id="quality-report-file" accept=".pdf">
+                                    <div id="quality-report-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
                                 </div>
                             </div>
                         </div>
