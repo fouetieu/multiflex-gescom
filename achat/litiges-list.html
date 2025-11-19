@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Factures Fournisseur - MultiFlex GESCOM</title>
+    <title>Gestion des Litiges Fournisseurs - MultiFlex GESCOM</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,6 +26,109 @@
             padding: 0;
             height: 100%;
         }
+        
+        .dispute-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .dispute-summary-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        
+        .dispute-summary-card .label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .dispute-summary-card .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+        
+        .dispute-summary-card .sub-info {
+            font-size: 13px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+        
+        .quick-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-chip {
+            padding: 8px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 20px;
+            background: white;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .filter-chip:hover {
+            background: #F3F4F6;
+            border-color: #263c89;
+        }
+        
+        .filter-chip.active {
+            background: #263c89;
+            color: white;
+            border-color: #263c89;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .dispute-type-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .type-quantite { background: #DBEAFE; color: #1E40AF; }
+        .type-qualite { background: #FEE2E2; color: #991B1B; }
+        .type-prix { background: #FEF3C7; color: #92400E; }
+        .type-livraison { background: #E0E7FF; color: #3730A3; }
+        .type-dommage { background: #FECACA; color: #7F1D1D; }
+        
+        .advanced-filters {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
     </style>
 </head>
 <body class="h-full text-gray-800">
@@ -37,17 +140,17 @@
             </div>
             
             <div class="flex-1 flex items-center justify-between px-6">
-                <h1 class="text-xl font-bold text-[#1A1A1A]">Factures Fournisseur</h1>
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Gestion des Litiges Fournisseurs</h1>
                 
                 <div class="flex items-center gap-4">
                     <div class="relative">
                         <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
-                        <span class="notification-badge">2</span>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">8</span>
                     </div>
 
                     <div class="flex items-center cursor-pointer">
                         <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
-                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie AKONO</span>
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO</span>
                         <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
                     </div>
                 </div>
@@ -88,15 +191,15 @@
                         <span>Réceptions</span>
                     </a>
 
-                    <div class="px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                    <a href="./factures-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
                         <i class="fa-solid fa-file-invoice mr-3"></i>
                         <span>Factures</span>
-                    </div>
+                    </a>
 
-                    <a href="./litiges-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                    <div class="px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
                         <i class="fa-solid fa-exclamation-triangle mr-3"></i>
                         <span>Litiges Fournisseurs</span>
-                    </a>
+                    </div>
 
                     <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
                         Système
@@ -116,104 +219,62 @@
                     <!-- Page Header -->
                     <div class="page-header">
                         <div>
-                            <h2 class="page-title">Factures Fournisseur</h2>
-                            <p class="page-subtitle">Gérez les factures et paiements</p>
+                            <h2 class="page-title">
+                                <i class="fa-solid fa-exclamation-triangle"></i>
+                                Gestion des Litiges Fournisseurs
+                            </h2>
+                            <p class="page-subtitle">Suivez et résolvez les litiges avec vos fournisseurs</p>
                         </div>
-                        <button class="btn btn-primary" onclick="location.href='./facture-create.html'">
+                        <button class="btn btn-primary" onclick="createDispute()">
                             <i class="fa-solid fa-plus"></i>
-                            Saisir une facture
+                            Créer un litige
                         </button>
                     </div>
 
-                    <!-- KPI Cards -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <span class="stat-label">Total Factures</span>
-                                <div class="stat-icon" style="background: #E8F4FD;">
-                                    <i class="fa-solid fa-file-invoice" style="color: #263c89;"></i>
-                                </div>
-                            </div>
-                            <div class="stat-value" id="stat-total">0</div>
-                            <div class="stat-footer">
-                                <span class="stat-trend trend-up">
-                                    <i class="fa-solid fa-arrow-up"></i>
-                                    8% vs mois dernier
-                                </span>
-                            </div>
+                    <!-- Résumé Litiges -->
+                    <div class="dispute-summary-grid">
+                        <div class="dispute-summary-card" style="border-left: 4px solid #EF4444;">
+                            <div class="label">🔴 Ouverts</div>
+                            <div class="value" id="summary-open">8</div>
+                            <div class="sub-info">Nécessitent une action</div>
                         </div>
-
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <span class="stat-label">En Attente</span>
-                                <div class="stat-icon" style="background: #FEF3E2;">
-                                    <i class="fa-solid fa-clock" style="color: #F26F21;"></i>
-                                </div>
-                            </div>
-                            <div class="stat-value" id="stat-pending">0</div>
-                            <div class="stat-footer">
-                                <span class="stat-info">
-                                    <span id="stat-overdue">0</span> en retard
-                                </span>
-                            </div>
+                        
+                        <div class="dispute-summary-card" style="border-left: 4px solid #F59E0B;">
+                            <div class="label">🟡 En Cours</div>
+                            <div class="value" id="summary-in-progress">12</div>
+                            <div class="sub-info">En négociation</div>
                         </div>
-
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <span class="stat-label">Payées</span>
-                                <div class="stat-icon" style="background: #D1FAE5;">
-                                    <i class="fa-solid fa-check-circle" style="color: #10B981;"></i>
-                                </div>
-                            </div>
-                            <div class="stat-value" id="stat-paid">0</div>
-                            <div class="stat-footer">
-                                <span class="stat-info">
-                                    Taux: <strong id="stat-payment-rate">0%</strong>
-                                </span>
-                            </div>
+                        
+                        <div class="dispute-summary-card" style="border-left: 4px solid #10B981;">
+                            <div class="label">✅ Résolus ce mois</div>
+                            <div class="value" id="summary-resolved">5</div>
+                            <div class="sub-info">Clôturés avec succès</div>
                         </div>
-
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <span class="stat-label">Montant Total</span>
-                                <div class="stat-icon" style="background: #F3E8FF;">
-                                    <i class="fa-solid fa-coins" style="color: #A855F7;"></i>
-                                </div>
-                            </div>
-                            <div class="stat-value" id="stat-amount" style="font-size: 20px;">0 XAF</div>
-                            <div class="stat-footer">
-                                <span class="stat-info">
-                                    À payer: <strong id="stat-to-pay">0 XAF</strong>
-                                </span>
-                            </div>
+                        
+                        <div class="dispute-summary-card" style="border-left: 4px solid #6366F1;">
+                            <div class="label">💰 Impact Financier Total</div>
+                            <div class="value" style="font-size: 20px;" id="summary-amount">3,450,000 XAF</div>
+                            <div class="sub-info">Délai moyen résolution: <strong>8 jours</strong></div>
                         </div>
                     </div>
 
-                    <!-- Quick Filters -->
-                    <div class="filters-bar">
+                    <!-- Filtres -->
+                    <div class="filters-bar" style="display: flex; justify-content: space-between; align-items: center;">
                         <div class="quick-filters">
                             <button class="filter-chip active" data-status="all" onclick="filterByStatus('all')">
                                 Tous
                             </button>
-                            <button class="filter-chip" data-status="BROUILLON" onclick="filterByStatus('BROUILLON')">
-                                <span class="status-dot" style="background: #94A3B8;"></span>
-                                Brouillon
+                            <button class="filter-chip" data-status="OUVERT" onclick="filterByStatus('OUVERT')">
+                                <span class="status-dot" style="background: #EF4444;"></span>
+                                Ouverts
                             </button>
-                            <button class="filter-chip" data-status="VALIDEE" onclick="filterByStatus('VALIDEE')">
-                                <span class="status-dot" style="background: #3B82F6;"></span>
-                                Validée
-                            </button>
-                            <button class="filter-chip" data-status="EN_ATTENTE" onclick="filterByStatus('EN_ATTENTE')">
+                            <button class="filter-chip" data-status="EN_COURS" onclick="filterByStatus('EN_COURS')">
                                 <span class="status-dot" style="background: #F59E0B;"></span>
-                                En attente paiement
+                                En cours
                             </button>
-                            <button class="filter-chip" data-status="PAYEE" onclick="filterByStatus('PAYEE')">
+                            <button class="filter-chip" data-status="RESOLU" onclick="filterByStatus('RESOLU')">
                                 <span class="status-dot" style="background: #10B981;"></span>
-                                Payée
-                            </button>
-                            <button class="filter-chip" data-status="EN_RETARD" onclick="filterByStatus('EN_RETARD')">
-                                <span class="status-dot" style="background: #DC2626;"></span>
-                                En retard
+                                Résolus
                             </button>
                         </div>
                         
@@ -227,17 +288,32 @@
                     <div class="advanced-filters" id="advanced-filters" style="display: none;">
                         <div class="filters-grid">
                             <div class="form-group">
-                                <label class="form-label">Recherche</label>
-                                <input type="text" class="form-input" id="search-input" placeholder="N° Facture, BCF, fournisseur..." oninput="applyFilters()">
+                                <label class="form-label">N° Litige</label>
+                                <input type="text" class="form-input" id="filter-dispute-number" placeholder="LIT-_____" oninput="applyFilters()">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Fournisseur</label>
-                                <select class="form-select" id="filter-supplier" onchange="applyFilters()">
+                                <input type="text" class="form-input" id="filter-supplier" placeholder="Rechercher un fournisseur..." oninput="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Type</label>
+                                <select class="form-select" id="filter-type" onchange="applyFilters()">
                                     <option value="">Tous</option>
-                                    <option value="ABC SARL">ABC SARL</option>
-                                    <option value="XYZ Ltd">XYZ Ltd</option>
-                                    <option value="CIMENCAM">CIMENCAM</option>
-                                    <option value="IOLA DISTRIBUTION">IOLA DISTRIBUTION</option>
+                                    <option value="QUANTITE">Quantité</option>
+                                    <option value="QUALITE">Qualité</option>
+                                    <option value="PRIX">Prix</option>
+                                    <option value="LIVRAISON">Livraison</option>
+                                    <option value="DOMMAGE">Dommage</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Priorité</label>
+                                <select class="form-select" id="filter-priority" onchange="applyFilters()">
+                                    <option value="">Tous</option>
+                                    <option value="BASSE">Basse</option>
+                                    <option value="NORMALE">Normale</option>
+                                    <option value="HAUTE">Haute</option>
+                                    <option value="CRITIQUE">Critique</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -247,14 +323,6 @@
                             <div class="form-group">
                                 <label class="form-label">Date à</label>
                                 <input type="date" class="form-input" id="filter-date-to" onchange="applyFilters()">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Montant min</label>
-                                <input type="number" class="form-input" id="filter-amount-min" placeholder="0" onchange="applyFilters()">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Montant max</label>
-                                <input type="number" class="form-input" id="filter-amount-max" placeholder="999999999" onchange="applyFilters()">
                             </div>
                         </div>
                         <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px;">
@@ -276,13 +344,14 @@
                                 <tr>
                                     <th style="width: 140px;">
                                         <div class="th-content">
-                                            N° Facture
+                                            N° Litige
                                             <i class="fa-solid fa-sort sort-icon"></i>
                                         </div>
                                     </th>
-                                    <th style="width: 120px;">
+                                    <th style="width: 100px;">
                                         <div class="th-content">
-                                            N° BCF
+                                            Date
+                                            <i class="fa-solid fa-sort sort-icon"></i>
                                         </div>
                                     </th>
                                     <th>
@@ -290,20 +359,14 @@
                                             Fournisseur
                                         </div>
                                     </th>
-                                    <th style="width: 110px;">
-                                        <div class="th-content">
-                                            Date Facture
-                                            <i class="fa-solid fa-sort sort-icon"></i>
-                                        </div>
-                                    </th>
-                                    <th style="width: 110px;">
-                                        <div class="th-content">
-                                            Date Échéance
+                                    <th style="width: 120px; text-align: center;">
+                                        <div class="th-content" style="justify-content: center;">
+                                            Type
                                         </div>
                                     </th>
                                     <th style="width: 140px; text-align: right;">
                                         <div class="th-content" style="justify-content: flex-end;">
-                                            Montant TTC
+                                            Impact
                                             <i class="fa-solid fa-sort sort-icon"></i>
                                         </div>
                                     </th>
@@ -312,19 +375,19 @@
                                             Statut
                                         </div>
                                     </th>
-                                    <th style="width: 120px; text-align: center;">Actions</th>
+                                    <th style="width: 100px; text-align: center;">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="invoices-table-body">
+                            <tbody id="disputes-table-body">
                                 <!-- Loaded dynamically -->
                             </tbody>
                         </table>
 
                         <!-- Empty State -->
                         <div id="empty-state" style="display: none; text-align: center; padding: 64px 24px;">
-                            <i class="fa-solid fa-file-invoice" style="font-size: 64px; color: #E5E7EB; margin-bottom: 16px;"></i>
-                            <p style="font-size: 16px; color: #6B7280; margin-bottom: 8px;">Aucune facture trouvée</p>
-                            <p style="font-size: 14px; color: #9CA3AF;">Saisissez votre première facture pour commencer</p>
+                            <i class="fa-solid fa-exclamation-triangle" style="font-size: 64px; color: #E5E7EB; margin-bottom: 16px;"></i>
+                            <p style="font-size: 16px; color: #6B7280; margin-bottom: 8px;">Aucun litige trouvé</p>
+                            <p style="font-size: 14px; color: #9CA3AF;">Tous vos litiges apparaîtront ici</p>
                         </div>
                     </div>
 
@@ -343,36 +406,7 @@
         </div>
     </div>
 
-    <!-- Modal: Invoice Details -->
-    <div class="modal" id="modal-invoice-details">
-        <div class="modal-content" style="max-width: 900px;">
-            <div class="modal-header">
-                <h3 class="modal-title">
-                    <i class="fa-solid fa-file-invoice"></i>
-                    Détails Facture <span id="modal-invoice-number"></span>
-                </h3>
-                <button class="modal-close" onclick="closeModal('modal-invoice-details')">
-                    <i class="fa-solid fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="modal-invoice-content">
-                    <!-- Loaded dynamically -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('modal-invoice-details')">Fermer</button>
-                <button class="btn btn-primary" onclick="viewInvoicePDF()">
-                    <i class="fa-solid fa-file-pdf"></i>
-                    Voir PDF
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Scripts -->
-    <script src="./js/factures-list.js"></script>
+    <script src="./js/litiges-list.js"></script>
 </body>
 </html>
-
-
