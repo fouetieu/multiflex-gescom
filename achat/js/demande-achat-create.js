@@ -7,6 +7,8 @@
 let items = [];
 let itemIdCounter = 1;
 let uploadedFiles = [];
+let documentConfigs = [];
+let documentsByType = {}; // { docTypeCode: [files] }
 
 // ================================================
 // INITIALISATION
@@ -24,6 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
     deliveryDate.setDate(deliveryDate.getDate() + 7);
     document.getElementById('delivery-date').value = deliveryDate.toISOString().split('T')[0];
     
+    // Load document configurations
+    loadDocumentConfigs();
+    
     // Add first item by default
     addItem();
     
@@ -34,7 +39,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('date').addEventListener('change', checkDeliveryDelay);
     document.getElementById('delivery-date').addEventListener('change', checkDeliveryDelay);
     
+    // Listen to priority changes for document requirements
+    document.querySelectorAll('input[name="priority"]').forEach(radio => {
+        radio.addEventListener('change', updateDocumentRequirements);
+    });
+    
     checkDeliveryDelay();
+    updateWorkflowDisplay();
 });
 
 // ================================================
@@ -123,21 +134,26 @@ function addItem() {
     const itemId = `item-${itemIdCounter++}`;
     const item = {
         id: itemId,
+        type: 'CATALOGUED', // CATALOGUED or FREE_TEXT
         article: '',
         articleId: '',
+        productCode: '',
+        productName: '',
         description: '',
         quantity: '',
-        unit: 'unité',
+        unit: 'U',
         unitPrice: '',
-        total: 0
+        total: 0,
+        suggestedSupplierId: '',
+        notes: ''
     };
     
     items.push(item);
     renderItems();
     
-    // Focus on article field of new item
+    // Focus on type field of new item
     setTimeout(() => {
-        document.querySelector(`#${itemId}-article`)?.focus();
+        document.querySelector(`#${itemId}-type`)?.focus();
     }, 100);
 }
 
@@ -239,33 +255,46 @@ function selectArticle(itemId, article) {
 function renderItems() {
     const tbody = document.getElementById('items-tbody');
     
-    tbody.innerHTML = items.map((item, index) => `
+    tbody.innerHTML = items.map((item, index) => {
+        const isCatalogued = item.type === 'CATALOGUED';
+        
+        return `
         <tr>
             <td style="text-align: center; font-weight: 600; color: #6B7280;">${index + 1}</td>
             <td>
-                <div style="position: relative; display: flex; align-items: center;">
-                    <i class="fa-solid fa-search" style="position: absolute; left: 8px; color: #9CA3AF; pointer-events: none;"></i>
-                    <input 
-                        type="text" 
-                        id="${item.id}-article"
-                        placeholder="Rechercher..."
-                        value="${item.article}"
-                        onchange="updateItem('${item.id}', 'article', this.value); openArticleSearch('${item.id}')"
-                        onclick="openArticleSearch('${item.id}')"
-                        style="padding-left: 32px;"
-                        required
-                    >
-                </div>
+                <select id="${item.id}-type" onchange="updateItem('${item.id}', 'type', this.value); renderItems();" 
+                    style="padding: 8px; border: 1px solid #D1D5DB; border-radius: 6px; width: 100%; font-size: 14px;">
+                    <option value="CATALOGUED" ${isCatalogued ? 'selected' : ''}>[C] Catalogué</option>
+                    <option value="FREE_TEXT" ${!isCatalogued ? 'selected' : ''}>[L] Libre</option>
+                </select>
             </td>
             <td>
-                <input 
-                    type="text" 
-                    id="${item.id}-description"
-                    placeholder="Description..."
-                    value="${item.description}"
-                    onchange="updateItem('${item.id}', 'description', this.value)"
-                    required
-                >
+                ${isCatalogued ? `
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-search" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: #9CA3AF; pointer-events: none;"></i>
+                        <input 
+                            type="text" 
+                            id="${item.id}-article"
+                            placeholder="🔍 Rechercher..."
+                            value="${item.article}"
+                            onchange="updateItem('${item.id}', 'article', this.value)"
+                            onclick="openArticleSearch('${item.id}')"
+                            style="padding-left: 32px;"
+                            required
+                        >
+                    </div>
+                    ${item.productCode ? `<div style="font-size: 11px; color: #6B7280; margin-top: 2px;">Code: ${item.productCode}</div>` : ''}
+                    ${item.productName ? `<div style="font-size: 11px; color: #374151; margin-top: 2px;">Nom: ${item.productName}</div>` : ''}
+                ` : `
+                    <textarea 
+                        id="${item.id}-description"
+                        placeholder="Description libre..."
+                        onchange="updateItem('${item.id}', 'description', this.value)"
+                        style="width: 100%; min-height: 60px; padding: 8px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 14px; resize: vertical;"
+                        required
+                    >${item.description}</textarea>
+                `}
+                ${item.notes ? `<div style="font-size: 11px; color: #6B7280; margin-top: 4px;">Notes: ${item.notes}</div>` : ''}
             </td>
             <td>
                 <input 
@@ -276,6 +305,17 @@ function renderItems() {
                     onchange="updateItem('${item.id}', 'quantity', this.value)"
                     min="0"
                     step="0.01"
+                    required
+                >
+            </td>
+            <td>
+                <input 
+                    type="text" 
+                    id="${item.id}-unit"
+                    placeholder="U"
+                    value="${item.unit}"
+                    onchange="updateItem('${item.id}', 'unit', this.value)"
+                    style="text-align: center;"
                     required
                 >
             </td>
@@ -292,7 +332,18 @@ function renderItems() {
                 >
             </td>
             <td style="font-weight: 600; text-align: right; padding-right: 12px;" id="${item.id}-total">
-                ${formatCurrency(item.total)}
+                ${formatCurrency(item.total)}<br>
+                <span style="font-size: 11px; color: #6B7280; font-weight: 400;">XAF</span>
+            </td>
+            <td style="text-align: center;">
+                <input 
+                    type="text" 
+                    id="${item.id}-supplier"
+                    placeholder="SUP-XXX"
+                    value="${item.suggestedSupplierId || ''}"
+                    onchange="updateItem('${item.id}', 'suggestedSupplierId', this.value)"
+                    style="width: 70px; font-size: 11px; padding: 4px;"
+                >
             </td>
             <td style="text-align: center;">
                 <button type="button" class="btn-remove-item" onclick="removeItem('${item.id}')" title="Supprimer">
@@ -300,32 +351,222 @@ function renderItems() {
                 </button>
             </td>
         </tr>
-    `).join('');
+    `}).join('');
 }
 
 function calculateTotal() {
     const total = items.reduce((sum, item) => sum + item.total, 0);
     document.getElementById('total-amount').textContent = formatCurrency(total);
+    
+    // Update workflow display based on amount
+    updateWorkflowDisplay();
 }
 
 // ================================================
-// GESTION DES FICHIERS
+// GESTION DES DOCUMENTS
 // ================================================
 
-function handleFileUpload(input) {
-    const files = input.files;
+// Configuration des documents
+function loadDocumentConfigs() {
+    // Mock configuration - à remplacer par appel API
+    documentConfigs = [
+        {
+            code: 'DEVIS_FOURNISSEUR',
+            name: 'Devis Fournisseur',
+            required: true,
+            conditional: false,
+            multipleAllowed: false,
+            maxFiles: 1,
+            maxFileSizeBytes: 5242880, // 5 MB
+            allowedMimeTypes: ['application/pdf', 'image/jpeg', 'image/png'],
+            allowedExtensions: ['PDF', 'JPG', 'PNG'],
+            displayOrder: 1
+        },
+        {
+            code: 'JUSTIFICATIF_URGENCE',
+            name: "Justificatif d'urgence",
+            required: 'conditional', // Si priorité URGENTE
+            conditional: true,
+            conditionField: 'priority',
+            conditionValue: 'URGENTE',
+            multipleAllowed: false,
+            maxFiles: 1,
+            maxFileSizeBytes: 2097152, // 2 MB
+            allowedMimeTypes: ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+            allowedExtensions: ['PDF', 'DOCX'],
+            displayOrder: 2
+        },
+        {
+            code: 'SPECIFICATIONS_TECHNIQUES',
+            name: 'Spécifications techniques',
+            required: false,
+            conditional: false,
+            multipleAllowed: true,
+            maxFiles: 3,
+            maxFileSizeBytes: 10485760, // 10 MB
+            allowedMimeTypes: ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+            allowedExtensions: ['PDF', 'DOCX', 'XLSX'],
+            displayOrder: 3
+        },
+        {
+            code: 'COMPARATIF_PRIX',
+            name: 'Comparatif prix',
+            required: false,
+            conditional: false,
+            multipleAllowed: false,
+            maxFiles: 1,
+            maxFileSizeBytes: 5242880, // 5 MB
+            allowedMimeTypes: ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
+            allowedExtensions: ['XLSX', 'PDF'],
+            displayOrder: 4
+        },
+        {
+            code: 'PHOTOS_ECHANTILLONS',
+            name: 'Photos échantillons',
+            required: false,
+            conditional: false,
+            multipleAllowed: true,
+            maxFiles: 10,
+            maxFileSizeBytes: 2097152, // 2 MB
+            allowedMimeTypes: ['image/jpeg', 'image/png'],
+            allowedExtensions: ['JPG', 'PNG'],
+            displayOrder: 5
+        }
+    ];
     
+    renderDocumentSections();
+}
+
+function renderDocumentSections() {
+    const priority = document.querySelector('input[name="priority"]:checked')?.value || 'NORMALE';
+    
+    const requiredDocs = documentConfigs.filter(doc => {
+        if (doc.conditional && doc.conditionField === 'priority') {
+            return doc.conditionValue === priority;
+        }
+        return doc.required === true;
+    });
+    
+    const optionalDocs = documentConfigs.filter(doc => !doc.required && !doc.conditional);
+    
+    // Render required documents
+    const requiredContainer = document.getElementById('required-docs-container');
+    requiredContainer.innerHTML = requiredDocs.map(doc => renderDocumentBlock(doc, true)).join('');
+    
+    // Render optional documents
+    const optionalContainer = document.getElementById('optional-docs-container');
+    optionalContainer.innerHTML = optionalDocs.map(doc => renderDocumentBlock(doc, false)).join('');
+    
+    updateDocumentValidationStatus();
+}
+
+function renderDocumentBlock(docConfig, isRequired) {
+    const files = documentsByType[docConfig.code] || [];
+    const maxSizeMB = (docConfig.maxFileSizeBytes / (1024 * 1024)).toFixed(0);
+    const hasFiles = files.length > 0;
+    
+    return `
+        <div style="border: 2px solid ${isRequired ? '#F59E0B' : '#D1D5DB'}; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                ${isRequired ? '<i class="fa-solid fa-exclamation-triangle" style="color: #F59E0B;"></i>' : ''}
+                <strong style="font-size: 13px; color: #1F2937;">${docConfig.name}</strong>
+                ${isRequired ? '<span style="color: #EF4444; font-size: 12px;">(${docConfig.maxFiles} fichier requis)</span>' : ''}
+                ${docConfig.conditional ? '<span style="color: #6B7280; font-size: 12px;"> - Si priorité ${docConfig.conditionValue}</span>' : ''}
+            </div>
+            
+            <div style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">
+                Types acceptés: ${docConfig.allowedExtensions.join(', ')} | Max: ${maxSizeMB} MB ${docConfig.multipleAllowed ? '| Max ' + docConfig.maxFiles + ' fichiers' : ''}
+            </div>
+            
+            <div style="border: 2px dashed #D1D5DB; border-radius: 6px; padding: 16px; background: #F9FAFB; text-align: center; cursor: pointer; transition: all 0.2s;"
+                 onmouseover="this.style.borderColor='#263c89'; this.style.background='#F3F4F6'"
+                 onmouseout="this.style.borderColor='#D1D5DB'; this.style.background='#F9FAFB'"
+                 onclick="document.getElementById('file-${docConfig.code}').click()">
+                <i class="fa-solid fa-paperclip" style="color: #6B7280; font-size: 20px; margin-bottom: 8px;"></i>
+                <div style="font-size: 13px; color: #374151; font-weight: 500;">Parcourir... ou glisser-déposer ici</div>
+                <input type="file" 
+                       id="file-${docConfig.code}" 
+                       style="display: none;" 
+                       accept="${docConfig.allowedMimeTypes.map(m => '.' + m.split('/').pop()).join(',')}"
+                       ${docConfig.multipleAllowed ? 'multiple' : ''}
+                       onchange="handleDocumentUpload('${docConfig.code}', this)">
+            </div>
+            
+            <div id="files-${docConfig.code}" style="margin-top: 12px;">
+                ${files.map((file, idx) => `
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px; background: white; border-radius: 6px; margin-top: 8px; border: 1px solid #E5E7EB;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-check-circle" style="color: #10B981;"></i>
+                            <div>
+                                <div style="font-size: 13px; font-weight: 500; color: #1F2937;">${file.name}</div>
+                                <div style="font-size: 11px; color: #6B7280;">${formatFileSize(file.size)}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 4px;">
+                            <button type="button" class="btn-icon" onclick="previewFile('${docConfig.code}', ${idx})" title="Aperçu">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button type="button" class="btn-icon btn-icon-danger" onclick="removeDocumentFile('${docConfig.code}', ${idx})" title="Supprimer">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('')}
+                ${files.length === 0 ? `
+                    <div style="padding: 8px; text-align: center; color: #EF4444; font-size: 12px; display: ${isRequired ? 'block' : 'none'};">
+                        <i class="fa-solid fa-times-circle"></i> Fichier manquant - Requis
+                    </div>
+                ` : ''}
+                ${docConfig.multipleAllowed && files.length > 0 ? `
+                    <div style="font-size: 11px; color: #6B7280; margin-top: 8px; text-align: center;">
+                        ${files.length}/${docConfig.maxFiles} fichier(s) utilisé(s)
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
+function handleDocumentUpload(docCode, input) {
+    const docConfig = documentConfigs.find(d => d.code === docCode);
+    if (!docConfig) return;
+    
+    const files = Array.from(input.files);
     if (files.length === 0) return;
     
-    // Add new files
+    if (!documentsByType[docCode]) {
+        documentsByType[docCode] = [];
+    }
+    
     for (let file of files) {
-        // Validate file size (5 MB max)
-        if (file.size > 5 * 1024 * 1024) {
-            alert(`Le fichier "${file.name}" dépasse 5 MB`);
+        // Check file count limit
+        if (!docConfig.multipleAllowed && documentsByType[docCode].length >= 1) {
+            alert(`Vous ne pouvez ajouter qu'un seul fichier pour "${docConfig.name}"`);
+            break;
+        }
+        
+        if (documentsByType[docCode].length >= docConfig.maxFiles) {
+            alert(`Limite de ${docConfig.maxFiles} fichier(s) atteinte pour "${docConfig.name}"`);
+            break;
+        }
+        
+        // Validate file size
+        if (file.size > docConfig.maxFileSizeBytes) {
+            alert(`Le fichier "${file.name}" dépasse ${(docConfig.maxFileSizeBytes / (1024*1024)).toFixed(0)} MB`);
             continue;
         }
         
-        uploadedFiles.push({
+        // Validate file type
+        const isValidType = docConfig.allowedMimeTypes.some(mime => {
+            return file.type === mime || file.name.toLowerCase().endsWith('.' + mime.split('/').pop());
+        });
+        
+        if (!isValidType) {
+            alert(`Type de fichier non autorisé pour "${file.name}". Types acceptés: ${docConfig.allowedExtensions.join(', ')}`);
+            continue;
+        }
+        
+        documentsByType[docCode].push({
             name: file.name,
             size: file.size,
             type: file.type,
@@ -333,42 +574,60 @@ function handleFileUpload(input) {
         });
     }
     
-    renderUploadedFiles();
-    
     // Reset input
     input.value = '';
+    
+    renderDocumentSections();
 }
 
-function renderUploadedFiles() {
-    const container = document.getElementById('uploaded-files');
-    
-    if (uploadedFiles.length === 0) {
-        container.innerHTML = '';
-        return;
-    }
-    
-    container.innerHTML = uploadedFiles.map((file, index) => `
-        <div class="uploaded-file">
-            <div class="uploaded-file-info">
-                <div class="uploaded-file-icon">
-                    <i class="fa-solid fa-file-${getFileIcon(file.name)}"></i>
-                </div>
-                <div>
-                    <div style="font-weight: 500; font-size: 14px; color: #1F2937;">${file.name}</div>
-                    <div style="font-size: 12px; color: #6B7280;">${formatFileSize(file.size)}</div>
-                </div>
-            </div>
-            <button type="button" class="btn-icon btn-icon-danger" onclick="removeFile(${index})" title="Supprimer">
-                <i class="fa-solid fa-trash"></i>
-            </button>
-        </div>
-    `).join('');
-}
-
-function removeFile(index) {
+function removeDocumentFile(docCode, fileIndex) {
     if (confirm('Supprimer ce fichier ?')) {
-        uploadedFiles.splice(index, 1);
-        renderUploadedFiles();
+        documentsByType[docCode].splice(fileIndex, 1);
+        renderDocumentSections();
+    }
+}
+
+function previewFile(docCode, fileIndex) {
+    const file = documentsByType[docCode][fileIndex];
+    if (!file) return;
+    
+    // Simple preview - just show file info
+    alert(`Aperçu: ${file.name}\nTaille: ${formatFileSize(file.size)}\nType: ${file.type}\n\n(Fonctionnalité de prévisualisation complète à implémenter)`);
+}
+
+function updateDocumentRequirements() {
+    renderDocumentSections();
+}
+
+function updateDocumentValidationStatus() {
+    const priority = document.querySelector('input[name="priority"]:checked')?.value || 'NORMALE';
+    
+    const requiredDocs = documentConfigs.filter(doc => {
+        if (doc.conditional && doc.conditionField === 'priority') {
+            return doc.conditionValue === priority && doc.required !== false;
+        }
+        return doc.required === true;
+    });
+    
+    const providedCount = requiredDocs.filter(doc => {
+        const files = documentsByType[doc.code] || [];
+        return files.length >= doc.maxFiles;
+    }).length;
+    
+    const totalRequired = requiredDocs.length;
+    const statusElement = document.getElementById('docs-validation-status');
+    const textElement = document.getElementById('docs-validation-text');
+    
+    if (providedCount >= totalRequired && totalRequired > 0) {
+        statusElement.style.background = '#D1FAE5';
+        statusElement.style.borderColor = '#10B981';
+        textElement.innerHTML = `<i class="fa-solid fa-check-circle"></i> Validation documents: ${providedCount}/${totalRequired} documents obligatoires fournis ✅`;
+        textElement.style.color = '#065F46';
+    } else {
+        statusElement.style.background = '#FFFBEB';
+        statusElement.style.borderColor = '#F59E0B';
+        textElement.innerHTML = `<i class="fa-solid fa-exclamation-triangle"></i> Validation documents: ${providedCount}/${totalRequired} documents obligatoires fournis ⚠️`;
+        textElement.style.color = '#92400E';
     }
 }
 
@@ -396,23 +655,106 @@ function formatFileSize(bytes) {
 }
 
 // ================================================
-// VALIDATION DU FORMULAIRE
+// WORKFLOW DE VALIDATION
 // ================================================
+
+function updateWorkflowDisplay() {
+    const total = items.reduce((sum, item) => sum + item.total, 0);
+    const validationThreshold = 100000; // 100,000 XAF
+    
+    const requiredElement = document.getElementById('validation-required');
+    const reasonElement = document.getElementById('validation-reason');
+    const circuitElement = document.getElementById('workflow-circuit');
+    
+    if (total > validationThreshold) {
+        requiredElement.textContent = 'OUI';
+        requiredElement.style.color = '#059669';
+        reasonElement.textContent = `(Montant > ${formatCurrency(validationThreshold)})`;
+        circuitElement.textContent = 'Vous → Chef Service (Paul NGA) → Direction Achats';
+    } else if (total > 50000) {
+        requiredElement.textContent = 'OUI';
+        requiredElement.style.color = '#059669';
+        reasonElement.textContent = `(Montant > 50,000 XAF)`;
+        circuitElement.textContent = 'Vous → Chef Service (Paul NGA)';
+    } else {
+        requiredElement.textContent = 'NON';
+        requiredElement.style.color = '#6B7280';
+        reasonElement.textContent = '(Montant < 50,000 XAF)';
+        circuitElement.textContent = 'Approbation automatique';
+    }
+}
+
+// ================================================
+// GESTION ÉMETTEUR
+// ================================================
+
+function toggleOriginatorFields() {
+    const originatorType = document.querySelector('input[name="originator-type"]:checked').value;
+    const otherFields = document.getElementById('originator-other-fields');
+    
+    if (originatorType === 'OTHER') {
+        otherFields.style.display = 'block';
+    } else {
+        otherFields.style.display = 'none';
+    }
+}
+
+function selectOriginator() {
+    // Mock user selection
+    const mockUsers = [
+        { id: 'USR-001', name: 'Jean KAMGA', department: 'Production' },
+        { id: 'USR-002', name: 'Marie NKOA', department: 'Logistique' },
+        { id: 'USR-003', name: 'Paul TCHUENTE', department: 'Commercial' }
+    ];
+    
+    const selectedUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
+    document.getElementById('originator-name').value = `${selectedUser.name} (${selectedUser.department})`;
+}
+
+// ================================================
+// SECTIONS REPLIABLES
+// ================================================
+
+function toggleSection(sectionId) {
+    const section = document.getElementById(`section-${sectionId}`);
+    const icon = document.getElementById(`icon-${sectionId}`);
+    
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+        icon.className = 'fa-solid fa-chevron-down';
+    } else {
+        section.style.display = 'none';
+        icon.className = 'fa-solid fa-chevron-right';
+    }
+}
 
 function validateForm() {
     const errors = [];
     
     // General info
     const date = document.getElementById('date').value;
+    const company = document.getElementById('company').value;
     const deliveryDate = document.getElementById('delivery-date').value;
     const department = document.getElementById('department').value;
     const priority = document.querySelector('input[name="priority"]:checked').value;
     const reason = document.getElementById('reason').value.trim();
+    const deliveryLocation = document.getElementById('delivery-location').value;
     
     if (!date) errors.push('La date de demande est obligatoire');
+    if (!company) errors.push('La société est obligatoire');
     if (!deliveryDate) errors.push('La date de livraison souhaitée est obligatoire');
     if (!department) errors.push('Le département est obligatoire');
-    if (!reason) errors.push('Le motif de la demande est obligatoire');
+    if (!deliveryLocation) errors.push('Le lieu de livraison est obligatoire');
+    if (!reason) errors.push('La justification du besoin est obligatoire');
+    
+    // Check originator
+    const originatorType = document.querySelector('input[name="originator-type"]:checked').value;
+    if (originatorType === 'OTHER') {
+        const originatorName = document.getElementById('originator-name').value.trim();
+        if (!originatorName) {
+            errors.push('L\'émetteur réel doit être sélectionné');
+        }
+    }
     
     // Check delivery delay
     if (date && deliveryDate) {
@@ -436,8 +778,11 @@ function validateForm() {
     
     let hasValidItem = false;
     items.forEach((item, index) => {
-        if (!item.description || !item.quantity || !item.unitPrice) {
-            errors.push(`Article #${index + 1}: Description, quantité et prix unitaire sont obligatoires`);
+        const isCatalogued = item.type === 'CATALOGUED';
+        const hasDescription = isCatalogued ? item.article : item.description;
+        
+        if (!hasDescription || !item.quantity || !item.unitPrice) {
+            errors.push(`Article #${index + 1}: ${isCatalogued ? 'Article' : 'Description'}, quantité et prix unitaire sont obligatoires`);
         } else if (parseFloat(item.quantity) <= 0) {
             errors.push(`Article #${index + 1}: La quantité doit être supérieure à 0`);
         } else if (parseFloat(item.unitPrice) <= 0) {
@@ -456,6 +801,21 @@ function validateForm() {
     if (total === 0) {
         errors.push('Le montant total doit être supérieur à 0');
     }
+    
+    // Document validation
+    const requiredDocs = documentConfigs.filter(doc => {
+        if (doc.conditional && doc.conditionField === 'priority') {
+            return doc.conditionValue === priority && doc.required !== false;
+        }
+        return doc.required === true;
+    });
+    
+    requiredDocs.forEach(doc => {
+        const files = documentsByType[doc.code] || [];
+        if (files.length < doc.maxFiles) {
+            errors.push(`Document obligatoire manquant: ${doc.name}`);
+        }
+    });
     
     return errors;
 }
@@ -504,29 +864,60 @@ function submitForm() {
 
 function collectFormData() {
     const priority = document.querySelector('input[name="priority"]:checked').value;
+    const originatorType = document.querySelector('input[name="originator-type"]:checked').value;
     
     const data = {
         // General
-        date: document.getElementById('date').value,
-        deliveryDate: document.getElementById('delivery-date').value,
-        requester: document.getElementById('requester').value,
-        department: document.getElementById('department').value,
-        budget: document.getElementById('budget').value,
+        requisitionNumber: document.getElementById('da-code').value,
+        requisitionDate: document.getElementById('date').value,
+        companyId: document.getElementById('company').value,
+        departmentId: document.getElementById('department').value,
         priority: priority,
-        reason: document.getElementById('reason').value.trim(),
+        requestedDeliveryDate: document.getElementById('delivery-date').value,
+        deliveryLocationId: document.getElementById('delivery-location').value,
         
-        // Items
-        items: items.filter(item => item.description && item.quantity && item.unitPrice),
+        // Originator
+        needOriginatorType: originatorType,
+        needOriginatorId: originatorType === 'SELF' ? 'Herman MBOUOMBOUO' : document.getElementById('originator-name').value,
+        needJustification: document.getElementById('reason').value.trim(),
+        
+        // Items - with proper mapping
+        items: items.filter(item => {
+            const isCatalogued = item.type === 'CATALOGUED';
+            return (isCatalogued ? item.article : item.description) && item.quantity && item.unitPrice;
+        }).map(item => ({
+            lineNumber: items.indexOf(item) + 1,
+            itemType: item.type,
+            productId: item.type === 'CATALOGUED' ? item.articleId : null,
+            productCode: item.productCode || null,
+            productName: item.productName || null,
+            freeTextDescription: item.type === 'FREE_TEXT' ? item.description : null,
+            quantity: parseFloat(item.quantity),
+            unit: item.unit,
+            estimatedUnitPrice: parseFloat(item.unitPrice),
+            estimatedTotalPrice: item.total,
+            suggestedSupplierId: item.suggestedSupplierId || null,
+            notes: item.notes || null
+        })),
         
         // Total
-        estimatedAmount: items.reduce((sum, item) => sum + item.total, 0),
+        totalEstimatedAmount: items.reduce((sum, item) => sum + item.total, 0),
         
-        // Attachments
-        attachments: uploadedFiles,
+        // Documents - properly structured
+        documents: Object.keys(documentsByType).flatMap(docCode => {
+            return documentsByType[docCode].map(file => ({
+                mediaTypeCode: docCode,
+                fileName: file.name,
+                fileSize: file.size,
+                mimeType: file.type,
+                file: file.file
+            }));
+        }),
         
         // Metadata
         createdAt: new Date().toISOString(),
-        createdBy: document.getElementById('requester').value
+        createdBy: 'Herman MBOUOMBOUO',
+        requesterId: 'Herman MBOUOMBOUO'
     };
     
     return data;

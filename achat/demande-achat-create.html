@@ -367,182 +367,256 @@
 
                     <!-- Form Container -->
                     <div class="form-container">
+                        <!-- Status Bar -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #E5E7EB;">
+                            <div>
+                                <span class="badge-status badge-draft">● BROUILLON</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 12px; color: #6B7280;">Créé par</div>
+                                <div style="font-weight: 600; color: #1F2937;">Herman MBOUOMBOUO</div>
+                            </div>
+                        </div>
+
                         <form id="da-form">
                             
                             <!-- General Information -->
                             <div class="form-section">
-                                <h3 class="form-section-title">
+                                <h3 class="form-section-title" style="cursor: pointer;" onclick="toggleSection('general-info')">
+                                    <i class="fa-solid fa-chevron-down" id="icon-general-info"></i>
                                     <i class="fa-solid fa-info-circle"></i>
                                     Informations Générales
                                 </h3>
                                 
-                                <!-- Row 1: 4 columns -->
-                                <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
-                                    <div class="form-group">
-                                        <label class="form-label">N° DA</label>
-                                        <input type="text" class="form-input" id="da-code" value="DA-2024-AUTO" readonly style="background: #F3F4F6;">
+                                <div id="section-general-info">
+                                    <!-- Row 1: Date, Société, Département -->
+                                    <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+                                        <div class="form-group">
+                                            <label class="form-label required">Date demande</label>
+                                            <input type="date" class="form-input" id="date" required>
+                                            <span class="form-help" style="color: #6B7280;">(auto)</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label required">Société</label>
+                                            <select class="form-select" id="company" required>
+                                                <option value="">Sélectionner</option>
+                                                <option value="IOLA_SARL" selected>IOLA SARL</option>
+                                                <option value="MULTIFLEX">MULTIFLEX</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label required">Département</label>
+                                            <select class="form-select" id="department" required>
+                                                <option value="">Sélectionner</option>
+                                                <option value="ACHATS" selected>Achats</option>
+                                                <option value="PRODUCTION">Production</option>
+                                                <option value="LOGISTIQUE">Logistique</option>
+                                                <option value="ADMINISTRATION">Administration</option>
+                                                <option value="MAINTENANCE">Maintenance</option>
+                                                <option value="COMMERCIAL">Commercial</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label">N° DA (Auto)</label>
+                                            <input type="text" class="form-input" id="da-code" value="DA-2024-XXXXX" readonly style="background: #F3F4F6;">
+                                        </div>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label class="form-label required">Date <span class="required">*</span></label>
-                                        <input type="date" class="form-input" id="date" required>
-                                    </div>
+                                    <!-- Row 2: Priorité, Dates -->
+                                    <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 20px;">
+                                        <div class="form-group">
+                                            <label class="form-label required">Priorité</label>
+                                            <div class="radio-group" style="display: flex; gap: 16px; margin-top: 8px;">
+                                                <div class="radio-item">
+                                                    <input type="radio" id="priority-low" name="priority" value="BASSE" onchange="updatePriorityIndicator()">
+                                                    <label for="priority-low" style="margin: 0;">Basse</label>
+                                                </div>
+                                                <div class="radio-item">
+                                                    <input type="radio" id="priority-normal" name="priority" value="NORMALE" checked onchange="updatePriorityIndicator()">
+                                                    <label for="priority-normal" style="margin: 0;">Normale</label>
+                                                </div>
+                                                <div class="radio-item">
+                                                    <input type="radio" id="priority-high" name="priority" value="HAUTE" onchange="updatePriorityIndicator()">
+                                                    <label for="priority-high" style="margin: 0;">Haute</label>
+                                                </div>
+                                                <div class="radio-item">
+                                                    <input type="radio" id="priority-urgent" name="priority" value="URGENTE" onchange="updatePriorityIndicator()">
+                                                    <label for="priority-urgent" style="margin: 0;">Urgente</label>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                    <div class="form-group">
-                                        <label class="form-label required">Département <span class="required">*</span></label>
-                                        <select class="form-select" id="department" required>
-                                            <option value="">Sélectionner</option>
-                                            <option value="PRODUCTION">Production</option>
-                                            <option value="LOGISTIQUE">Logistique</option>
-                                            <option value="ADMINISTRATION">Administration</option>
-                                            <option value="MAINTENANCE">Maintenance</option>
-                                            <option value="COMMERCIAL">Commercial</option>
-                                        </select>
-                                    </div>
+                                        <div class="form-group">
+                                            <label class="form-label required">Date livraison souhaitée</label>
+                                            <input type="date" class="form-input" id="delivery-date" required>
+                                            <span class="form-help" id="delivery-delay-info"></span>
+                                        </div>
 
-                                    <div style=""></div>
+                                        <div class="form-group">
+                                            <label class="form-label required">Lieu livraison</label>
+                                            <select class="form-select" id="delivery-location" required>
+                                                <option value="">Sélectionner entrepôt</option>
+                                                <option value="PRINCIPAL" selected>Entrepôt Principal Douala</option>
+                                                <option value="SECONDAIRE">Entrepôt Secondaire</option>
+                                                <option value="CHANTIER">Chantier Production</option>
+                                                <option value="BUREAU">Bureau Central</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
 
-                                <!-- Row 2: Demandeur, Priorité, Budget -->
-                                <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; margin-top: 20px;">
+                            <!-- Émetteur du Besoin -->
+                            <div class="form-section">
+                                <h3 class="form-section-title" style="cursor: pointer;" onclick="toggleSection('emetteur')">
+                                    <i class="fa-solid fa-chevron-down" id="icon-emetteur"></i>
+                                    <i class="fa-solid fa-user"></i>
+                                    Émetteur du Besoin
+                                </h3>
+                                
+                                <div id="section-emetteur">
                                     <div class="form-group">
-                                        <label class="form-label required">Demandeur <span class="required">*</span></label>
-                                        <select class="form-select" id="requester" required>
-                                            <option value="">Sélectionner</option>
-                                            <option value="Jean DUPONT" selected>Jean DUPONT</option>
-                                            <option value="Marie DUPONT">Marie DUPONT</option>
-                                            <option value="Pierre MARTIN">Pierre MARTIN</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label required">Priorité <span class="required">*</span></label>
-                                        <div class="radio-group" style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                                        <label class="form-label">Le besoin est exprimé par:</label>
+                                        <div class="radio-group" style="margin-top: 8px;">
                                             <div class="radio-item">
-                                                <input type="radio" id="priority-low" name="priority" value="BASSE" onchange="updatePriorityIndicator()">
-                                                <label for="priority-low" style="margin: 0;">Basse</label>
+                                                <input type="radio" id="originator-self" name="originator-type" value="SELF" checked onchange="toggleOriginatorFields()">
+                                                <label for="originator-self" style="margin: 0;">Moi-même</label>
                                             </div>
                                             <div class="radio-item">
-                                                <input type="radio" id="priority-normal" name="priority" value="NORMALE" checked onchange="updatePriorityIndicator()">
-                                                <label for="priority-normal" style="margin: 0;">Normale</label>
-                                            </div>
-                                            <div class="radio-item">
-                                                <input type="radio" id="priority-high" name="priority" value="HAUTE" onchange="updatePriorityIndicator()">
-                                                <label for="priority-high" style="margin: 0;">Haute</label>
-                                            </div>
-                                            <div class="radio-item">
-                                                <input type="radio" id="priority-urgent" name="priority" value="URGENTE" onchange="updatePriorityIndicator()">
-                                                <label for="priority-urgent" style="margin: 0;">Urgente</label>
+                                                <input type="radio" id="originator-other" name="originator-type" value="OTHER" onchange="toggleOriginatorFields()">
+                                                <label for="originator-other" style="margin: 0;">Une autre personne</label>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label class="form-label">Budget</label>
-                                        <select class="form-select" id="budget">
-                                            <option value="">Sélectionner</option>
-                                            <option value="EXPLOITATION">Exploitation</option>
-                                            <option value="INVESTISSEMENT">Investissement</option>
-                                            <option value="MAINTENANCE">Maintenance</option>
-                                        </select>
+                                    <div id="originator-other-fields" style="display: none; margin-top: 16px; padding: 16px; background: #F9FAFB; border-radius: 8px;">
+                                        <div class="form-grid" style="grid-template-columns: 1fr auto;">
+                                            <div class="form-group" style="margin: 0;">
+                                                <label class="form-label">Émetteur réel</label>
+                                                <input type="text" class="form-input" id="originator-name" placeholder="Nom de l'émetteur" readonly style="background: white;">
+                                            </div>
+                                            <div style="display: flex; align-items: flex-end;">
+                                                <button type="button" class="btn btn-secondary" onclick="selectOriginator()">
+                                                    <i class="fa-solid fa-search"></i> Changer...
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div style=""></div>
-                                </div>
-
-                                <!-- Full width: Motif -->
-                                <div class="form-group form-full" style="margin-top: 20px;">
-                                    <label class="form-label required">Motif de la Demande <span class="required">*</span></label>
-                                    <textarea class="form-textarea" id="reason" placeholder="Expliquez le besoin et la justification de cette demande..." required></textarea>
+                                    <div class="form-group" style="margin-top: 20px;">
+                                        <label class="form-label required">Justification du besoin</label>
+                                        <textarea class="form-textarea" id="reason" rows="4" placeholder="Expliquez le besoin et la justification de cette demande..." required></textarea>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Items Section -->
                             <div class="form-section">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                    <h3 class="form-section-title" style="margin: 0;">
+                                    <h3 class="form-section-title" style="margin: 0; cursor: pointer;" onclick="toggleSection('items')">
+                                        <i class="fa-solid fa-chevron-down" id="icon-items"></i>
                                         <i class="fa-solid fa-box"></i>
-                                        Articles Demandés
+                                        Lignes d'Articles
                                     </h3>
                                     <button type="button" class="btn-add-item" onclick="addItem()" style="width: auto; margin: 0;">
                                         <i class="fa-solid fa-plus"></i>
-                                        Ajouter Article
+                                        Ajouter ligne
                                     </button>
                                 </div>
 
-                                <div style="overflow-x: auto;">
-                                    <table class="items-table" id="items-table">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 40px;">#</th>
-                                                <th style="width: 20%;">Article</th>
-                                                <th style="width: 25%;">Description</th>
-                                                <th style="width: 12%;">Qté</th>
-                                                <th style="width: 15%;">PU Est. (XAF)</th>
-                                                <th style="width: 15%;">Total (XAF)</th>
-                                                <th style="width: 60px;">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="items-tbody">
-                                            <!-- Items dynamically added -->
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <div id="section-items">
+                                    <div style="overflow-x: auto;">
+                                        <table class="items-table" id="items-table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 40px;">#</th>
+                                                    <th style="width: 80px;">Type</th>
+                                                    <th style="width: 25%;">Article/Description</th>
+                                                    <th style="width: 10%;">Qté</th>
+                                                    <th style="width: 10%;">Unité</th>
+                                                    <th style="width: 12%;">PU Est.</th>
+                                                    <th style="width: 12%;">Total</th>
+                                                    <th style="width: 80px;">Frn</th>
+                                                    <th style="width: 50px;"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="items-tbody">
+                                                <!-- Items dynamically added -->
+                                            </tbody>
+                                        </table>
+                                    </div>
 
-                                <div style="text-align: right; margin-top: 16px; font-weight: 700; font-size: 16px; color: #263c89;">
-                                    Total estimé: <span id="total-amount">0 XAF</span>
+                                    <div style="text-align: right; margin-top: 16px;">
+                                        <div style="font-size: 12px; color: #6B7280; margin-bottom: 8px;">Type: [C]=Catalogué, [L]=Libre</div>
+                                        <div style="font-weight: 700; font-size: 18px; color: #263c89;">
+                                            TOTAL ESTIMÉ HT: <span id="total-amount">0 XAF</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Livraison & Documents Section -->
+                            <!-- Documents Section -->
                             <div class="form-section">
-                                <h3 class="form-section-title">
-                                    <i class="fa-solid fa-truck"></i>
-                                    Livraison & Documents
+                                <h3 class="form-section-title" style="cursor: pointer;" onclick="toggleSection('documents')">
+                                    <i class="fa-solid fa-chevron-down" id="icon-documents"></i>
+                                    <i class="fa-solid fa-paperclip"></i>
+                                    Documents Requis et Pièces Jointes
                                 </h3>
 
-                                <div class="form-grid">
-                                    <!-- Left Column -->
-                                    <div>
-                                        <div class="form-group">
-                                            <label class="form-label required">Date Souhaitée <span class="required">*</span></label>
-                                            <input type="date" class="form-input" id="delivery-date" required>
-                                            <span class="form-help" id="delivery-delay-info"></span>
-                                        </div>
+                                <div id="section-documents">
+                                    <div style="padding: 12px; background: #F3F4F6; border-radius: 6px; margin-bottom: 16px; font-size: 12px; color: #6B7280;">
+                                        Configuration: Entity=<strong>PURCHASE_REQUISITION</strong> | Process=<strong>DA</strong>
+                                    </div>
 
-                                        <div class="form-group" style="margin-top: 20px;">
-                                            <label class="form-label">Pièces Jointes</label>
-                                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-attachments').click()" style="width: 100%; margin-top: 8px;">
-                                                <i class="fa-solid fa-paperclip"></i>
-                                                Parcourir
-                                            </button>
-                                            <input type="file" id="file-attachments" style="display: none;" accept=".pdf,.doc,.docx,.xls,.xlsx" multiple onchange="handleFileUpload(this)">
-                                            <div id="uploaded-files" style="margin-top: 12px;"></div>
-                                        </div>
-
-                                        <div style="margin-top: 16px; padding: 12px; background: #F9FAFB; border-radius: 6px;">
-                                            <div class="radio-item" style="margin-bottom: 8px;">
-                                                <input type="checkbox" id="doc-devis" name="doc-type">
-                                                <label for="doc-devis" style="margin: 0; cursor: pointer;">Devis fournisseur</label>
-                                            </div>
-                                            <div class="radio-item">
-                                                <input type="checkbox" id="doc-specs" name="doc-type">
-                                                <label for="doc-specs" style="margin: 0; cursor: pointer;">Spécifications techniques</label>
-                                            </div>
+                                    <!-- Documents obligatoires -->
+                                    <div style="margin-bottom: 24px;">
+                                        <h4 style="font-size: 14px; font-weight: 600; color: #1F2937; margin-bottom: 12px;">DOCUMENTS OBLIGATOIRES</h4>
+                                        
+                                        <div id="required-docs-container">
+                                            <!-- Dynamically generated -->
                                         </div>
                                     </div>
 
-                                    <!-- Right Column -->
+                                    <!-- Documents optionnels -->
                                     <div>
-                                        <div class="form-group">
-                                            <label class="form-label required">Lieu de Livraison <span class="required">*</span></label>
-                                            <select class="form-select" id="delivery-location" required>
-                                                <option value="">Sélectionner entrepôt</option>
-                                                <option value="PRINCIPAL">Entrepôt Principal</option>
-                                                <option value="SECONDAIRE">Entrepôt Secondaire</option>
-                                                <option value="CHANTIER">Chantier Production</option>
-                                                <option value="BUREAU">Bureau Central</option>
-                                            </select>
+                                        <h4 style="font-size: 14px; font-weight: 600; color: #1F2937; margin-bottom: 12px;">DOCUMENTS OPTIONNELS</h4>
+                                        
+                                        <div id="optional-docs-container">
+                                            <!-- Dynamically generated -->
+                                        </div>
+                                    </div>
+
+                                    <!-- Validation status -->
+                                    <div id="docs-validation-status" style="margin-top: 16px; padding: 12px; background: #FFFBEB; border-left: 4px solid #F59E0B; border-radius: 6px;">
+                                        <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: #92400E;">
+                                            <i class="fa-solid fa-exclamation-triangle"></i>
+                                            <span id="docs-validation-text">Validation documents: 0/0 documents obligatoires fournis</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Workflow Section -->
+                            <div class="form-section">
+                                <h3 class="form-section-title" style="cursor: pointer;" onclick="toggleSection('workflow')">
+                                    <i class="fa-solid fa-chevron-down" id="icon-workflow"></i>
+                                    <i class="fa-solid fa-diagram-project"></i>
+                                    Workflow de Validation
+                                </h3>
+
+                                <div id="section-workflow">
+                                    <div style="padding: 16px; background: #F3F4F6; border-radius: 8px;">
+                                        <div style="margin-bottom: 8px;">
+                                            <span style="font-weight: 600; color: #374151;">Validation requise:</span>
+                                            <span id="validation-required" style="color: #059669; font-weight: 600;">OUI</span>
+                                            <span style="color: #6B7280; font-size: 13px;" id="validation-reason">(Montant > 100,000 XAF)</span>
+                                        </div>
+                                        <div>
+                                            <span style="font-weight: 600; color: #374151;">Circuit:</span>
+                                            <span id="workflow-circuit" style="color: #6B7280;">Vous → Chef Service (Paul NGA) → Direction Achats</span>
                                         </div>
                                     </div>
                                 </div>
