@@ -278,63 +278,81 @@
                         </div>
 
                         <!-- Stats Cards -->
-                        <div class="stats-grid">
+                        <div class="stats-grid" style="grid-template-columns: repeat(5, 1fr);">
                             <div class="stat-card">
                                 <div class="stat-header">
                                     <div>
-                                        <div class="stat-label">Total Fournisseurs</div>
+                                        <div class="stat-label">Total</div>
                                     </div>
                                     <div class="stat-icon primary">
                                         <i class="fa-solid fa-users"></i>
                                     </div>
                                 </div>
-                                <div class="stat-value" id="stat-total">0</div>
-                                <div class="stat-change neutral">Dont 3 internes</div>
+                                <div class="stat-value" id="stat-total">156</div>
                             </div>
                             
                             <div class="stat-card">
                                 <div class="stat-header">
                                     <div>
-                                        <div class="stat-label">Actifs</div>
+                                        <div class="stat-label">✅ Actifs</div>
                                     </div>
                                     <div class="stat-icon success">
                                         <i class="fa-solid fa-check-circle"></i>
                                     </div>
                                 </div>
-                                <div class="stat-value" id="stat-active" style="color: #10B981;">0</div>
-                                <div class="stat-change positive">
-                                    <i class="fa-solid fa-arrow-up"></i>
-                                    +2 ce mois
-                                </div>
+                                <div class="stat-value" id="stat-active" style="color: #10B981;">142</div>
                             </div>
 
                             <div class="stat-card">
                                 <div class="stat-header">
                                     <div>
-                                        <div class="stat-label">Score Moyen</div>
+                                        <div class="stat-label">⏸️ Suspendus</div>
                                     </div>
                                     <div class="stat-icon warning">
-                                        <i class="fa-solid fa-star"></i>
+                                        <i class="fa-solid fa-pause-circle"></i>
                                     </div>
                                 </div>
-                                <div class="stat-value" id="stat-score">84.2/100</div>
-                                <div class="stat-change positive">
-                                    <i class="fa-solid fa-arrow-up"></i>
-                                    +2.5 points
-                                </div>
+                                <div class="stat-value" id="stat-suspended" style="color: #F59E0B;">8</div>
                             </div>
 
                             <div class="stat-card">
                                 <div class="stat-header">
                                     <div>
-                                        <div class="stat-label">Bloqués</div>
+                                        <div class="stat-label">🚫 Bloqués</div>
                                     </div>
                                     <div class="stat-icon danger">
                                         <i class="fa-solid fa-ban"></i>
                                     </div>
                                 </div>
-                                <div class="stat-value" id="stat-blocked" style="color: #EF4444;">0</div>
-                                <div class="stat-change neutral">À surveiller</div>
+                                <div class="stat-value" id="stat-blocked" style="color: #EF4444;">6</div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div>
+                                        <div class="stat-label">🟢 Certifiés</div>
+                                    </div>
+                                    <div class="stat-icon info">
+                                        <i class="fa-solid fa-certificate"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value" id="stat-certified" style="color: #10B981;">98</div>
+                            </div>
+                        </div>
+
+                        <!-- Certificates Stats -->
+                        <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 12px;">
+                            <div class="stat-card" style="padding: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #F59E0B;">
+                                    <i class="fa-solid fa-exclamation-triangle"></i>
+                                    <span><strong>23</strong> Certificats à renouveler</span>
+                                </div>
+                            </div>
+                            <div class="stat-card" style="padding: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #EF4444;">
+                                    <i class="fa-solid fa-times-circle"></i>
+                                    <span><strong>12</strong> Certificats expirés</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -376,20 +394,34 @@
                                 >
                             </div>
                             <div class="filter-group">
-                                <select class="filter-select" id="filter-category" onchange="applyFilters()">
-                                    <option value="">Catégorie</option>
-                                    <option value="RAW_MATERIALS">Matières Premières</option>
-                                    <option value="FINISHED_GOODS">Produits Finis</option>
-                                    <option value="SERVICES">Services</option>
-                                    <option value="EQUIPMENT">Équipements</option>
+                                <select class="filter-select" id="filter-type" onchange="applyFilters()">
+                                    <option value="">Type: Tous</option>
+                                    <option value="EXTERNAL">Externe</option>
+                                    <option value="INTERNAL">Interne (Groupe)</option>
                                 </select>
                             </div>
                             <div class="filter-group">
                                 <select class="filter-select" id="filter-status" onchange="applyFilters()">
-                                    <option value="">Statut</option>
+                                    <option value="">Statut: Tous</option>
                                     <option value="ACTIVE">Actif</option>
-                                    <option value="INACTIVE">Inactif</option>
+                                    <option value="SUSPENDED">Suspendu</option>
                                     <option value="BLOCKED">Bloqué</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-regime" onchange="applyFilters()">
+                                    <option value="">Régime Fiscal: Tous</option>
+                                    <option value="REEL">Réel</option>
+                                    <option value="SIMPLIFIE">Simplifié</option>
+                                    <option value="LIBERATOIRE">Libératoire</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-certificate" onchange="applyFilters()">
+                                    <option value="">Certificats: Tous</option>
+                                    <option value="VALID">Valides</option>
+                                    <option value="EXPIRING">À renouveler</option>
+                                    <option value="EXPIRED">Expirés</option>
                                 </select>
                             </div>
                             <div class="filter-actions">
@@ -412,10 +444,10 @@
                                     <th class="sortable" data-sort="code" onclick="sortTable('code')">Code</th>
                                     <th class="sortable" data-sort="name" onclick="sortTable('name')">Raison Sociale</th>
                                     <th class="text-center">Type</th>
-                                    <th class="text-center">Catégorie</th>
-                                    <th class="text-center">Score</th>
-                                    <th>Contact</th>
+                                    <th class="text-center">Régime Fiscal</th>
+                                    <th class="text-center">Certificat</th>
                                     <th class="text-center">Statut</th>
+                                    <th class="text-center">Score</th>
                                     <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
