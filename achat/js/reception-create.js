@@ -11,6 +11,22 @@ let receptionData = {
     deliveryNote: '',
     warehouse: '',
     articles: [],
+    qualityControl: {
+        required: false,
+        controlType: 'VISUAL',
+        overallStatus: 'PENDING',
+        comments: '',
+        documents: []
+    },
+    validationRequired: false,
+    gaps: [],
+    gapAction: null,
+    disputeComment: '',
+    documents: {
+        blFile: null,
+        photos: [],
+        qualityReport: null
+    },
     summary: {
         received: 0,
         conformity: 0,
@@ -28,8 +44,9 @@ let mockBCFs = [
         status: '40%',
         isInternal: false,
         articles: [
-            { id: 'art-1', name: 'Peinture', commanded: 200, unit: 'L', status: 'OK' },
-            { id: 'art-2', name: 'Diluant', commanded: 100, unit: 'L', status: 'PARTIAL' }
+            { id: 'art-1', code: 'CHEM-001', name: 'Produit chimique A', commanded: 100, unit: 'L', alreadyReceived: 0 },
+            { id: 'art-2', code: 'CHEM-002', name: 'Produit chimique B', commanded: 200, unit: 'L', alreadyReceived: 0 },
+            { id: 'art-3', code: 'CHEM-003', name: 'Additif spécial', commanded: 50, unit: 'KG', alreadyReceived: 0 }
         ]
     },
     {
@@ -41,8 +58,8 @@ let mockBCFs = [
         status: '0%',
         isInternal: false,
         articles: [
-            { id: 'art-3', name: 'Matière 1', commanded: 500, unit: 'kg', status: 'PENDING' },
-            { id: 'art-4', name: 'Matière 2', commanded: 300, unit: 'kg', status: 'PENDING' }
+            { id: 'art-3', code: 'MAT-001', name: 'Matière 1', commanded: 500, unit: 'kg', alreadyReceived: 0 },
+            { id: 'art-4', code: 'MAT-002', name: 'Matière 2', commanded: 300, unit: 'kg', alreadyReceived: 0 }
         ]
     },
     {
@@ -54,7 +71,7 @@ let mockBCFs = [
         status: '80%',
         isInternal: true,
         articles: [
-            { id: 'art-5', name: 'Produit A', commanded: 100, unit: 'carton', status: 'PARTIAL' }
+            { id: 'art-5', code: 'PROD-A01', name: 'Produit A', commanded: 100, unit: 'carton', alreadyReceived: 80 }
         ]
     }
 ];
@@ -70,6 +87,31 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('reception-date').value = today;
     
     renderBCFsList();
+    
+    // Event listeners for quality control
+    document.getElementById('quality-control-required').addEventListener('change', function(e) {
+        document.getElementById('quality-control-section').style.display = e.target.checked ? 'block' : 'none';
+        receptionData.qualityControl.required = e.target.checked;
+    });
+    
+    // Event listeners for validation
+    document.getElementById('validation-required').addEventListener('change', function(e) {
+        document.getElementById('validation-section').style.display = e.target.checked ? 'block' : 'none';
+        receptionData.validationRequired = e.target.checked;
+    });
+    
+    // File upload listeners
+    document.getElementById('bl-file')?.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            document.getElementById('bl-preview').innerHTML = `<i class="fa-solid fa-check-circle"></i> ${e.target.files[0].name}`;
+        }
+    });
+    
+    document.getElementById('photos-file')?.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            document.getElementById('photos-preview').innerHTML = `<i class="fa-solid fa-check-circle" style="color: #10B981;"></i> ${e.target.files.length} photo(s) sélectionnée(s)`;
+        }
+    });
 });
 
 // ================================================
@@ -204,6 +246,28 @@ function validateCurrentStep() {
             alert('Veuillez sélectionner un entrepôt');
             return false;
         }
+        
+        // Check if at least one article has received quantity
+        const hasReceived = receptionData.articles.some(a => (a.received || 0) > 0);
+        if (!hasReceived) {
+            alert('Veuillez saisir au moins une quantité reçue');
+            return false;
+        }
+        
+        // Check mandatory documents
+        const blFile = document.getElementById('bl-file')?.files[0];
+        const photos = document.getElementById('photos-file')?.files;
+        
+        if (!blFile) {
+            alert('Le BL fournisseur est obligatoire');
+            return false;
+        }
+        
+        if (!photos || photos.length < 3) {
+            alert('Au moins 3 photos de livraison sont obligatoires');
+            return false;
+        }
+        
         return true;
     }
     return true;
@@ -219,59 +283,180 @@ function renderArticlesTable() {
     document.getElementById('selected-bcf-info').value = selectedBCF.code;
     
     const tbody = document.getElementById('articles-tbody');
-    tbody.innerHTML = selectedBCF.articles.map((article, idx) => `
+    tbody.innerHTML = selectedBCF.articles.map((article, idx) => {
+        const receivedQty = receptionData.articles[idx]?.received || 0;
+        const state = receptionData.articles[idx]?.state || 'BON';
+        const qualityStatus = receptionData.articles[idx]?.qualityStatus || 'NOT_CHECKED';
+        const acceptedQty = receptionData.articles[idx]?.acceptedQty || receivedQty;
+        
+        return `
         <tr>
             <td style="text-align: center; font-weight: 600; color: #6B7280;">${idx + 1}</td>
-            <td>${article.name}</td>
-            <td style="text-align: center;">${article.commanded}</td>
-            <td style="text-align: center;">80</td>
+            <td>
+                <div style="font-weight: 600;">${article.code}</div>
+                <div style="font-size: 11px; color: #6B7280;">${article.name}</div>
+            </td>
+            <td style="text-align: center;">${article.commanded} ${article.unit}</td>
             <td style="text-align: center;">
                 <input 
                     type="number" 
                     class="form-input"
-                    value="120"
+                    value="${receivedQty}"
                     min="0"
-                    onchange="updateArticleQty(${idx}, this.value)"
-                    style="text-align: center;"
+                    onchange="updateArticleReceived(${idx}, this.value)"
+                    style="text-align: center; width: 80px;"
                 >
             </td>
             <td>
-                <select class="form-input" style="text-align: center;">
-                    <option>OK</option>
-                    <option>PARTIAL</option>
-                    <option>ERROR</option>
+                <select class="form-input" onchange="updateArticleState(${idx}, this.value)" style="font-size: 11px;">
+                    <option value="BON" ${state === 'BON' ? 'selected' : ''}>BON</option>
+                    <option value="DÉGRADÉ" ${state === 'DÉGRADÉ' ? 'selected' : ''}>DÉGRADÉ</option>
+                    <option value="DÉFECTUEUX" ${state === 'DÉFECTUEUX' ? 'selected' : ''}>DÉFECTUEUX</option>
                 </select>
             </td>
             <td>
-                <input type="text" class="form-input" placeholder="LOT001" value="LOT001">
+                <select class="form-input" onchange="updateArticleQuality(${idx}, this.value)" style="font-size: 11px;">
+                    <option value="NOT_CHECKED" ${qualityStatus === 'NOT_CHECKED' ? 'selected' : ''}>[---]</option>
+                    <option value="ACCEPTED" ${qualityStatus === 'ACCEPTED' ? 'selected' : ''}>[ACC] Accepté</option>
+                    <option value="REJECTED" ${qualityStatus === 'REJECTED' ? 'selected' : ''}>[REJ] Rejeté</option>
+                    <option value="QUARANTINE" ${qualityStatus === 'QUARANTINE' ? 'selected' : ''}>[QUA] Quarantaine</option>
+                </select>
             </td>
-            <td style="text-align: center;">
-                <input type="checkbox">
-            </td>
-            <td style="text-align: center;">
-                <button type="button" class="btn btn-secondary" onclick="uploadPhoto()" style="padding: 6px 12px;">
-                    <i class="fa-solid fa-camera"></i>
-                </button>
+            <td style="text-align: center; font-weight: 600; color: #10B981;">${acceptedQty} ${article.unit}</td>
+        </tr>
+        <tr id="article-${idx}-obs" style="display: none;">
+            <td colspan="7" style="padding: 8px 12px;">
+                <input 
+                    type="text" 
+                    class="form-input" 
+                    placeholder="Observation qualité..."
+                    id="quality-comment-${idx}"
+                    onchange="updateArticleComment(${idx}, this.value)"
+                    style="font-size: 12px;"
+                >
             </td>
         </tr>
-        <tr>
-            <td colspan="9">
-                <div class="ecart-note">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <span>⚠ Écart: -5L (Tolérance: 2%)</span>
-                </div>
-            </td>
-        </tr>
-    `).join('');
+    `;
+    }).join('');
+    
+    // Initialize articles in receptionData if needed
+    if (receptionData.articles.length === 0) {
+        receptionData.articles = selectedBCF.articles.map(art => ({
+            id: art.id,
+            received: 0,
+            state: 'BON',
+            qualityStatus: 'NOT_CHECKED',
+            qualityComment: '',
+            quarantineQty: 0,
+            acceptedQty: 0
+        }));
+    }
 }
 
-function updateArticleQty(idx, qty) {
-    receptionData.articles[idx] = receptionData.articles[idx] || {};
-    receptionData.articles[idx].received = qty;
+function updateArticleReceived(idx, qty) {
+    const parsedQty = parseFloat(qty) || 0;
+    receptionData.articles[idx].received = parsedQty;
+    
+    // Auto-calculate accepted quantity based on quality status
+    if (receptionData.articles[idx].qualityStatus === 'REJECTED') {
+        receptionData.articles[idx].acceptedQty = 0;
+        receptionData.articles[idx].quarantineQty = 0;
+    } else if (receptionData.articles[idx].qualityStatus === 'QUARANTINE') {
+        receptionData.articles[idx].acceptedQty = 0;
+        receptionData.articles[idx].quarantineQty = parsedQty;
+    } else {
+        receptionData.articles[idx].acceptedQty = parsedQty;
+        receptionData.articles[idx].quarantineQty = 0;
+    }
+    
+    checkForGaps();
+    renderArticlesTable();
 }
 
-function uploadPhoto() {
-    alert('Fonctionnalité upload photo');
+function updateArticleState(idx, state) {
+    receptionData.articles[idx].state = state;
+    checkForGaps();
+}
+
+function updateArticleQuality(idx, qualityStatus) {
+    receptionData.articles[idx].qualityStatus = qualityStatus;
+    
+    // Show/hide observation field
+    const obsRow = document.getElementById(`article-${idx}-obs`);
+    if (qualityStatus !== 'NOT_CHECKED') {
+        obsRow.style.display = 'table-row';
+    } else {
+        obsRow.style.display = 'none';
+    }
+    
+    // Recalculate accepted quantity
+    const receivedQty = receptionData.articles[idx].received || 0;
+    if (qualityStatus === 'REJECTED') {
+        receptionData.articles[idx].acceptedQty = 0;
+        receptionData.articles[idx].quarantineQty = 0;
+    } else if (qualityStatus === 'QUARANTINE') {
+        receptionData.articles[idx].acceptedQty = 0;
+        receptionData.articles[idx].quarantineQty = receivedQty;
+    } else if (qualityStatus === 'ACCEPTED') {
+        receptionData.articles[idx].acceptedQty = receivedQty;
+        receptionData.articles[idx].quarantineQty = 0;
+    }
+    
+    renderArticlesTable();
+}
+
+function updateArticleComment(idx, comment) {
+    receptionData.articles[idx].qualityComment = comment;
+}
+
+function checkForGaps() {
+    const gaps = [];
+    
+    selectedBCF.articles.forEach((article, idx) => {
+        const receivedQty = receptionData.articles[idx]?.received || 0;
+        const state = receptionData.articles[idx]?.state || 'BON';
+        const commanded = article.commanded;
+        
+        if (receivedQty < commanded) {
+            const diff = commanded - receivedQty;
+            const percent = ((diff / commanded) * 100).toFixed(1);
+            gaps.push(`Ligne ${idx + 1}: -${diff} ${article.unit} sur ${commanded} ${article.unit} commandés (-${percent}%)`);
+        }
+        
+        if (state !== 'BON') {
+            gaps.push(`Ligne ${idx + 1}: État ${state}`);
+        }
+    });
+    
+    receptionData.gaps = gaps;
+    
+    // Update UI
+    if (gaps.length > 0) {
+        document.getElementById('gaps-detected').style.display = 'block';
+        document.getElementById('no-gaps').style.display = 'none';
+        
+        const gapsList = document.getElementById('gaps-list');
+        gapsList.innerHTML = gaps.map(gap => `<li>${gap}</li>`).join('');
+    } else {
+        document.getElementById('gaps-detected').style.display = 'none';
+        document.getElementById('no-gaps').style.display = 'block';
+    }
+}
+
+function uploadQualityDoc(type) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = type === 'lab-report' ? '.pdf' : '.pdf,.jpg,.png';
+    input.onchange = function(e) {
+        if (e.target.files.length > 0) {
+            console.log(`📎 Document ${type} ajouté:`, e.target.files[0].name);
+            receptionData.qualityControl.documents.push({
+                type: type,
+                file: e.target.files[0]
+            });
+        }
+    };
+    input.click();
 }
 
 // ================================================
@@ -314,23 +499,43 @@ function renderValidationSummary() {
     document.getElementById('summary-recap').innerHTML = recapHtml;
     
     // Qualité & Écarts
-    const qualityHtml = `
-        <div style="margin-bottom: 12px;">
-            <strong>Articles en quarantaine:</strong> 1 (95L Diluant - En attente contrôle)
+    const quarantineCount = receptionData.articles.filter(a => a.qualityStatus === 'QUARANTINE').length;
+    const rejectedCount = receptionData.articles.filter(a => a.qualityStatus === 'REJECTED').length;
+    const totalReceived = receptionData.articles.reduce((sum, a) => sum + (a.received || 0), 0);
+    const totalCommanded = selectedBCF.articles.reduce((sum, a) => sum + a.commanded, 0);
+    const conformityRate = totalCommanded > 0 ? ((totalReceived / totalCommanded) * 100).toFixed(1) : 0;
+    
+    let qualityHtml = '<div style="margin-bottom: 12px;">';
+    
+    if (quarantineCount > 0) {
+        qualityHtml += `<div><strong>Articles en quarantaine:</strong> ${quarantineCount}</div>`;
+    }
+    if (rejectedCount > 0) {
+        qualityHtml += `<div><strong>Articles rejetés:</strong> ${rejectedCount}</div>`;
+    }
+    
+    qualityHtml += `
         </div>
         <div style="margin-bottom: 12px;">
-            <strong>Taux de conformité global:</strong> <span class="status-warning">93% (215L/300L commandés)</span>
+            <strong>Taux de conformité global:</strong> 
+            <span class="${conformityRate >= 98 ? 'status-ok' : conformityRate >= 90 ? 'status-warning' : 'status-error'}">
+                ${conformityRate}% (${totalReceived}/${totalCommanded} unités)
+            </span>
         </div>
+    `;
+    
+    if (receptionData.gaps.length > 0) {
+        qualityHtml += `
         <div style="margin-bottom: 12px;">
             <strong>Écarts détectés:</strong>
             <ul style="margin: 8px 0 0 20px;">
-                <li>Quantité: -85L total (-28.3%)</li>
-                <li style="margin-top: 4px;">→ Litige LITIGE-2024-015 créé automatiquement</li>
-                <li style="margin-top: 8px;">Qualité: 1 article en quarantaine</li>
-                <li style="margin-top: 4px;">→ Notification envoyée au service Qualité</li>
+                ${receptionData.gaps.map(gap => `<li>${gap}</li>`).join('')}
             </ul>
         </div>
-    `;
+        `;
+    } else {
+        qualityHtml += '<div style="color: #10B981; font-weight: 600;"><i class="fa-solid fa-check-circle"></i> Aucun écart détecté</div>';
+    }
     
     document.getElementById('quality-summary').innerHTML = qualityHtml;
     
