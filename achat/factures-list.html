@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factures Fournisseur - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/achats-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Factures Fournisseur</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="notification-badge">2</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie AKONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Achats
+                    </div>
+                    
+                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-line mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="./fournisseurs-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Fournisseurs</span>
+                    </a>
+
+                    <a href="./demandes-achat-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-lines mr-3"></i>
+                        <span>Demandes d'Achat</span>
+                    </a>
+
+                    <a href="./commandes-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Bons de Commande</span>
+                    </a>
+
+                    <a href="./receptions-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box-open mr-3"></i>
+                        <span>Réceptions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Factures</span>
+                    </div>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="achats-container">
+                    
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div>
+                            <h2 class="page-title">Factures Fournisseur</h2>
+                            <p class="page-subtitle">Gérez les factures et paiements</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="location.href='./facture-create.html'">
+                            <i class="fa-solid fa-plus"></i>
+                            Saisir une facture
+                        </button>
+                    </div>
+
+                    <!-- KPI Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Total Factures</span>
+                                <div class="stat-icon" style="background: #E8F4FD;">
+                                    <i class="fa-solid fa-file-invoice" style="color: #263c89;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-total">0</div>
+                            <div class="stat-footer">
+                                <span class="stat-trend trend-up">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    8% vs mois dernier
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">En Attente</span>
+                                <div class="stat-icon" style="background: #FEF3E2;">
+                                    <i class="fa-solid fa-clock" style="color: #F26F21;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-pending">0</div>
+                            <div class="stat-footer">
+                                <span class="stat-info">
+                                    <span id="stat-overdue">0</span> en retard
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Payées</span>
+                                <div class="stat-icon" style="background: #D1FAE5;">
+                                    <i class="fa-solid fa-check-circle" style="color: #10B981;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-paid">0</div>
+                            <div class="stat-footer">
+                                <span class="stat-info">
+                                    Taux: <strong id="stat-payment-rate">0%</strong>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Montant Total</span>
+                                <div class="stat-icon" style="background: #F3E8FF;">
+                                    <i class="fa-solid fa-coins" style="color: #A855F7;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-amount" style="font-size: 20px;">0 XAF</div>
+                            <div class="stat-footer">
+                                <span class="stat-info">
+                                    À payer: <strong id="stat-to-pay">0 XAF</strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Filters -->
+                    <div class="filters-bar">
+                        <div class="quick-filters">
+                            <button class="filter-chip active" data-status="all" onclick="filterByStatus('all')">
+                                Tous
+                            </button>
+                            <button class="filter-chip" data-status="BROUILLON" onclick="filterByStatus('BROUILLON')">
+                                <span class="status-dot" style="background: #94A3B8;"></span>
+                                Brouillon
+                            </button>
+                            <button class="filter-chip" data-status="VALIDEE" onclick="filterByStatus('VALIDEE')">
+                                <span class="status-dot" style="background: #3B82F6;"></span>
+                                Validée
+                            </button>
+                            <button class="filter-chip" data-status="EN_ATTENTE" onclick="filterByStatus('EN_ATTENTE')">
+                                <span class="status-dot" style="background: #F59E0B;"></span>
+                                En attente paiement
+                            </button>
+                            <button class="filter-chip" data-status="PAYEE" onclick="filterByStatus('PAYEE')">
+                                <span class="status-dot" style="background: #10B981;"></span>
+                                Payée
+                            </button>
+                            <button class="filter-chip" data-status="EN_RETARD" onclick="filterByStatus('EN_RETARD')">
+                                <span class="status-dot" style="background: #DC2626;"></span>
+                                En retard
+                            </button>
+                        </div>
+                        
+                        <button class="btn btn-secondary btn-sm" onclick="toggleAdvancedFilters()">
+                            <i class="fa-solid fa-filter"></i>
+                            Filtres avancés
+                        </button>
+                    </div>
+
+                    <!-- Advanced Filters -->
+                    <div class="advanced-filters" id="advanced-filters" style="display: none;">
+                        <div class="filters-grid">
+                            <div class="form-group">
+                                <label class="form-label">Recherche</label>
+                                <input type="text" class="form-input" id="search-input" placeholder="N° Facture, BCF, fournisseur..." oninput="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Fournisseur</label>
+                                <select class="form-select" id="filter-supplier" onchange="applyFilters()">
+                                    <option value="">Tous</option>
+                                    <option value="ABC SARL">ABC SARL</option>
+                                    <option value="XYZ Ltd">XYZ Ltd</option>
+                                    <option value="CIMENCAM">CIMENCAM</option>
+                                    <option value="IOLA DISTRIBUTION">IOLA DISTRIBUTION</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date de</label>
+                                <input type="date" class="form-input" id="filter-date-from" onchange="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date à</label>
+                                <input type="date" class="form-input" id="filter-date-to" onchange="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Montant min</label>
+                                <input type="number" class="form-input" id="filter-amount-min" placeholder="0" onchange="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Montant max</label>
+                                <input type="number" class="form-input" id="filter-amount-max" placeholder="999999999" onchange="applyFilters()">
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px;">
+                            <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                Réinitialiser
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="applyFilters()">
+                                <i class="fa-solid fa-check"></i>
+                                Appliquer
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table Container -->
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 140px;">
+                                        <div class="th-content">
+                                            N° Facture
+                                            <i class="fa-solid fa-sort sort-icon"></i>
+                                        </div>
+                                    </th>
+                                    <th style="width: 120px;">
+                                        <div class="th-content">
+                                            N° BCF
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content">
+                                            Fournisseur
+                                        </div>
+                                    </th>
+                                    <th style="width: 110px;">
+                                        <div class="th-content">
+                                            Date Facture
+                                            <i class="fa-solid fa-sort sort-icon"></i>
+                                        </div>
+                                    </th>
+                                    <th style="width: 110px;">
+                                        <div class="th-content">
+                                            Date Échéance
+                                        </div>
+                                    </th>
+                                    <th style="width: 140px; text-align: right;">
+                                        <div class="th-content" style="justify-content: flex-end;">
+                                            Montant TTC
+                                            <i class="fa-solid fa-sort sort-icon"></i>
+                                        </div>
+                                    </th>
+                                    <th style="width: 140px; text-align: center;">
+                                        <div class="th-content" style="justify-content: center;">
+                                            Statut
+                                        </div>
+                                    </th>
+                                    <th style="width: 120px; text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoices-table-body">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+
+                        <!-- Empty State -->
+                        <div id="empty-state" style="display: none; text-align: center; padding: 64px 24px;">
+                            <i class="fa-solid fa-file-invoice" style="font-size: 64px; color: #E5E7EB; margin-bottom: 16px;"></i>
+                            <p style="font-size: 16px; color: #6B7280; margin-bottom: 8px;">Aucune facture trouvée</p>
+                            <p style="font-size: 14px; color: #9CA3AF;">Saisissez votre première facture pour commencer</p>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination">
+                        <div class="pagination-info">
+                            Affichage <strong id="pagination-from">0</strong> à <strong id="pagination-to">0</strong> sur <strong id="pagination-total">0</strong> résultats
+                        </div>
+                        <div class="pagination-controls" id="pagination-controls">
+                            <!-- Loaded dynamically -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Invoice Details -->
+    <div class="modal" id="modal-invoice-details">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    Détails Facture <span id="modal-invoice-number"></span>
+                </h3>
+                <button class="modal-close" onclick="closeModal('modal-invoice-details')">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-invoice-content">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modal-invoice-details')">Fermer</button>
+                <button class="btn btn-primary" onclick="viewInvoicePDF()">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    Voir PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/factures-list.js"></script>
+</body>
+</html>
+
+

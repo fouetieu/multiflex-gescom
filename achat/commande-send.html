@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envoyer BCF au Fournisseur - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/achats-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .preview-section {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #E5E7EB;
+            margin-bottom: 24px;
+        }
+
+        .contact-item {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contact-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .send-method {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .send-method:hover {
+            border-color: #263c89;
+            background: #F9FAFB;
+        }
+
+        .send-method.selected {
+            border-color: #263c89;
+            background: #EFF6FF;
+        }
+
+        .send-method-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Envoyer le Bon de Commande</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie AKONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Achats
+                    </div>
+                    
+                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-line mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="./fournisseurs-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Fournisseurs</span>
+                    </a>
+
+                    <a href="./demandes-achat-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-lines mr-3"></i>
+                        <span>Demandes d'Achat</span>
+                    </a>
+
+                    <a href="./commandes-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Bons de Commande</span>
+                    </a>
+
+                    <a href="./receptions-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box-open mr-3"></i>
+                        <span>Réceptions</span>
+                    </a>
+
+                    <a href="./factures-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Factures</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="achats-container" style="max-width: 1000px;">
+                    
+                    <!-- Breadcrumb -->
+                    <div style="margin-bottom: 20px;">
+                        <nav style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #6B7280;">
+                            <a href="./commandes-list.html" style="color: #263c89; text-decoration: none;">
+                                <i class="fa-solid fa-shopping-cart"></i> Bons de Commande
+                            </a>
+                            <i class="fa-solid fa-chevron-right" style="font-size: 12px;"></i>
+                            <span>Envoyer BCF</span>
+                        </nav>
+                    </div>
+
+                    <!-- BCF Preview -->
+                    <div class="preview-section">
+                        <div class="preview-header">
+                            <div>
+                                <h3 style="font-size: 20px; font-weight: 700; color: #263c89; margin-bottom: 8px;">
+                                    BON DE COMMANDE
+                                </h3>
+                                <p style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">N° <span id="bcf-code">BCF-2024-1234</span></p>
+                                <p style="font-size: 14px; color: #6B7280;">Date: <span id="bcf-date">15/01/2024</span></p>
+                            </div>
+                            <div style="text-align: right;">
+                                <p style="font-size: 12px; color: #6B7280; margin-bottom: 4px;">Émetteur</p>
+                                <p style="font-weight: 600;">MULTIFLEX SARL</p>
+                                <p style="font-size: 14px; color: #6B7280;">BP 12345, Douala</p>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 24px;">
+                            <h4 style="font-size: 14px; font-weight: 600; color: #6B7280; margin-bottom: 8px;">FOURNISSEUR</h4>
+                            <p style="font-size: 16px; font-weight: 600;" id="supplier-name">ABC SARL</p>
+                            <p style="font-size: 14px; color: #6B7280;" id="supplier-address">Zone Industrielle, Douala</p>
+                        </div>
+
+                        <div style="background: #F9FAFB; border-radius: 6px; padding: 16px; margin-bottom: 24px;">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                                <div>
+                                    <p style="font-size: 12px; color: #6B7280; margin-bottom: 4px;">Date de Livraison</p>
+                                    <p style="font-weight: 600;" id="delivery-date">25/01/2024</p>
+                                </div>
+                                <div>
+                                    <p style="font-size: 12px; color: #6B7280; margin-bottom: 4px;">Conditions de Paiement</p>
+                                    <p style="font-weight: 600;" id="payment-terms">30 jours</p>
+                                </div>
+                                <div>
+                                    <p style="font-size: 12px; color: #6B7280; margin-bottom: 4px;">Montant Total TTC</p>
+                                    <p style="font-weight: 700; color: #263c89; font-size: 18px;" id="total-amount">1 150 000 XAF</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center;">
+                            <button class="btn btn-secondary btn-sm" onclick="previewPDF()">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                Aperçu PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Méthode d'envoi -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            Méthode d'Envoi
+                        </h3>
+
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px;">
+                            <div class="send-method selected" onclick="selectSendMethod('email')" id="method-email">
+                                <div class="send-method-icon" style="background: #DBEAFE; color: #263c89;">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <p style="font-weight: 600; margin-bottom: 4px;">Email</p>
+                                    <p style="font-size: 12px; color: #6B7280;">Envoi automatique par email</p>
+                                </div>
+                            </div>
+
+                            <div class="send-method" onclick="selectSendMethod('portal')" id="method-portal">
+                                <div class="send-method-icon" style="background: #E0E7FF; color: #6366F1;">
+                                    <i class="fa-solid fa-globe"></i>
+                                </div>
+                                <div>
+                                    <p style="font-weight: 600; margin-bottom: 4px;">Portail Fournisseur</p>
+                                    <p style="font-size: 12px; color: #6B7280;">Publication sur le portail</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email Section -->
+                        <div id="email-section">
+                            <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Destinataires</h4>
+                            
+                            <div id="contacts-list">
+                                <!-- Populated dynamically -->
+                            </div>
+
+                            <div class="form-group" style="margin-top: 16px;">
+                                <label class="form-label">Email(s) supplémentaire(s)</label>
+                                <input type="text" class="form-input" id="additional-emails" placeholder="email1@example.com, email2@example.com">
+                                <p style="font-size: 12px; color: #6B7280; margin-top: 4px;">Séparez plusieurs emails par des virgules</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Objet</label>
+                                <input type="text" class="form-input" id="email-subject" value="Bon de Commande BCF-2024-1234">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Message</label>
+                                <textarea class="form-textarea" id="email-message" rows="6">Bonjour,
+
+Veuillez trouver ci-joint notre bon de commande n° BCF-2024-1234.
+
+Merci de nous confirmer la bonne réception et la date de livraison prévue.
+
+Cordialement,
+Marie AKONO
+Service Achats</textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input type="checkbox" id="attach-pdf" checked style="width: 18px; height: 18px;">
+                                    <span style="font-size: 14px;">Joindre le BCF en PDF</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Portal Section -->
+                        <div id="portal-section" style="display: none;">
+                            <div class="alert-box alert-info">
+                                <i class="fa-solid fa-info-circle"></i>
+                                <div>
+                                    Le BCF sera publié sur le portail fournisseur. Le fournisseur recevra une notification et pourra consulter, accepter ou refuser la commande directement depuis son espace.
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 16px;">
+                                <label class="form-label">Commentaire pour le fournisseur</label>
+                                <textarea class="form-textarea" id="portal-comment" rows="4" placeholder="Ajoutez un commentaire visible sur le portail..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" onclick="cancelSend()">
+                            <i class="fa-solid fa-times"></i>
+                            Annuler
+                        </button>
+                        <button class="btn btn-success" onclick="confirmSend()">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            Envoyer maintenant
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/commande-send.js"></script>
+</body>
+</html>
+
+

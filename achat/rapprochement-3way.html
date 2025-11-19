@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapprochement 3-Way - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/achats-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .matching-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .matching-card {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .matching-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .matching-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table thead {
+            background: #F3F4F6;
+        }
+
+        .comparison-table th {
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #6B7280;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .comparison-table td {
+            padding: 12px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .comparison-table tbody tr:hover {
+            background: #F9FAFB;
+        }
+
+        .match-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .match-ok {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .match-warning {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .match-error {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .validation-summary {
+            background: white;
+            border: 3px solid #263c89;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Rapprochement 3-Way</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie AKONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Achats
+                    </div>
+                    
+                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-line mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="./fournisseurs-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Fournisseurs</span>
+                    </a>
+
+                    <a href="./demandes-achat-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-lines mr-3"></i>
+                        <span>Demandes d'Achat</span>
+                    </a>
+
+                    <a href="./commandes-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Bons de Commande</span>
+                    </a>
+
+                    <a href="./receptions-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box-open mr-3"></i>
+                        <span>Réceptions</span>
+                    </a>
+
+                    <a href="./factures-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Factures</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="achats-container" style="max-width: 1400px;">
+                    
+                    <!-- Breadcrumb -->
+                    <div style="margin-bottom: 20px;">
+                        <nav style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #6B7280;">
+                            <a href="./factures-list.html" style="color: #263c89; text-decoration: none;">
+                                <i class="fa-solid fa-file-invoice"></i> Factures
+                            </a>
+                            <i class="fa-solid fa-chevron-right" style="font-size: 12px;"></i>
+                            <span>Rapprochement 3-Way</span>
+                        </nav>
+                    </div>
+
+                    <!-- Page Header -->
+                    <div class="page-header" style="margin-bottom: 24px;">
+                        <div>
+                            <h2 class="page-title">Rapprochement 3-Way</h2>
+                            <p class="page-subtitle">Commande • Réception • Facture</p>
+                        </div>
+                    </div>
+
+                    <!-- Status Overview -->
+                    <div id="status-overview" style="margin-bottom: 24px;">
+                        <!-- Populated dynamically -->
+                    </div>
+
+                    <!-- Documents Cards -->
+                    <div class="matching-grid">
+                        <!-- BCF Card -->
+                        <div class="matching-card">
+                            <div class="matching-card-header">
+                                <div class="matching-icon" style="background: #DBEAFE; color: #263c89;">
+                                    <i class="fa-solid fa-shopping-cart"></i>
+                                </div>
+                                <div>
+                                    <p style="font-size: 12px; color: #6B7280;">Bon de Commande</p>
+                                    <p style="font-weight: 700; font-size: 16px;" id="bcf-code">BCF-2024-1205</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Date</span>
+                                <span class="info-value" id="bcf-date">05/01/2024</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Fournisseur</span>
+                                <span class="info-value" id="bcf-supplier">XYZ Ltd</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Montant TTC</span>
+                                <span class="info-value" style="color: #263c89; font-weight: 700;" id="bcf-amount">1 200 000 XAF</span>
+                            </div>
+                        </div>
+
+                        <!-- Reception Card -->
+                        <div class="matching-card">
+                            <div class="matching-card-header">
+                                <div class="matching-icon" style="background: #D1FAE5; color: #059669;">
+                                    <i class="fa-solid fa-box-open"></i>
+                                </div>
+                                <div>
+                                    <p style="font-size: 12px; color: #6B7280;">Bon de Réception</p>
+                                    <p style="font-weight: 700; font-size: 16px;" id="reception-code">BR-2024-0180</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Date</span>
+                                <span class="info-value" id="reception-date">12/01/2024</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Taux Réception</span>
+                                <span class="info-value" id="reception-rate">100%</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Montant Reçu</span>
+                                <span class="info-value" style="color: #059669; font-weight: 700;" id="reception-amount">1 200 000 XAF</span>
+                            </div>
+                        </div>
+
+                        <!-- Invoice Card -->
+                        <div class="matching-card">
+                            <div class="matching-card-header">
+                                <div class="matching-icon" style="background: #FEF3C7; color: #D97706;">
+                                    <i class="fa-solid fa-file-invoice"></i>
+                                </div>
+                                <div>
+                                    <p style="font-size: 12px; color: #6B7280;">Facture Fournisseur</p>
+                                    <p style="font-weight: 700; font-size: 16px;" id="invoice-number">F-2024-XYZ-189</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Date</span>
+                                <span class="info-value" id="invoice-date">12/01/2024</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Échéance</span>
+                                <span class="info-value" id="invoice-due">11/02/2024</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Montant TTC</span>
+                                <span class="info-value" style="color: #D97706; font-weight: 700;" id="invoice-amount">1 198 500 XAF</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Comparison -->
+                    <div style="background: white; border-radius: 8px; padding: 24px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); margin-bottom: 24px;">
+                        <h3 style="font-size: 18px; font-weight: 600; color: #1F2937; margin-bottom: 16px;">
+                            <i class="fa-solid fa-table"></i>
+                            Comparaison Détaillée
+                        </h3>
+
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Article</th>
+                                    <th style="text-align: center;">Qté Commandée</th>
+                                    <th style="text-align: center;">Qté Reçue</th>
+                                    <th style="text-align: right;">Prix Unit. BCF</th>
+                                    <th style="text-align: right;">Prix Unit. Facture</th>
+                                    <th style="text-align: center;">Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparison-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Validation Summary -->
+                    <div class="validation-summary">
+                        <h3 style="font-size: 18px; font-weight: 700; color: #263c89; margin-bottom: 20px;">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            Résultat du Rapprochement
+                        </h3>
+
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+                            <div style="text-align: center;">
+                                <p style="font-size: 12px; color: #6B7280; margin-bottom: 8px;">Articles Conformes</p>
+                                <p style="font-size: 32px; font-weight: 700; color: #10B981;" id="result-ok">0</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <p style="font-size: 12px; color: #6B7280; margin-bottom: 8px;">Écarts Mineurs</p>
+                                <p style="font-size: 32px; font-weight: 700; color: #F59E0B;" id="result-warning">0</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <p style="font-size: 12px; color: #6B7280; margin-bottom: 8px;">Écarts Majeurs</p>
+                                <p style="font-size: 32px; font-weight: 700; color: #DC2626;" id="result-error">0</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <p style="font-size: 12px; color: #6B7280; margin-bottom: 8px;">Taux de Conformité</p>
+                                <p style="font-size: 32px; font-weight: 700; color: #263c89;" id="result-rate">0%</p>
+                            </div>
+                        </div>
+
+                        <div style="background: #F9FAFB; border-radius: 6px; padding: 16px; margin-bottom: 24px;">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                                <div>
+                                    <p style="font-size: 12px; color: #6B7280; margin-bottom: 4px;">Montant BCF</p>
+                                    <p style="font-weight: 700; font-size: 18px;" id="summary-bcf">1 200 000 XAF</p>
+                                </div>
+                                <div>
+                                    <p style="font-size: 12px; color: #6B7280; margin-bottom: 4px;">Montant Facture</p>
+                                    <p style="font-weight: 700; font-size: 18px;" id="summary-invoice">1 198 500 XAF</p>
+                                </div>
+                                <div>
+                                    <p style="font-size: 12px; color: #6B7280; margin-bottom: 4px;">Écart Financier</p>
+                                    <p style="font-weight: 700; font-size: 18px; color: #10B981;" id="summary-diff">- 1 500 XAF</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="validation-message">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
+                            <button class="btn btn-secondary" onclick="cancelMatching()">
+                                <i class="fa-solid fa-times"></i>
+                                Annuler
+                            </button>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-warning" onclick="requestClarification()" id="btn-clarification">
+                                    <i class="fa-solid fa-question-circle"></i>
+                                    Demander clarification
+                                </button>
+                                <button class="btn btn-success" onclick="validateMatching()" id="btn-validate">
+                                    <i class="fa-solid fa-check-circle"></i>
+                                    Valider le rapprochement
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/rapprochement-3way.js"></script>
+</body>
+</html>
+
+

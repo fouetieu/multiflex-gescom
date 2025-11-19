@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demandes d'Achat - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/achats-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .da-meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-top: 6px;
+        }
+
+        .da-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .quick-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quick-filter-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 2px solid var(--gray-300);
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .quick-filter-btn:hover {
+            border-color: var(--primary-color);
+        }
+
+        .quick-filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .quick-filter-count {
+            background: rgba(255,255,255,0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+            font-weight: 600;
+        }
+
+        .quick-filter-btn.active .quick-filter-count {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .workflow-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--gray-600);
+            margin-top: 4px;
+        }
+
+        .workflow-step {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .workflow-step.done {
+            background: #10B981;
+            color: white;
+        }
+
+        .workflow-step.current {
+            background: #3B82F6;
+            color: white;
+        }
+
+        .workflow-step.pending {
+            background: #E5E7EB;
+            color: #9CA3AF;
+        }
+
+        .workflow-line {
+            width: 20px;
+            height: 2px;
+            background: #E5E7EB;
+        }
+
+        .workflow-line.done {
+            background: #10B981;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Demandes d'Achat</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">8</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie AKONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Achats
+                    </div>
+                    
+                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-line mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="./fournisseurs-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Fournisseurs</span>
+                    </a>
+
+                    <a href="./demandes-achat-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-file-lines mr-3"></i>
+                        <span>Demandes d'Achat</span>
+                    </a>
+
+                    <a href="./demandes-validation.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors" style="padding-left: 3rem;">
+                        <i class="fa-solid fa-check-circle mr-3"></i>
+                        <span>Valider DA</span>
+                        <span class="ml-2 bg-[#F59E0B] text-white text-xs rounded-full px-2 py-1">5</span>
+                    </a>
+
+                    <a href="./commandes-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Bons de Commande</span>
+                    </a>
+
+                    <a href="./receptions-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box-open mr-3"></i>
+                        <span>Réceptions</span>
+                    </a>
+
+                    <a href="./factures-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Factures</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Reporting
+                    </div>
+
+                    <a href="./rapports.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-bar mr-3"></i>
+                        <span>Rapports</span>
+                    </a>
+
+                    <a href="./analyses.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Analyses</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="achats-container" style="max-width: none; padding: 24px;">
+                    
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                    Demandes d'Achat
+                                </h1>
+                                <p class="page-description">
+                                    Gérer les demandes d'achat des différents services
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="exportDAs()">
+                                    <i class="fa-solid fa-file-export"></i>
+                                    Exporter
+                                </button>
+                                <button class="btn btn-warning" onclick="location.href='./demandes-validation.html'" style="background: #F59E0B; color: white;">
+                                    <i class="fa-solid fa-check-circle"></i>
+                                    Valider les DA
+                                </button>
+                                <button class="btn btn-primary" onclick="location.href='./demande-achat-create.html'">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Nouvelle Demande d'Achat
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Stats Cards -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div>
+                                        <div class="stat-label">Total DA</div>
+                                    </div>
+                                    <div class="stat-icon primary">
+                                        <i class="fa-solid fa-file-lines"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value" id="stat-total">0</div>
+                                <div class="stat-change neutral">Ce mois</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div>
+                                        <div class="stat-label">En Attente Validation</div>
+                                    </div>
+                                    <div class="stat-icon warning">
+                                        <i class="fa-solid fa-clock"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value" id="stat-pending" style="color: #F59E0B;">0</div>
+                                <div class="stat-change warning">
+                                    <i class="fa-solid fa-exclamation-circle"></i>
+                                    À traiter
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div>
+                                        <div class="stat-label">Validées</div>
+                                    </div>
+                                    <div class="stat-icon success">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value" id="stat-validated" style="color: #10B981;">0</div>
+                                <div class="stat-change positive">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    +12% vs mois dernier
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div>
+                                        <div class="stat-label">Montant Total</div>
+                                    </div>
+                                    <div class="stat-icon info">
+                                        <i class="fa-solid fa-coins"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value" id="stat-amount">0 XAF</div>
+                                <div class="stat-change neutral">Janvier 2024</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Filters -->
+                    <div class="quick-filters">
+                        <button class="quick-filter-btn active" data-filter="all" onclick="applyQuickFilter('all')">
+                            <i class="fa-solid fa-list"></i> Toutes
+                            <span class="quick-filter-count" id="count-all">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="draft" onclick="applyQuickFilter('draft')">
+                            <i class="fa-solid fa-file-pen"></i> Brouillon
+                            <span class="quick-filter-count" id="count-draft">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="pending" onclick="applyQuickFilter('pending')">
+                            <i class="fa-solid fa-clock"></i> En Attente
+                            <span class="quick-filter-count" id="count-pending">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="validated" onclick="applyQuickFilter('validated')">
+                            <i class="fa-solid fa-check-circle"></i> Validées
+                            <span class="quick-filter-count" id="count-validated">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="rejected" onclick="applyQuickFilter('rejected')">
+                            <i class="fa-solid fa-times-circle"></i> Rejetées
+                            <span class="quick-filter-count" id="count-rejected">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="urgent" onclick="applyQuickFilter('urgent')">
+                            <i class="fa-solid fa-exclamation-triangle"></i> Urgentes
+                            <span class="quick-filter-count" id="count-urgent">0</span>
+                        </button>
+                    </div>
+
+                    <!-- Filters Bar -->
+                    <div class="filters-bar">
+                        <div class="filters-row">
+                            <div class="filter-group" style="flex: 2;">
+                                <input 
+                                    type="text" 
+                                    class="search-input" 
+                                    id="search-input"
+                                    placeholder="🔍 Rechercher par N° DA, demandeur, département..."
+                                    onkeyup="applyFilters()"
+                                >
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-department" onchange="applyFilters()">
+                                    <option value="">Département</option>
+                                    <option value="PRODUCTION">Production</option>
+                                    <option value="LOGISTIQUE">Logistique</option>
+                                    <option value="ADMINISTRATION">Administration</option>
+                                    <option value="MAINTENANCE">Maintenance</option>
+                                    <option value="COMMERCIAL">Commercial</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-priority" onchange="applyFilters()">
+                                    <option value="">Priorité</option>
+                                    <option value="BASSE">Basse</option>
+                                    <option value="NORMALE">Normale</option>
+                                    <option value="HAUTE">Haute</option>
+                                    <option value="URGENTE">Urgente</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-status" onchange="applyFilters()">
+                                    <option value="">Statut</option>
+                                    <option value="BROUILLON">Brouillon</option>
+                                    <option value="EN_VALIDATION">En Validation</option>
+                                    <option value="VALIDEE">Validée</option>
+                                    <option value="REFUSEE">Refusée</option>
+                                    <option value="TRAITEE">Traitée</option>
+                                </select>
+                            </div>
+                            <div class="filter-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Table -->
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;">
+                                        <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                                    </th>
+                                    <th class="sortable" data-sort="code" onclick="sortTable('code')">N° DA</th>
+                                    <th class="sortable" data-sort="date" onclick="sortTable('date')">Date</th>
+                                    <th>Demandeur</th>
+                                    <th>Département</th>
+                                    <th class="text-center">Priorité</th>
+                                    <th class="text-right">Montant Estimé</th>
+                                    <th class="text-center">Statut</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Données chargées dynamiquement -->
+                            </tbody>
+                        </table>
+
+                        <!-- Empty State -->
+                        <div id="empty-state" class="empty-state hidden">
+                            <div class="empty-state-icon">
+                                <i class="fa-solid fa-file-lines"></i>
+                            </div>
+                            <h3 class="empty-state-title">Aucune demande d'achat trouvée</h3>
+                            <p class="empty-state-description">
+                                Créez votre première demande d'achat pour commencer
+                            </p>
+                            <button class="btn btn-primary mt-4" onclick="location.href='./demande-achat-create.html'">
+                                <i class="fa-solid fa-plus"></i>
+                                Nouvelle Demande d'Achat
+                            </button>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="pagination" id="pagination">
+                            <div class="pagination-info" id="pagination-info">
+                                Affichage de 0 à 0 sur 0 demandes
+                            </div>
+                            <div class="pagination-controls" id="pagination-controls">
+                                <!-- Généré dynamiquement -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal View DA Details -->
+    <div class="modal-overlay" id="view-modal" style="display: none;">
+        <div class="modal" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Détail Demande d'Achat</h2>
+                <button class="modal-close" onclick="closeViewModal()">×</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Contenu dynamique -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeViewModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/demandes-achat-list.js"></script>
+</body>
+</html>
+

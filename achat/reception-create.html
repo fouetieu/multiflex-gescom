@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouveau Bon de Réception - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/achats-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .wizard-header {
+            background: white;
+            padding: 24px;
+            border-bottom: 2px solid #E5E7EB;
+            margin-bottom: 24px;
+        }
+
+        .wizard-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .wizard-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .wizard-step::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #E5E7EB;
+            z-index: 0;
+        }
+
+        .wizard-step:last-child::before {
+            display: none;
+        }
+
+        .wizard-step.active::before {
+            background: #263c89;
+        }
+
+        .wizard-step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            color: #9CA3AF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .wizard-step.active .wizard-step-circle {
+            background: #263c89;
+            color: white;
+        }
+
+        .wizard-step.completed .wizard-step-circle {
+            background: #10B981;
+            color: white;
+        }
+
+        .wizard-step-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+        }
+
+        .wizard-step.active .wizard-step-title {
+            color: #263c89;
+        }
+
+        .wizard-content {
+            display: none;
+        }
+
+        .wizard-content.active {
+            display: block;
+        }
+
+        .bcf-card {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .bcf-card:hover {
+            border-color: #263c89;
+            box-shadow: 0 4px 6px rgba(38, 60, 137, 0.1);
+        }
+
+        .bcf-card.selected {
+            background: #EFF6FF;
+            border-color: #263c89;
+        }
+
+        .bcf-radio {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #D1D5DB;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .bcf-card.selected .bcf-radio {
+            border-color: #263c89;
+            background: #263c89;
+        }
+
+        .bcf-radio::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            display: none;
+        }
+
+        .bcf-card.selected .bcf-radio::after {
+            display: block;
+        }
+
+        .bcf-info {
+            flex: 1;
+        }
+
+        .bcf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .bcf-code {
+            font-weight: 600;
+            font-size: 15px;
+            color: #1F2937;
+        }
+
+        .bcf-amount {
+            font-weight: 600;
+            color: #263c89;
+        }
+
+        .bcf-meta {
+            display: grid;
+            grid-template-columns: 150px 150px 1fr;
+            gap: 16px;
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 8px;
+        }
+
+        .bcf-progress {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+        }
+
+        .progress-bar {
+            width: 120px;
+            height: 8px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #10B981;
+            transition: width 0.3s;
+        }
+
+        .articles-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-bottom: 24px;
+        }
+
+        .articles-table thead {
+            background: #F3F4F6;
+        }
+
+        .articles-table th {
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .articles-table td {
+            padding: 12px;
+            border-bottom: 1px solid #E5E7EB;
+            font-size: 13px;
+        }
+
+        .articles-table input,
+        .articles-table select {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #D1D5DB;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .articles-table input:focus,
+        .articles-table select:focus {
+            outline: none;
+            border-color: #263c89;
+        }
+
+        .status-ok {
+            color: #10B981;
+            font-weight: 600;
+        }
+
+        .status-warning {
+            color: #F59E0B;
+            font-weight: 600;
+        }
+
+        .status-error {
+            color: #DC2626;
+            font-weight: 600;
+        }
+
+        .ecart-note {
+            background: #FEF3C7;
+            border: 1px solid #FCD34D;
+            border-radius: 4px;
+            padding: 8px;
+            font-size: 12px;
+            color: #92400E;
+            margin-top: 8px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #263c89;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border-left: 4px solid #263c89;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #E5E7EB;
+            font-size: 13px;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #6B7280;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #1F2937;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #263c89;
+            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .alert-warning {
+            background: #FEF3C7;
+            border: 1px solid #FCD34D;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #92400E;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .wizard-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding-top: 24px;
+            margin-top: 24px;
+            border-top: 2px solid #E5E7EB;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #263c89;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a2959;
+        }
+
+        .btn-secondary {
+            background: #E5E7EB;
+            color: #1F2937;
+        }
+
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+
+        .btn-disabled {
+            background: #D1D5DB;
+            color: #9CA3AF;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .file-upload-zone {
+            border: 2px dashed #D1D5DB;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-upload-zone:hover {
+            border-color: #263c89;
+            background: #EFF6FF;
+        }
+
+        .quarantine-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: #FEE2E2;
+            color: #991B1B;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Nouveau Bon de Réception</h1>
+                
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie AKONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Achats
+                    </div>
+                    
+                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-line mr-3"></i>
+                        Dashboard
+                    </a>
+
+                    <a href="./receptions-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-box-open mr-3"></i>
+                        Réceptions
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        Accueil
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="achats-container" style="max-width: 1200px;">
+                    
+                    <!-- Wizard Header -->
+                    <div class="wizard-header">
+                        <h2 style="font-size: 20px; font-weight: 600; color: #1F2937; margin-bottom: 24px;">
+                            Nouveau Bon de Réception
+                        </h2>
+                        
+                        <div class="wizard-steps">
+                            <div class="wizard-step active" id="step-0">
+                                <div class="wizard-step-circle">1</div>
+                                <div class="wizard-step-title">Sélection BCF</div>
+                            </div>
+                            <div class="wizard-step" id="step-1">
+                                <div class="wizard-step-circle">2</div>
+                                <div class="wizard-step-title">Saisie Réception</div>
+                            </div>
+                            <div class="wizard-step" id="step-2">
+                                <div class="wizard-step-circle">3</div>
+                                <div class="wizard-step-title">Validation</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wizard Content -->
+                    <div style="padding: 24px;">
+
+                        <!-- ÉTAPE 1: SÉLECTION BCF -->
+                        <div class="wizard-content active" id="content-0">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
+                                ÉTAPE 1/3: SÉLECTION BCF
+                            </h3>
+
+                            <div class="form-group">
+                                <input 
+                                    type="text" 
+                                    class="form-input"
+                                    id="bcf-search"
+                                    placeholder="🔍 Rechercher BCF ou fournisseur..."
+                                    onkeyup="filterBCFs()"
+                                >
+                            </div>
+
+                            <div id="bcfs-list" style="max-height: 500px; overflow-y: auto;">
+                                <!-- BCFs loaded dynamically -->
+                            </div>
+
+                            <div id="internal-supplier-alert" style="display: none;">
+                                <div class="alert-warning">
+                                    <i class="fa-solid fa-info-circle"></i>
+                                    <div>Fournisseur interne détecté: ☑ IOLA DISTRIBUTION</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 2: SAISIE RÉCEPTION -->
+                        <div class="wizard-content" id="content-1">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
+                                ÉTAPE 2/3: SAISIE RÉCEPTION
+                            </h3>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    INFORMATIONS RÉCEPTION
+                                </h4>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">N° BR</label>
+                                        <input type="text" class="form-input" value="BR-2024-AUTO" readonly style="background: #F3F4F6;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Date Réception <span style="color: #EF4444;">*</span></label>
+                                        <input type="date" class="form-input" id="reception-date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">N° BL Fournisseur</label>
+                                        <input type="text" class="form-input" id="delivery-note" placeholder="BL-XXX">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">BCF</label>
+                                        <input type="text" class="form-input" id="selected-bcf-info" readonly style="background: #F3F4F6;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Entrepôt <span style="color: #EF4444;">*</span></label>
+                                        <select class="form-select" id="warehouse" required>
+                                            <option value="">Sélectionner</option>
+                                            <option value="ZONE_INDUSTRIELLE_YAOUNDE">Zone Industrielle Yaoundé</option>
+                                            <option value="DOUALA_PORT">Port Douala</option>
+                                            <option value="PRODUCTION">Zone Production</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Magasinier</label>
+                                        <input type="text" class="form-input" value="J. Kamga" readonly style="background: #F3F4F6;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    ARTICLES À RÉCEPTIONNER
+                                </h4>
+                                
+                                <div style="overflow-x: auto;">
+                                    <table class="articles-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 30px;">#</th>
+                                                <th>Article</th>
+                                                <th style="width: 80px;">Cmd</th>
+                                                <th style="width: 80px;">Déjà</th>
+                                                <th style="width: 80px;">Reçu</th>
+                                                <th style="width: 80px;">Statut</th>
+                                                <th style="width: 100px;">N° Lot</th>
+                                                <th style="width: 60px;">Quaran.</th>
+                                                <th style="width: 60px;">Photos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="articles-tbody">
+                                            <!-- Articles loaded dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 3: VALIDATION -->
+                        <div class="wizard-content" id="content-2">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
+                                ÉTAPE 3/3: VALIDATION ET FINALISATION
+                            </h3>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    RÉCAPITULATIF DE RÉCEPTION
+                                </h4>
+                                <div id="summary-recap" style="font-size: 13px; line-height: 1.8;">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    SYNTHÈSE QUALITÉ & ÉCARTS
+                                </h4>
+                                <div id="quality-summary" style="font-size: 13px; line-height: 1.8;">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    MOUVEMENTS DE STOCK GÉNÉRÉS
+                                </h4>
+                                <div id="stock-movements" style="font-size: 13px; line-height: 1.8;">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    VALIDATION FINALE
+                                </h4>
+                                
+                                <div class="alert-warning" style="margin-bottom: 16px;">
+                                    <i class="fa-solid fa-exclamation-triangle"></i>
+                                    <div>⚠️ ATTENTION: Cette action est définitive</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Commentaire superviseur (optionnel)</label>
+                                    <textarea class="form-textarea" id="supervisor-comment" placeholder="Notes..."></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Signature électronique</label>
+                                    <div style="display: flex; gap: 12px; align-items: flex-end;">
+                                        <input type="text" class="form-input" id="signature" placeholder="Signature" style="flex: 1;">
+                                        <button type="button" class="btn btn-secondary" onclick="signReception()">
+                                            <i class="fa-solid fa-pen-fancy"></i>
+                                            Signer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Wizard Actions -->
+                        <div class="wizard-actions">
+                            <div>
+                                <button type="button" class="btn btn-secondary" id="btn-prev" onclick="previousStep()" style="display: none;">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Précédent
+                                </button>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button type="button" class="btn btn-secondary" onclick="cancelWizard()">
+                                    <i class="fa-solid fa-times"></i>
+                                    Annuler
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="saveDraft()" id="btn-draft">
+                                    <i class="fa-solid fa-save"></i>
+                                    Enregistrer brouillon
+                                </button>
+                                <button type="button" class="btn btn-primary" id="btn-next" onclick="nextStep()">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                    Suivant
+                                </button>
+                                <button type="button" class="btn btn-primary" id="btn-validate" onclick="validateReception()" style="display: none; background: #10B981;">
+                                    <i class="fa-solid fa-check"></i>
+                                    Valider Réception
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/reception-create.js"></script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bons de Commande - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/achats-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Bons de Commande Fournisseur</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie AKONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Achats
+                    </div>
+                    
+                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-line mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="./fournisseurs-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Fournisseurs</span>
+                    </a>
+
+                    <a href="./demandes-achat-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-lines mr-3"></i>
+                        <span>Demandes d'Achat</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Bons de Commande</span>
+                    </div>
+
+                    <a href="./receptions-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box-open mr-3"></i>
+                        <span>Réceptions</span>
+                    </a>
+
+                    <a href="./factures-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Factures</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="achats-container">
+                    
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div>
+                            <h2 class="page-title">Bons de Commande Fournisseur</h2>
+                            <p class="page-subtitle">Gérez vos commandes fournisseurs</p>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="location.href='./transform-da-bcf.html'">
+                                <i class="fa-solid fa-exchange-alt"></i>
+                                Transformer DA en BCF
+                            </button>
+                            <button class="btn btn-primary" onclick="location.href='./commande-create.html'">
+                                <i class="fa-solid fa-plus"></i>
+                                Créer BCF direct
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Total BCF</span>
+                                <div class="stat-icon" style="background: #E8F4FD;">
+                                    <i class="fa-solid fa-shopping-cart" style="color: #263c89;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-total">0</div>
+                            <div class="stat-footer">
+                                <span class="stat-trend trend-up">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    12% vs mois dernier
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">En Cours</span>
+                                <div class="stat-icon" style="background: #FEF3E2;">
+                                    <i class="fa-solid fa-hourglass-half" style="color: #F26F21;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-pending">0</div>
+                            <div class="stat-footer">
+                                <span class="stat-info">
+                                    <span id="stat-pending-late">0</span> en retard
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Livrés</span>
+                                <div class="stat-icon" style="background: #D1FAE5;">
+                                    <i class="fa-solid fa-check-circle" style="color: #10B981;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-delivered">0</div>
+                            <div class="stat-footer">
+                                <span class="stat-info">
+                                    Taux: <strong id="stat-delivery-rate">0%</strong>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Montant Total</span>
+                                <div class="stat-icon" style="background: #F3E8FF;">
+                                    <i class="fa-solid fa-coins" style="color: #A855F7;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-amount" style="font-size: 20px;">0 XAF</div>
+                            <div class="stat-footer">
+                                <span class="stat-info">
+                                    Mois en cours
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Filters -->
+                    <div class="filters-bar">
+                        <div class="quick-filters">
+                            <button class="filter-chip active" data-status="all" onclick="filterByStatus('all')">
+                                Tous
+                            </button>
+                            <button class="filter-chip" data-status="BROUILLON" onclick="filterByStatus('BROUILLON')">
+                                <span class="status-dot" style="background: #94A3B8;"></span>
+                                Brouillon
+                            </button>
+                            <button class="filter-chip" data-status="ENVOYE" onclick="filterByStatus('ENVOYE')">
+                                <span class="status-dot" style="background: #3B82F6;"></span>
+                                Envoyé
+                            </button>
+                            <button class="filter-chip" data-status="ACCEPTE" onclick="filterByStatus('ACCEPTE')">
+                                <span class="status-dot" style="background: #10B981;"></span>
+                                Accepté
+                            </button>
+                            <button class="filter-chip" data-status="EN_LIVRAISON" onclick="filterByStatus('EN_LIVRAISON')">
+                                <span class="status-dot" style="background: #F59E0B;"></span>
+                                En livraison
+                            </button>
+                            <button class="filter-chip" data-status="LIVRE" onclick="filterByStatus('LIVRE')">
+                                <span class="status-dot" style="background: #059669;"></span>
+                                Livré
+                            </button>
+                        </div>
+                        
+                        <button class="btn btn-secondary btn-sm" onclick="toggleAdvancedFilters()">
+                            <i class="fa-solid fa-filter"></i>
+                            Filtres avancés
+                        </button>
+                    </div>
+
+                    <!-- Advanced Filters -->
+                    <div class="advanced-filters" id="advanced-filters" style="display: none;">
+                        <div class="filters-grid">
+                            <div class="form-group">
+                                <label class="form-label">Recherche</label>
+                                <input type="text" class="form-input" id="search-input" placeholder="N° BCF, fournisseur..." oninput="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Fournisseur</label>
+                                <select class="form-select" id="filter-supplier" onchange="applyFilters()">
+                                    <option value="">Tous</option>
+                                    <option value="ABC SARL">ABC SARL</option>
+                                    <option value="XYZ Ltd">XYZ Ltd</option>
+                                    <option value="CIMENCAM">CIMENCAM</option>
+                                    <option value="IOLA DISTRIBUTION">IOLA DISTRIBUTION</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date de</label>
+                                <input type="date" class="form-input" id="filter-date-from" onchange="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date à</label>
+                                <input type="date" class="form-input" id="filter-date-to" onchange="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Montant min</label>
+                                <input type="number" class="form-input" id="filter-amount-min" placeholder="0" onchange="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Montant max</label>
+                                <input type="number" class="form-input" id="filter-amount-max" placeholder="999999999" onchange="applyFilters()">
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px;">
+                            <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                Réinitialiser
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="applyFilters()">
+                                <i class="fa-solid fa-check"></i>
+                                Appliquer
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table Container -->
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 140px;">
+                                        <div class="th-content">
+                                            N° BCF
+                                            <i class="fa-solid fa-sort sort-icon"></i>
+                                        </div>
+                                    </th>
+                                    <th style="width: 110px;">
+                                        <div class="th-content">
+                                            Date
+                                            <i class="fa-solid fa-sort sort-icon"></i>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content">
+                                            Fournisseur
+                                        </div>
+                                    </th>
+                                    <th style="width: 130px;">
+                                        <div class="th-content">
+                                            Statut
+                                        </div>
+                                    </th>
+                                    <th style="width: 110px;">
+                                        <div class="th-content">
+                                            Date Livraison
+                                        </div>
+                                    </th>
+                                    <th style="width: 140px; text-align: right;">
+                                        <div class="th-content" style="justify-content: flex-end;">
+                                            Montant
+                                            <i class="fa-solid fa-sort sort-icon"></i>
+                                        </div>
+                                    </th>
+                                    <th style="width: 80px; text-align: center;">
+                                        <div class="th-content" style="justify-content: center;">
+                                            Réception
+                                        </div>
+                                    </th>
+                                    <th style="width: 120px; text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bcf-table-body">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+
+                        <!-- Empty State -->
+                        <div id="empty-state" style="display: none; text-align: center; padding: 64px 24px;">
+                            <i class="fa-solid fa-shopping-cart" style="font-size: 64px; color: #E5E7EB; margin-bottom: 16px;"></i>
+                            <p style="font-size: 16px; color: #6B7280; margin-bottom: 8px;">Aucun bon de commande trouvé</p>
+                            <p style="font-size: 14px; color: #9CA3AF;">Créez votre premier BCF pour commencer</p>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination">
+                        <div class="pagination-info">
+                            Affichage <strong id="pagination-from">0</strong> à <strong id="pagination-to">0</strong> sur <strong id="pagination-total">0</strong> résultats
+                        </div>
+                        <div class="pagination-controls" id="pagination-controls">
+                            <!-- Loaded dynamically -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: BCF Details -->
+    <div class="modal" id="modal-bcf-details">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fa-solid fa-shopping-cart"></i>
+                    Détails BCF <span id="modal-bcf-code"></span>
+                </h3>
+                <button class="modal-close" onclick="closeModal('modal-bcf-details')">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-bcf-content">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modal-bcf-details')">Fermer</button>
+                <button class="btn btn-primary" onclick="editBCFFromModal()">
+                    <i class="fa-solid fa-edit"></i>
+                    Modifier
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Cancel BCF -->
+    <div class="modal" id="modal-cancel-bcf">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fa-solid fa-ban"></i>
+                    Annuler le BCF
+                </h3>
+                <button class="modal-close" onclick="closeModal('modal-cancel-bcf')">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 16px;">Voulez-vous vraiment annuler le BCF <strong id="cancel-bcf-code"></strong> ?</p>
+                <div class="form-group">
+                    <label class="form-label">Motif d'annulation <span style="color: #DC2626;">*</span></label>
+                    <textarea class="form-textarea" id="cancel-reason" placeholder="Précisez le motif..." rows="4"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modal-cancel-bcf')">Annuler</button>
+                <button class="btn btn-danger" onclick="confirmCancelBCF()">
+                    <i class="fa-solid fa-ban"></i>
+                    Confirmer l'annulation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/commandes-list.js"></script>
+</body>
+</html>
+
