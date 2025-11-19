@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail Fournisseur - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/achats-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .detail-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: var(--gray-900);
+            font-weight: 500;
+        }
+
+        .score-badge-large {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .score-bar {
+            width: 100%;
+            height: 24px;
+            background: #E5E7EB;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10B981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .document-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 100px 80px;
+            gap: 16px;
+            padding: 12px;
+            border-bottom: 1px solid #E5E7EB;
+            align-items: center;
+        }
+
+        .document-row:hover {
+            background: #F9FAFB;
+        }
+
+        .document-row:first-child {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--gray-700);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--gray-300);
+        }
+
+        .catalog-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 100px 120px 80px 80px 80px;
+            gap: 16px;
+            padding: 12px;
+            border-bottom: 1px solid #E5E7EB;
+            align-items: center;
+        }
+
+        .catalog-row:hover {
+            background: #F9FAFB;
+        }
+
+        .catalog-row:first-child {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--gray-700);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--gray-300);
+        }
+
+        .history-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .history-date {
+            min-width: 80px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .history-user {
+            min-width: 140px;
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .history-action {
+            flex: 1;
+            font-size: 13px;
+            color: var(--gray-900);
+        }
+
+        .status-badge-large {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .contact-card {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .contact-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .btn-action {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .discount-tag {
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Détail Fournisseur</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">3</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Achats
+                    </div>
+                    
+                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-line mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="./fournisseurs-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Fournisseurs</span>
+                    </a>
+
+                    <a href="./demandes-achat-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-lines mr-3"></i>
+                        <span>Demandes d'Achat</span>
+                    </a>
+
+                    <a href="./demandes-validation.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors" style="padding-left: 3rem;">
+                        <i class="fa-solid fa-check-circle mr-3"></i>
+                        <span>Valider DA</span>
+                    </a>
+
+                    <a href="./commandes-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Bons de Commande</span>
+                    </a>
+
+                    <a href="./receptions-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box-open mr-3"></i>
+                        <span>Réceptions</span>
+                    </a>
+
+                    <a href="./factures-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Factures</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="achats-container" style="max-width: 1600px; padding: 24px;">
+                    
+                    <!-- Breadcrumb & Actions -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <nav style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #6B7280;">
+                            <a href="./fournisseurs-list.html" style="color: #263c89; text-decoration: none;">
+                                <i class="fa-solid fa-arrow-left"></i> Retour à la liste
+                            </a>
+                        </nav>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="editSupplier()">
+                                <i class="fa-solid fa-edit"></i>
+                                Éditer
+                            </button>
+                            <button class="btn btn-primary" onclick="createOrder()">
+                                <i class="fa-solid fa-plus"></i>
+                                Nouvelle Commande
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Header Card -->
+                    <div class="detail-section">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h1 style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 8px;" id="supplier-name">
+                                    ChemTech SARL
+                                </h1>
+                                <div style="display: flex; gap: 16px; align-items: center;">
+                                    <span style="font-size: 16px; color: var(--gray-600);" id="supplier-code">SUPP-001</span>
+                                    <span class="status-badge-large" id="supplier-status"></span>
+                                </div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="score-badge-large" id="supplier-score-badge" style="background: #10B981;">A</div>
+                                <div style="margin-top: 8px; font-size: 14px; color: var(--gray-600);">
+                                    Score global: <strong id="supplier-score">92</strong>/100
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informations Générales -->
+                    <div class="detail-section">
+                        <h2 class="section-title">
+                            <i class="fa-solid fa-info-circle"></i>
+                            Informations Générales
+                        </h2>
+                        <div class="info-grid" id="general-info">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Coordonnées -->
+                    <div class="detail-section">
+                        <h2 class="section-title">
+                            <i class="fa-solid fa-map-marker-alt"></i>
+                            Coordonnées
+                        </h2>
+                        <div style="margin-bottom: 20px;">
+                            <div class="info-label">Adresse</div>
+                            <div class="info-value" id="address"></div>
+                        </div>
+                        <div class="info-grid" style="margin-bottom: 24px;">
+                            <div class="info-item">
+                                <div class="info-label">Téléphone</div>
+                                <div class="info-value" id="phone"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Fax</div>
+                                <div class="info-value" id="fax"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Email</div>
+                                <div class="info-value" id="email"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Site Web</div>
+                                <div class="info-value" id="website"></div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="contact-card">
+                                <div class="contact-title">Contact Principal</div>
+                                <div id="contact-main"></div>
+                            </div>
+                            <div class="contact-card">
+                                <div class="contact-title">Contact Comptabilité</div>
+                                <div id="contact-accounting"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conditions Commerciales -->
+                    <div class="detail-section">
+                        <h2 class="section-title">
+                            <i class="fa-solid fa-handshake"></i>
+                            Conditions Commerciales
+                        </h2>
+                        <div class="info-grid" style="margin-bottom: 20px;">
+                            <div class="info-item">
+                                <div class="info-label">Mode de Paiement</div>
+                                <div class="info-value" id="payment-mode"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Délai de Paiement</div>
+                                <div class="info-value" id="payment-terms"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Devise</div>
+                                <div class="info-value" id="currency"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Incoterm</div>
+                                <div class="info-value" id="incoterm"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Minimum Commande</div>
+                                <div class="info-value" id="min-order"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Franco de Port</div>
+                                <div class="info-value" id="free-delivery"></div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Remises Volume</div>
+                            <div class="info-value" id="volume-discounts"></div>
+                        </div>
+
+                        <div style="margin-top: 24px;">
+                            <h3 style="font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 12px;">
+                                Coordonnées Bancaires
+                            </h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <div class="info-label">Banque</div>
+                                    <div class="info-value" id="bank-name"></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Code Banque</div>
+                                    <div class="info-value" id="bank-code"></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">IBAN</div>
+                                    <div class="info-value" id="iban"></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">RIB</div>
+                                    <div class="info-value" id="rib"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents Légaux -->
+                    <div class="detail-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h2 class="section-title" style="margin: 0;">
+                                <i class="fa-solid fa-file-contract"></i>
+                                Documents Légaux et Certificats
+                            </h2>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-secondary btn-sm" onclick="addDocument()">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Ajouter document
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="sendRenewalReminder()">
+                                    <i class="fa-solid fa-envelope"></i>
+                                    Envoyer rappel renouvellement
+                                </button>
+                            </div>
+                        </div>
+                        <div id="documents-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Performance et Évaluation -->
+                    <div class="detail-section">
+                        <h2 class="section-title">
+                            <i class="fa-solid fa-chart-line"></i>
+                            Performance et Évaluation
+                            <span style="margin-left: auto; font-size: 14px; font-weight: 500; color: var(--success-color);">
+                                Score global: <strong id="eval-score">A (92/100)</strong>
+                            </span>
+                        </h2>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                            <div>
+                                <h3 style="font-size: 13px; font-weight: 600; color: var(--gray-600); margin-bottom: 12px;">
+                                    2024
+                                </h3>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <div class="info-label">Volume Achats</div>
+                                        <div class="info-value" id="volume-2024"></div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Nombre Commandes</div>
+                                        <div class="info-value" id="orders-2024"></div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Factures Payées</div>
+                                        <div class="info-value" id="invoices-paid"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 13px; font-weight: 600; color: var(--gray-600); margin-bottom: 12px;">
+                                    12 Derniers Mois
+                                </h3>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <div class="info-label">Délai Moyen</div>
+                                        <div class="info-value" id="avg-delay"></div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Taux Conformité</div>
+                                        <div class="info-value" id="conformity-rate"></div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Litiges</div>
+                                        <div class="info-value" id="disputes"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 style="font-size: 13px; font-weight: 600; color: var(--gray-700); margin-bottom: 16px;">
+                            Critères d'Évaluation
+                        </h3>
+                        <div id="evaluation-criteria">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Catalogue Produits -->
+                    <div class="detail-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h2 class="section-title" style="margin: 0;">
+                                <i class="fa-solid fa-box"></i>
+                                Catalogue Produits/Services Référencés
+                            </h2>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-secondary btn-sm" onclick="viewFullCatalog()">
+                                    Voir catalogue complet →
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="addProduct()">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Ajouter produit
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="negotiatePrices()">
+                                    <i class="fa-solid fa-coins"></i>
+                                    Négocier prix
+                                </button>
+                            </div>
+                        </div>
+                        <div id="catalog-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Historique -->
+                    <div class="detail-section">
+                        <h2 class="section-title">
+                            <i class="fa-solid fa-clock"></i>
+                            Historique Récent
+                        </h2>
+                        <div id="history-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Actions Disponibles -->
+                    <div class="detail-section">
+                        <h2 class="section-title">Actions Disponibles</h2>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="btn-action" style="background: var(--primary-color); color: white;" onclick="createOrder()">
+                                <i class="fa-solid fa-file-invoice"></i>
+                                Nouvelle Commande
+                            </button>
+                            <button class="btn-action" style="background: var(--info-color); color: white;" onclick="generateReport()">
+                                <i class="fa-solid fa-chart-bar"></i>
+                                Rapport Fournisseur
+                            </button>
+                            <button class="btn-action" style="background: var(--warning-color); color: white;" onclick="suspendSupplier()">
+                                <i class="fa-solid fa-pause-circle"></i>
+                                Suspendre
+                            </button>
+                            <button class="btn-action" style="background: var(--danger-color); color: white;" onclick="blockSupplier()">
+                                <i class="fa-solid fa-ban"></i>
+                                Bloquer
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/fournisseur-detail.js"></script>
+</body>
+</html>

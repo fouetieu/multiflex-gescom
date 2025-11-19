@@ -1,15 +1,15 @@
 // ================================================
 // FOURNISSEURS-LIST.JS
-// Gestion de la liste des fournisseurs
+// Gestion de la liste des fournisseurs - Conforme aux spécifications ÉCRAN 8
 // ================================================
 
 // État global
 let suppliers = [];
 let filteredSuppliers = [];
 let currentPage = 1;
-let itemsPerPage = 25;
-let sortColumn = 'score';
-let sortDirection = 'desc';
+let itemsPerPage = 20;
+let sortColumn = 'code';
+let sortDirection = 'asc';
 let currentQuickFilter = 'all';
 let supplierToAction = null;
 
@@ -39,198 +39,206 @@ function loadSuppliers() {
 function generateMockSuppliers() {
     return [
         {
-            id: 'FOU-2024-001',
-            code: 'FOU-2024-001',
-            name: 'ABC SARL',
-            category: 'RAW_MATERIALS',
-            isInternal: false,
-            nui: 'M01234567890',
-            rccm: 'YA/DLA/2020/B/1234',
-            contactName: 'Jean DUPONT',
-            contactPhone: '+237 699 123 456',
-            contactEmail: 'contact@abc-sarl.cm',
-            status: 'ACTIVE',
-            score: {
-                quality: 85,
-                delivery: 90,
-                price: 75,
-                service: 88,
-                global: 84.5
-            },
-            createdAt: '2024-01-15',
-            lastOrderDate: '2024-01-10',
-            totalOrders: 24,
-            totalAmount: 15000000
-        },
-        {
-            id: 'FOU-2024-002',
-            code: 'FOU-2024-002',
-            name: 'IOLA DISTRIBUTION',
-            category: 'FINISHED_GOODS',
-            isInternal: true,
-            internalCompany: 'IOLA DISTRIBUTION',
-            nui: 'M09876543210',
-            contactName: 'Marie NGONO',
-            contactPhone: '+237 699 987 654',
-            contactEmail: 'marie.ngono@iola.cm',
-            status: 'ACTIVE',
-            score: {
-                quality: 95,
-                delivery: 98,
-                price: 92,
-                service: 95,
-                global: 95
-            },
-            createdAt: '2023-12-01',
-            lastOrderDate: '2024-01-14',
-            totalOrders: 48,
-            totalAmount: 28000000
-        },
-        {
-            id: 'FOU-2024-003',
-            code: 'FOU-2024-003',
-            name: 'XYZ TRADING Ltd',
-            category: 'RAW_MATERIALS',
-            isInternal: false,
-            nui: 'M11223344556',
-            rccm: 'YA/DLA/2019/B/5678',
-            contactName: 'Paul KAMGA',
-            contactPhone: '+237 677 111 222',
-            contactEmail: 'info@xyz-trading.cm',
-            status: 'ACTIVE',
-            score: {
-                quality: 72,
-                delivery: 68,
-                price: 85,
-                service: 70,
-                global: 73.75
-            },
-            createdAt: '2023-11-20',
-            lastOrderDate: '2024-01-08',
-            totalOrders: 18,
-            totalAmount: 8500000
-        },
-        {
-            id: 'FOU-2023-045',
-            code: 'FOU-2023-045',
-            name: 'CIMENCAM',
-            category: 'RAW_MATERIALS',
-            isInternal: false,
-            nui: 'M99887766554',
-            rccm: 'YA/DLA/2015/B/9999',
-            contactName: 'Sophie MBARGA',
-            contactPhone: '+237 699 555 777',
-            contactEmail: 'commercial@cimencam.cm',
-            status: 'ACTIVE',
-            score: {
-                quality: 90,
-                delivery: 85,
-                price: 78,
-                service: 82,
-                global: 83.75
-            },
-            createdAt: '2023-06-10',
-            lastOrderDate: '2024-01-12',
-            totalOrders: 52,
-            totalAmount: 45000000
-        },
-        {
-            id: 'FOU-2023-012',
-            code: 'FOU-2023-012',
-            name: 'CAMI PEINTURES',
-            category: 'RAW_MATERIALS',
-            isInternal: false,
-            nui: 'M55443322110',
-            rccm: 'YA/DLA/2018/B/3456',
-            contactName: 'Pierre ESSOMBA',
+            id: 'SUPP-001',
+            code: 'SUPP-001',
+            name: 'ChemTech SARL',
+            type: 'EXTERNAL',
+            taxId: 'P087201234567W',
+            tradeRegister: 'CM-DLA-2015-B-1234',
+            taxRegime: 'REEL',
+            vatRecoverable: true,
+            contactName: 'M. Paul NGUEMA',
             contactPhone: '+237 677 888 999',
-            contactEmail: 'ventes@cami.cm',
+            contactEmail: 'p.nguema@chemtech.cm',
             status: 'ACTIVE',
-            score: {
-                quality: 88,
-                delivery: 92,
-                price: 80,
-                service: 85,
-                global: 86.25
+            certificate: {
+                type: 'NON_LIABILITY_CERTIFICATE',
+                number: 'CNR-2024-12345',
+                expiryDate: '2024-01-28',
+                status: 'EXPIRING_SOON',
+                daysToExpiry: -8
             },
-            createdAt: '2023-02-15',
+            score: {
+                overall: 92,
+                delivery: 18,
+                quality: 19,
+                price: 17,
+                communication: 18,
+                documentation: 20,
+                grade: 'A'
+            },
+            createdAt: '2023-03-15',
+            lastOrderDate: '2024-01-10',
+            totalOrders: 156,
+            totalAmount: 127450000
+        },
+        {
+            id: 'SUPP-002',
+            code: 'SUPP-002',
+            name: 'GlobalTrade SA',
+            type: 'EXTERNAL',
+            taxId: 'P098765432109W',
+            tradeRegister: 'CM-DLA-2018-B-5678',
+            taxRegime: 'REEL',
+            vatRecoverable: true,
+            contactName: 'Mme Sylvie BELLA',
+            contactPhone: '+237 699 555 777',
+            contactEmail: 'contact@globaltrade.cm',
+            status: 'ACTIVE',
+            certificate: {
+                type: 'NON_LIABILITY_CERTIFICATE',
+                number: 'CNR-2024-67890',
+                expiryDate: '2024-06-15',
+                status: 'VALID',
+                daysToExpiry: 150
+            },
+            score: {
+                overall: 78,
+                delivery: 15,
+                quality: 16,
+                price: 18,
+                communication: 14,
+                documentation: 15,
+                grade: 'B'
+            },
+            createdAt: '2023-08-22',
+            lastOrderDate: '2024-01-12',
+            totalOrders: 89,
+            totalAmount: 65230000
+        },
+        {
+            id: 'SUPP-003',
+            code: 'SUPP-003',
+            name: 'MetalPro Industriel',
+            type: 'EXTERNAL',
+            taxId: 'P011223344556W',
+            tradeRegister: 'CM-DLA-2020-B-9012',
+            taxRegime: 'SIMPLIFIE',
+            vatRecoverable: false,
+            contactName: 'M. André FOTSO',
+            contactPhone: '+237 677 111 333',
+            contactEmail: 'contact@metalpro.cm',
+            status: 'SUSPENDED',
+            certificate: {
+                type: 'NON_LIABILITY_CERTIFICATE',
+                number: 'CNR-2024-11111',
+                expiryDate: '2024-01-15',
+                status: 'EXPIRED',
+                daysToExpiry: -15
+            },
+            score: {
+                overall: 45,
+                delivery: 8,
+                quality: 9,
+                price: 12,
+                communication: 7,
+                documentation: 9,
+                grade: 'C'
+            },
+            createdAt: '2023-05-10',
+            lastOrderDate: '2023-12-20',
+            totalOrders: 34,
+            totalAmount: 18750000
+        },
+        {
+            id: 'SUPP-004',
+            code: 'SUPP-004',
+            name: 'IOLA Transport',
+            type: 'INTERNAL',
+            internalCompany: 'IOLA TRANSPORT',
+            taxId: 'M12345678901234',
+            taxRegime: 'REEL',
+            vatRecoverable: true,
+            contactName: 'Société du groupe',
+            contactPhone: '+237 699 000 111',
+            contactEmail: 'transport@iola.cm',
+            status: 'ACTIVE',
+            certificate: {
+                type: 'INTERNAL',
+                status: 'N/A'
+            },
+            score: {
+                overall: 98,
+                delivery: 20,
+                quality: 20,
+                price: 19,
+                communication: 19,
+                documentation: 20,
+                grade: 'A'
+            },
+            createdAt: '2022-01-01',
+            lastOrderDate: '2024-01-14',
+            totalOrders: 312,
+            totalAmount: 245800000
+        },
+        {
+            id: 'SUPP-005',
+            code: 'SUPP-005',
+            name: 'TechServices SARL',
+            type: 'EXTERNAL',
+            taxId: 'P055566677788W',
+            tradeRegister: 'CM-DLA-2021-B-3333',
+            taxRegime: 'REEL',
+            vatRecoverable: true,
+            contactName: 'M. Thomas NKOLO',
+            contactPhone: '+237 677 999 888',
+            contactEmail: 'info@techservices.cm',
+            status: 'ACTIVE',
+            certificate: {
+                type: 'NON_LIABILITY_CERTIFICATE',
+                number: 'CNR-2024-22222',
+                expiryDate: '2024-02-28',
+                status: 'EXPIRING_SOON',
+                daysToExpiry: 35
+            },
+            score: {
+                overall: 85,
+                delivery: 17,
+                quality: 17,
+                price: 16,
+                communication: 18,
+                documentation: 17,
+                grade: 'B'
+            },
+            createdAt: '2023-06-05',
             lastOrderDate: '2024-01-11',
-            totalOrders: 36,
-            totalAmount: 22000000
+            totalOrders: 67,
+            totalAmount: 42350000
         },
         {
-            id: 'FOU-2024-004',
-            code: 'FOU-2024-004',
-            name: 'FOURNI-TECH',
-            category: 'EQUIPMENT',
-            isInternal: false,
-            nui: 'M66778899001',
-            rccm: 'YA/DLA/2021/B/7890',
-            contactName: 'André TCHUENTE',
-            contactPhone: '+237 699 444 333',
-            contactEmail: 'contact@fournitech.cm',
+            id: 'SUPP-006',
+            code: 'SUPP-006',
+            name: 'EquipPro SARL',
+            type: 'EXTERNAL',
+            taxId: 'P066677788899W',
+            tradeRegister: 'CM-DLA-2019-B-4444',
+            taxRegime: 'LIBERATOIRE',
+            vatRecoverable: false,
+            contactName: 'Mme Francine MBARGA',
+            contactPhone: '+237 699 222 444',
+            contactEmail: 'contact@equippro.cm',
             status: 'BLOCKED',
-            score: {
-                quality: 45,
-                delivery: 40,
-                price: 70,
-                service: 35,
-                global: 47.5
+            blockReason: 'Documents expirés',
+            certificate: {
+                type: 'NON_LIABILITY_CERTIFICATE',
+                number: 'CNR-2023-99999',
+                expiryDate: '2023-11-30',
+                status: 'EXPIRED',
+                daysToExpiry: -60
             },
-            blockReason: 'QUALITE',
-            blockDate: '2024-01-10',
-            createdAt: '2024-01-05',
-            lastOrderDate: '2024-01-08',
-            totalOrders: 3,
-            totalAmount: 1200000
-        },
-        {
-            id: 'FOU-2023-089',
-            code: 'FOU-2023-089',
-            name: 'IOLA MANUFACTURE',
-            category: 'FINISHED_GOODS',
-            isInternal: true,
-            internalCompany: 'IOLA MANUFACTURE',
-            nui: 'M12398745632',
-            contactName: 'Thomas NKOLO',
-            contactPhone: '+237 699 321 654',
-            contactEmail: 'thomas.nkolo@iola.cm',
-            status: 'ACTIVE',
             score: {
-                quality: 92,
-                delivery: 95,
-                price: 90,
-                service: 93,
-                global: 92.5
+                overall: 32,
+                delivery: 6,
+                quality: 5,
+                price: 8,
+                communication: 6,
+                documentation: 7,
+                grade: 'D'
             },
-            createdAt: '2023-09-01',
-            lastOrderDate: '2024-01-13',
-            totalOrders: 32,
-            totalAmount: 18500000
-        },
-        {
-            id: 'FOU-2023-067',
-            code: 'FOU-2023-067',
-            name: 'DEF & CO',
-            category: 'SERVICES',
-            isInternal: false,
-            nui: 'M78945612301',
-            rccm: 'YA/DLA/2020/B/4567',
-            contactName: 'Françoise MANGA',
-            contactPhone: '+237 677 222 111',
-            contactEmail: 'f.manga@defco.cm',
-            status: 'ACTIVE',
-            score: {
-                quality: 78,
-                delivery: 82,
-                price: 75,
-                service: 80,
-                global: 78.75
-            },
-            createdAt: '2023-07-20',
-            lastOrderDate: '2024-01-09',
-            totalOrders: 15,
-            totalAmount: 6800000
+            createdAt: '2023-04-12',
+            lastOrderDate: '2023-10-15',
+            totalOrders: 12,
+            totalAmount: 8900000
         }
     ];
 }
@@ -242,20 +250,22 @@ function generateMockSuppliers() {
 function updateStats() {
     const total = suppliers.length;
     const active = suppliers.filter(s => s.status === 'ACTIVE').length;
+    const suspended = suppliers.filter(s => s.status === 'SUSPENDED').length;
     const blocked = suppliers.filter(s => s.status === 'BLOCKED').length;
-    const avgScore = (suppliers.reduce((sum, s) => sum + s.score.global, 0) / total).toFixed(1);
+    const certified = suppliers.filter(s => s.certificate.status === 'VALID').length;
     
     document.getElementById('stat-total').textContent = total;
     document.getElementById('stat-active').textContent = active;
-    document.getElementById('stat-score').textContent = avgScore + '/100';
+    document.getElementById('stat-suspended').textContent = suspended;
     document.getElementById('stat-blocked').textContent = blocked;
+    document.getElementById('stat-certified').textContent = certified;
 }
 
 function updateQuickFilterCounts() {
     const all = suppliers.length;
     const active = suppliers.filter(s => s.status === 'ACTIVE').length;
-    const internal = suppliers.filter(s => s.isInternal).length;
-    const external = suppliers.filter(s => !s.isInternal).length;
+    const internal = suppliers.filter(s => s.type === 'INTERNAL').length;
+    const external = suppliers.filter(s => s.type === 'EXTERNAL').length;
     const blocked = suppliers.filter(s => s.status === 'BLOCKED').length;
     
     document.getElementById('count-all').textContent = all;
@@ -280,8 +290,10 @@ function applyQuickFilter(filter) {
     document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
     
     // Réinitialiser les filtres avancés
-    document.getElementById('filter-category').value = '';
+    document.getElementById('filter-type').value = '';
     document.getElementById('filter-status').value = '';
+    document.getElementById('filter-regime').value = '';
+    document.getElementById('filter-certificate').value = '';
     
     applyFilters();
 }
@@ -292,15 +304,17 @@ function applyQuickFilter(filter) {
 
 function applyFilters() {
     const searchTerm = document.getElementById('search-input').value.toLowerCase();
-    const categoryFilter = document.getElementById('filter-category').value;
+    const typeFilter = document.getElementById('filter-type').value;
     const statusFilter = document.getElementById('filter-status').value;
+    const regimeFilter = document.getElementById('filter-regime').value;
+    const certificateFilter = document.getElementById('filter-certificate').value;
     
     filteredSuppliers = suppliers.filter(supplier => {
         // Recherche textuelle
         const matchesSearch = !searchTerm || 
             supplier.code.toLowerCase().includes(searchTerm) ||
             supplier.name.toLowerCase().includes(searchTerm) ||
-            supplier.nui?.toLowerCase().includes(searchTerm) ||
+            supplier.taxId?.toLowerCase().includes(searchTerm) ||
             supplier.contactName?.toLowerCase().includes(searchTerm);
         
         // Filtre quick
@@ -308,18 +322,20 @@ function applyFilters() {
         if (currentQuickFilter === 'active') {
             matchesQuickFilter = supplier.status === 'ACTIVE';
         } else if (currentQuickFilter === 'internal') {
-            matchesQuickFilter = supplier.isInternal;
+            matchesQuickFilter = supplier.type === 'INTERNAL';
         } else if (currentQuickFilter === 'external') {
-            matchesQuickFilter = !supplier.isInternal;
+            matchesQuickFilter = supplier.type === 'EXTERNAL';
         } else if (currentQuickFilter === 'blocked') {
             matchesQuickFilter = supplier.status === 'BLOCKED';
         }
         
         // Filtres avancés
-        const matchesCategory = !categoryFilter || supplier.category === categoryFilter;
+        const matchesType = !typeFilter || supplier.type === typeFilter;
         const matchesStatus = !statusFilter || supplier.status === statusFilter;
+        const matchesRegime = !regimeFilter || supplier.taxRegime === regimeFilter;
+        const matchesCertificate = !certificateFilter || supplier.certificate.status === certificateFilter;
         
-        return matchesSearch && matchesQuickFilter && matchesCategory && matchesStatus;
+        return matchesSearch && matchesQuickFilter && matchesType && matchesStatus && matchesRegime && matchesCertificate;
     });
     
     renderTable();
@@ -328,8 +344,10 @@ function applyFilters() {
 
 function resetFilters() {
     document.getElementById('search-input').value = '';
-    document.getElementById('filter-category').value = '';
+    document.getElementById('filter-type').value = '';
     document.getElementById('filter-status').value = '';
+    document.getElementById('filter-regime').value = '';
+    document.getElementById('filter-certificate').value = '';
     currentQuickFilter = 'all';
     
     document.querySelectorAll('.quick-filter-btn').forEach(btn => {
@@ -354,8 +372,8 @@ function sortTable(column) {
     }
     
     filteredSuppliers.sort((a, b) => {
-        let aVal = column === 'score' ? a.score.global : a[column];
-        let bVal = column === 'score' ? b.score.global : b[column];
+        let aVal = column === 'score' ? a.score.overall : a[column];
+        let bVal = column === 'score' ? b.score.overall : b[column];
         
         if (typeof aVal === 'string') {
             aVal = aVal.toLowerCase();
@@ -395,53 +413,38 @@ function renderTable() {
     const pageData = filteredSuppliers.slice(startIndex, endIndex);
     
     tbody.innerHTML = pageData.map(supplier => {
-        const typeClass = supplier.isInternal ? 'type-internal' : 'type-external';
-        const typeLabel = supplier.isInternal ? '🏢 Interne' : '🚚 Externe';
-        const categoryLabel = getCategoryLabel(supplier.category);
+        const typeInfo = getTypeInfo(supplier);
+        const regimeInfo = getRegimeInfo(supplier);
+        const certificateInfo = getCertificateInfo(supplier);
         const statusInfo = getStatusInfo(supplier);
-        const rating = renderRating(supplier.score.global);
+        const scoreInfo = getScoreInfo(supplier);
         
         return `
-            <tr>
+            <tr onclick="viewSupplier('${supplier.id}')" style="cursor: pointer;">
                 <td>
-                    <input type="checkbox" class="row-checkbox" data-id="${supplier.id}">
+                    <input type="checkbox" class="row-checkbox" data-id="${supplier.id}" onclick="event.stopPropagation();">
                 </td>
                 <td>
-                    <div style="font-weight: 600; font-size: 13px;">${supplier.code}</div>
+                    <div style="font-weight: 600; font-size: 14px; color: #263c89;">${supplier.code}</div>
                 </td>
                 <td>
                     <div style="font-weight: 600; margin-bottom: 4px;">${supplier.name}</div>
-                    <div class="supplier-meta">
-                        ${supplier.isInternal ? `
-                            <span class="supplier-meta-item" style="color: #10B981;">
-                                <i class="fa-solid fa-building"></i>
-                                ${supplier.internalCompany}
-                            </span>
-                        ` : `
-                            <span class="supplier-meta-item">
-                                <i class="fa-solid fa-id-card"></i>
-                                NUI: ${supplier.nui}
-                            </span>
-                        `}
+                    <div style="font-size: 12px; color: var(--gray-500);">
+                        Contact: ${supplier.contactName}
                     </div>
                 </td>
                 <td class="text-center">
-                    <span class="supplier-type-badge ${typeClass}">${typeLabel}</span>
+                    <span class="supplier-type-badge ${typeInfo.class}">${typeInfo.label}</span>
                 </td>
                 <td class="text-center">
-                    <div style="font-size: 13px; color: var(--gray-700);">${categoryLabel}</div>
+                    <div style="font-size: 13px; font-weight: 500;">${regimeInfo.label}</div>
+                    ${supplier.vatRecoverable ? '<div style="font-size: 11px; color: #10B981;">✓ TVA récupérable</div>' : ''}
                 </td>
                 <td class="text-center">
-                    <div class="supplier-rating">
-                        ${rating}
-                    </div>
-                    <div class="score-badge">${supplier.score.global}/100</div>
-                </td>
-                <td>
-                    <div style="font-weight: 500; font-size: 13px;">${supplier.contactName}</div>
-                    <div style="font-size: 12px; color: var(--gray-500); margin-top: 2px;">
-                        <i class="fa-solid fa-phone"></i> ${supplier.contactPhone}
-                    </div>
+                    <span class="badge" style="background: ${certificateInfo.bgColor}; color: ${certificateInfo.color};">
+                        ${certificateInfo.icon} ${certificateInfo.label}
+                    </span>
+                    ${certificateInfo.detail ? `<div style="font-size: 11px; color: ${certificateInfo.color}; margin-top: 4px;">${certificateInfo.detail}</div>` : ''}
                 </td>
                 <td class="text-center">
                     <div class="status-badge-table">
@@ -450,20 +453,25 @@ function renderTable() {
                     </div>
                     ${supplier.status === 'BLOCKED' ? `
                         <div style="font-size: 11px; color: #F59E0B; margin-top: 4px;">
-                            <i class="fa-solid fa-exclamation-triangle"></i> ${supplier.blockReason}
+                            ${supplier.blockReason}
                         </div>
                     ` : ''}
                 </td>
                 <td class="text-center">
+                    <div style="font-size: 18px; font-weight: 700; color: ${scoreInfo.color}; margin-bottom: 2px;">
+                        ${scoreInfo.grade}
+                    </div>
+                    <div style="font-size: 12px; color: var(--gray-600);">
+                        ${supplier.score.overall}/100
+                    </div>
+                </td>
+                <td class="text-center" onclick="event.stopPropagation();">
                     <div class="action-buttons">
-                        <button class="btn-icon" onclick="viewSupplier('${supplier.id}')" title="Voir">
+                        <button class="btn-icon" onclick="viewSupplier('${supplier.id}')" title="Voir détails">
                             <i class="fa-solid fa-eye"></i>
                         </button>
                         <button class="btn-icon" onclick="editSupplier('${supplier.id}')" title="Modifier">
                             <i class="fa-solid fa-edit"></i>
-                        </button>
-                        <button class="btn-icon" onclick="evaluateSupplier('${supplier.id}')" title="Évaluer">
-                            <i class="fa-solid fa-star"></i>
                         </button>
                         ${supplier.status !== 'BLOCKED' ? `
                             <button class="btn-icon btn-icon-danger" onclick="openBlockModal('${supplier.id}')" title="Bloquer">
@@ -485,39 +493,87 @@ function renderTable() {
 // HELPERS
 // ================================================
 
-function getCategoryLabel(category) {
+function getTypeInfo(supplier) {
+    if (supplier.type === 'INTERNAL') {
+        return { class: 'type-internal', label: '🏢 Interne' };
+    }
+    return { class: 'type-external', label: '🚚 Externe' };
+}
+
+function getRegimeInfo(supplier) {
     const labels = {
-        'RAW_MATERIALS': 'Matières Premières',
-        'FINISHED_GOODS': 'Produits Finis',
-        'SERVICES': 'Services',
-        'EQUIPMENT': 'Équipements'
+        'REEL': { label: 'RÉEL', color: '#10B981' },
+        'SIMPLIFIE': { label: 'SIMPLIFIÉ', color: '#F59E0B' },
+        'LIBERATOIRE': { label: 'LIBÉRATOIRE', color: '#3B82F6' }
     };
-    return labels[category] || category;
+    return labels[supplier.taxRegime] || { label: supplier.taxRegime };
+}
+
+function getCertificateInfo(supplier) {
+    if (supplier.certificate.status === 'N/A') {
+        return {
+            icon: '',
+            label: 'N/A',
+            bgColor: '#F3F4F6',
+            color: '#6B7280',
+            detail: null
+        };
+    }
+    
+    if (supplier.certificate.status === 'VALID') {
+        return {
+            icon: '✅',
+            label: 'Valide',
+            bgColor: '#D1FAE5',
+            color: '#065F46',
+            detail: formatDate(supplier.certificate.expiryDate)
+        };
+    }
+    
+    if (supplier.certificate.status === 'EXPIRING_SOON') {
+        return {
+            icon: '⚠️',
+            label: 'À renouveler',
+            bgColor: '#FFFBEB',
+            color: '#92400E',
+            detail: `Expire ${supplier.certificate.daysToExpiry}j`
+        };
+    }
+    
+    if (supplier.certificate.status === 'EXPIRED') {
+        return {
+            icon: '🔴',
+            label: 'EXPIRÉ',
+            bgColor: '#FEE2E2',
+            color: '#991B1B',
+            detail: formatDate(supplier.certificate.expiryDate)
+        };
+    }
 }
 
 function getStatusInfo(supplier) {
     if (supplier.status === 'ACTIVE') {
-        return { class: 'active', label: 'Actif' };
+        return { class: 'active', label: '✅ ACTIF' };
+    } else if (supplier.status === 'SUSPENDED') {
+        return { class: 'blocked', label: '⏸️ SUSPENDU' };
     } else if (supplier.status === 'BLOCKED') {
-        return { class: 'blocked', label: 'Bloqué' };
-    } else {
-        return { class: 'inactive', label: 'Inactif' };
+        return { class: 'inactive', label: '🚫 BLOQUÉ' };
     }
+    return { class: 'inactive', label: 'Inactif' };
 }
 
-function renderRating(score) {
-    const fullStars = Math.floor(score / 20);
-    const emptyStars = 5 - fullStars;
-    
-    let html = '';
-    for (let i = 0; i < fullStars; i++) {
-        html += '<i class="fa-solid fa-star star-filled"></i>';
-    }
-    for (let i = 0; i < emptyStars; i++) {
-        html += '<i class="fa-solid fa-star star-empty"></i>';
-    }
-    
-    return html;
+function getScoreInfo(supplier) {
+    const grade = supplier.score.grade;
+    const colors = {
+        'A': '#10B981',
+        'B': '#3B82F6',
+        'C': '#F59E0B',
+        'D': '#EF4444'
+    };
+    return {
+        grade: grade,
+        color: colors[grade] || '#6B7280'
+    };
 }
 
 function formatDate(dateStr) {
@@ -583,15 +639,11 @@ function goToPage(page) {
 // ================================================
 
 function viewSupplier(id) {
-    window.location.href = `./fournisseur-view.html?id=${id}`;
+    window.location.href = `./fournisseur-detail.html?id=${id}`;
 }
 
 function editSupplier(id) {
     window.location.href = `./fournisseur-edit.html?id=${id}`;
-}
-
-function evaluateSupplier(id) {
-    window.location.href = `./fournisseur-evaluate.html?id=${id}`;
 }
 
 function openBlockModal(id) {
@@ -608,16 +660,16 @@ function openBlockModal(id) {
         modalBody.innerHTML = `
             <p>Êtes-vous sûr de vouloir bloquer ce fournisseur ?</p>
             <p style="color: var(--gray-600); margin-top: 12px; font-size: 14px;">
-                <strong>${supplier.name}</strong>
+                <strong>${supplier.name}</strong> (${supplier.code})
             </p>
             <div style="margin-top: 16px;">
                 <label class="form-label required">Motif du blocage</label>
                 <select class="form-select" id="block-reason">
                     <option value="">Sélectionner un motif</option>
-                    <option value="IMPAYES">Impayés</option>
-                    <option value="QUALITE">Qualité</option>
-                    <option value="ADMINISTRATIF">Administratif</option>
-                    <option value="FRAUDE">Fraude</option>
+                    <option value="DOCUMENTS_EXPIRES">Documents expirés</option>
+                    <option value="QUALITE">Problèmes de qualité</option>
+                    <option value="RETARDS">Retards répétés</option>
+                    <option value="LITIGES">Litiges non résolus</option>
                     <option value="AUTRE">Autre</option>
                 </select>
             </div>
@@ -627,7 +679,7 @@ function openBlockModal(id) {
             </div>
             <div class="warning-box" style="margin-top: 16px;">
                 <i class="fa-solid fa-exclamation-triangle"></i>
-                Les commandes en cours seront maintenues mais aucune nouvelle commande ne sera possible.
+                Aucune nouvelle commande ne sera possible. Les commandes en cours seront maintenues.
             </div>
         `;
         
@@ -718,4 +770,3 @@ function importSuppliers() {
 function exportSuppliers() {
     alert('Fonctionnalité d\'export à implémenter');
 }
-
