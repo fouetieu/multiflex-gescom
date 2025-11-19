@@ -7,10 +7,11 @@
 let demandes = [];
 let filteredDemandes = [];
 let currentPage = 1;
-let itemsPerPage = 25;
+let itemsPerPage = 10;
 let sortColumn = 'date';
 let sortDirection = 'desc';
 let currentQuickFilter = 'all';
+let selectedDAs = new Set();
 
 // ================================================
 // INITIALISATION
@@ -38,192 +39,103 @@ function loadDemandes() {
 function generateMockDemandes() {
     return [
         {
-            id: 'DA-2024-089',
-            code: 'DA-2024-089',
+            id: 'DA-2024-0234',
+            code: 'DA-2024-0234',
             date: '2024-01-15',
-            requester: 'Jean DUPONT',
-            department: 'PRODUCTION',
+            requester: 'H. MBOUOMBOUO',
+            needOriginator: 'J. KAMGA',
+            department: 'PROD',
             priority: 'URGENTE',
-            estimatedAmount: 500000,
-            deliveryDate: '2024-01-22',
-            status: 'EN_VALIDATION',
-            items: [
-                { description: 'Base peinture acrylique', quantity: 200, unit: 'L', unitPrice: 1500, total: 300000 },
-                { description: 'Pigments colorants', quantity: 50, unit: 'kg', unitPrice: 4000, total: 200000 }
-            ],
-            reason: 'Production urgente pour commande client prioritaire',
-            attachments: ['devis_abc.pdf'],
-            createdAt: '2024-01-15T08:30:00',
-            workflow: [
-                { step: 'Création', user: 'Jean DUPONT', date: '2024-01-15T08:30:00', status: 'DONE' },
-                { step: 'Validation N+1', user: 'Paul KAMGA', date: null, status: 'CURRENT' },
-                { step: 'Validation Achats', user: null, date: null, status: 'PENDING' }
-            ]
-        },
-        {
-            id: 'DA-2024-090',
-            code: 'DA-2024-090',
-            date: '2024-01-15',
-            requester: 'Marie MARTIN',
-            department: 'LOGISTIQUE',
-            priority: 'HAUTE',
-            estimatedAmount: 1200000,
+            estimatedAmount: 265000,
             deliveryDate: '2024-01-25',
             status: 'EN_VALIDATION',
             items: [
-                { description: 'Palettes EUR', quantity: 100, unit: 'unité', unitPrice: 8000, total: 800000 },
-                { description: 'Film étirable', quantity: 40, unit: 'rouleau', unitPrice: 10000, total: 400000 }
+                { description: 'Produit chimique A', catalogCode: 'CHEM-001', quantity: 100, unit: 'L', unitPrice: 2500, total: 250000 },
+                { description: 'Matériel électrique spécial', catalogCode: null, quantity: 15, unit: 'U', unitPrice: 1000, total: 15000 }
             ],
-            reason: 'Réapprovisionnement stock logistique',
-            attachments: [],
-            createdAt: '2024-01-15T10:15:00',
+            reason: 'Renouvellement urgent du stock de matières premières suite à la rupture de notre fournisseur principal',
+            attachments: [
+                { type: 'DEVIS_FOURNISSEUR', name: 'devis_supplier_001.pdf', size: '2.3 MB', required: true },
+                { type: 'JUSTIFICATIF_URGENCE', name: 'memo_urgence_production.pdf', size: '450 KB', required: true },
+                { type: 'SPECIFICATIONS_TECHNIQUES', name: 'spec_technique_materiel.pdf', size: '1.2 MB', required: false }
+            ],
+            createdAt: '2024-01-15T10:30:00',
             workflow: [
-                { step: 'Création', user: 'Marie MARTIN', date: '2024-01-15T10:15:00', status: 'DONE' },
-                { step: 'Validation N+1', user: 'Sophie MBARGA', date: null, status: 'CURRENT' },
-                { step: 'Validation Achats', user: null, date: null, status: 'PENDING' }
+                { step: 'Créée', user: 'Herman MBOUOMBOUO', date: '2024-01-15T10:30:00', status: 'DONE' },
+                { step: 'Soumise pour validation', user: null, date: '2024-01-15T10:45:00', status: 'DONE' },
+                { step: 'Assignée', user: 'Paul NGA', date: '2024-01-15T11:00:00', status: 'CURRENT' }
             ]
         },
         {
-            id: 'DA-2024-091',
-            code: 'DA-2024-091',
-            date: '2024-01-14',
-            requester: 'Paul DURAND',
-            department: 'ADMINISTRATION',
+            id: 'DA-2024-0235',
+            code: 'DA-2024-0235',
+            date: '2024-01-16',
+            requester: 'P. NJOYA',
+            needOriginator: 'P. NJOYA',
+            department: 'MAIN',
             priority: 'NORMALE',
-            estimatedAmount: 350000,
-            deliveryDate: '2024-02-01',
-            status: 'VALIDEE',
-            items: [
-                { description: 'Fournitures bureau', quantity: 1, unit: 'lot', unitPrice: 250000, total: 250000 },
-                { description: 'Cartouches imprimante', quantity: 20, unit: 'unité', unitPrice: 5000, total: 100000 }
-            ],
-            reason: 'Consommables mensuels',
-            attachments: [],
-            createdAt: '2024-01-14T14:20:00',
-            validatedAt: '2024-01-14T16:45:00',
-            validatedBy: 'Marie AKONO',
-            workflow: [
-                { step: 'Création', user: 'Paul DURAND', date: '2024-01-14T14:20:00', status: 'DONE' },
-                { step: 'Validation N+1', user: 'André TCHUENTE', date: '2024-01-14T15:30:00', status: 'DONE' },
-                { step: 'Validation Achats', user: 'Marie AKONO', date: '2024-01-14T16:45:00', status: 'DONE' }
-            ]
-        },
-        {
-            id: 'DA-2024-092',
-            code: 'DA-2024-092',
-            date: '2024-01-14',
-            requester: 'Sophie KAMGA',
-            department: 'PRODUCTION',
-            priority: 'HAUTE',
-            estimatedAmount: 800000,
-            deliveryDate: '2024-01-20',
-            status: 'VALIDEE',
-            items: [
-                { description: 'Ciment gris 42.5', quantity: 100, unit: 'sac', unitPrice: 8000, total: 800000 }
-            ],
-            reason: 'Production béton',
-            attachments: [],
-            createdAt: '2024-01-14T09:00:00',
-            validatedAt: '2024-01-14T11:30:00',
-            validatedBy: 'Marie AKONO',
-            workflow: [
-                { step: 'Création', user: 'Sophie KAMGA', date: '2024-01-14T09:00:00', status: 'DONE' },
-                { step: 'Validation N+1', user: 'Paul KAMGA', date: '2024-01-14T10:15:00', status: 'DONE' },
-                { step: 'Validation Achats', user: 'Marie AKONO', date: '2024-01-14T11:30:00', status: 'DONE' }
-            ]
-        },
-        {
-            id: 'DA-2024-093',
-            code: 'DA-2024-093',
-            date: '2024-01-13',
-            requester: 'Pierre NGONO',
-            department: 'MAINTENANCE',
-            priority: 'NORMALE',
-            estimatedAmount: 650000,
+            estimatedAmount: 150000,
             deliveryDate: '2024-01-28',
-            status: 'TRAITEE',
+            status: 'EN_VALIDATION',
             items: [
-                { description: 'Pièces détachées pompe', quantity: 1, unit: 'lot', unitPrice: 450000, total: 450000 },
-                { description: 'Huile hydraulique', quantity: 20, unit: 'L', unitPrice: 10000, total: 200000 }
+                { description: 'Pièces détachées pompe', quantity: 1, unit: 'lot', unitPrice: 150000, total: 150000 }
             ],
             reason: 'Maintenance préventive',
             attachments: [],
-            createdAt: '2024-01-13T11:00:00',
-            validatedAt: '2024-01-13T14:30:00',
-            validatedBy: 'Marie AKONO',
-            bcfGenerated: 'BCF-2024-0145',
-            bcfDate: '2024-01-13T15:00:00',
+            createdAt: '2024-01-16T09:15:00',
             workflow: [
-                { step: 'Création', user: 'Pierre NGONO', date: '2024-01-13T11:00:00', status: 'DONE' },
-                { step: 'Validation N+1', user: 'Thomas NKOLO', date: '2024-01-13T12:30:00', status: 'DONE' },
-                { step: 'Validation Achats', user: 'Marie AKONO', date: '2024-01-13T14:30:00', status: 'DONE' },
-                { step: 'Transformation BCF', user: 'Marie AKONO', date: '2024-01-13T15:00:00', status: 'DONE' }
+                { step: 'Créée', user: 'P. NJOYA', date: '2024-01-16T09:15:00', status: 'DONE' },
+                { step: 'En attente validation', user: 'Paul NGA', date: null, status: 'CURRENT' }
             ]
         },
         {
-            id: 'DA-2024-094',
-            code: 'DA-2024-094',
-            date: '2024-01-12',
-            requester: 'Françoise MANGA',
-            department: 'COMMERCIAL',
+            id: 'DA-2024-0236',
+            code: 'DA-2024-0236',
+            date: '2024-01-16',
+            requester: 'M. FOTSO',
+            needOriginator: 'L. TCHINDA',
+            department: 'IT',
             priority: 'BASSE',
-            estimatedAmount: 180000,
+            estimatedAmount: 85000,
             deliveryDate: '2024-02-05',
+            status: 'VALIDEE',
+            items: [
+                { description: 'Câbles réseau CAT6', quantity: 50, unit: 'unité', unitPrice: 1000, total: 50000 },
+                { description: 'Switch 24 ports', quantity: 1, unit: 'unité', unitPrice: 35000, total: 35000 }
+            ],
+            reason: 'Extension réseau informatique',
+            attachments: [],
+            createdAt: '2024-01-16T14:20:00',
+            validatedAt: '2024-01-16T16:45:00',
+            validatedBy: 'Paul NGA',
+            workflow: [
+                { step: 'Créée', user: 'M. FOTSO', date: '2024-01-16T14:20:00', status: 'DONE' },
+                { step: 'Validée', user: 'Paul NGA', date: '2024-01-16T16:45:00', status: 'DONE' }
+            ]
+        },
+        {
+            id: 'DA-2024-0237',
+            code: 'DA-2024-0237',
+            date: '2024-01-17',
+            requester: 'K. BELLA',
+            needOriginator: 'K. BELLA',
+            department: 'PROD',
+            priority: 'NORMALE',
+            estimatedAmount: 520000,
+            deliveryDate: '2024-01-30',
             status: 'REFUSEE',
             items: [
-                { description: 'Goodies publicitaires', quantity: 500, unit: 'unité', unitPrice: 360, total: 180000 }
-            ],
-            reason: 'Campagne marketing Q1',
-            attachments: [],
-            createdAt: '2024-01-12T13:45:00',
-            rejectedAt: '2024-01-12T16:20:00',
-            rejectedBy: 'Marie AKONO',
-            rejectionReason: 'Budget marketing déjà consommé pour Q1',
-            workflow: [
-                { step: 'Création', user: 'Françoise MANGA', date: '2024-01-12T13:45:00', status: 'DONE' },
-                { step: 'Validation N+1', user: 'André TCHUENTE', date: '2024-01-12T15:00:00', status: 'DONE' },
-                { step: 'Validation Achats', user: 'Marie AKONO', date: '2024-01-12T16:20:00', status: 'REJECTED' }
-            ]
-        },
-        {
-            id: 'DA-2024-095',
-            code: 'DA-2024-095',
-            date: '2024-01-15',
-            requester: 'Jean DUPONT',
-            department: 'PRODUCTION',
-            priority: 'BASSE',
-            estimatedAmount: 420000,
-            deliveryDate: '2024-02-10',
-            status: 'BROUILLON',
-            items: [
-                { description: 'Gants de protection', quantity: 200, unit: 'paire', unitPrice: 1500, total: 300000 },
-                { description: 'Lunettes de sécurité', quantity: 100, unit: 'unité', unitPrice: 1200, total: 120000 }
+                { description: 'Équipements protection', quantity: 100, unit: 'lot', unitPrice: 5200, total: 520000 }
             ],
             reason: 'EPI équipe production',
             attachments: [],
-            createdAt: '2024-01-15T16:30:00',
-            workflow: []
-        },
-        {
-            id: 'DA-2024-096',
-            code: 'DA-2024-096',
-            date: '2024-01-14',
-            requester: 'Thomas NKOLO',
-            department: 'MAINTENANCE',
-            priority: 'URGENTE',
-            estimatedAmount: 2500000,
-            deliveryDate: '2024-01-18',
-            status: 'EN_VALIDATION',
-            items: [
-                { description: 'Groupe électrogène 50 kVA', quantity: 1, unit: 'unité', unitPrice: 2500000, total: 2500000 }
-            ],
-            reason: 'Panne groupe actuel - Arrêt production imminent',
-            attachments: ['devis_generateur.pdf', 'rapport_panne.pdf'],
-            createdAt: '2024-01-14T17:00:00',
+            createdAt: '2024-01-17T11:00:00',
+            rejectedAt: '2024-01-17T14:30:00',
+            rejectedBy: 'Paul NGA',
+            rejectionReason: 'Budget épuisé pour ce trimestre. Reporter au T2.',
             workflow: [
-                { step: 'Création', user: 'Thomas NKOLO', date: '2024-01-14T17:00:00', status: 'DONE' },
-                { step: 'Validation N+1', user: 'Pierre ESSOMBA', date: null, status: 'CURRENT' },
-                { step: 'Validation Direction', user: null, date: null, status: 'PENDING' }
+                { step: 'Créée', user: 'K. BELLA', date: '2024-01-17T11:00:00', status: 'DONE' },
+                { step: 'Rejetée', user: 'Paul NGA', date: '2024-01-17T14:30:00', status: 'REJECTED' }
             ]
         }
     ];
@@ -237,12 +149,14 @@ function updateStats() {
     const total = demandes.length;
     const pending = demandes.filter(d => d.status === 'EN_VALIDATION').length;
     const validated = demandes.filter(d => d.status === 'VALIDEE').length;
-    const totalAmount = demandes.reduce((sum, d) => sum + d.estimatedAmount, 0);
+    const rejected = demandes.filter(d => d.status === 'REFUSEE').length;
+    const totalAmountPending = demandes.filter(d => d.status === 'EN_VALIDATION').reduce((sum, d) => sum + d.estimatedAmount, 0);
     
     document.getElementById('stat-total').textContent = total;
     document.getElementById('stat-pending').textContent = pending;
     document.getElementById('stat-validated').textContent = validated;
-    document.getElementById('stat-amount').textContent = formatCurrency(totalAmount);
+    document.getElementById('stat-rejected').textContent = rejected;
+    document.getElementById('stat-amount').textContent = formatCurrency(totalAmountPending);
 }
 
 function updateQuickFilterCounts() {
@@ -275,11 +189,6 @@ function applyQuickFilter(filter) {
     });
     document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
     
-    // Réinitialiser les filtres avancés
-    document.getElementById('filter-department').value = '';
-    document.getElementById('filter-priority').value = '';
-    document.getElementById('filter-status').value = '';
-    
     applyFilters();
 }
 
@@ -289,16 +198,21 @@ function applyQuickFilter(filter) {
 
 function applyFilters() {
     const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const searchEmetteur = document.getElementById('search-emetteur').value.toLowerCase();
     const departmentFilter = document.getElementById('filter-department').value;
     const priorityFilter = document.getElementById('filter-priority').value;
     const statusFilter = document.getElementById('filter-status').value;
+    const periodFilter = document.getElementById('filter-period').value;
     
     filteredDemandes = demandes.filter(demande => {
         // Recherche textuelle
         const matchesSearch = !searchTerm || 
             demande.code.toLowerCase().includes(searchTerm) ||
-            demande.requester.toLowerCase().includes(searchTerm) ||
-            demande.department.toLowerCase().includes(searchTerm);
+            demande.requester.toLowerCase().includes(searchTerm);
+        
+        // Recherche émetteur
+        const matchesEmetteur = !searchEmetteur || 
+            demande.needOriginator.toLowerCase().includes(searchEmetteur);
         
         // Filtre quick
         let matchesQuickFilter = true;
@@ -319,7 +233,20 @@ function applyFilters() {
         const matchesPriority = !priorityFilter || demande.priority === priorityFilter;
         const matchesStatus = !statusFilter || demande.status === statusFilter;
         
-        return matchesSearch && matchesQuickFilter && matchesDepartment && matchesPriority && matchesStatus;
+        // Filtre période
+        let matchesPeriod = true;
+        if (periodFilter) {
+            const daDate = new Date(demande.date);
+            const today = new Date();
+            const diffDays = (today - daDate) / (1000 * 60 * 60 * 24);
+            
+            if (periodFilter === 'today' && diffDays > 1) matchesPeriod = false;
+            if (periodFilter === 'week' && diffDays > 7) matchesPeriod = false;
+            if (periodFilter === 'month' && diffDays > 30) matchesPeriod = false;
+            if (periodFilter === 'quarter' && diffDays > 90) matchesPeriod = false;
+        }
+        
+        return matchesSearch && matchesEmetteur && matchesQuickFilter && matchesDepartment && matchesPriority && matchesStatus && matchesPeriod;
     });
     
     renderTable();
@@ -328,9 +255,11 @@ function applyFilters() {
 
 function resetFilters() {
     document.getElementById('search-input').value = '';
+    document.getElementById('search-emetteur').value = '';
     document.getElementById('filter-department').value = '';
     document.getElementById('filter-priority').value = '';
     document.getElementById('filter-status').value = '';
+    document.getElementById('filter-period').value = '';
     currentQuickFilter = 'all';
     
     document.querySelectorAll('.quick-filter-btn').forEach(btn => {
@@ -398,12 +327,14 @@ function renderTable() {
     tbody.innerHTML = pageData.map(demande => {
         const priorityBadge = getPriorityBadge(demande.priority);
         const statusBadge = getStatusBadge(demande.status);
-        const departmentLabel = getDepartmentLabel(demande.department);
+        const departmentLabel = demande.department;
         
         return `
-            <tr>
+            <tr ${selectedDAs.has(demande.id) ? 'style="background: #EFF6FF;"' : ''}>
                 <td>
-                    <input type="checkbox" class="row-checkbox" data-id="${demande.id}">
+                    <input type="checkbox" class="row-checkbox" data-id="${demande.id}" 
+                        ${selectedDAs.has(demande.id) ? 'checked' : ''}
+                        onchange="toggleSelectDA('${demande.id}')">
                 </td>
                 <td>
                     <div style="font-weight: 600; font-size: 14px;">${demande.code}</div>
@@ -415,12 +346,12 @@ function renderTable() {
                 </td>
                 <td>
                     <div style="font-size: 13px;">${formatDate(demande.date)}</div>
-                    <div style="font-size: 11px; color: var(--gray-500); margin-top: 2px;">
-                        <i class="fa-solid fa-clock"></i> ${formatTime(demande.createdAt)}
-                    </div>
                 </td>
                 <td>
-                    <div style="font-weight: 500;">${demande.requester}</div>
+                    <div style="font-weight: 500; font-size: 14px;">${demande.requester}</div>
+                    <div style="font-size: 12px; color: #6B7280; margin-top: 2px;">
+                        └→ ${demande.needOriginator}
+                    </div>
                 </td>
                 <td>
                     <div style="font-size: 13px;">${departmentLabel}</div>
@@ -430,46 +361,98 @@ function renderTable() {
                 </td>
                 <td class="text-right">
                     <div style="font-weight: 600; font-size: 14px;">${formatCurrency(demande.estimatedAmount)}</div>
-                    <div class="da-meta" style="justify-content: flex-end;">
-                        <span class="da-meta-item">
-                            <i class="fa-solid fa-box"></i>
-                            ${demande.items.length} article${demande.items.length > 1 ? 's' : ''}
-                        </span>
-                    </div>
                 </td>
                 <td class="text-center">
                     ${statusBadge}
-                    ${demande.status === 'EN_VALIDATION' ? `
-                        <div style="font-size: 11px; color: #F59E0B; margin-top: 4px;">
-                            <i class="fa-solid fa-user-clock"></i> ${getCurrentValidatorLabel(demande)}
-                        </div>
-                    ` : ''}
                 </td>
                 <td class="text-center">
                     <div class="action-buttons">
                         <button class="btn-icon" onclick="viewDemande('${demande.id}')" title="Voir">
-                            <i class="fa-solid fa-eye"></i>
+                            👁
                         </button>
-                        ${demande.status === 'BROUILLON' || demande.status === 'REFUSEE' ? `
-                            <button class="btn-icon" onclick="editDemande('${demande.id}')" title="Modifier">
-                                <i class="fa-solid fa-edit"></i>
-                            </button>
-                        ` : ''}
-                        ${demande.status === 'VALIDEE' ? `
-                            <button class="btn-icon" onclick="transformToBCF('${demande.id}')" title="Transformer en BCF" style="color: #10B981;">
-                                <i class="fa-solid fa-shopping-cart"></i>
-                            </button>
-                        ` : ''}
-                        ${demande.status === 'BROUILLON' ? `
-                            <button class="btn-icon btn-icon-danger" onclick="deleteDemande('${demande.id}')" title="Supprimer">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        ` : ''}
                     </div>
                 </td>
             </tr>
         `;
     }).join('');
+    
+    updateBulkActions();
+}
+
+// ================================================
+// SÉLECTION MULTIPLE
+// ================================================
+
+function toggleSelectAll() {
+    const isChecked = document.getElementById('select-all').checked;
+    if (isChecked) {
+        filteredDemandes.forEach(d => selectedDAs.add(d.id));
+    } else {
+        selectedDAs.clear();
+    }
+    renderTable();
+}
+
+function toggleSelectDA(id) {
+    if (selectedDAs.has(id)) {
+        selectedDAs.delete(id);
+    } else {
+        selectedDAs.add(id);
+    }
+    renderTable();
+}
+
+function updateBulkActions() {
+    const bulkActionsDiv = document.getElementById('bulk-actions');
+    const count = selectedDAs.size;
+    
+    if (count > 0) {
+        bulkActionsDiv.style.display = 'block';
+        document.getElementById('selected-count').textContent = count;
+        
+        const total = Array.from(selectedDAs)
+            .map(id => demandes.find(d => d.id === id))
+            .filter(d => d)
+            .reduce((sum, d) => sum + d.estimatedAmount, 0);
+        
+        document.getElementById('selected-total').textContent = formatCurrency(total);
+    } else {
+        bulkActionsDiv.style.display = 'none';
+    }
+}
+
+// ================================================
+// ACTIONS GROUPÉES
+// ================================================
+
+function bulkValidate() {
+    const count = selectedDAs.size;
+    if (confirm(`Valider ${count} demandes d'achat sélectionnées ?`)) {
+        console.log('Validation groupée:', Array.from(selectedDAs));
+        alert(`${count} DA validées avec succès !`);
+        selectedDAs.clear();
+        renderTable();
+    }
+}
+
+function bulkReject() {
+    const count = selectedDAs.size;
+    if (confirm(`Rejeter ${count} demandes d'achat sélectionnées ?`)) {
+        console.log('Rejet groupé:', Array.from(selectedDAs));
+        alert(`${count} DA rejetées.`);
+        selectedDAs.clear();
+        renderTable();
+    }
+}
+
+function bulkTransfer() {
+    const count = selectedDAs.size;
+    alert(`Transfert de ${count} DA - Fonctionnalité à implémenter`);
+}
+
+function bulkCreateBCF() {
+    const count = selectedDAs.size;
+    alert(`Création BCF pour ${count} DA - Fonctionnalité à implémenter`);
 }
 
 // ================================================
@@ -478,51 +461,29 @@ function renderTable() {
 
 function getPriorityBadge(priority) {
     const badges = {
-        'BASSE': '<span class="badge-priority low">🟢 Basse</span>',
-        'NORMALE': '<span class="badge-priority normal">🟡 Normale</span>',
-        'HAUTE': '<span class="badge-priority high">🟠 Haute</span>',
-        'URGENTE': '<span class="badge-priority urgent">🔴 Urgente</span>'
+        'BASSE': '<span class="badge-priority low" style="font-size: 11px;">🟢 BAS</span>',
+        'NORMALE': '<span class="badge-priority normal" style="font-size: 11px;">🟡 NORM</span>',
+        'HAUTE': '<span class="badge-priority high" style="font-size: 11px;">🟠 HAUTE</span>',
+        'URGENTE': '<span class="badge-priority urgent" style="font-size: 11px;">🔴 URG</span>'
     };
     return badges[priority] || priority;
 }
 
 function getStatusBadge(status) {
     const badges = {
-        'BROUILLON': '<span class="badge-status badge-draft"><i class="fa-solid fa-file-pen"></i> Brouillon</span>',
-        'EN_VALIDATION': '<span class="badge-status badge-pending"><i class="fa-solid fa-clock"></i> En Validation</span>',
-        'VALIDEE': '<span class="badge-status badge-validated"><i class="fa-solid fa-check-circle"></i> Validée</span>',
-        'REFUSEE': '<span class="badge-status badge-rejected"><i class="fa-solid fa-times-circle"></i> Refusée</span>',
-        'TRAITEE': '<span class="badge-status badge-sent"><i class="fa-solid fa-check-double"></i> Traitée</span>'
+        'BROUILLON': '<span class="badge-status badge-draft" style="font-size: 12px;"><i class="fa-solid fa-file-pen"></i> Brouillon</span>',
+        'EN_VALIDATION': '<span class="badge-status badge-pending" style="font-size: 12px;">⏳VAL</span>',
+        'VALIDEE': '<span class="badge-status badge-validated" style="font-size: 12px;">✅VAL</span>',
+        'REFUSEE': '<span class="badge-status badge-rejected" style="font-size: 12px;">❌REJ</span>',
+        'TRAITEE': '<span class="badge-status badge-sent" style="font-size: 12px;"><i class="fa-solid fa-check-double"></i> Traitée</span>'
     };
     return badges[status] || status;
-}
-
-function getDepartmentLabel(department) {
-    const labels = {
-        'PRODUCTION': 'Production',
-        'LOGISTIQUE': 'Logistique',
-        'ADMINISTRATION': 'Administration',
-        'MAINTENANCE': 'Maintenance',
-        'COMMERCIAL': 'Commercial'
-    };
-    return labels[department] || department;
-}
-
-function getCurrentValidatorLabel(demande) {
-    const currentStep = demande.workflow?.find(w => w.status === 'CURRENT');
-    return currentStep ? currentStep.user : 'En attente';
 }
 
 function formatDate(dateStr) {
     if (!dateStr) return '-';
     const date = new Date(dateStr);
-    return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-}
-
-function formatTime(dateStr) {
-    if (!dateStr) return '-';
-    const date = new Date(dateStr);
-    return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
 }
 
 function formatCurrency(amount) {
@@ -542,14 +503,14 @@ function renderPagination() {
     const endIndex = Math.min(currentPage * itemsPerPage, filteredDemandes.length);
     
     document.getElementById('pagination-info').textContent = 
-        `Affichage de ${startIndex} à ${endIndex} sur ${filteredDemandes.length} demandes`;
+        `Affichage ${startIndex}-${endIndex} sur ${filteredDemandes.length}`;
     
     let controls = '';
     
     if (totalPages > 1) {
         controls += `
             <button class="btn-pagination" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-                <i class="fa-solid fa-chevron-left"></i>
+                ◀
             </button>
         `;
         
@@ -567,7 +528,7 @@ function renderPagination() {
         
         controls += `
             <button class="btn-pagination" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-                <i class="fa-solid fa-chevron-right"></i>
+                ▶
             </button>
         `;
     }
@@ -600,84 +561,82 @@ function viewDemande(id) {
     modalBody.innerHTML = `
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
             <div>
+                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">N° DA</strong>
+                <div style="font-size: 15px; font-weight: 500; margin-top: 4px;">${demande.code}</div>
+            </div>
+            <div>
+                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Statut</strong>
+                <div style="margin-top: 4px;">${getStatusBadge(demande.status)}</div>
+            </div>
+            <div>
                 <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Demandeur</strong>
                 <div style="font-size: 15px; font-weight: 500; margin-top: 4px;">${demande.requester}</div>
             </div>
             <div>
-                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Département</strong>
-                <div style="font-size: 15px; font-weight: 500; margin-top: 4px;">${getDepartmentLabel(demande.department)}</div>
+                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Émetteur besoin</strong>
+                <div style="font-size: 15px; font-weight: 500; margin-top: 4px;">${demande.needOriginator}</div>
             </div>
             <div>
-                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Date</strong>
-                <div style="font-size: 15px; font-weight: 500; margin-top: 4px;">${formatDate(demande.date)}</div>
+                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Département</strong>
+                <div style="font-size: 15px; font-weight: 500; margin-top: 4px;">${demande.department}</div>
             </div>
             <div>
                 <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Priorité</strong>
                 <div style="margin-top: 4px;">${getPriorityBadge(demande.priority)}</div>
             </div>
             <div>
-                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Date Livraison Souhaitée</strong>
-                <div style="font-size: 15px; font-weight: 500; margin-top: 4px;">${formatDate(demande.deliveryDate)}</div>
+                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Montant total</strong>
+                <div style="font-size: 16px; font-weight: 600; margin-top: 4px; color: #263c89;">${formatCurrency(demande.estimatedAmount)}</div>
             </div>
             <div>
-                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Statut</strong>
-                <div style="margin-top: 4px;">${getStatusBadge(demande.status)}</div>
+                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Livraison souhaitée</strong>
+                <div style="font-size: 15px; font-weight: 500; margin-top: 4px;">${formatDate(demande.deliveryDate)}</div>
             </div>
         </div>
         
         <div style="margin-bottom: 24px;">
-            <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Motif</strong>
-            <div style="font-size: 14px; margin-top: 4px; color: #374151;">${demande.reason}</div>
+            <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase;">Justification du besoin</strong>
+            <div style="font-size: 14px; margin-top: 8px; color: #374151; padding: 12px; background: #F9FAFB; border-radius: 6px;">${demande.reason}</div>
         </div>
         
         <div style="margin-bottom: 24px;">
-            <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase; margin-bottom: 12px; display: block;">Articles Demandés</strong>
-            <table style="width: 100%; font-size: 13px;">
-                <thead style="background: #F3F4F6;">
-                    <tr>
-                        <th style="padding: 8px; text-align: left;">Description</th>
-                        <th style="padding: 8px; text-align: center;">Quantité</th>
-                        <th style="padding: 8px; text-align: right;">PU Estimé</th>
-                        <th style="padding: 8px; text-align: right;">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${demande.items.map(item => `
-                        <tr style="border-bottom: 1px solid #E5E7EB;">
-                            <td style="padding: 8px;">${item.description}</td>
-                            <td style="padding: 8px; text-align: center;">${item.quantity} ${item.unit}</td>
-                            <td style="padding: 8px; text-align: right;">${formatCurrency(item.unitPrice)}</td>
-                            <td style="padding: 8px; text-align: right; font-weight: 600;">${formatCurrency(item.total)}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-                <tfoot style="background: #F9FAFB; font-weight: 600;">
-                    <tr>
-                        <td colspan="3" style="padding: 12px; text-align: right;">Total Estimé:</td>
-                        <td style="padding: 12px; text-align: right; font-size: 16px; color: #263c89;">${formatCurrency(demande.estimatedAmount)}</td>
-                    </tr>
-                </tfoot>
-            </table>
+            <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase; margin-bottom: 12px; display: block;">Détail des lignes</strong>
+            ${demande.items.map((item, idx) => `
+                <div style="padding: 12px; border: 1px solid #E5E7EB; border-radius: 6px; margin-bottom: 8px;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">${idx + 1}. ${item.catalogCode || 'Article non catalogué'} - ${item.description}</div>
+                    <div style="font-size: 13px; color: #6B7280;">
+                        Quantité: ${item.quantity} ${item.unit} | PU: ${formatCurrency(item.unitPrice)} | Total: <strong>${formatCurrency(item.total)}</strong>
+                    </div>
+                </div>
+            `).join('')}
         </div>
+        
+        ${demande.attachments && demande.attachments.length > 0 ? `
+            <div style="margin-bottom: 24px;">
+                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase; margin-bottom: 12px; display: block;">Documents attachés</strong>
+                ${demande.attachments.map(att => `
+                    <div style="padding: 10px; background: ${att.required ? '#FEF3C7' : '#F3F4F6'}; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 13px;">${att.required ? '✅' : '📎'} ${att.type.replace(/_/g, ' ')}</div>
+                            <div style="font-size: 12px; color: #6B7280;">${att.name} (${att.size})</div>
+                        </div>
+                        <div>
+                            <button class="btn-icon" title="Voir">👁</button>
+                            <button class="btn-icon" title="Télécharger">📥</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        ` : ''}
         
         ${demande.workflow && demande.workflow.length > 0 ? `
             <div>
-                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase; margin-bottom: 12px; display: block;">Workflow de Validation</strong>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    ${demande.workflow.map((step, index) => `
-                        ${index > 0 ? '<div class="workflow-line' + (step.status === 'DONE' ? ' done' : '') + '"></div>' : ''}
-                        <div style="text-align: center;">
-                            <div class="workflow-step ${step.status === 'DONE' ? 'done' : step.status === 'CURRENT' ? 'current' : 'pending'}">
-                                ${step.status === 'DONE' ? '<i class="fa-solid fa-check"></i>' : 
-                                  step.status === 'REJECTED' ? '<i class="fa-solid fa-times"></i>' : 
-                                  index + 1}
-                            </div>
-                            <div style="font-size: 11px; font-weight: 500; margin-top: 6px; max-width: 100px;">${step.step}</div>
-                            ${step.user ? `<div style="font-size: 10px; color: #6B7280; margin-top: 2px;">${step.user}</div>` : ''}
-                            ${step.date ? `<div style="font-size: 10px; color: #6B7280;">${formatDate(step.date)}</div>` : ''}
-                        </div>
-                    `).join('')}
-                </div>
+                <strong style="color: #6B7280; font-size: 12px; text-transform: uppercase; margin-bottom: 12px; display: block;">Historique du workflow</strong>
+                ${demande.workflow.map(step => `
+                    <div style="padding: 8px 0; border-bottom: 1px solid #E5E7EB; font-size: 13px;">
+                        ${step.date ? formatDate(step.date) + ' - ' : '⏳ '} ${step.step} ${step.user ? '- ' + step.user : ''}
+                    </div>
+                `).join('')}
             </div>
         ` : ''}
         
@@ -699,41 +658,6 @@ function closeViewModal() {
     document.getElementById('view-modal').style.display = 'none';
 }
 
-function editDemande(id) {
-    window.location.href = `./demande-achat-edit.html?id=${id}`;
-}
-
-function deleteDemande(id) {
-    if (confirm('Supprimer cette demande d\'achat ?')) {
-        console.log('Suppression DA:', id);
-        demandes = demandes.filter(d => d.id !== id);
-        updateStats();
-        updateQuickFilterCounts();
-        applyFilters();
-        alert('Demande d\'achat supprimée');
-    }
-}
-
-function transformToBCF(id) {
-    window.location.href = `./commande-create.html?da=${id}`;
-}
-
-// ================================================
-// SÉLECTION MULTIPLE
-// ================================================
-
-function toggleSelectAll() {
-    const isChecked = document.getElementById('select-all').checked;
-    document.querySelectorAll('.row-checkbox').forEach(cb => {
-        cb.checked = isChecked;
-    });
-}
-
-// ================================================
-// EXPORT
-// ================================================
-
 function exportDAs() {
-    alert('Fonctionnalité d\'export à implémenter');
+    alert('Export Excel - Fonctionnalité à implémenter');
 }
-

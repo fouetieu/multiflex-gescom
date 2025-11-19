@@ -146,7 +146,7 @@
 
                     <div class="flex items-center cursor-pointer">
                         <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
-                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie AKONO</span>
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">👤 Paul NGA</span>
                         <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
                     </div>
                 </div>
@@ -273,7 +273,7 @@
                             <div class="stat-card">
                                 <div class="stat-header">
                                     <div>
-                                        <div class="stat-label">En Attente Validation</div>
+                                        <div class="stat-label">En attente</div>
                                     </div>
                                     <div class="stat-icon warning">
                                         <i class="fa-solid fa-clock"></i>
@@ -289,7 +289,7 @@
                             <div class="stat-card">
                                 <div class="stat-header">
                                     <div>
-                                        <div class="stat-label">Validées</div>
+                                        <div class="stat-label">Validées mois</div>
                                     </div>
                                     <div class="stat-icon success">
                                         <i class="fa-solid fa-check-circle"></i>
@@ -298,21 +298,34 @@
                                 <div class="stat-value" id="stat-validated" style="color: #10B981;">0</div>
                                 <div class="stat-change positive">
                                     <i class="fa-solid fa-arrow-up"></i>
-                                    +12% vs mois dernier
+                                    Ce mois
                                 </div>
                             </div>
 
                             <div class="stat-card">
                                 <div class="stat-header">
                                     <div>
-                                        <div class="stat-label">Montant Total</div>
+                                        <div class="stat-label">Rejetées</div>
                                     </div>
-                                    <div class="stat-icon info">
+                                    <div class="stat-icon" style="background: #FEE2E2; color: #991B1B;">
+                                        <i class="fa-solid fa-times-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value" id="stat-rejected" style="color: #EF4444;">0</div>
+                                <div class="stat-change neutral">Ce mois</div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div>
+                                        <div class="stat-label">Montant en attente</div>
+                                    </div>
+                                    <div class="stat-icon warning">
                                         <i class="fa-solid fa-coins"></i>
                                     </div>
                                 </div>
                                 <div class="stat-value" id="stat-amount">0 XAF</div>
-                                <div class="stat-change neutral">Janvier 2024</div>
+                                <div class="stat-change neutral">Total</div>
                             </div>
                         </div>
                     </div>
@@ -347,29 +360,20 @@
 
                     <!-- Filters Bar -->
                     <div class="filters-bar">
-                        <div class="filters-row">
-                            <div class="filter-group" style="flex: 2;">
-                                <input 
-                                    type="text" 
-                                    class="search-input" 
-                                    id="search-input"
-                                    placeholder="🔍 Rechercher par N° DA, demandeur, département..."
-                                    onkeyup="applyFilters()"
-                                >
-                            </div>
+                        <div class="filters-row" style="gap: 12px;">
                             <div class="filter-group">
-                                <select class="filter-select" id="filter-department" onchange="applyFilters()">
-                                    <option value="">Département</option>
-                                    <option value="PRODUCTION">Production</option>
-                                    <option value="LOGISTIQUE">Logistique</option>
-                                    <option value="ADMINISTRATION">Administration</option>
-                                    <option value="MAINTENANCE">Maintenance</option>
-                                    <option value="COMMERCIAL">Commercial</option>
+                                <select class="filter-select" id="filter-status" onchange="applyFilters()">
+                                    <option value="">Toutes ▼</option>
+                                    <option value="BROUILLON">Brouillon</option>
+                                    <option value="EN_VALIDATION">En attente validation</option>
+                                    <option value="VALIDEE">Validée</option>
+                                    <option value="REFUSEE">Rejetée</option>
+                                    <option value="TRAITEE">Traitée</option>
                                 </select>
                             </div>
                             <div class="filter-group">
                                 <select class="filter-select" id="filter-priority" onchange="applyFilters()">
-                                    <option value="">Priorité</option>
+                                    <option value="">Toutes ▼</option>
                                     <option value="BASSE">Basse</option>
                                     <option value="NORMALE">Normale</option>
                                     <option value="HAUTE">Haute</option>
@@ -377,19 +381,49 @@
                                 </select>
                             </div>
                             <div class="filter-group">
-                                <select class="filter-select" id="filter-status" onchange="applyFilters()">
-                                    <option value="">Statut</option>
-                                    <option value="BROUILLON">Brouillon</option>
-                                    <option value="EN_VALIDATION">En Validation</option>
-                                    <option value="VALIDEE">Validée</option>
-                                    <option value="REFUSEE">Refusée</option>
-                                    <option value="TRAITEE">Traitée</option>
+                                <select class="filter-select" id="filter-period" onchange="applyFilters()">
+                                    <option value="">Ce mois ▼</option>
+                                    <option value="today">Aujourd'hui</option>
+                                    <option value="week">Cette semaine</option>
+                                    <option value="month">Ce mois</option>
+                                    <option value="quarter">Ce trimestre</option>
                                 </select>
                             </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-department" onchange="applyFilters()">
+                                    <option value="">Tous ▼</option>
+                                    <option value="PRODUCTION">Production</option>
+                                    <option value="LOGISTIQUE">Logistique</option>
+                                    <option value="ADMINISTRATION">Administration</option>
+                                    <option value="MAINTENANCE">Maintenance</option>
+                                    <option value="IT">IT</option>
+                                    <option value="COMMERCIAL">Commercial</option>
+                                </select>
+                            </div>
+                            <div class="filter-group" style="flex: 1;">
+                                <input 
+                                    type="text" 
+                                    class="search-input" 
+                                    id="search-emetteur"
+                                    placeholder="Émetteur"
+                                    onkeyup="applyFilters()"
+                                    style="padding: 10px 12px; width: 100%;"
+                                >
+                            </div>
+                            <div class="filter-group" style="flex: 1;">
+                                <input 
+                                    type="text" 
+                                    class="search-input" 
+                                    id="search-input"
+                                    placeholder="🔍 N° DA: DA-______"
+                                    onkeyup="applyFilters()"
+                                    style="padding: 10px 12px; width: 100%;"
+                                >
+                            </div>
                             <div class="filter-actions">
-                                <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+                                <button class="btn btn-secondary btn-sm" onclick="resetFilters()" style="white-space: nowrap;">
                                     <i class="fa-solid fa-rotate-right"></i>
-                                    Reset
+                                    ↻
                                 </button>
                             </div>
                         </div>
@@ -405,12 +439,12 @@
                                     </th>
                                     <th class="sortable" data-sort="code" onclick="sortTable('code')">N° DA</th>
                                     <th class="sortable" data-sort="date" onclick="sortTable('date')">Date</th>
-                                    <th>Demandeur</th>
-                                    <th>Département</th>
-                                    <th class="text-center">Priorité</th>
-                                    <th class="text-right">Montant Estimé</th>
+                                    <th>Demandeur/Émetteur</th>
+                                    <th>Dépt</th>
+                                    <th class="text-center">Prior</th>
+                                    <th class="text-right">Montant</th>
                                     <th class="text-center">Statut</th>
-                                    <th class="text-center">Actions</th>
+                                    <th class="text-center">Act</th>
                                 </tr>
                             </thead>
                             <tbody id="table-body">
@@ -436,10 +470,41 @@
                         <!-- Pagination -->
                         <div class="pagination" id="pagination">
                             <div class="pagination-info" id="pagination-info">
-                                Affichage de 0 à 0 sur 0 demandes
+                                Affichage 1-10 sur 95
                             </div>
                             <div class="pagination-controls" id="pagination-controls">
                                 <!-- Généré dynamiquement -->
+                            </div>
+                            <button class="btn btn-secondary" onclick="exportDAs()" style="margin-left: auto;">
+                                <i class="fa-solid fa-file-excel"></i>
+                                📥 Export Excel
+                            </button>
+                        </div>
+
+                        <!-- Actions groupées -->
+                        <div id="bulk-actions" class="" style="display: none; background: white; padding: 16px; border-radius: 8px; margin-top: 16px; border: 2px solid #3B82F6;">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div style="font-weight: 600; color: #1F2937;">
+                                    <span id="selected-count">0</span> DA sélectionnées | Total: <span id="selected-total">0 XAF</span>
+                                </div>
+                                <div style="display: flex; gap: 12px;">
+                                    <button class="btn btn-primary" onclick="bulkValidate()">
+                                        <i class="fa-solid fa-check"></i>
+                                        ✓ Valider lot
+                                    </button>
+                                    <button class="btn btn-danger" onclick="bulkReject()">
+                                        <i class="fa-solid fa-times"></i>
+                                        ❌ Rejeter lot
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="bulkTransfer()">
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                        🔄 Transférer
+                                    </button>
+                                    <button class="btn btn-warning" onclick="bulkCreateBCF()" style="background: #10B981; color: white;">
+                                        <i class="fa-solid fa-shopping-cart"></i>
+                                        📋 Créer BCF
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

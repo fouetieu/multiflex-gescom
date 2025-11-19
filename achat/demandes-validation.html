@@ -27,175 +27,9 @@
             height: 100%;
         }
 
-        .validation-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        .validation-table thead {
-            background: #F3F4F6;
-        }
-
-        .validation-table th {
-            padding: 16px 12px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 600;
-            color: #374151;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #E5E7EB;
-        }
-
-        .validation-table td {
-            padding: 16px 12px;
-            border-bottom: 1px solid #E5E7EB;
-            vertical-align: middle;
-        }
-
-        .validation-table tbody tr:hover {
-            background: #F9FAFB;
-        }
-
-        .validation-table tbody tr.selected {
-            background: #EFF6FF;
-        }
-
-        .checkbox-cell {
-            width: 40px;
-        }
-
-        .checkbox-cell input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .da-code {
-            font-weight: 600;
-            color: #263c89;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .da-code:hover {
-            text-decoration: underline;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background: #FEF3C7;
-            color: #92400E;
-        }
-
-        .priority-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .priority-urgente {
-            background: #FEE2E2;
-            color: #991B1B;
-        }
-
-        .priority-haute {
-            background: #FED7AA;
-            color: #9A3412;
-        }
-
-        .priority-normale {
-            background: #E0E7FF;
-            color: #3730A3;
-        }
-
-        .priority-basse {
-            background: #DBEAFE;
-            color: #1E40AF;
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal {
-            background: white;
-            border-radius: 12px;
-            max-width: 700px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-header {
-            padding: 24px;
-            border-bottom: 2px solid #E5E7EB;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #F9FAFB;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1F2937;
-            margin: 0;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: #9CA3AF;
-            cursor: pointer;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-close:hover {
-            color: #6B7280;
-        }
-
-        .modal-body {
-            padding: 24px;
-        }
-
-        .modal-footer {
-            padding: 20px 24px;
-            border-top: 2px solid #E5E7EB;
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            background: #F9FAFB;
+        .validation-modal-large {
+            max-width: 900px;
+            width: 95%;
         }
 
         .info-grid {
@@ -206,6 +40,7 @@
             padding: 16px;
             background: #F9FAFB;
             border-radius: 8px;
+            border: 1px solid #E5E7EB;
         }
 
         .info-item {
@@ -215,7 +50,7 @@
         }
 
         .info-label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: #6B7280;
             text-transform: uppercase;
@@ -228,19 +63,12 @@
             font-weight: 500;
         }
 
-        .budget-ok {
-            color: #065F46;
-            font-weight: 600;
-        }
-
-        .budget-warning {
-            color: #92400E;
-            font-weight: 600;
-        }
-
-        .budget-danger {
-            color: #991B1B;
-            font-weight: 600;
+        .section-box {
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: white;
         }
 
         .section-title {
@@ -249,152 +77,105 @@
             color: #1F2937;
             margin-bottom: 12px;
             padding-bottom: 8px;
-            border-bottom: 1px solid #E5E7EB;
-        }
-
-        .items-list {
-            margin-bottom: 24px;
+            border-bottom: 2px solid #E5E7EB;
         }
 
         .item-line {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #E5E7EB;
-            font-size: 13px;
-        }
-
-        .item-line:last-child {
-            border-bottom: none;
-        }
-
-        .item-name {
-            font-weight: 600;
-            color: #1F2937;
-            flex: 1;
-        }
-
-        .item-amount {
-            text-align: right;
-            color: #263c89;
-            font-weight: 600;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
+            padding: 12px;
+            background: #F9FAFB;
+            border-radius: 6px;
             margin-bottom: 8px;
         }
 
-        .form-input, .form-select, .form-textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #D1D5DB;
+        .attachment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #F9FAFB;
             border-radius: 6px;
-            font-size: 13px;
-            font-family: "Poppins", sans-serif;
+            margin-bottom: 8px;
+            border-left: 4px solid #10B981;
         }
 
-        .form-textarea {
-            resize: vertical;
-            min-height: 80px;
+        .attachment-item.optional {
+            border-left-color: #6B7280;
         }
 
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            outline: none;
-            border-color: #263c89;
-            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
+        .workflow-timeline {
+            margin-top: 12px;
         }
 
-        .filter-controls {
+        .workflow-step {
+            padding: 10px 0;
+            border-left: 2px solid #E5E7EB;
+            padding-left: 16px;
+            margin-left: 8px;
+            position: relative;
+        }
+
+        .workflow-step::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 14px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #E5E7EB;
+        }
+
+        .workflow-step.done::before {
+            background: #10B981;
+        }
+
+        .workflow-step.current::before {
+            background: #3B82F6;
+        }
+
+        .decision-options {
             display: flex;
             gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            margin-bottom: 16px;
         }
 
-        .filter-controls input,
-        .filter-controls select {
-            padding: 10px 12px;
-            border: 1px solid #D1D5DB;
-            border-radius: 6px;
-            font-size: 13px;
-            font-family: "Poppins", sans-serif;
+        .decision-radio {
+            flex: 1;
+            position: relative;
         }
 
-        .btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+        .decision-radio input[type="radio"] {
+            position: absolute;
+            opacity: 0;
         }
 
-        .btn-primary {
-            background: #263c89;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1a2959;
-        }
-
-        .btn-secondary {
-            background: #E5E7EB;
-            color: #1F2937;
-        }
-
-        .btn-secondary:hover {
-            background: #D1D5DB;
-        }
-
-        .btn-danger {
-            background: #EF4444;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #DC2626;
-        }
-
-        .btn-warning {
-            background: #F59E0B;
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #D97706;
-        }
-
-        .table-wrapper {
-            background: white;
+        .decision-radio label {
+            display: block;
+            padding: 16px;
+            border: 2px solid #E5E7EB;
             border-radius: 8px;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            overflow: hidden;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
         }
 
-        .pending-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+        .decision-radio input:checked + label {
+            border-color: #263c89;
+            background: #EFF6FF;
+            color: #263c89;
+        }
+
+        .alert-warning {
             background: #FEF3C7;
+            border: 1px solid #FDE68A;
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            font-size: 13px;
             color: #92400E;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            font-size: 14px;
-            font-weight: 600;
         }
     </style>
 </head>
@@ -412,11 +193,12 @@
                 <div class="flex items-center gap-4">
                     <div class="relative">
                         <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold" id="notif-count">3</span>
                     </div>
 
                     <div class="flex items-center cursor-pointer">
                         <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
-                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie AKONO</span>
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">👤 Paul NGA (Chef)</span>
                         <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
                     </div>
                 </div>
@@ -450,6 +232,7 @@
                     <a href="./demandes-validation.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
                         <i class="fa-solid fa-check-circle mr-3"></i>
                         <span>Valider DA</span>
+                        <span class="ml-2 bg-[#F59E0B] text-white text-xs rounded-full px-2 py-1" id="sidebar-pending">2</span>
                     </a>
 
                     <a href="./commandes-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
@@ -482,83 +265,121 @@
             <div class="flex-1 overflow-auto bg-[#F8F9FA]">
                 <div class="achats-container" style="max-width: 1400px; padding: 24px;">
                     
-                    <!-- Page Header -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                        <div>
-                            <h2 style="font-size: 24px; font-weight: 600; color: #1F2937; margin-bottom: 4px;">
-                                <i class="fa-solid fa-check-circle" style="color: #F59E0B; margin-right: 8px;"></i>
-                                Validation des Demandes d'Achat
-                            </h2>
-                            <p style="font-size: 14px; color: #6B7280;">
-                                <span class="pending-badge" id="pending-count">5</span>
-                                <span style="margin-left: 8px; vertical-align: middle;">en attente</span>
-                            </p>
+                    <!-- Page Header with Summary -->
+                    <div class="section-box" style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-color: #F59E0B;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h2 style="font-size: 20px; font-weight: 600; color: #92400E; margin-bottom: 8px;">
+                                    📊 RÉSUMÉ
+                                </h2>
+                                <div style="font-size: 14px; color: #78350F;">
+                                    En attente: <strong id="resume-pending">12</strong> | Validées mois: <strong id="resume-validated">45</strong> | Rejetées: <strong id="resume-rejected">3</strong>
+                                </div>
+                                <div style="font-size: 15px; color: #92400E; margin-top: 4px; font-weight: 600;">
+                                    Montant en attente: <span id="resume-amount">15,450,000 XAF</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Filters -->
-                    <div class="filter-controls">
-                        <input 
-                            type="text" 
-                            id="search-input"
-                            placeholder="🔍 Rechercher N° DA, demandeur..."
-                            onkeyup="applyFilters()"
-                            style="flex: 1; min-width: 200px;"
-                        >
-                        <select id="filter-status" onchange="applyFilters()">
-                            <option value="">▼ Statut</option>
-                            <option value="EN_ATTENTE">En attente</option>
-                        </select>
-                        <select id="filter-department" onchange="applyFilters()">
-                            <option value="">▼ Département</option>
-                            <option value="PRODUCTION">Production</option>
-                            <option value="LOGISTIQUE">Logistique</option>
-                            <option value="ADMINISTRATION">Administration</option>
-                            <option value="MAINTENANCE">Maintenance</option>
-                        </select>
-                        <select id="filter-priority" onchange="applyFilters()">
-                            <option value="">▼ Priorité</option>
-                            <option value="URGENTE">Urgente</option>
-                            <option value="HAUTE">Haute</option>
-                            <option value="NORMALE">Normale</option>
-                            <option value="BASSE">Basse</option>
-                        </select>
-                        <select id="filter-period" onchange="applyFilters()">
-                            <option value="">▼ Période</option>
-                            <option value="today">Aujourd'hui</option>
-                            <option value="week">Cette semaine</option>
-                            <option value="month">Ce mois</option>
-                        </select>
-                        <select id="filter-amount" onchange="applyFilters()">
-                            <option value="">▼ Montant</option>
-                            <option value="0-500k">0 - 500k</option>
-                            <option value="500k-1m">500k - 1M</option>
-                            <option value="1m+">1M+</option>
-                        </select>
+                    <div class="section-box">
+                        <div style="font-weight: 600; margin-bottom: 12px; color: #1F2937;">FILTRES</div>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <select id="filter-status" onchange="applyFilters()" style="padding: 10px 12px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 13px;">
+                                <option value="">Toutes ▼</option>
+                                <option value="EN_VALIDATION" selected>En attente validation</option>
+                                <option value="VALIDEE">Validée</option>
+                                <option value="REFUSEE">Rejetée</option>
+                            </select>
+                            <select id="filter-priority" onchange="applyFilters()" style="padding: 10px 12px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 13px;">
+                                <option value="">Toutes ▼</option>
+                                <option value="URGENTE">Urgente</option>
+                                <option value="HAUTE">Haute</option>
+                                <option value="NORMALE">Normale</option>
+                                <option value="BASSE">Basse</option>
+                            </select>
+                            <select id="filter-period" onchange="applyFilters()" style="padding: 10px 12px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 13px;">
+                                <option value="month">Ce mois ▼</option>
+                                <option value="week">Cette semaine</option>
+                                <option value="today">Aujourd'hui</option>
+                            </select>
+                            <select id="filter-department" onchange="applyFilters()" style="padding: 10px 12px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 13px;">
+                                <option value="">Tous ▼</option>
+                                <option value="PROD">Production</option>
+                                <option value="MAIN">Maintenance</option>
+                                <option value="IT">IT</option>
+                                <option value="ADMIN">Administration</option>
+                            </select>
+                            <input type="text" id="filter-emetteur" onkeyup="applyFilters()" placeholder="Émetteur" style="padding: 10px 12px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 13px; flex: 1; min-width: 150px;">
+                            <input type="text" id="filter-numero" onkeyup="applyFilters()" placeholder="🔍 N° DA: DA-______" style="padding: 10px 12px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 13px; flex: 1; min-width: 150px;">
+                            <button onclick="resetFilters()" class="btn btn-secondary" style="padding: 10px 16px;">
+                                <i class="fa-solid fa-rotate-right"></i> ↻
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- Table -->
-                    <div class="table-wrapper">
-                        <table class="validation-table">
-                            <thead>
-                                <tr>
-                                    <th class="checkbox-cell">
-                                        <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
-                                    </th>
-                                    <th>N° DA</th>
-                                    <th>Date</th>
-                                    <th>Demandeur</th>
-                                    <th>Département</th>
-                                    <th>Montant</th>
-                                    <th>Priorité</th>
-                                    <th>Statut</th>
-                                    <th style="text-align: center;">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="da-tbody">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
+                    <!-- Liste des DA -->
+                    <div class="section-box" style="padding: 0;">
+                        <div style="font-weight: 600; padding: 16px; border-bottom: 2px solid #E5E7EB; color: #1F2937;">
+                            LISTE DES DEMANDES D'ACHAT
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead style="background: #F3F4F6;">
+                                    <tr>
+                                        <th style="padding: 12px; text-align: left; font-size: 11px; font-weight: 600; width: 40px;">
+                                            <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                                        </th>
+                                        <th style="padding: 12px; text-align: left; font-size: 11px; font-weight: 600;">N° DA</th>
+                                        <th style="padding: 12px; text-align: left; font-size: 11px; font-weight: 600;">Date</th>
+                                        <th style="padding: 12px; text-align: left; font-size: 11px; font-weight: 600;">Demandeur/Émetteur</th>
+                                        <th style="padding: 12px; text-align: left; font-size: 11px; font-weight: 600;">Dépt</th>
+                                        <th style="padding: 12px; text-align: center; font-size: 11px; font-weight: 600;">Prior</th>
+                                        <th style="padding: 12px; text-align: right; font-size: 11px; font-weight: 600;">Montant</th>
+                                        <th style="padding: 12px; text-align: center; font-size: 11px; font-weight: 600;">Statut</th>
+                                        <th style="padding: 12px; text-align: center; font-size: 11px; font-weight: 600;">Act</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="da-tbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="padding: 16px; border-top: 1px solid #E5E7EB; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="font-size: 13px; color: #6B7280;">
+                                <span id="pagination-info">Affichage 1-10 sur 95</span>
+                            </div>
+                            <div style="display: flex; gap: 4px;" id="pagination-controls">
+                                <button class="btn btn-secondary btn-sm">◀ 1 2 3 ... 10 ▶</button>
+                            </div>
+                            <button class="btn btn-secondary" onclick="exportExcel()">
+                                <i class="fa-solid fa-file-excel"></i> 📥 Export Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Actions groupées -->
+                    <div id="bulk-actions" class="section-box" style="display: none; border-color: #3B82F6; background: #EFF6FF;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="font-weight: 600; color: #1E40AF;">
+                                <span id="selected-count">2</span> DA sélectionnées | Total: <span id="selected-total">415,000 XAF</span>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-primary" onclick="bulkValidate()">
+                                    ✓ Valider lot
+                                </button>
+                                <button class="btn btn-danger" onclick="bulkReject()">
+                                    ❌ Rejeter lot
+                                </button>
+                                <button class="btn btn-secondary" onclick="bulkTransfer()">
+                                    🔄 Transférer
+                                </button>
+                                <button class="btn" onclick="bulkCreateBCF()" style="background: #10B981; color: white;">
+                                    📋 Créer BCF
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -568,119 +389,132 @@
 
     <!-- Validation Detail Modal -->
     <div class="modal-overlay" id="validation-modal" style="display: none;">
-        <div class="modal">
+        <div class="modal validation-modal-large">
             <div class="modal-header">
-                <h2 class="modal-title">
-                    <i class="fa-solid fa-clipboard-check" style="margin-right: 8px;"></i>
-                    Détail DA & Validation
+                <h2 class="modal-title" id="modal-title">
+                    VALIDATION DEMANDE D'ACHAT - DA-2024-0234
                 </h2>
-                <button class="modal-close" onclick="closeValidationModal()">×</button>
+                <button class="modal-close" onclick="closeValidationModal()">❌</button>
             </div>
-            <div class="modal-body">
-                <!-- Info Grid -->
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                
+                <!-- Informations générales -->
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="info-label">Demandeur</span>
-                        <span class="info-value" id="modal-requester">-</span>
+                        <span class="info-label">N° DA</span>
+                        <span class="info-value" id="modal-code">-</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Département</span>
-                        <span class="info-value" id="modal-department">-</span>
+                        <span class="info-label">Statut</span>
+                        <span class="info-value" id="modal-status">-</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Montant</span>
-                        <span class="info-value" id="modal-amount">-</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Budget Disponible</span>
-                        <span class="info-value" id="modal-budget">-</span>
+                        <span class="info-label">Date</span>
+                        <span class="info-value" id="modal-date">-</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Priorité</span>
                         <span class="info-value" id="modal-priority">-</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Date Livraison</span>
+                        <span class="info-label">Demandeur</span>
+                        <span class="info-value" id="modal-requester">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Émetteur besoin</span>
+                        <span class="info-value" id="modal-originator">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Montant total</span>
+                        <span class="info-value" style="color: #263c89; font-weight: 600; font-size: 16px;" id="modal-amount">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Livraison souhaitée</span>
                         <span class="info-value" id="modal-delivery">-</span>
                     </div>
                 </div>
 
-                <!-- Articles -->
-                <div class="section-title">
-                    <i class="fa-solid fa-box"></i>
-                    Articles
-                </div>
-                <div class="items-list" id="modal-items">
-                    <!-- Items listed here -->
-                </div>
-
-                <!-- Validation Form -->
-                <div class="form-group">
-                    <label class="form-label">Commentaire de Validation</label>
-                    <textarea class="form-textarea" id="validation-comment" placeholder="Remarques ou conditions..."></textarea>
+                <!-- Justification -->
+                <div class="section-box">
+                    <div class="section-title">JUSTIFICATION DU BESOIN</div>
+                    <div id="modal-reason" style="font-size: 14px; color: #374151; line-height: 1.6;">
+                        -
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Fournisseur Suggéré</label>
-                    <select class="form-select" id="suggested-supplier">
-                        <option value="">Sélectionner fournisseur</option>
-                        <option value="XYZ-Ltd">XYZ Ltd</option>
-                        <option value="ABC-Corp">ABC Corp</option>
-                        <option value="DEF-Inc">DEF Inc</option>
-                        <option value="GHI-Sarl">GHI Sarl</option>
-                    </select>
+                <!-- Détail des lignes -->
+                <div class="section-box">
+                    <div class="section-title">DÉTAIL DES LIGNES</div>
+                    <div id="modal-items">
+                        <!-- Items listed here -->
+                    </div>
                 </div>
+
+                <!-- Documents attachés -->
+                <div class="section-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <div class="section-title" style="margin: 0; padding: 0; border: none;">DOCUMENTS ATTACHÉS</div>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadAllDocs()">Tout télécharger</button>
+                    </div>
+                    <div id="modal-attachments">
+                        <!-- Attachments listed here -->
+                    </div>
+                </div>
+
+                <!-- Historique workflow -->
+                <div class="section-box">
+                    <div class="section-title">HISTORIQUE DU WORKFLOW</div>
+                    <div id="modal-workflow" class="workflow-timeline">
+                        <!-- Workflow steps -->
+                    </div>
+                </div>
+
+                <!-- Décision de validation -->
+                <div class="section-box" style="background: #F9FAFB;">
+                    <div class="section-title">DÉCISION DE VALIDATION</div>
+                    
+                    <div class="decision-options">
+                        <div class="decision-radio">
+                            <input type="radio" name="decision" id="decision-validate" value="validate">
+                            <label for="decision-validate">
+                                ✓ Valider
+                            </label>
+                        </div>
+                        <div class="decision-radio">
+                            <input type="radio" name="decision" id="decision-reject" value="reject">
+                            <label for="decision-reject">
+                                ❌ Rejeter
+                            </label>
+                        </div>
+                        <div class="decision-radio">
+                            <input type="radio" name="decision" id="decision-request" value="request">
+                            <label for="decision-request">
+                                ○ Demander complément
+                            </label>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px;">
+                            Commentaire <span id="comment-required" style="color: #EF4444; display: none;">(obligatoire si rejet)</span>
+                        </label>
+                        <textarea id="validation-comment" style="width: 100%; padding: 10px 12px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 13px; resize: vertical; min-height: 80px;" placeholder="Remarques ou commentaires..."></textarea>
+                    </div>
+
+                    <div class="alert-warning" id="escalation-warning" style="display: none;">
+                        <i class="fa-solid fa-exclamation-triangle" style="flex-shrink: 0;"></i>
+                        <div>
+                            ⚠️ <strong>Montant > 200,000 XAF</strong> : Validation Direction requise après
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeValidationModal()">Annuler</button>
-                <button class="btn btn-warning" onclick="requestInfo()">
-                    <i class="fa-solid fa-circle-question"></i>
-                    Demander Infos
-                </button>
-                <button class="btn btn-danger" onclick="openRejectModal()">
-                    <i class="fa-solid fa-times"></i>
-                    Rejeter
-                </button>
-                <button class="btn btn-primary" onclick="validateDA()">
-                    <i class="fa-solid fa-check"></i>
-                    Valider
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Reject Confirmation Modal -->
-    <div class="modal-overlay" id="reject-modal" style="display: none;">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title">
-                    <i class="fa-solid fa-ban" style="margin-right: 8px; color: #EF4444;"></i>
-                    Rejeter la Demande
-                </h2>
-                <button class="modal-close" onclick="closeRejectModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <p style="margin-bottom: 16px;">
-                    Vous êtes sur le point de rejeter la demande d'achat <strong id="reject-da-code"></strong>.
-                </p>
-                
-                <div class="form-group">
-                    <label class="form-label">Motif du rejet <span style="color: #EF4444;">*</span></label>
-                    <textarea class="form-textarea" id="reject-reason" placeholder="Expliquez pourquoi cette demande est rejetée..." required></textarea>
-                </div>
-
-                <div style="background: #FEE2E2; border: 1px solid #FECACA; border-radius: 6px; padding: 12px; display: flex; gap: 8px; margin-bottom: 16px;">
-                    <i class="fa-solid fa-exclamation-triangle" style="color: #991B1B; flex-shrink: 0;"></i>
-                    <div style="font-size: 13px; color: #7F1D1D;">
-                        Le demandeur sera notifié par email avec le motif du rejet.
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeRejectModal()">Annuler</button>
-                <button class="btn btn-danger" onclick="confirmReject()">
-                    <i class="fa-solid fa-check"></i>
-                    Confirmer le rejet
+                <button class="btn btn-secondary" onclick="saveDraft()">Sauvegarder brouillon</button>
+                <button class="btn btn-primary" onclick="confirmDecision()">
+                    → Confirmer décision
                 </button>
             </div>
         </div>
