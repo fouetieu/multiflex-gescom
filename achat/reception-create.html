@@ -471,6 +471,54 @@
             font-size: 11px;
             font-weight: 600;
         }
+
+        .loader-card {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .loader-card h5 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .remove-loader-btn {
+            background: #EF4444;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .remove-loader-btn:hover {
+            background: #DC2626;
+        }
+
+        .wizard-step::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: -50%;
+            right: 50%;
+            height: 2px;
+            background: #E5E7EB;
+            z-index: 0;
+        }
+
+        .wizard-step:first-child::before {
+            display: none;
+        }
     </style>
 </head>
 <body class="h-full text-gray-800">
@@ -535,18 +583,42 @@
                             Nouveau Bon de Réception
                         </h2>
                         
-                        <div class="wizard-steps">
-                            <div class="wizard-step active" id="step-0">
+                        <div class="wizard-steps" style="flex-wrap: wrap;">
+                            <div class="wizard-step active" id="step-0" style="flex: 0 0 11%;">
                                 <div class="wizard-step-circle">1</div>
                                 <div class="wizard-step-title">Sélection BCF</div>
                             </div>
-                            <div class="wizard-step" id="step-1">
+                            <div class="wizard-step" id="step-1" style="flex: 0 0 11%;">
                                 <div class="wizard-step-circle">2</div>
-                                <div class="wizard-step-title">Saisie Réception</div>
+                                <div class="wizard-step-title">Infos Générales</div>
                             </div>
-                            <div class="wizard-step" id="step-2">
+                            <div class="wizard-step" id="step-2" style="flex: 0 0 11%;">
                                 <div class="wizard-step-circle">3</div>
+                                <div class="wizard-step-title">Livraison</div>
+                            </div>
+                            <div class="wizard-step" id="step-3" style="flex: 0 0 11%;">
+                                <div class="wizard-step-circle">4</div>
+                                <div class="wizard-step-title">Articles</div>
+                            </div>
+                            <div class="wizard-step" id="step-4" style="flex: 0 0 11%;">
+                                <div class="wizard-step-circle">5</div>
+                                <div class="wizard-step-title">Qualité</div>
+                            </div>
+                            <div class="wizard-step" id="step-5" style="flex: 0 0 11%;">
+                                <div class="wizard-step-circle">6</div>
                                 <div class="wizard-step-title">Validation</div>
+                            </div>
+                            <div class="wizard-step" id="step-6" style="flex: 0 0 11%;">
+                                <div class="wizard-step-circle">7</div>
+                                <div class="wizard-step-title">Écarts</div>
+                            </div>
+                            <div class="wizard-step" id="step-7" style="flex: 0 0 11%;">
+                                <div class="wizard-step-circle">8</div>
+                                <div class="wizard-step-title">Documents</div>
+                            </div>
+                            <div class="wizard-step" id="step-8" style="flex: 0 0 11%;">
+                                <div class="wizard-step-circle">9</div>
+                                <div class="wizard-step-title">Finalisation</div>
                             </div>
                         </div>
                     </div>
@@ -557,7 +629,7 @@
                         <!-- ÉTAPE 1: SÉLECTION BCF -->
                         <div class="wizard-content active" id="content-0">
                             <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
-                                ÉTAPE 1/3: SÉLECTION BCF
+                                ÉTAPE 1/9: SÉLECTION BCF
                             </h3>
 
                             <div class="form-group">
@@ -582,10 +654,10 @@
                             </div>
                         </div>
 
-                        <!-- ÉTAPE 2: SAISIE RÉCEPTION -->
+                        <!-- ÉTAPE 2: INFORMATIONS GÉNÉRALES -->
                         <div class="wizard-content" id="content-1">
                             <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
-                                ÉTAPE 2/3: SAISIE RÉCEPTION
+                                ÉTAPE 2/9: INFORMATIONS GÉNÉRALES
                             </h3>
 
                             <div class="info-box">
@@ -598,21 +670,30 @@
                                         <input type="text" class="form-input" value="BR-2024-AUTO" readonly style="background: #F3F4F6;">
                                     </div>
                                     <div class="form-group">
+                                        <label class="form-label">BCF Source <span style="color: #EF4444;">*</span></label>
+                                        <input type="text" class="form-input" id="selected-bcf-info" readonly style="background: #F3F4F6;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Fournisseur</label>
+                                        <input type="text" class="form-input" id="supplier-info" readonly style="background: #F3F4F6;">
+                                    </div>
+                                    <div class="form-group">
                                         <label class="form-label">Date Réception <span style="color: #EF4444;">*</span></label>
                                         <input type="date" class="form-input" id="reception-date" required>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">N° BL Fournisseur</label>
-                                        <input type="text" class="form-input" id="delivery-note" placeholder="BL-XXX">
+                                        <label class="form-label">Heure <span style="color: #EF4444;">*</span></label>
+                                        <input type="time" class="form-input" id="reception-time" required>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">BCF</label>
-                                        <input type="text" class="form-input" id="selected-bcf-info" readonly style="background: #F3F4F6;">
+                                        <label class="form-label">N° BL Fournisseur <span style="color: #EF4444;">*</span></label>
+                                        <input type="text" class="form-input" id="delivery-note" placeholder="BL-SUP-2024-789" required>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">Entrepôt <span style="color: #EF4444;">*</span></label>
+                                        <label class="form-label">Lieu Réception <span style="color: #EF4444;">*</span></label>
                                         <select class="form-select" id="warehouse" required>
                                             <option value="">Sélectionner</option>
+                                            <option value="ENTREPOT_PRINCIPAL_DOUALA">Entrepôt Principal Douala</option>
                                             <option value="ZONE_INDUSTRIELLE_YAOUNDE">Zone Industrielle Yaoundé</option>
                                             <option value="DOUALA_PORT">Port Douala</option>
                                             <option value="PRODUCTION">Zone Production</option>
@@ -620,10 +701,163 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Magasinier</label>
-                                        <input type="text" class="form-input" value="J. Kamga" readonly style="background: #F3F4F6;">
+                                        <input type="text" class="form-input" id="magasinier" value="Alphonse NJOYA (ID: EMP-0125)" readonly style="background: #F3F4F6;">
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- ÉTAPE 3: INFORMATIONS LIVRAISON DÉTAILLÉES -->
+                        <div class="wizard-content" id="content-2">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
+                                ÉTAPE 3/9: INFORMATIONS LIVRAISON DÉTAILLÉES
+                            </h3>
+
+                            <!-- CHAUFFEUR -->
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    CHAUFFEUR
+                                </h4>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Nom complet <span style="color: #EF4444;">*</span></label>
+                                        <input type="text" class="form-input" id="driver-name" placeholder="Jean-Pierre KAMDEM" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">N° CNI <span style="color: #EF4444;">*</span></label>
+                                        <input type="text" class="form-input" id="driver-id" placeholder="107584962354" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Téléphone <span style="color: #EF4444;">*</span></label>
+                                        <input type="tel" class="form-input" id="driver-phone" placeholder="+237 677 123 456" required>
+                                    </div>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Photo CNI Recto <span style="color: #EF4444;">*</span></label>
+                                        <input type="file" class="form-input" id="driver-id-front" accept="image/*" required>
+                                        <div id="driver-id-front-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Photo CNI Verso <span style="color: #EF4444;">*</span></label>
+                                        <input type="file" class="form-input" id="driver-id-back" accept="image/*" required>
+                                        <div id="driver-id-back-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Photo Chauffeur <span style="color: #EF4444;">*</span></label>
+                                        <input type="file" class="form-input" id="driver-photo" accept="image/*" required>
+                                        <div id="driver-photo-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- VÉHICULE -->
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    VÉHICULE
+                                </h4>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Immatriculation <span style="color: #EF4444;">*</span></label>
+                                        <input type="text" class="form-input" id="vehicle-plate" placeholder="LT-2345-CM" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Type de véhicule <span style="color: #EF4444;">*</span></label>
+                                        <select class="form-select" id="vehicle-type" required>
+                                            <option value="">Sélectionner</option>
+                                            <option value="CAMION_5T">Camion 5T</option>
+                                            <option value="CAMION_10T">Camion 10T</option>
+                                            <option value="CAMION_20T">Camion 20T</option>
+                                            <option value="CAMIONNETTE">Camionnette</option>
+                                            <option value="SEMI_REMORQUE">Semi-remorque</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Photo Avant <span style="color: #EF4444;">*</span></label>
+                                        <input type="file" class="form-input" id="vehicle-photo-front" accept="image/*" required>
+                                        <div id="vehicle-photo-front-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Photo Arrière <span style="color: #EF4444;">*</span></label>
+                                        <input type="file" class="form-input" id="vehicle-photo-back" accept="image/*" required>
+                                        <div id="vehicle-photo-back-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Photo Côté <span style="color: #EF4444;">*</span></label>
+                                        <input type="file" class="form-input" id="vehicle-photo-side" accept="image/*" required>
+                                        <div id="vehicle-photo-side-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- MANUTENTION -->
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    MANUTENTION (Chargement/Déchargement)
+                                </h4>
+                                <div class="form-group">
+                                    <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                        <input type="checkbox" id="loading-at-our-cost">
+                                        Chargement/Déchargement à nos frais
+                                    </label>
+                                </div>
+                                
+                                <div id="loaders-section" style="display: none;">
+                                    <div id="loaders-container">
+                                        <!-- Loaders will be added dynamically -->
+                                    </div>
+                                    <button type="button" class="btn btn-secondary" onclick="addLoader()" style="margin-top: 12px;">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Ajouter un chargeur
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- CHRONOLOGIE -->
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    CHRONOLOGIE
+                                </h4>
+                                <div class="form-grid" style="grid-template-columns: repeat(2, 1fr);">
+                                    <div class="form-group">
+                                        <label class="form-label">Arrivée véhicule</label>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                            <input type="date" class="form-input" id="arrival-date">
+                                            <input type="time" class="form-input" id="arrival-time">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Début déchargement</label>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                            <input type="date" class="form-input" id="unloading-start-date">
+                                            <input type="time" class="form-input" id="unloading-start-time">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Fin déchargement</label>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                            <input type="date" class="form-input" id="unloading-end-date">
+                                            <input type="time" class="form-input" id="unloading-end-time">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Départ véhicule</label>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                            <input type="date" class="form-input" id="departure-date">
+                                            <input type="time" class="form-input" id="departure-time">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 4: ARTICLES RÉCEPTIONNÉS -->
+                        <div class="wizard-content" id="content-3">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
+                                ÉTAPE 4/9: ARTICLES RÉCEPTIONNÉS
+                            </h3>
 
                             <div class="info-box">
                                 <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
@@ -636,6 +870,7 @@
                                             <tr>
                                                 <th style="width: 30px;">#</th>
                                                 <th>Article</th>
+                                                <th>Description</th>
                                                 <th style="width: 80px;">Qté Cmd</th>
                                                 <th style="width: 80px;">Qté Reçue</th>
                                                 <th style="width: 90px;">État</th>
@@ -648,13 +883,25 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                
+                                <div style="margin-top: 16px; font-size: 12px; color: #6B7280; padding: 12px; background: #F9FAFB; border-radius: 6px;">
+                                    <div><strong>État:</strong> BON | DÉGRADÉ | DÉFECTUEUX</div>
+                                    <div style="margin-top: 4px;"><strong>Qualité:</strong> [ACC]=Accepté | [REJ]=Rejeté | [QUA]=Quarantaine | [ATT]=En attente</div>
+                                </div>
                             </div>
+                        </div>
+
+                        <!-- ÉTAPE 5: CONTRÔLE QUALITÉ GLOBAL -->
+                        <div class="wizard-content" id="content-4">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
+                                ÉTAPE 5/9: CONTRÔLE QUALITÉ GLOBAL
+                            </h3>
 
                             <div class="info-box">
                                 <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
                                     <label style="display: flex; align-items: center; gap: 8px;">
                                         <input type="checkbox" id="quality-control-required">
-                                        CONTRÔLE QUALITÉ GLOBAL
+                                        Contrôle requis
                                     </label>
                                 </h4>
                                 
@@ -689,37 +936,51 @@
                                     
                                     <div class="form-group">
                                         <label class="form-label">Observations générales</label>
-                                        <textarea class="form-textarea" id="quality-comments" placeholder="Réception globalement conforme. Article CHEM-003 mis en quarantaine suite à emballage endommagé..."></textarea>
+                                        <textarea class="form-textarea" id="quality-comments" placeholder="Réception globalement conforme. Article CHEM-003 mis en quarantaine suite à emballage endommagé. Attente résultats laboratoire pour décision finale (accepter ou retourner)."></textarea>
                                     </div>
                                     
                                     <div class="form-group">
                                         <label class="form-label">Documents qualité</label>
-                                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                                            <button type="button" class="btn btn-secondary" onclick="uploadQualityDoc('lab-report')">
-                                                <i class="fa-solid fa-paperclip"></i>
-                                                Rapport labo
-                                            </button>
-                                            <button type="button" class="btn btn-secondary" onclick="uploadQualityDoc('certificate')">
-                                                <i class="fa-solid fa-paperclip"></i>
-                                                Certificat conformité
-                                            </button>
+                                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                                            <div>
+                                                <label class="form-label" style="font-size: 12px;">Rapport laboratoire</label>
+                                                <input type="file" class="form-input" id="lab-report-file" accept=".pdf">
+                                                <div id="lab-report-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                            </div>
+                                            <div>
+                                                <label class="form-label" style="font-size: 12px;">Certificat conformité</label>
+                                                <input type="file" class="form-input" id="certificate-file" accept=".pdf">
+                                                <div id="certificate-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- ÉTAPE 6: VALIDATION ÉMETTEUR DU BESOIN -->
+                        <div class="wizard-content" id="content-5">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
+                                ÉTAPE 6/9: VALIDATION ÉMETTEUR DU BESOIN
+                            </h3>
 
                             <div class="info-box">
                                 <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
                                     <label style="display: flex; align-items: center; gap: 8px;">
                                         <input type="checkbox" id="validation-required">
-                                        VALIDATION ÉMETTEUR DU BESOIN
+                                        Validation requise
                                     </label>
                                 </h4>
                                 
                                 <div id="validation-section" style="display: none;">
                                     <div class="form-group">
                                         <label class="form-label">Émetteur initial</label>
-                                        <input type="text" class="form-input" value="Paul MBARGA (Production)" readonly style="background: #F3F4F6;">
+                                        <input type="text" class="form-input" id="original-requester" value="Paul MBARGA (Production)" readonly style="background: #F3F4F6;">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Statut validation</label>
+                                        <input type="text" class="form-input" value="EN_ATTENTE" readonly style="background: #FEF3C7; border-color: #FCD34D; color: #92400E; font-weight: 600;">
                                     </div>
                                     
                                     <div class="alert-warning">
@@ -728,10 +989,17 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- ÉTAPE 7: ÉCARTS ET LITIGES -->
+                        <div class="wizard-content" id="content-6">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
+                                ÉTAPE 7/9: ÉCARTS ET LITIGES
+                            </h3>
 
                             <div class="info-box">
                                 <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
-                                    ÉCARTS ET LITIGES
+                                    DÉTECTION ET GESTION DES ÉCARTS
                                 </h4>
                                 
                                 <div id="gaps-detected" style="display: none;">
@@ -745,7 +1013,7 @@
                                     
                                     <div class="form-group">
                                         <label class="form-label">Action</label>
-                                        <div style="display: flex; gap: 20px; align-items: center;">
+                                        <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
                                             <label style="display: flex; align-items: center; gap: 6px; font-weight: normal;">
                                                 <input type="radio" name="gap-action" value="ACCEPT">
                                                 Accepter écarts
@@ -765,43 +1033,90 @@
                                         <label class="form-label">Commentaire litige</label>
                                         <textarea class="form-textarea" id="dispute-comment" placeholder="Quantités manquantes et produit CHEM-003 endommagé. Demande avoir ou remplacement."></textarea>
                                     </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Type de litige</label>
+                                        <select class="form-select" id="dispute-type">
+                                            <option value="">Sélectionner</option>
+                                            <option value="QUANTITE">Écart de quantité</option>
+                                            <option value="QUALITE">Problème de qualité</option>
+                                            <option value="DELAI">Retard de livraison</option>
+                                            <option value="CONFORMITE">Non-conformité produit</option>
+                                            <option value="DOCUMENTATION">Documentation manquante</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Pièces jointes litige</label>
+                                        <input type="file" class="form-input" id="dispute-files" accept="image/*,.pdf" multiple>
+                                        <div id="dispute-files-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                    </div>
                                 </div>
                                 
-                                <div id="no-gaps" style="color: #10B981; font-weight: 600;">
-                                    <i class="fa-solid fa-check-circle"></i>
-                                    Aucun écart détecté - Livraison conforme
+                                <div id="no-gaps">
+                                    <div style="color: #10B981; font-weight: 600; display: flex; align-items: center; gap: 8px; padding: 16px; background: #ECFDF5; border-radius: 6px; border: 1px solid #10B981;">
+                                        <i class="fa-solid fa-check-circle" style="font-size: 20px;"></i>
+                                        <span>Aucun écart détecté - Livraison conforme</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 8: DOCUMENTS ATTACHÉS -->
+                        <div class="wizard-content" id="content-7">
+                            <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
+                                ÉTAPE 8/9: DOCUMENTS ATTACHÉS
+                            </h3>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    DOCUMENTS OBLIGATOIRES
+                                </h4>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">✅ BL Fournisseur (Obligatoire) <span style="color: #EF4444;">*</span></label>
+                                    <input type="file" class="form-input" id="bl-file" accept=".pdf,.jpg,.png" required>
+                                    <div id="bl-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">✅ Photos Livraison (Obligatoire - min. 3 photos) <span style="color: #EF4444;">*</span></label>
+                                    <input type="file" class="form-input" id="photos-file" accept=".jpg,.png" multiple required>
+                                    <div id="photos-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                    <div style="margin-top: 8px; font-size: 11px; color: #9CA3AF;">
+                                        Minimum 3 photos requises : camion, déchargement, produits
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="info-box">
                                 <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
-                                    DOCUMENTS ATTACHÉS
+                                    DOCUMENTS OPTIONNELS
                                 </h4>
-                                
-                                <div class="form-group">
-                                    <label class="form-label">✅ BL Fournisseur (Obligatoire)</label>
-                                    <input type="file" class="form-input" id="bl-file" accept=".pdf,.jpg,.png">
-                                    <div id="bl-preview" style="margin-top: 8px; font-size: 12px; color: #10B981;"></div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label class="form-label">✅ Photos Livraison (Obligatoire - min. 3 photos)</label>
-                                    <input type="file" class="form-input" id="photos-file" accept=".jpg,.png" multiple>
-                                    <div id="photos-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
-                                </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">📎 Rapport Qualité (Optionnel)</label>
                                     <input type="file" class="form-input" id="quality-report-file" accept=".pdf">
                                     <div id="quality-report-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
                                 </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">📎 Documents Complémentaires (Optionnel)</label>
+                                    <input type="file" class="form-input" id="additional-files" accept=".pdf,.jpg,.png" multiple>
+                                    <div id="additional-files-preview" style="margin-top: 8px; font-size: 12px; color: #6B7280;"></div>
+                                </div>
+                            </div>
+
+                            <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; padding: 12px; font-size: 12px; color: #1E40AF;">
+                                <i class="fa-solid fa-info-circle"></i>
+                                <strong>Note:</strong> Tous les documents seront archivés et pourront être consultés ultérieurement.
                             </div>
                         </div>
 
-                        <!-- ÉTAPE 3: VALIDATION -->
-                        <div class="wizard-content" id="content-2">
+                        <!-- ÉTAPE 9: VALIDATION FINALE -->
+                        <div class="wizard-content" id="content-8">
                             <h3 style="font-size: 16px; font-weight: 600; color: #1F2937; margin-bottom: 20px;">
-                                ÉTAPE 3/3: VALIDATION ET FINALISATION
+                                ÉTAPE 9/9: VALIDATION ET FINALISATION
                             </h3>
 
                             <div class="info-box">
@@ -833,27 +1148,46 @@
 
                             <div class="info-box">
                                 <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                                    STATUT RÉCEPTION
+                                </h4>
+                                <div class="form-group">
+                                    <label class="form-label">Statut final</label>
+                                    <select class="form-select" id="final-status">
+                                        <option value="COMPLETE">Complète</option>
+                                        <option value="PARTIAL">Partielle</option>
+                                        <option value="AWAITING_QUALITY_CONTROL">En attente contrôle qualité</option>
+                                        <option value="AWAITING_VALIDATION">En attente validation</option>
+                                        <option value="WITH_DISPUTE">Avec litige</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="info-box">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">
                                     VALIDATION FINALE
                                 </h4>
                                 
                                 <div class="alert-warning" style="margin-bottom: 16px;">
                                     <i class="fa-solid fa-exclamation-triangle"></i>
-                                    <div>⚠️ ATTENTION: Cette action est définitive</div>
+                                    <div>⚠️ ATTENTION: Cette action est définitive. Le bon de réception sera validé et les mouvements de stock seront enregistrés.</div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="form-label">Commentaire superviseur (optionnel)</label>
-                                    <textarea class="form-textarea" id="supervisor-comment" placeholder="Notes..."></textarea>
+                                    <textarea class="form-textarea" id="supervisor-comment" placeholder="Notes complémentaires..."></textarea>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label">Signature électronique</label>
-                                    <div style="display: flex; gap: 12px; align-items: flex-end;">
-                                        <input type="text" class="form-input" id="signature" placeholder="Signature" style="flex: 1;">
+                                    <label class="form-label">Signature électronique <span style="color: #EF4444;">*</span></label>
+                                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end;">
+                                        <input type="password" class="form-input" id="signature" placeholder="Entrez votre mot de passe pour signer" required>
                                         <button type="button" class="btn btn-secondary" onclick="signReception()">
                                             <i class="fa-solid fa-pen-fancy"></i>
                                             Signer
                                         </button>
+                                    </div>
+                                    <div style="margin-top: 8px; font-size: 11px; color: #6B7280;">
+                                        La signature électronique valide votre identité et votre accord sur les informations saisies.
                                     </div>
                                 </div>
                             </div>

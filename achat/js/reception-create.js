@@ -8,8 +8,28 @@ let selectedBCF = null;
 let receptionData = {
     brCode: 'BR-2024-AUTO',
     date: null,
+    time: null,
     deliveryNote: '',
     warehouse: '',
+    supplier: '',
+    // Delivery Info
+    deliveryInfo: {
+        driverName: '',
+        driverIdNumber: '',
+        driverPhone: '',
+        driverIdPhotoFront: null,
+        driverIdPhotoBack: null,
+        driverPhoto: null,
+        vehiclePlateNumber: '',
+        vehicleType: '',
+        vehiclePhotos: [],
+        loadingAtOurCost: false,
+        loaders: [],
+        arrivalTimestamp: null,
+        unloadingStartTime: null,
+        unloadingEndTime: null,
+        departureTimestamp: null
+    },
     articles: [],
     qualityControl: {
         required: false,
@@ -22,10 +42,12 @@ let receptionData = {
     gaps: [],
     gapAction: null,
     disputeComment: '',
+    disputeType: '',
     documents: {
         blFile: null,
         photos: [],
-        qualityReport: null
+        qualityReport: null,
+        additionalFiles: []
     },
     summary: {
         received: 0,
@@ -84,7 +106,9 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Initialisation wizard réception...');
     
     const today = new Date().toISOString().split('T')[0];
+    const now = new Date().toTimeString().slice(0,5);
     document.getElementById('reception-date').value = today;
+    document.getElementById('reception-time').value = now;
     
     renderBCFsList();
     
@@ -100,28 +124,40 @@ document.addEventListener('DOMContentLoaded', function() {
         receptionData.validationRequired = e.target.checked;
     });
     
+    // Event listener for loading at our cost
+    document.getElementById('loading-at-our-cost').addEventListener('change', function(e) {
+        document.getElementById('loaders-section').style.display = e.target.checked ? 'block' : 'none';
+        receptionData.deliveryInfo.loadingAtOurCost = e.target.checked;
+    });
+    
     // File upload listeners
     document.getElementById('bl-file')?.addEventListener('change', function(e) {
         if (e.target.files.length > 0) {
-            document.getElementById('bl-preview').innerHTML = `<i class="fa-solid fa-check-circle"></i> ${e.target.files[0].name}`;
+            document.getElementById('bl-preview').innerHTML = `<i class="fa-solid fa-check-circle" style="color: #10B981;"></i> ${e.target.files[0].name}`;
         }
     });
     
     document.getElementById('photos-file')?.addEventListener('change', function(e) {
         if (e.target.files.length > 0) {
-            document.getElementById('photos-preview').innerHTML = `<i class="fa-solid fa-check-circle" style="color: #10B981;"></i> ${e.target.files.length} photo(s) sélectionnée(s)`;
+            const color = e.target.files.length >= 3 ? '#10B981' : '#F59E0B';
+            document.getElementById('photos-preview').innerHTML = `<i class="fa-solid fa-check-circle" style="color: ${color};"></i> ${e.target.files.length} photo(s) sélectionnée(s) ${e.target.files.length < 3 ? '(min. 3 requis)' : ''}`;
         }
     });
+    
+    // Add first loader by default
+    addLoader();
 });
 
 // ================================================
 // WIZARD NAVIGATION
 // ================================================
 
+const TOTAL_STEPS = 9;
+
 function nextStep() {
     if (!validateCurrentStep()) return;
     
-    if (currentStep < 2) {
+    if (currentStep < TOTAL_STEPS - 1) {
         currentStep++;
         renderWizard();
     }
@@ -150,14 +186,22 @@ function renderWizard() {
     
     // Update buttons
     document.getElementById('btn-prev').style.display = currentStep > 0 ? 'inline-flex' : 'none';
-    document.getElementById('btn-next').style.display = currentStep < 2 ? 'inline-flex' : 'none';
-    document.getElementById('btn-draft').style.display = currentStep < 2 ? 'inline-flex' : 'none';
-    document.getElementById('btn-validate').style.display = currentStep === 2 ? 'inline-flex' : 'none';
+    document.getElementById('btn-next').style.display = currentStep < TOTAL_STEPS - 1 ? 'inline-flex' : 'none';
+    document.getElementById('btn-draft').style.display = currentStep < TOTAL_STEPS - 1 ? 'inline-flex' : 'none';
+    document.getElementById('btn-validate').style.display = currentStep === TOTAL_STEPS - 1 ? 'inline-flex' : 'none';
     
-    // Populate step 2 and 3
+    // Populate specific steps
     if (currentStep === 1) {
+        // Step 2: Informations générales
+        populateGeneralInfo();
+    } else if (currentStep === 3) {
+        // Step 4: Articles
         renderArticlesTable();
-    } else if (currentStep === 2) {
+    } else if (currentStep === 6) {
+        // Step 7: Écarts
+        checkForGaps();
+    } else if (currentStep === TOTAL_STEPS - 1) {
+        // Step 9: Validation
         renderValidationSummary();
     }
 }
@@ -236,25 +280,52 @@ function filterBCFs() {
 
 function validateCurrentStep() {
     if (currentStep === 0) {
+        // Step 1: BCF Selection
         if (!selectedBCF) {
             alert('Veuillez sélectionner un BCF');
             return false;
         }
         return true;
     } else if (currentStep === 1) {
+        // Step 2: General Info
+        if (!document.getElementById('reception-date').value) {
+            alert('Veuillez saisir la date de réception');
+            return false;
+        }
+        if (!document.getElementById('delivery-note').value) {
+            alert('Veuillez saisir le N° BL fournisseur');
+            return false;
+        }
         if (!document.getElementById('warehouse').value) {
             alert('Veuillez sélectionner un entrepôt');
             return false;
         }
-        
-        // Check if at least one article has received quantity
+        return true;
+    } else if (currentStep === 2) {
+        // Step 3: Delivery Info
+        if (!document.getElementById('driver-name').value) {
+            alert('Veuillez saisir le nom du chauffeur');
+            return false;
+        }
+        if (!document.getElementById('driver-id').value) {
+            alert('Veuillez saisir le N° CNI du chauffeur');
+            return false;
+        }
+        if (!document.getElementById('vehicle-plate').value) {
+            alert('Veuillez saisir l\'immatriculation du véhicule');
+            return false;
+        }
+        return true;
+    } else if (currentStep === 3) {
+        // Step 4: Articles
         const hasReceived = receptionData.articles.some(a => (a.received || 0) > 0);
         if (!hasReceived) {
             alert('Veuillez saisir au moins une quantité reçue');
             return false;
         }
-        
-        // Check mandatory documents
+        return true;
+    } else if (currentStep === 7) {
+        // Step 8: Documents
         const blFile = document.getElementById('bl-file')?.files[0];
         const photos = document.getElementById('photos-file')?.files;
         
@@ -274,13 +345,73 @@ function validateCurrentStep() {
 }
 
 // ================================================
-// ÉTAPE 2: SAISIE RÉCEPTION
+// ÉTAPE 2: INFORMATIONS GÉNÉRALES
+// ================================================
+
+function populateGeneralInfo() {
+    if (!selectedBCF) return;
+    
+    document.getElementById('selected-bcf-info').value = selectedBCF.code;
+    document.getElementById('supplier-info').value = selectedBCF.supplier;
+}
+
+// ================================================
+// ÉTAPE 3: INFORMATIONS LIVRAISON
+// ================================================
+
+let loaderCount = 0;
+
+function addLoader() {
+    loaderCount++;
+    const container = document.getElementById('loaders-container');
+    
+    const loaderHtml = `
+        <div class="loader-card" id="loader-${loaderCount}">
+            <h5>
+                CHARGEUR ${loaderCount}
+                ${loaderCount > 1 ? `<button type="button" class="remove-loader-btn" onclick="removeLoader(${loaderCount})"><i class="fa-solid fa-times"></i> Retirer</button>` : ''}
+            </h5>
+            <div class="form-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 12px;">Nom complet</label>
+                    <input type="text" class="form-input" id="loader-name-${loaderCount}" placeholder="Paul MBARGA">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 12px;">N° CNI</label>
+                    <input type="text" class="form-input" id="loader-id-${loaderCount}" placeholder="208475963214">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 12px;">Téléphone</label>
+                    <input type="tel" class="form-input" id="loader-phone-${loaderCount}" placeholder="677 890 123">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 12px;">Photo</label>
+                    <input type="file" class="form-input" id="loader-photo-${loaderCount}" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 12px;">Photo CNI</label>
+                    <input type="file" class="form-input" id="loader-cni-${loaderCount}" accept="image/*">
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', loaderHtml);
+}
+
+function removeLoader(loaderId) {
+    const loaderCard = document.getElementById(`loader-${loaderId}`);
+    if (loaderCard) {
+        loaderCard.remove();
+    }
+}
+
+// ================================================
+// ÉTAPE 4: ARTICLES RÉCEPTIONNÉS
 // ================================================
 
 function renderArticlesTable() {
     if (!selectedBCF) return;
-    
-    document.getElementById('selected-bcf-info').value = selectedBCF.code;
     
     const tbody = document.getElementById('articles-tbody');
     tbody.innerHTML = selectedBCF.articles.map((article, idx) => {
@@ -294,7 +425,9 @@ function renderArticlesTable() {
             <td style="text-align: center; font-weight: 600; color: #6B7280;">${idx + 1}</td>
             <td>
                 <div style="font-weight: 600;">${article.code}</div>
-                <div style="font-size: 11px; color: #6B7280;">${article.name}</div>
+            </td>
+            <td>
+                <div style="font-size: 12px; color: #6B7280;">${article.name}</div>
             </td>
             <td style="text-align: center;">${article.commanded} ${article.unit}</td>
             <td style="text-align: center;">
@@ -316,16 +449,16 @@ function renderArticlesTable() {
             </td>
             <td>
                 <select class="form-input" onchange="updateArticleQuality(${idx}, this.value)" style="font-size: 11px;">
-                    <option value="NOT_CHECKED" ${qualityStatus === 'NOT_CHECKED' ? 'selected' : ''}>[---]</option>
-                    <option value="ACCEPTED" ${qualityStatus === 'ACCEPTED' ? 'selected' : ''}>[ACC] Accepté</option>
-                    <option value="REJECTED" ${qualityStatus === 'REJECTED' ? 'selected' : ''}>[REJ] Rejeté</option>
-                    <option value="QUARANTINE" ${qualityStatus === 'QUARANTINE' ? 'selected' : ''}>[QUA] Quarantaine</option>
+                    <option value="NOT_CHECKED" ${qualityStatus === 'NOT_CHECKED' ? 'selected' : ''}>[ATT]</option>
+                    <option value="ACCEPTED" ${qualityStatus === 'ACCEPTED' ? 'selected' : ''}>[ACC]</option>
+                    <option value="REJECTED" ${qualityStatus === 'REJECTED' ? 'selected' : ''}>[REJ]</option>
+                    <option value="QUARANTINE" ${qualityStatus === 'QUARANTINE' ? 'selected' : ''}>[QUA]</option>
                 </select>
             </td>
             <td style="text-align: center; font-weight: 600; color: #10B981;">${acceptedQty} ${article.unit}</td>
         </tr>
         <tr id="article-${idx}-obs" style="display: none;">
-            <td colspan="7" style="padding: 8px 12px;">
+            <td colspan="8" style="padding: 8px 12px;">
                 <input 
                     type="text" 
                     class="form-input" 
@@ -460,7 +593,7 @@ function uploadQualityDoc(type) {
 }
 
 // ================================================
-// ÉTAPE 3: VALIDATION
+// ÉTAPE 9: VALIDATION FINALE
 // ================================================
 
 function renderValidationSummary() {

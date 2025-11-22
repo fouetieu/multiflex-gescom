@@ -1,0 +1,257 @@
+
+## 📋 **ÉCRAN CRÉATION DEMANDE D'ACHAT - VERSION COMPLÈTE**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ CRÉATION DEMANDE D'ACHAT                        N° Auto: DA-2024-XXXXX     │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│ Statut: BROUILLON                    Créé par: Herman MBOUOMBOUO           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ ▼ INFORMATIONS GÉNÉRALES                                                    │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ Date demande*    : [15/01/2024    ] (auto)                           │  │
+│ │ Société*         : [IOLA SARL      ]▼                                │  │
+│ │ Département*     : [Achats         ]▼                                │  │
+│ │ Priorité*        : [○ Basse  ● Normale  ○ Haute  ○ Urgente]         │  │
+│ │ Date livraison souhaitée* : [25/01/2024  ]📅                        │  │
+│ │ Lieu livraison*  : [Entrepôt Principal Douala  ]▼                   │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ▼ ÉMETTEUR DU BESOIN                                                       │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ Le besoin est exprimé par: [● Moi-même  ○ Une autre personne]       │  │
+│ │                                                                        │  │
+│ │ Émetteur réel    : Jean KAMGA (Production)     [Changer...]          │  │
+│ │ Justification du besoin* :                                            │  │
+│ │ ┌────────────────────────────────────────────────────────────────┐   │  │
+│ │ │ Renouvellement urgent du stock de matières premières suite à   │   │  │
+│ │ │ la rupture de notre fournisseur principal. Production Q1 2024  │   │  │
+│ │ │ en risque si pas d'approvisionnement avant fin janvier.        │   │  │
+│ │ └────────────────────────────────────────────────────────────────┘   │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ▼ LIGNES D'ARTICLES                                      [+ Ajouter ligne] │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ # │Type│Article/Description        │Qté* │Unité│PU Est.│Total   │Frn│🗑│ │
+│ ├──┼────┼──────────────────────────┼─────┼─────┼───────┼────────┼───┼──┤ │
+│ │ 1│[C]▼│[🔍 Rechercher...]         │     │     │       │        │   │  │ │
+│ │  │    │Code: CHEM-001             │ 100 │ L   │ 2,500 │250,000 │   │❌│ │
+│ │  │    │Nom: Produit chimique A    │     │     │       │        │   │  │ │
+│ │  │    │Notes: Stock critique      │     │     │       │  XAF   │SUP│  │ │
+│ │  │    │                           │     │     │       │        │001│  │ │
+│ ├──┼────┼──────────────────────────┼─────┼─────┼───────┼────────┼───┼──┤ │
+│ │ 2│[L]▼│Description libre:         │     │     │       │        │   │  │ │
+│ │  │    │[Matériel électrique    ] │  50 │ U   │ 1,000 │ 50,000 │   │❌│ │
+│ │  │    │[spécial non catalogué   ] │     │     │       │  XAF   │[-]│  │ │
+│ │  │    │Notes: Voir specs jointes  │     │     │       │        │   │  │ │
+│ ├──┴────┴──────────────────────────┴─────┴─────┴───────┼────────┴───┴──┤ │
+│ │ Type: [C]=Catalogué, [L]=Libre      TOTAL ESTIMÉ HT: │ 300,000 XAF   │ │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ▼ DOCUMENTS REQUIS ET PIÈCES JOINTES                                       │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ Configuration: Entity=PURCHASE_REQUISITION | Process=DA               │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                        │  │
+│ │ DOCUMENTS OBLIGATOIRES                                                │  │
+│ │ ┌────────────────────────────────────────────────────────────────┐   │  │
+│ │ │ ⚠️ DEVIS_FOURNISSEUR (1 fichier requis)                        │   │  │
+│ │ │ Types acceptés: PDF, JPG, PNG | Max: 5 MB                      │   │  │
+│ │ │ ┌──────────────────────────────────────────────────────────┐   │   │  │
+│ │ │ │ [📎 Parcourir...]  ou glisser-déposer ici                │   │   │  │
+│ │ │ └──────────────────────────────────────────────────────────┘   │   │  │
+│ │ │ ✅ devis_supplier_001.pdf (2.3 MB)              [👁️] [❌]     │   │  │
+│ │ └────────────────────────────────────────────────────────────────┘   │  │
+│ │                                                                        │  │
+│ │ ┌────────────────────────────────────────────────────────────────┐   │  │
+│ │ │ ⚠️ JUSTIFICATIF_URGENCE (1 fichier requis) - Si priorité URGENTE│  │  │
+│ │ │ Types acceptés: PDF, DOCX | Max: 2 MB                          │   │  │
+│ │ │ ┌──────────────────────────────────────────────────────────┐   │   │  │
+│ │ │ │ ❌ Fichier manquant - Requis pour priorité URGENTE        │   │   │  │
+│ │ │ └──────────────────────────────────────────────────────────┘   │   │  │
+│ │ └────────────────────────────────────────────────────────────────┘   │  │
+│ │                                                                        │  │
+│ │ DOCUMENTS OPTIONNELS                                                  │  │
+│ │ ┌────────────────────────────────────────────────────────────────┐   │  │
+│ │ │ SPECIFICATIONS_TECHNIQUES (Max: 3 fichiers)                     │   │  │
+│ │ │ Types acceptés: PDF, DOCX, XLSX | Max: 10 MB par fichier       │   │  │
+│ │ │ • spec_tech_v1.pdf (1.2 MB)                      [👁️] [❌]     │   │  │
+│ │ │ • datasheet_component.xlsx (450 KB)              [👁️] [❌]     │   │  │
+│ │ │ [+ Ajouter fichier] (1/3 utilisé)                              │   │  │
+│ │ └────────────────────────────────────────────────────────────────┘   │  │
+│ │                                                                        │  │
+│ │ ┌────────────────────────────────────────────────────────────────┐   │  │
+│ │ │ COMPARATIF_PRIX (Max: 1 fichier)                               │   │  │
+│ │ │ Types acceptés: XLSX, PDF | Max: 5 MB                          │   │  │
+│ │ │ ○ Aucun fichier attaché                           [+ Ajouter]  │   │  │
+│ │ └────────────────────────────────────────────────────────────────┘   │  │
+│ │                                                                        │  │
+│ │ ┌────────────────────────────────────────────────────────────────┐   │  │
+│ │ │ PHOTOS_ECHANTILLONS (Max: 10 fichiers)                         │   │  │
+│ │ │ Types acceptés: JPG, PNG | Max: 2 MB par fichier               │   │  │
+│ │ │ ○ Aucun fichier attaché                           [+ Ajouter]  │   │  │
+│ │ └────────────────────────────────────────────────────────────────┘   │  │
+│ │                                                                        │  │
+│ │ Validation documents: 1/2 documents obligatoires fournis ⚠️         │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+│                                                                              │
+│ ▼ WORKFLOW DE VALIDATION                                                   │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ Validation requise: OUI (Montant > 100,000 XAF)                      │  │
+│ │ Circuit: Vous → Chef Service (Paul NGA) → Direction Achats           │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ [💾 Enregistrer brouillon]  [❌ Annuler]  [✓ Soumettre pour validation →]  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 📊 **MAPPING COMPLET AVEC LE MODÈLE DE DONNÉES**
+
+#### **Table: `purchase_requisitions`**
+| Champ Écran | Propriété Modèle | Type |
+|-------------|------------------|------|
+| N° Auto | `requisitionNumber` | string (auto) |
+| Statut | `status` | RequisitionStatus |
+| Date demande | `requisitionDate` | date |
+| Créé par | `requesterId` | EntityReference |
+| Société | `companyId` | EntityReference |
+| Département | `departmentId` | EntityReference |
+| Priorité | `priority` | Priority (enum) |
+| Date livraison | `requestedDeliveryDate` | date |
+| Lieu livraison | `deliveryLocationId` | EntityReference |
+| Émetteur réel | `needOriginatorId` | EntityReference |
+| - | `needOriginatorName` | string (dénormalisé) |
+| Justification | `needJustification` | text |
+| Total estimé | `totalEstimatedAmount` | decimal (calculé) |
+| Circuit validation | `validationWorkflow` | ValidationWorkflow |
+
+#### **Table: `PurchaseRequisitionLine`**
+| Champ Écran | Propriété Modèle | Type |
+|-------------|------------------|------|
+| # | `lineNumber` | integer |
+| Article (si catalogué) | `productId` | EntityReference |
+| Code | `productCode` | string |
+| Nom | `productName` | string |
+| Description libre | `freeTextDescription` | text |
+| Quantité | `quantity` | decimal |
+| Unité | `unit` | string |
+| PU Estimé | `estimatedUnitPrice` | decimal |
+| Total | `estimatedTotalPrice` | decimal |
+| Fournisseur | `suggestedSupplierId` | EntityReference |
+| Notes | `notes` | text |
+
+
+STRUCTURE DE CONFIGURATION DES DOCUMENTS
+json{
+  "entityType": "PURCHASE_REQUISITION",
+  "process": "DA",
+  "mediaTypeConfigs": [
+    {
+      "code": "DEVIS_FOURNISSEUR",
+      "name": "Devis Fournisseur",
+      "required": true,
+      "multipleAllowed": false,
+      "maxFiles": 1,
+      "maxFileSizeBytes": 5242880,
+      "allowedMimeTypes": ["application/pdf", "image/jpeg", "image/png"],
+      "displayOrder": 1
+    },
+    {
+      "code": "JUSTIFICATIF_URGENCE",
+      "name": "Justificatif d'urgence",
+      "required": "conditional", // Si priority = URGENT
+      "multipleAllowed": false,
+      "maxFiles": 1,
+      "maxFileSizeBytes": 2097152,
+      "allowedMimeTypes": ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
+      "displayOrder": 2
+    },
+    {
+      "code": "SPECIFICATIONS_TECHNIQUES",
+      "name": "Spécifications techniques",
+      "required": false,
+      "multipleAllowed": true,
+      "maxFiles": 3,
+      "maxFileSizeBytes": 10485760,
+      "allowedMimeTypes": ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+      "displayOrder": 3
+    },
+    {
+      "code": "COMPARATIF_PRIX",
+      "name": "Comparatif prix",
+      "required": false,
+      "multipleAllowed": false,
+      "maxFiles": 1,
+      "maxFileSizeBytes": 5242880,
+      "allowedMimeTypes": ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/pdf"],
+      "displayOrder": 4
+    },
+    {
+      "code": "PHOTOS_ECHANTILLONS",
+      "name": "Photos échantillons",
+      "required": false,
+      "multipleAllowed": true,
+      "maxFiles": 10,
+      "maxFileSizeBytes": 2097152,
+      "allowedMimeTypes": ["image/jpeg", "image/png"],
+      "displayOrder": 5
+    }
+  ]
+}
+📌 PRINCIPES RETENUS POUR LA GESTION DES DOCUMENTS
+1. Configuration par Entité
+Chaque type d'objet (DA, BCF, BR, etc.) a sa propre configuration de documents avec :
+
+Types de documents autorisés
+Caractère obligatoire ou optionnel
+Nombre max de fichiers
+Taille max par fichier
+Types MIME acceptés
+
+2. Validation Conditionnelle
+Certains documents peuvent être :
+
+Toujours obligatoires : required: true
+Conditionnellement obligatoires : Selon l'état d'autres champs
+Optionnels : required: false
+
+3. Gestion Multi-fichiers
+
+multipleAllowed: false → 1 seul fichier
+multipleAllowed: true + maxFiles → Plusieurs fichiers jusqu'à la limite
+
+4. Contrôles Automatiques
+
+Validation du type MIME
+Vérification de la taille
+Comptage des fichiers
+Blocage soumission si documents obligatoires manquants
+
+5. Interface Utilisateur
+
+Zone de drag & drop
+Indicateurs visuels (✅ fourni, ⚠️ requis, ❌ manquant)
+Prévisualisation (👁️) pour images/PDF
+Suppression individuelle
+Compteur de fichiers (X/Y utilisés)
+
+🎯 APPLICATION AUX AUTRES ÉCRANS
+Ce principe sera appliqué pour :
+
+BCF : Bon de non-redevance, Contrat cadre, etc.
+BR : Photos livraison, Rapport qualité, BL fournisseur
+Facture : Facture originale, Attestation TVA
+
+### 🔧 **AMÉLIORATIONS APPORTÉES**
+
+1. **Gestion émetteur/demandeur** : Option claire "Moi-même/Autre personne"
+2. **Type d'article** : Choix explicite Catalogué/Libre par ligne
+3. **Documents typés** : Types prédéfinis selon l'objet DA avec indicateur obligatoire
+4. **Workflow visible** : Affichage du circuit de validation
+5. **Sections repliables** : Meilleure organisation visuelle (▼)
+6. **Validation conditionnelle** : Affichage automatique si montant > seuil
+
