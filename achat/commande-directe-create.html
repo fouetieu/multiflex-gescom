@@ -24,364 +24,308 @@
         html, body {
             height: 100%;
             margin: 0;
-            background: #F5F6FA;
+            padding: 0;
         }
-        .direct-screen {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-        .breadcrumb {
+
+        /* Tabs */
+        .tabs-container {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #6B7280;
-            margin-bottom: 20px;
-        }
-        .breadcrumb a {
-            color: #263c89;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .page-hero {
+            gap: 0;
+            border-bottom: 2px solid #E5E7EB;
             background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow-md);
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            gap: 24px;
+            padding: 0;
+            margin-bottom: 24px;
         }
-        .hero-left h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1F2937;
-            margin-bottom: 8px;
-        }
-        .hero-left p {
-            color: #6B7280;
+
+        .tab-button {
+            padding: 16px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
             font-size: 14px;
-        }
-        .hero-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 16px;
-        }
-        .hero-tag {
-            background: #EEF2FF;
-            color: #3730A3;
-            border-radius: 999px;
-            padding: 8px 14px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .hero-right {
-            min-width: 240px;
-            border-left: 1px solid #E5E7EB;
-            padding-left: 24px;
-        }
-        .hero-right .user {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .hero-right img {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-        }
-        .hero-right .user-info {
-            display: flex;
-            flex-direction: column;
-        }
-        .hero-right .user-info span:first-child {
-            font-weight: 600;
-            color: #111827;
-        }
-        .hero-right .user-info span:last-child {
+            font-weight: 500;
             color: #6B7280;
-            font-size: 13px;
+            position: relative;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
         }
+
+        .tab-button:hover {
+            color: #1F2937;
+        }
+
+        .tab-button.active {
+            color: #263c89;
+            border-bottom-color: #263c89;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .alert-direct {
             background: #FEF3C7;
             border: 1px solid #FCD34D;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 6px;
+            padding: 12px;
             display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .alert-direct i {
-            color: #D97706;
-            font-size: 24px;
-        }
-        .alert-direct strong {
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
             color: #92400E;
-            font-size: 15px;
+            align-items: flex-start;
         }
-        .section-grid {
+        
+        .section-card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-grid {
             display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 24px;
         }
-        .section-grid.two-cols {
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        }
-        .section-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: var(--shadow-sm);
-        }
-        .section-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .section-title span {
-            font-size: 12px;
-            font-weight: 600;
-            color: #6B7280;
-        }
-        .data-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-        }
-        .data-field {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .data-field label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #6B7280;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .data-field input,
-        .data-field select,
-        .data-field textarea {
-            border: 1px solid #E5E7EB;
-            border-radius: 10px;
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
             padding: 10px 12px;
-            font-size: 14px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 13px;
         }
-        .data-field textarea {
-            min-height: 90px;
+
+        .form-textarea {
             resize: vertical;
+            min-height: 80px;
         }
-        .data-field input:focus,
-        .data-field select:focus,
-        .data-field textarea:focus {
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
             border-color: #263c89;
-            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.12);
+            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
         }
+
         .radio-group {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
         }
+
         .radio-pill {
             border: 1px solid #E5E7EB;
             border-radius: 999px;
-            padding: 6px 14px;
+            padding: 8px 16px;
             font-size: 13px;
             font-weight: 600;
             color: #374151;
             cursor: pointer;
             transition: all 0.2s;
         }
+
         .radio-pill.active {
             background: #263c89;
             color: white;
             border-color: #263c89;
         }
+
         .supplier-card {
             border: 1px solid #E5E7EB;
-            border-radius: 14px;
-            padding: 20px;
+            border-radius: 8px;
+            padding: 16px;
             background: #F9FAFB;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
+
+        .supplier-card:hover {
+            border-color: #263c89;
+            box-shadow: 0 2px 4px rgba(38, 60, 137, 0.1);
+        }
+
+        .supplier-card.selected {
+            background: #EFF6FF;
+            border-color: #263c89;
+        }
+
         .supplier-header {
             display: flex;
             justify-content: space-between;
             gap: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
+
         .supplier-header h4 {
             margin: 0;
-            font-size: 16px;
-            color: #111827;
+            font-size: 15px;
+            color: #1F2937;
+            font-weight: 600;
         }
+
         .status-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             padding: 4px 10px;
             border-radius: 999px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
+
         .pill-success {
             background: #D1FAE5;
             color: #047857;
         }
+
         .pill-warning {
             background: #FEF3C7;
             color: #B45309;
         }
-        .pill-danger {
-            background: #FEE2E2;
-            color: #B91C1C;
+
+        .pill-info {
+            background: #DBEAFE;
+            color: #1D4ED8;
         }
-        .articles-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-        .btn-ghost {
-            border: 1px dashed #CBD5F5;
-            background: #EEF2FF;
-            color: #1E3A8A;
-            font-weight: 600;
-            border-radius: 12px;
-            padding: 10px 14px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-        .btn-ghost:hover {
-            background: #E0E7FF;
-        }
+
         .articles-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
             border: 1px solid #E5E7EB;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
         }
+
         .articles-table th {
             background: #F3F4F6;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
             color: #4B5563;
             padding: 12px;
             text-align: left;
+            border-bottom: 2px solid #E5E7EB;
         }
+
         .articles-table td {
             border-top: 1px solid #E5E7EB;
             padding: 12px;
-            vertical-align: top;
+            vertical-align: middle;
             background: white;
         }
-        .article-name-select,
-        .article-input {
+
+        .article-select {
             width: 100%;
-            border: 1px solid #E5E7EB;
-            border-radius: 10px;
-            padding: 8px 10px;
+            padding: 8px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
             font-size: 13px;
         }
-        .article-meta {
-            margin-top: 8px;
-            font-size: 12px;
-            color: #6B7280;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 8px;
-        }
-        .stock-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 600;
-        }
-        .stock-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .stock-dot.critical { background: #DC2626; }
-        .stock-dot.warning { background: #F59E0B; }
-        .stock-dot.ok { background: #10B981; }
-        .totals-strip {
-            margin-top: 16px;
-            border-radius: 14px;
-            border: 1px solid #E5E7EB;
-            padding: 16px;
-            background: #F9FAFB;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
-        }
-        .totals-strip .label {
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #6B7280;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-        .totals-strip .value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #111827;
-        }
-        .fees-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
-        }
-        .fees-grid input {
+
+        .article-input {
             width: 100%;
+            padding: 8px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 13px;
         }
-        .budget-box {
-            border: 1px solid #E5E7EB;
-            border-radius: 14px;
-            padding: 16px;
-            background: #F8FAFC;
+
+        .btn-add-line {
+            background: #DBEAFE;
+            color: #1E40AF;
+            border: 2px dashed #3B82F6;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            width: 100%;
+            transition: all 0.2s;
         }
-        .budget-box .row {
+
+        .btn-add-line:hover {
+            background: #BFDBFE;
+        }
+
+        .btn-remove-line {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .totals-box {
+            background: #F9FAFB;
+            border: 2px solid #263c89;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .totals-row {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
-            margin-bottom: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid #E5E7EB;
         }
-        .budget-box .row strong {
+
+        .totals-row:last-child {
+            border-bottom: none;
+            font-size: 16px;
             font-weight: 700;
+            padding-top: 12px;
         }
-        .budget-progress {
-            height: 12px;
-            border-radius: 999px;
-            background: #E5E7EB;
-            margin: 12px 0;
-            overflow: hidden;
+
+        .totals-label {
+            font-weight: 600;
+            color: #6B7280;
         }
-        .budget-progress .bar {
-            height: 100%;
-            background: linear-gradient(90deg, #F97316 0%, #EF4444 100%);
+
+        .totals-value {
+            font-weight: 700;
+            color: #263c89;
         }
+
         .workflow-table {
             width: 100%;
             border-collapse: collapse;
         }
+
         .workflow-table th,
         .workflow-table td {
             padding: 10px 12px;
@@ -389,11 +333,14 @@
             font-size: 13px;
             text-align: left;
         }
+
         .workflow-table th {
             text-transform: uppercase;
             font-size: 11px;
             color: #6B7280;
+            font-weight: 600;
         }
+
         .status-chip {
             display: inline-flex;
             align-items: center;
@@ -403,105 +350,63 @@
             font-size: 12px;
             font-weight: 600;
         }
+
         .status-chip.pending {
             background: #DBEAFE;
             color: #1D4ED8;
         }
-        .documents-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+
+        .file-upload-zone {
+            border: 2px dashed #D1D5DB;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .document-item {
-            border: 1px dashed #CBD5F5;
-            border-radius: 12px;
-            padding: 12px 14px;
+
+        .file-upload-zone:hover {
+            border-color: #263c89;
+            background: #EFF6FF;
+        }
+
+        .form-actions {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
+            gap: 12px;
+            padding: 20px 0;
+            margin-top: 24px;
         }
-        .document-actions {
-            display: flex;
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
             gap: 8px;
         }
-        .document-actions button {
-            border: none;
-            background: none;
-            cursor: pointer;
-            color: #374151;
-        }
-        .notes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-        }
-        .notes-grid textarea {
-            width: 100%;
-        }
-        .recap-card {
-            border: 1px solid #E5E7EB;
-            border-radius: 16px;
-            padding: 20px;
-            background: white;
-        }
-        .recap-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 12px;
-        }
-        .recap-item {
-            border: 1px solid #E5E7EB;
-            border-radius: 12px;
-            padding: 12px;
-            background: #F9FAFB;
-        }
-        .actions-bar {
-            margin-top: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .actions-bar button {
-            border-radius: 12px;
-            padding: 12px 18px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-        }
+
         .btn-primary {
             background: #263c89;
             color: white;
         }
-        .btn-outline {
-            border: 1px solid #CBD5F5;
-            background: white;
-            color: #1E3A8A;
+
+        .btn-primary:hover {
+            background: #1a2959;
         }
-        .actions-after ul {
-            margin: 12px 0 0;
-            padding-left: 18px;
-            color: #374151;
+
+        .btn-secondary {
+            background: #E5E7EB;
+            color: #1F2937;
         }
-        .mapping-block pre {
-            background: #111827;
-            color: #F3F4F6;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 12px;
-            overflow: auto;
-            max-height: 360px;
-        }
-        @media (max-width: 1024px) {
-            .page-hero {
-                flex-direction: column;
-            }
-            .hero-right {
-                border-left: none;
-                border-top: 1px solid #E5E7EB;
-                padding-left: 0;
-                padding-top: 16px;
-            }
+
+        .btn-secondary:hover {
+            background: #D1D5DB;
         }
     </style>
 </head>
@@ -593,520 +498,549 @@
 
             <!-- Main content -->
             <main class="flex-1 overflow-auto bg-[#F8F9FA]">
-                <div class="direct-screen">
-                    <div class="breadcrumb">
-                        <a href="./commandes-list.html"><i class="fa-solid fa-shopping-cart mr-2"></i>Bons de Commande</a>
-                        <i class="fa-solid fa-chevron-right text-[11px]"></i>
-                        <span>Création directe</span>
+                <div class="achats-container" style="max-width: 1200px;">
+                    
+                    <!-- Breadcrumb -->
+                    <div style="padding: 24px 24px 0;">
+                        <nav style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #6B7280; margin-bottom: 20px;">
+                            <a href="./commandes-list.html" style="color: #263c89; text-decoration: none;">
+                                <i class="fa-solid fa-shopping-cart"></i> Bons de Commande
+                            </a>
+                            <i class="fa-solid fa-chevron-right" style="font-size: 12px;"></i>
+                            <span>BCF Direct</span>
+                        </nav>
                     </div>
 
-                    <div class="page-hero">
-                        <div class="hero-left">
-                            <h1>Nouveau Bon de Commande Fournisseur (Direct)</h1>
-                            <p>US-PROC-007 • Création d'un BCF sans Demande d'Achat avec contrôle renforcé</p>
-                            <div class="hero-tags">
-                                <span class="hero-tag"><i class="fa-solid fa-bolt"></i> Mode Direct</span>
-                                <span class="hero-tag"><i class="fa-solid fa-user-shield"></i> Traçabilité renforcée</span>
-                                <span class="hero-tag"><i class="fa-solid fa-calculator"></i> Budget auto</span>
-                                <span class="hero-tag"><i class="fa-solid fa-receipt"></i> TVA 19.25%</span>
+                    <div style="padding: 0 24px 24px;">
+                        
+                        <!-- Alert Mode Direct -->
+                        <div class="alert-direct">
+                            <i class="fa-solid fa-bolt"></i>
+                            <div>
+                                <strong>Mode Création Directe (sans DA)</strong>
+                                <p style="margin: 4px 0 0; font-size: 12px;">
+                                    Justification obligatoire, validation demandeur initial + manager Achats requise.
+                                </p>
                             </div>
                         </div>
-                        <div class="hero-right">
-                            <div class="user">
-                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Marie DJOMO">
-                                <div class="user-info">
-                                    <span>Marie DJOMO</span>
-                                    <span>Acheteuse Senior • Achats Directs</span>
-                                </div>
-                            </div>
-                            <div style="margin-top: 16px; font-size: 13px; color: #6B7280;">
-                                <div>Dernière mise à jour: <strong id="hero-updated-at">31/01/2024 10:12</strong></div>
-                                <div>Statut: <span class="status-chip pending" id="hero-status">Brouillon</span></div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="alert-direct">
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                        <div>
-                            <strong>Mode Création Directe (sans DA)</strong>
-                            <p style="margin: 6px 0 0; color: #92400E; font-size: 14px;">
-                                Justification obligatoire, validation demandeur initial + manager Achats, certif. non-redevance impératif.
-                            </p>
-                        </div>
-                    </div>
+                        <form id="bcf-direct-form">
+                            
+                            <!-- TABS NAVIGATION -->
+                            <div class="tabs-container">
+                                <button type="button" class="tab-button active" onclick="switchTab(0)">
+                                    <i class="fa-solid fa-info-circle" style="margin-right: 6px;"></i>
+                                    Informations générales
+                                </button>
+                                <button type="button" class="tab-button" onclick="switchTab(1)">
+                                    <i class="fa-solid fa-box" style="margin-right: 6px;"></i>
+                                    Articles à commander
+                                </button>
+                                <button type="button" class="tab-button" onclick="switchTab(2)">
+                                    <i class="fa-solid fa-truck" style="margin-right: 6px;"></i>
+                                    Livraison
+                                </button>
+                                <button type="button" class="tab-button" onclick="switchTab(3)">
+                                    <i class="fa-solid fa-money-bill" style="margin-right: 6px;"></i>
+                                    Paiement
+                                </button>
+                                <button type="button" class="tab-button" onclick="switchTab(4)">
+                                    <i class="fa-solid fa-calculator" style="margin-right: 6px;"></i>
+                                    Frais & TVA
+                                </button>
+                                <button type="button" class="tab-button" onclick="switchTab(5)">
+                                    <i class="fa-solid fa-paperclip" style="margin-right: 6px;"></i>
+                                    Documents
+                                </button>
+                                <button type="button" class="tab-button" onclick="switchTab(6)">
+                                    <i class="fa-solid fa-diagram-project" style="margin-right: 6px;"></i>
+                                    Workflow
+                                </button>
+                            </div>
 
-                    <div class="section-card" id="section-justification">
-                        <div class="section-title">
-                            <i class="fa-solid fa-comment-dots text-[#263c89]"></i>
-                            Justification de l'achat direct *
-                        </div>
-                        <div class="data-grid">
-                            <div class="data-field" style="grid-column: span 2;">
-                                <label>Motif détaillé</label>
-                                <textarea id="direct-justification" placeholder="Décrire la raison de la création sans DA"></textarea>
-                                <span class="form-help" id="justification-helper">Requis avant soumission. Contexte rupture stock, urgence client, etc.</span>
-                            </div>
-                            <div class="data-field">
-                                <label>Niveau d'urgence</label>
-                                <select id="direct-mode-urgency">
-                                    <option value="NORMAL">Normal</option>
-                                    <option value="URGENT">Urgent</option>
-                                    <option value="CRITIQUE">Critique</option>
-                                </select>
-                            </div>
-                            <div class="data-field">
-                                <label>Impact métier</label>
-                                <input type="text" id="direct-impact" placeholder="Production arrêtée, SLA client, etc.">
-                            </div>
-                        </div>
-                    </div>
+                            <!-- TAB 1: INFORMATIONS GÉNÉRALES -->
+                            <div class="tab-content active" id="tab-0">
+                                <div class="section-card">
+                                    
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-heading"></i> EN-TÊTE
+                                    </h3>
 
-                    <div class="section-card">
-                        <div class="section-title">
-                            <i class="fa-solid fa-circle-info text-[#263c89]"></i>
-                            Informations générales
-                        </div>
-                        <div class="data-grid">
-                            <div class="data-field">
-                                <label>N° Commande</label>
-                                <input type="text" id="order-number" readonly style="background:#F3F4F6;">
-                            </div>
-                            <div class="data-field">
-                                <label>Date commande *</label>
-                                <input type="date" id="order-date">
-                            </div>
-                            <div class="data-field">
-                                <label>Exercice fiscal</label>
-                                <input type="number" id="fiscal-year">
-                            </div>
-                            <div class="data-field" style="grid-column: span 2;">
-                                <label>Type commande *</label>
-                                <div class="radio-group" id="order-type-group">
-                                    <span class="radio-pill" data-value="STANDARD">Standard</span>
-                                    <span class="radio-pill" data-value="FRAME">Contrat-cadre</span>
-                                    <span class="radio-pill" data-value="URGENT">Urgence</span>
-                                    <span class="radio-pill" data-value="IMPORT">Import</span>
-                                </div>
-                            </div>
-                            <div class="data-field">
-                                <label>Priorité *</label>
-                                <select id="order-priority">
-                                    <option value="NORMAL">Normal</option>
-                                    <option value="URGENT">Urgent</option>
-                                    <option value="CRITIQUE">Critique</option>
-                                </select>
-                            </div>
-                            <div class="data-field">
-                                <label>Catégorie achat *</label>
-                                <select id="purchase-category">
-                                    <option value="DIRECT_MATERIAL">DIRECT_MATERIAL - Production</option>
-                                    <option value="INDIRECT_MATERIAL">INDIRECT_MATERIAL - Fonctionnement</option>
-                                    <option value="SERVICES">SERVICES - Prestations</option>
-                                    <option value="CAPEX">CAPEX - Investissements</option>
-                                </select>
-                            </div>
-                            <div class="data-field" style="grid-column: span 2;">
-                                <label>Libellé catégorie</label>
-                                <input type="text" id="category-label">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-grid two-cols">
-                        <div class="section-card">
-                            <div class="section-title">
-                                <i class="fa-solid fa-truck-ramp-box text-[#263c89]"></i>
-                                Fournisseur sélectionné
-                            </div>
-                            <div class="supplier-card" id="supplier-card">
-                                <div class="supplier-header">
-                                    <h4 id="supplier-name">-</h4>
-                                    <span class="status-pill pill-success" id="supplier-type-pill">Externe</span>
-                                </div>
-                                <div class="data-grid" style="margin-bottom: 12px;">
-                                    <div class="data-field">
-                                        <label>Code fournisseur</label>
-                                        <input type="text" id="supplier-code" readonly>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">N° BCF</label>
+                                            <input type="text" class="form-input" value="BCF-2024-AUTO" readonly style="background: #F3F4F6;">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Date commande <span style="color: #EF4444;">*</span></label>
+                                            <input type="date" class="form-input" id="order-date" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Priorité <span style="color: #EF4444;">*</span></label>
+                                            <select class="form-select" id="order-priority">
+                                                <option value="NORMAL">Normal</option>
+                                                <option value="URGENT">Urgent</option>
+                                                <option value="CRITIQUE">Critique</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="data-field">
-                                        <label>Type</label>
-                                        <input type="text" id="supplier-type" readonly>
+
+                                    <h3 class="section-title" style="margin-top: 24px;">
+                                        <i class="fa-solid fa-truck-ramp-box"></i> FOURNISSEUR
+                                    </h3>
+
+                                    <div class="form-group">
+                                        <input 
+                                            type="text" 
+                                            class="form-input" 
+                                            id="supplier-search"
+                                            placeholder="🔍 Rechercher fournisseur..."
+                                            onkeyup="searchSuppliers()"
+                                        >
                                     </div>
-                                </div>
-                                <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
-                                    <span class="status-pill pill-success" id="supplier-niu"></span>
-                                    <span class="status-pill pill-success" id="supplier-certificate"></span>
-                                </div>
-                                <div style="font-size:13px; color:#374151; margin-bottom:12px;">
-                                    <i class="fa-solid fa-location-dot text-[#EF4444] mr-2"></i>
-                                    <span id="supplier-address"></span>
-                                </div>
-                                <div style="font-size:13px; color:#374151; margin-bottom:8px;">
-                                    <i class="fa-solid fa-phone text-[#10B981] mr-2"></i>
-                                    <span id="supplier-contact"></span>
-                                </div>
-                                <div style="font-size:13px; color:#374151;">
-                                    <i class="fa-solid fa-envelope text-[#6366F1] mr-2"></i>
-                                    <span id="supplier-email"></span>
-                                </div>
-                                <div style="margin-top:16px;">
-                                    <div style="font-size:12px; text-transform:uppercase; color:#6B7280; font-weight:600; margin-bottom:6px;">
-                                        Conditions négociées
+
+                                    <div id="suppliers-list" style="max-height: 300px; overflow-y: auto;">
+                                        <!-- Suppliers populated dynamically -->
                                     </div>
-                                    <ul id="supplier-conditions" style="list-style:disc; padding-left:18px; color:#374151; font-size:13px;"></ul>
+
+                                    <h3 class="section-title" style="margin-top: 24px;">
+                                        <i class="fa-solid fa-user-tie"></i> DEMANDEUR & ORIGINE BESOIN
+                                    </h3>
+
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">Société acheteuse <span style="color: #EF4444;">*</span></label>
+                                            <select class="form-select" id="buying-company" required>
+                                                <option value="">Sélectionner</option>
+                                                <option value="IOLA_SA">IOLA SA</option>
+                                                <option value="IOLA_DISTRIBUTION">IOLA DISTRIBUTION</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" style="grid-column: span 2;">
+                                            <label class="form-label">Émetteur du besoin <span style="color: #EF4444;">*</span></label>
+                                            <div class="radio-group">
+                                                <label class="radio-pill active" onclick="setOriginator('self')">
+                                                    <input type="radio" name="originator" value="self" checked style="display: none;">
+                                                    Moi-même
+                                                </label>
+                                                <label class="radio-pill" onclick="setOriginator('other')">
+                                                    <input type="radio" name="originator" value="other" style="display: none;">
+                                                    Une autre personne
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="other-originator-section" style="display: none; margin-bottom: 16px;">
+                                        <div class="form-group">
+                                            <label class="form-label">Sélectionner le demandeur</label>
+                                            <select class="form-select" id="originator-select">
+                                                <option value="">Sélectionner</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Motif détaillé <span style="color: #EF4444;">*</span></label>
+                                        <textarea class="form-textarea" id="direct-justification" placeholder="Décrire la raison de la création sans DA (rupture stock, urgence client, etc.)" required></textarea>
+                                        <span style="font-size: 11px; color: #6B7280; margin-top: 4px; display: block;">
+                                            Requis avant soumission. Contexte rupture stock, urgence client, etc.
+                                        </span>
+                                    </div>
+
                                 </div>
+                            </div>
+
+                            <!-- TAB 2: ARTICLES À COMMANDER -->
+                            <div class="tab-content" id="tab-1">
+                                <div class="section-card">
+                                    
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-boxes-stacked"></i> ARTICLES À COMMANDER
+                                        <span style="font-size: 12px; font-weight: 600; color: #6B7280; margin-left: 8px;" id="articles-count">0 ligne</span>
+                                    </h3>
+
+                                    <button type="button" class="btn-add-line" onclick="handleAddArticleLine()">
+                                        <i class="fa-solid fa-plus"></i> Ajouter un article du catalogue
+                                    </button>
+
+                                    <div style="overflow-x:auto;">
+                                        <table class="articles-table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 40px;">#</th>
+                                                    <th>Article</th>
+                                                    <th>Description</th>
+                                                    <th style="width: 100px;">Qté <span style="color: #EF4444;">*</span></th>
+                                                    <th style="width: 80px;">Unité</th>
+                                                    <th style="width: 120px;">P.U. HT</th>
+                                                    <th style="width: 80px;">Remise %</th>
+                                                    <th style="width: 120px;">Sous-total HT</th>
+                                                    <th style="width: 60px;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="articles-body">
+                                                <!-- Articles added dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="totals-box">
+                                        <h3 style="font-size: 14px; font-weight: 600; color: #1F2937; margin-bottom: 16px;">
+                                            <i class="fa-solid fa-calculator"></i> TOTAUX
+                                        </h3>
+                                        <div class="totals-row">
+                                            <div class="totals-label">Total articles HT:</div>
+                                            <div class="totals-value" id="total-articles-ht">0 XAF</div>
+                                        </div>
+                                        <div class="totals-row">
+                                            <div class="totals-label">TVA (19.25%):</div>
+                                            <div class="totals-value" id="total-vat">0 XAF</div>
+                                        </div>
+                                        <div class="totals-row">
+                                            <div class="totals-label">Total TTC:</div>
+                                            <div class="totals-value" id="total-ttc">0 XAF</div>
+                                        </div>
+                                        <div class="totals-row">
+                                            <div class="totals-label">Remise cumulée:</div>
+                                            <div class="totals-value" id="total-discount">0 XAF</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- TAB 3: LIVRAISON -->
+                            <div class="tab-content" id="tab-2">
+                                <div class="section-card">
+                                    
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-truck-fast"></i> INFORMATIONS LIVRAISON
+                                    </h3>
+
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">Date livraison souhaitée <span style="color: #EF4444;">*</span></label>
+                                            <input type="date" class="form-input" id="delivery-date" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Délai fournisseur (jours)</label>
+                                            <input type="number" class="form-input" id="delivery-leadtime" readonly style="background: #F3F4F6;">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Incoterm <span style="color: #EF4444;">*</span></label>
+                                            <select class="form-select" id="delivery-incoterm" required>
+                                                <option value="">Sélectionner</option>
+                                                <option value="EXW">EXW - Ex Works</option>
+                                                <option value="FOB">FOB - Free On Board</option>
+                                                <option value="CIF">CIF - Cost Insurance Freight</option>
+                                                <option value="DDP">DDP - Delivered Duty Paid</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-grid">
+                                        <div class="form-group" style="grid-column: span 2;">
+                                            <label class="form-label">Lieu de livraison <span style="color: #EF4444;">*</span></label>
+                                            <select class="form-select" id="delivery-location" required>
+                                                <option value="">Sélectionner</option>
+                                                <option value="ENTREPOT_PRINCIPAL">Entrepôt Principal Douala</option>
+                                                <option value="ZONE_INDUSTRIELLE_YDE">Zone Industrielle Yaoundé</option>
+                                                <option value="PRODUCTION">Zone Production</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Transport</label>
+                                            <select class="form-select" id="transport-mode">
+                                                <option value="ROAD">Route</option>
+                                                <option value="AIR">Aérien</option>
+                                                <option value="SEA">Maritime</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Adresse complète de livraison</label>
+                                        <textarea class="form-textarea" id="delivery-address"></textarea>
+                                    </div>
+
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact réception</label>
+                                            <input type="text" class="form-input" id="delivery-contact" placeholder="Nom">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Téléphone</label>
+                                            <input type="tel" class="form-input" id="delivery-phone" placeholder="+237...">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Transporteur prévu</label>
+                                            <select class="form-select" id="carrier-select">
+                                                <option value="">À définir</option>
+                                                <option value="CARRIER1">Transporteur 1</option>
+                                                <option value="CARRIER2">Transporteur 2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- TAB 4: PAIEMENT -->
+                            <div class="tab-content" id="tab-3">
+                                <div class="section-card">
+                                    
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-money-check-dollar"></i> CONDITIONS DE PAIEMENT
+                                    </h3>
+
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">Conditions <span style="color: #EF4444;">*</span></label>
+                                            <select class="form-select" id="payment-terms" required>
+                                                <option value="">Sélectionner</option>
+                                                <option value="NET_30">Net 30 jours</option>
+                                                <option value="NET_60">Net 60 jours</option>
+                                                <option value="NET_90">Net 90 jours</option>
+                                                <option value="ADVANCE">Paiement d'avance</option>
+                                                <option value="ON_DELIVERY">À la livraison</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Mode paiement <span style="color: #EF4444;">*</span></label>
+                                            <select class="form-select" id="payment-mode" required>
+                                                <option value="">Sélectionner</option>
+                                                <option value="BANK_TRANSFER">Virement bancaire</option>
+                                                <option value="CHECK">Chèque</option>
+                                                <option value="MOBILE_MONEY">Mobile Money</option>
+                                                <option value="CASH">Espèces</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Devise</label>
+                                            <select class="form-select" id="currency-select">
+                                                <option value="XAF">XAF</option>
+                                                <option value="USD">USD</option>
+                                                <option value="EUR">EUR</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                            <input type="checkbox" id="early-payment-checkbox">
+                                            <span>Escompte: 2% si paiement < 10 jours (<strong id="early-payment-value">0 XAF</strong>)</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="alert-direct" style="background:#DBEAFE; border-color:#93C5FD;">
+                                        <i class="fa-solid fa-scale-balanced" style="color: #2563EB;"></i>
+                                        <div>
+                                            <strong style="color: #1D4ED8;">Conformité Cameroun / CEMAC</strong>
+                                            <p style="margin:6px 0 0; font-size:12px; color: #1D4ED8;">
+                                                Espèces plafonnées 5M XAF • Mobile Money 1M XAF • Certificat non-redevance obligatoire.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- TAB 5: FRAIS ANNEXES & TVA -->
+                            <div class="tab-content" id="tab-4">
+                                <div class="section-card">
+                                    
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-calculator"></i> FRAIS ANNEXES & CALCUL TVA
+                                    </h3>
+
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">Transport</label>
+                                            <input type="number" class="form-input" id="fee-transport" min="0" placeholder="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Assurance</label>
+                                            <input type="number" class="form-input" id="fee-insurance" min="0" placeholder="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Douane</label>
+                                            <input type="number" class="form-input" id="fee-customs" min="0" placeholder="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Manutention</label>
+                                            <input type="number" class="form-input" id="fee-handling" min="0" placeholder="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Autres frais</label>
+                                            <input type="number" class="form-input" id="fee-other" min="0" placeholder="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Libellé autres frais</label>
+                                            <input type="text" class="form-input" id="fee-other-label" placeholder="Préciser">
+                                        </div>
+                                    </div>
+
+                                    <div class="totals-box" style="margin-top: 24px;">
+                                        <h3 style="font-size: 14px; font-weight: 600; color: #1F2937; margin-bottom: 16px;">
+                                            <i class="fa-solid fa-file-invoice-dollar"></i> SYNTHÈSE FINANCIÈRE
+                                        </h3>
+                                        <div class="totals-row">
+                                            <div class="totals-label">Base HT (Articles):</div>
+                                            <div class="totals-value" id="base-articles">0 XAF</div>
+                                        </div>
+                                        <div class="totals-row">
+                                            <div class="totals-label">Base HT (Frais):</div>
+                                            <div class="totals-value" id="base-fees">0 XAF</div>
+                                        </div>
+                                        <div class="totals-row">
+                                            <div class="totals-label">Total HT:</div>
+                                            <div class="totals-value" id="total-ht-final">0 XAF</div>
+                                        </div>
+                                        <div class="totals-row">
+                                            <div class="totals-label">TVA 19.25%:</div>
+                                            <div class="totals-value" id="total-tva-final">0 XAF</div>
+                                        </div>
+                                        <div class="totals-row">
+                                            <div class="totals-label">Total TTC:</div>
+                                            <div class="totals-value" id="total-ttc-final">0 XAF</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top: 16px; padding: 12px; background: #F9FAFB; border-radius: 6px; font-size: 13px;">
+                                        <strong>Montant en lettres:</strong> <span id="amount-in-words">-</span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- TAB 6: DOCUMENTS -->
+                            <div class="tab-content" id="tab-5">
+                                <div class="section-card">
+                                    
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-paperclip"></i> DOCUMENTS & PIÈCES JOINTES
+                                    </h3>
+
+                                    <div class="file-upload-zone" onclick="document.getElementById('file-input').click()">
+                                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 32px; color: #9CA3AF; margin-bottom: 8px;"></i>
+                                        <div style="font-weight: 500; color: #374151; margin-bottom: 4px;">
+                                            Cliquez pour ajouter ou glissez des fichiers
+                                        </div>
+                                        <div style="font-size: 12px; color: #9CA3AF;">
+                                            Devis, spécifications, certificats, etc. (Max: 10 Mo par fichier)
+                                        </div>
+                                        <input type="file" id="file-input" style="display: none;" onchange="handleFileUpload(event)" multiple>
+                                    </div>
+
+                                    <div id="uploaded-files" style="margin-top: 16px;"></div>
+
+                                    <div class="form-group" style="margin-top: 24px;">
+                                        <label class="form-label">Instructions fournisseur</label>
+                                        <textarea class="form-textarea" id="supplier-notes" placeholder="Instructions particulières pour le fournisseur..."></textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Notes internes</label>
+                                        <textarea class="form-textarea" id="internal-notes" placeholder="Remarques internes (non visibles par le fournisseur)..."></textarea>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- TAB 7: WORKFLOW -->
+                            <div class="tab-content" id="tab-6">
+                                <div class="section-card">
+                                    
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-diagram-project"></i> WORKFLOW DE VALIDATION
+                                    </h3>
+
+                                    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+                                        <span class="status-pill pill-warning">
+                                            Montant TTC: <strong id="workflow-amount">0 XAF</strong>
+                                        </span>
+                                        <span class="status-pill pill-info">
+                                            <i class="fa-solid fa-bolt"></i> Création directe → validation supplémentaire
+                                        </span>
+                                        <span class="status-pill pill-success">
+                                            Urgence: délai 4h
+                                        </span>
+                                    </div>
+
+                                    <table class="workflow-table" id="workflow-steps">
+                                        <thead>
+                                            <tr>
+                                                <th>Étape</th>
+                                                <th>Valideur</th>
+                                                <th>Rôle</th>
+                                                <th>Statut</th>
+                                                <th>Délai</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Émetteur du besoin</td>
+                                                <td>Demandeur initial</td>
+                                                <td><span class="status-chip pending">En attente</span></td>
+                                                <td>2h</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>Manager Achats</td>
+                                                <td>Validation hiérarchique</td>
+                                                <td><span class="status-chip pending">En attente</span></td>
+                                                <td>2h</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>Directeur Financier</td>
+                                                <td>Validation budgétaire</td>
+                                                <td><span class="status-chip pending">En attente</span></td>
+                                                <td>4h</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div class="alert-direct" style="margin-top: 16px;">
+                                        <i class="fa-solid fa-info-circle"></i>
+                                        <div>
+                                            <strong>Actions après validation complète</strong>
+                                            <ul style="margin: 8px 0 0 20px; padding-left: 0; font-size: 12px;">
+                                                <li>Envoi automatique au fournisseur par email</li>
+                                                <li>Génération du PDF du BCF</li>
+                                                <li>Notification des parties prenantes</li>
+                                                <li>Mise à jour du statut budgétaire</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <!-- FORM ACTIONS -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="handleCancelDraft()">
+                                <i class="fa-solid fa-times"></i>
+                                Annuler
+                            </button>
+                            <div style="display: flex; gap: 12px;">
+                                <button type="button" class="btn btn-secondary" onclick="handleSaveDraft()">
+                                    <i class="fa-solid fa-save"></i>
+                                    Enregistrer brouillon
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="handleSubmitValidation()">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    Soumettre validation
+                                </button>
                             </div>
                         </div>
 
-                        <div class="section-card">
-                            <div class="section-title">
-                                <i class="fa-solid fa-user-tie text-[#263c89]"></i>
-                                Demandeur & origine besoin
-                            </div>
-                            <div class="data-grid">
-                                <div class="data-field">
-                                    <label>Demandeur initial *</label>
-                                    <select id="originator-select"></select>
-                                </div>
-                                <div class="data-field">
-                                    <label>Département</label>
-                                    <input type="text" id="originator-department" readonly>
-                                </div>
-                                <div class="data-field">
-                                    <label>Acheteur responsable *</label>
-                                    <input type="text" id="buyer-name" readonly>
-                                </div>
-                                <div class="data-field">
-                                    <label>Société acheteuse *</label>
-                                    <select id="buying-company"></select>
-                                </div>
-                                <div class="data-field" style="grid-column: span 2;">
-                                    <label>Centre de coût</label>
-                                    <select id="cost-center"></select>
-                                </div>
-                                <div class="data-field" style="grid-column: span 2;">
-                                    <label>Projet / Affaire</label>
-                                    <input type="text" id="project-code" placeholder="Optionnel">
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <div class="section-card">
-                        <div class="section-title">
-                            <i class="fa-solid fa-boxes-stacked text-[#263c89]"></i>
-                            Articles à commander
-                            <span id="articles-count">0 ligne</span>
-                        </div>
-
-                        <div class="articles-actions">
-                            <button class="btn-ghost" onclick="handleAddArticleLine()"><i class="fa-solid fa-plus"></i> Ajouter article</button>
-                            <button class="btn-ghost" onclick="handleImportCatalog()"><i class="fa-solid fa-file-import"></i> Importer depuis catalogue</button>
-                            <button class="btn-ghost" onclick="handleCopyRequisition()"><i class="fa-solid fa-copy"></i> Copier une DA</button>
-                        </div>
-
-                        <div style="overflow-x:auto;">
-                            <table class="articles-table">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Article</th>
-                                        <th>Description</th>
-                                        <th>Qté *</th>
-                                        <th>Unité *</th>
-                                        <th>P.U. HT *</th>
-                                        <th>Remise %</th>
-                                        <th>Sous-total HT</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="articles-body"></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="7" style="text-align:right; font-weight:600;">Total articles HT</td>
-                                        <td style="font-weight:700; color:#111827;" id="articles-total-ht">0 XAF</td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-
-                        <div class="totals-strip">
-                            <div>
-                                <div class="label">Total articles HT</div>
-                                <div class="value" id="total-articles-label">0 XAF</div>
-                            </div>
-                            <div>
-                                <div class="label">TVA (19.25%)</div>
-                                <div class="value" id="total-vat-label">0 XAF</div>
-                            </div>
-                            <div>
-                                <div class="label">Total TTC</div>
-                                <div class="value" id="total-ttc-label">0 XAF</div>
-                            </div>
-                            <div>
-                                <div class="label">Remise cumulée</div>
-                                <div class="value" id="total-discount-label">0 XAF</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-grid two-cols">
-                        <div class="section-card">
-                            <div class="section-title">
-                                <i class="fa-solid fa-truck-fast text-[#263c89]"></i>
-                                Livraison
-                            </div>
-                            <div class="data-grid">
-                                <div class="data-field">
-                                    <label>Date livraison souhaitée *</label>
-                                    <input type="date" id="delivery-date">
-                                </div>
-                                <div class="data-field">
-                                    <label>Délai fournisseur</label>
-                                    <input type="text" id="delivery-leadtime" readonly>
-                                </div>
-                                <div class="data-field" style="grid-column: span 2;">
-                                    <label>Lieu de livraison *</label>
-                                    <select id="delivery-location"></select>
-                                </div>
-                                <div class="data-field" style="grid-column: span 2;">
-                                    <label>Adresse complète</label>
-                                    <textarea id="delivery-address"></textarea>
-                                </div>
-                                <div class="data-field">
-                                    <label>Contact réception</label>
-                                    <input type="text" id="delivery-contact">
-                                </div>
-                                <div class="data-field">
-                                    <label>Incoterm *</label>
-                                    <select id="delivery-incoterm"></select>
-                                </div>
-                                <div class="data-field">
-                                    <label>Transport</label>
-                                    <select id="transport-mode"></select>
-                                </div>
-                                <div class="data-field">
-                                    <label>Transporteur prévu</label>
-                                    <select id="carrier-select"></select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="section-card">
-                            <div class="section-title">
-                                <i class="fa-solid fa-money-check-dollar text-[#263c89]"></i>
-                                Paiement
-                            </div>
-                            <div class="data-grid">
-                                <div class="data-field">
-                                    <label>Conditions *</label>
-                                    <select id="payment-terms"></select>
-                                </div>
-                                <div class="data-field">
-                                    <label>Mode paiement *</label>
-                                    <select id="payment-mode"></select>
-                                </div>
-                                <div class="data-field">
-                                    <label>Devise</label>
-                                    <select id="currency-select">
-                                        <option value="XAF">XAF</option>
-                                        <option value="USD">USD</option>
-                                        <option value="EUR">EUR</option>
-                                    </select>
-                                </div>
-                                <div class="data-field">
-                                    <label>Taux change</label>
-                                    <input type="number" id="exchange-rate" step="0.001">
-                                </div>
-                            </div>
-                            <div class="data-field">
-                                <label>Escompte</label>
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <input type="checkbox" id="early-payment-checkbox">
-                                    <span>2% si paiement < 10 jours (<strong id="early-payment-value">0 XAF</strong>)</span>
-                                </div>
-                            </div>
-                            <div class="alert-direct" style="background:#DBEAFE; border-color:#93C5FD; color:#1D4ED8;">
-                                <i class="fa-solid fa-scale-balanced text-[#2563EB]"></i>
-                                <div>
-                                    <strong>Conformité Cameroun / CEMAC</strong>
-                                    <p style="margin:6px 0 0; font-size:13px;">Espèces plafonnées 5M XAF • Mobile Money 1M XAF • Certificat non-redevance obligatoire.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-card">
-                        <div class="section-title">
-                            <i class="fa-solid fa-calculator text-[#263c89]"></i>
-                            Frais annexes & calcul TVA
-                        </div>
-                        <div class="fees-grid">
-                            <div class="data-field">
-                                <label>Transport *</label>
-                                <input type="number" id="fee-transport" min="0">
-                            </div>
-                            <div class="data-field">
-                                <label>Assurance</label>
-                                <input type="number" id="fee-insurance" min="0">
-                            </div>
-                            <div class="data-field">
-                                <label>Douane</label>
-                                <input type="number" id="fee-customs" min="0">
-                            </div>
-                            <div class="data-field">
-                                <label>Manutention</label>
-                                <input type="number" id="fee-handling" min="0">
-                            </div>
-                            <div class="data-field">
-                                <label>Autres</label>
-                                <input type="number" id="fee-other" min="0">
-                            </div>
-                            <div class="data-field">
-                                <label>Libellé autres</label>
-                                <input type="text" id="fee-other-label" placeholder="Préciser">
-                            </div>
-                        </div>
-                        <div class="totals-strip" style="margin-top:20px;">
-                            <div>
-                                <div class="label">Base HT (Articles)</div>
-                                <div class="value" id="base-articles">0 XAF</div>
-                            </div>
-                            <div>
-                                <div class="label">Base HT (Frais)</div>
-                                <div class="value" id="base-fees">0 XAF</div>
-                            </div>
-                            <div>
-                                <div class="label">Total HT</div>
-                                <div class="value" id="total-ht">0 XAF</div>
-                            </div>
-                            <div>
-                                <div class="label">TVA 19.25%</div>
-                                <div class="value" id="total-tva">0 XAF</div>
-                            </div>
-                            <div>
-                                <div class="label">Total TTC</div>
-                                <div class="value" id="total-ttc">0 XAF</div>
-                            </div>
-                        </div>
-                        <div style="margin-top:12px; font-size:13px;">
-                            Montant en lettres: <strong id="amount-in-words">-</strong>
-                        </div>
-                    </div>
-
-                    <div class="section-card">
-                        <div class="section-title">
-                            <i class="fa-solid fa-wallet text-[#263c89]"></i>
-                            Contrôle budgétaire
-                        </div>
-                        <div class="data-grid">
-                            <div class="data-field">
-                                <label>Ligne budgétaire *</label>
-                                <select id="budget-line"></select>
-                            </div>
-                            <div class="data-field">
-                                <label>Exercice</label>
-                                <input type="number" id="budget-year" readonly>
-                            </div>
-                            <div class="data-field">
-                                <label>Période</label>
-                                <input type="text" id="budget-period" readonly>
-                            </div>
-                        </div>
-                        <div class="budget-box">
-                            <div class="row"><span>Budget alloué</span><strong id="budget-allocated">0 XAF</strong></div>
-                            <div class="row"><span>Consommé à date</span><strong id="budget-consumed">0 XAF</strong></div>
-                            <div class="row"><span>Engagé (autres BCF)</span><strong id="budget-committed">0 XAF</strong></div>
-                            <div class="row"><span>Disponible</span><strong id="budget-available">0 XAF</strong></div>
-                            <div class="row"><span>Cette commande (HT Art.)</span><strong id="budget-this-order">0 XAF</strong></div>
-                            <div class="row" style="border-top:1px solid #E5E7EB; padding-top:8px;"><span>Solde après</span><strong id="budget-remaining">0 XAF</strong></div>
-                            <div class="budget-progress"><div class="bar" id="budget-progress-bar" style="width:45%;"></div></div>
-                            <div class="status-chip pending" id="budget-status">Budget disponible</div>
-                        </div>
-                    </div>
-
-                    <div class="section-card">
-                        <div class="section-title">
-                            <i class="fa-solid fa-paperclip text-[#263c89]"></i>
-                            Documents & pièces jointes
-                        </div>
-                        <div class="documents-list" id="documents-required"></div>
-                        <div class="notes-grid" style="margin-top:16px;">
-                            <div class="data-field">
-                                <label>Instructions fournisseur</label>
-                                <textarea id="supplier-notes"></textarea>
-                            </div>
-                            <div class="data-field">
-                                <label>Notes internes</label>
-                                <textarea id="internal-notes"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-card">
-                        <div class="section-title">
-                            <i class="fa-solid fa-diagram-project text-[#263c89]"></i>
-                            Workflow de validation
-                        </div>
-                        <div style="display:flex; flex-wrap:wrap; gap:16px; margin-bottom:16px;">
-                            <div class="status-pill pill-warning"> montant TTC <span id="workflow-amount">0 XAF</span></div>
-                            <div class="status-pill pill-danger" id="workflow-direct-flag">Création directe → validation supplémentaire</div>
-                            <div class="status-pill pill-success" id="workflow-sla">Urgence: délai 4h</div>
-                        </div>
-                        <table class="workflow-table" id="workflow-steps"></table>
-                    </div>
-
-                    <div class="section-card mapping-block">
-                        <div class="section-title">
-                            <i class="fa-solid fa-database text-[#263c89]"></i>
-                            Mapping <code>purchase_orders</code>
-                        </div>
-                        <pre id="mapping-json">{}</pre>
-                    </div>
-
-                    <div class="section-card recap-card">
-                        <div class="section-title">
-                            <i class="fa-solid fa-clipboard-check text-[#263c89]"></i>
-                            Récapitulatif & actions
-                        </div>
-                        <div class="recap-list">
-                            <div class="recap-item">
-                                <strong>Type</strong>
-                                <p id="recap-type">-</p>
-                            </div>
-                            <div class="recap-item">
-                                <strong>Fournisseur</strong>
-                                <p id="recap-supplier">-</p>
-                            </div>
-                            <div class="recap-item">
-                                <strong>Livraison</strong>
-                                <p id="recap-delivery">-</p>
-                            </div>
-                            <div class="recap-item">
-                                <strong>Budget</strong>
-                                <p id="recap-budget">-</p>
-                            </div>
-                            <div class="recap-item">
-                                <strong>Total TTC</strong>
-                                <p id="recap-total">-</p>
-                            </div>
-                            <div class="recap-item">
-                                <strong>Points d'attention</strong>
-                                <ul id="recap-warnings" style="padding-left:18px; margin:8px 0 0; font-size:13px;"></ul>
-                            </div>
-                        </div>
-                        <div class="actions-bar">
-                            <button class="btn-outline" onclick="handleSaveDraft()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer brouillon</button>
-                            <button class="btn-primary" onclick="handleSubmitValidation()"><i class="fa-solid fa-paper-plane"></i> Soumettre validation</button>
-                            <button class="btn-outline" onclick="handleCancelDraft()"><i class="fa-solid fa-xmark"></i> Annuler</button>
-                        </div>
-                        <div class="actions-after">
-                            <strong>Actions après validation complète</strong>
-                            <ul id="post-validation-actions"></ul>
-                        </div>
-                    </div>
                 </div>
             </main>
         </div>
