@@ -1,0 +1,126 @@
+Je vais commencer par produire le premier écran de la section Gestion des Clients. Je vais m'inspirer du modèle fourni et de Sage X3 pour créer des wireframes détaillés.Parfait ! Je vais maintenant créer le premier écran de la liste des clients en m'inspirant du modèle fourni et de Sage X3.
+
+## 📋 **ECR-CLI-001 : LISTE DES CLIENTS**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ GESTION DES CLIENTS                              👤 Marie DJOMO (Commercial)│
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ 📊 RÉSUMÉ   Actifs: 1,245 | Nouveaux (30j): 45 | Bloqués: 12       │  │
+│ │            Encours total: 125,450,000 XAF | Impayés: 15,230,000 XAF │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ FILTRES                                                                     │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ Type: [Tous      ]▼  Catégorie: [Toutes]▼  Commercial: [Tous    ]▼   │  │
+│ │ Statut: [Actifs  ]▼  Solde: [Tous    ]▼   Ville: [Toutes      ]▼    │  │
+│ │ Recherche: [Code/Nom/NUI/CNI_________]🔍  [🔍 Rechercher] [↻ Réinit] │  │
+│ │                                           [+ Nouveau Client] [📥Export]│  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ LISTE DES CLIENTS                                                          │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │☐│Code Client │Raison Sociale/Nom│Type │Catégorie│Commercial│Solde│St│Act│
+│ ├─┼───────────┼──────────────────┼─────┼─────────┼──────────┼─────┼──┼───┤
+│ │☐│CLI-2024-  │SONACOM SARL      │🏢   │Grossiste│M. DJOMO  │2.5M │🟢│[→]│
+│ │ │00156      │NUI:P087201234567W│ENTR │         │Caution:3M│ XAF │  │   │
+│ │ │           │☎️ 699 123 456    │     │         │          │     │  │   │
+│ │ │           │                  │     │         │          │     │  │   │
+│ │☐│CLI-2024-  │KAMGA Jean Paul   │👤   │Particul.│P. NGONO  │  0  │🟢│[→]│
+│ │ │00234      │CNI:1234567890123│PART │         │Au comptant│ XAF │  │   │
+│ │ │           │☎️ 677 890 123    │     │         │          │     │  │   │
+│ │ │           │                  │     │         │          │     │  │   │
+│ │☐│CLI-2023-  │QUINCAILLERIE     │🔧   │Quincail.│M. DJOMO  │5.2M │🔴│[→]│
+│ │ │00089      │MODERNE           │QUIN │         │Limite:5M │ XAF │  │   │
+│ │ │           │NUI:P098765432109W│     │         │Dépassé!  │     │BL│   │
+│ │ │           │☎️ 699 456 789    │     │         │          │     │  │   │
+│ │ │           │⚠️ ANR expire 15j │     │         │          │     │  │   │
+│ │ │           │                  │     │         │          │     │  │   │
+│ │☐│CLI-2024-  │TECHNI-BUILD      │👷   │Technic. │J. FOTSO  │1.8M │🟡│[→]│
+│ │ │00312      │NUI:P076543210987W│TECH │Applicat.│Caution:2M│ XAF │  │   │
+│ │ │           │☎️ 655 234 567    │     │         │          │     │30│   │
+│ │ │           │                  │     │         │          │     │  │   │
+│ └─┴───────────┴──────────────────┴─────┴─────────┴──────────┴─────┴──┴───┘
+│                                                                              │
+│ LÉGENDE: 🏢 Entreprise | 👤 Particulier | 🔧 Quincaillerie | 👷 Technicien │
+│         🟢 OK | 🟡 Attention (retard <30j) | 🔴 Bloqué | BL=Blocage vente │
+│                                                                              │
+│ [◀ 1 2 3 4 5 ... 125 ▶] Page 1/125 - Affichage 1-4 sur 1,245              │
+│                                                                              │
+│ ACTIONS GROUPÉES                                                           │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ 0 client(s) sélectionné(s)                                          │  │
+│ │ [📧 Email groupé] [📊 Relevé] [🔒 Bloquer] [🔓 Débloquer] [🗑️ Archiv]│  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+BARRE D'ACTIONS RAPIDES (au survol d'une ligne)
+┌──────────────────────────────────────────────────────────────────────────┐
+│ [👁️ Voir] [✏️ Modifier] [📋 Nouvelle commande] [💰 Solde] [📄 Documents] │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+## 🔍 **PROPRIÉTÉS DU MODÈLE UTILISÉES**
+
+### **Collection MongoDB: `customers`**
+| Champ Interface | Propriété Modèle | Description |
+|-----------------|------------------|-------------|
+| Code Client | `code` | Format: CLI-YYYY-XXXXX |
+| Raison Sociale | `businessName` | Pour entreprises |
+| Nom/Prénom | `firstName` + `lastName` | Pour particuliers |
+| Type | `customerType` | PARTICULIER/ENTREPRISE/TECHNICIEN/QUINCAILLERIE |
+| Catégorie | `customerCategory` | Classification métier |
+| NUI | `taxId` | Numéro Unique Identifiant |
+| CNI | `cniNumber` | Pour particuliers |
+| Téléphone | `contacts[0].mobile` | Contact principal |
+| Commercial | `assignedCommercial.name` | Commercial attitré |
+| Caution | `assignedCommercial.cautionAvailable` | Pour ventes crédit |
+| Solde | `financials.currentBalance` | Encours actuel |
+| Statut | `status` | ACTIVE/BLOCKED/SUSPENDED |
+| Blocage | `blockedForSales` | Indicateur blocage |
+| ANR | `documents[].expiryDate` | Attestation non-redevance |
+
+### **Indicateurs de statut**
+- 🟢 **Vert** : Solde OK, documents valides
+- 🟡 **Orange** : Retard paiement < 30 jours
+- 🔴 **Rouge** : Bloqué ou retard > 30 jours
+- ⚠️ **Alerte** : Document expire bientôt
+
+### **Types de clients (Icons)**
+- 🏢 **ENTREPRISE** : Société avec NUI
+- 👤 **PARTICULIER** : Personne avec CNI
+- 🔧 **QUINCAILLERIE** : Revendeur
+- 👷 **TECHNICIEN** : Applicateur professionnel
+
+## 📌 **FONCTIONNALITÉS CLÉS**
+
+1. **Multi-critères** : Recherche par code, nom, NUI ou CNI
+2. **Alertes visuelles** : 
+   - Dépassement limite crédit
+   - Expiration documents (ANR)
+   - Blocage ventes
+3. **Informations commerciales** : 
+   - Commercial attitré
+   - Caution disponible/limite crédit
+   - Mode paiement (comptant/crédit)
+4. **Actions contextuelles** : Selon profil et statut client
+5. **Export** : Excel avec tous les champs
+
+## 🎯 **INTERACTIONS**
+
+- **Double-clic** : Ouvre la fiche client complète
+- **Clic sur [→]** : Menu contextuel d'actions rapides
+- **Survol** : Affiche barre d'actions rapides
+- **Sélection multiple** : Active les actions groupées
+
+## 🔐 **PERMISSIONS**
+
+- **Commercial** : Voir ses clients + créer/modifier
+- **Manager** : Voir tous les clients de son équipe
+- **Comptable** : Voir tous + focus soldes
+- **Direction** : Accès complet + déblocage
+
+---
+

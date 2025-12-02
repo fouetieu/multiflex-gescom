@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiche Client - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../achat/styles/achats-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        /* Header Card */
+        .header-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .client-info-main h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #263c89;
+            margin: 0 0 8px 0;
+        }
+
+        .client-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .client-meta .code {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .status-badge-large {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-draft {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .status-blocked {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .status-suspended {
+            background: #E5E7EB;
+            color: #374151;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            background: white;
+            border-radius: 8px 8px 0 0;
+            padding: 0 16px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }
+
+        .tabs-nav {
+            display: flex;
+            gap: 4px;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .tab-btn {
+            padding: 14px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6B7280;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: #263c89;
+            background: rgba(38, 60, 137, 0.05);
+        }
+
+        .tab-btn.active {
+            color: #263c89;
+            border-bottom-color: #263c89;
+            font-weight: 600;
+        }
+
+        .tab-btn i {
+            margin-right: 6px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            background: white;
+            border-radius: 0 0 8px 8px;
+            padding: 24px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            min-height: 400px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Detail Sections */
+        .detail-section {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: #263c89;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .info-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .info-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: #6B7280;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #1F2937;
+            font-weight: 500;
+        }
+
+        .info-value.highlight {
+            color: #263c89;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .alert-warning {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            color: #92400E;
+        }
+
+        .alert-info {
+            background: #DBEAFE;
+            border: 1px solid #3B82F6;
+            color: #1E40AF;
+        }
+
+        .alert-success {
+            background: #D1FAE5;
+            border: 1px solid #10B981;
+            color: #065F46;
+        }
+
+        .alert-danger {
+            background: #FEE2E2;
+            border: 1px solid #EF4444;
+            color: #991B1B;
+        }
+
+        .alert-box i {
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        /* Cards */
+        .contact-card, .address-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-badge {
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Financial Metrics */
+        .metric-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #263c89;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .metric-indicator {
+            font-size: 12px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .metric-indicator.positive { color: #10B981; }
+        .metric-indicator.negative { color: #EF4444; }
+        .metric-indicator.warning { color: #F59E0B; }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .progress-fill.green { background: #10B981; }
+        .progress-fill.yellow { background: #F59E0B; }
+        .progress-fill.red { background: #EF4444; }
+        .progress-fill.blue { background: #3B82F6; }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #E5E7EB;
+            background: #F9FAFB;
+        }
+
+        .data-table td {
+            padding: 12px;
+            font-size: 13px;
+            color: #374151;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .data-table tr:hover {
+            background: #F9FAFB;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #E5E7EB;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #263c89;
+        }
+
+        .timeline-item.warning::before { border-color: #F59E0B; }
+        .timeline-item.success::before { border-color: #10B981; }
+        .timeline-item.danger::before { border-color: #EF4444; }
+        .timeline-item.info::before { border-color: #3B82F6; }
+
+        .timeline-date {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 4px;
+        }
+
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 4px;
+        }
+
+        .timeline-content {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .timeline-link {
+            color: #263c89;
+            text-decoration: none;
+            font-size: 12px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .timeline-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Document Status */
+        .doc-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .doc-status.valid {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .doc-status.expiring {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .doc-status.expired {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .doc-status.missing {
+            background: #E5E7EB;
+            color: #374151;
+        }
+
+        /* Action Button */
+        .btn-action {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Check/Cross Icons */
+        .check-icon { color: #10B981; }
+        .cross-icon { color: #EF4444; }
+
+        /* Solde Card */
+        .solde-card {
+            background: linear-gradient(135deg, #263c89 0%, #1E3A8A 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .solde-card .solde-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .solde-card .solde-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Score Badge */
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .score-badge.a { background: #10B981; }
+        .score-badge.b { background: #3B82F6; }
+        .score-badge.c { background: #F59E0B; }
+        .score-badge.d { background: #EF4444; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .info-grid, .info-grid-3, .info-grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .info-grid, .info-grid-3, .info-grid-4 {
+                grid-template-columns: 1fr;
+            }
+            .client-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+            .header-actions {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Fiche Client</h1>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">3</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO (Commercial)</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Ventes
+                    </div>
+
+                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-line mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="./clients-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-users mr-3"></i>
+                        <span>Clients</span>
+                    </a>
+
+                    <a href="./commandes-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Commandes</span>
+                    </a>
+
+                    <a href="./livraisons-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Livraisons</span>
+                    </a>
+
+                    <a href="./factures-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Factures</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="achats-container" style="max-width: 1400px; padding: 24px;">
+
+                    <!-- Breadcrumb -->
+                    <div style="margin-bottom: 20px;">
+                        <nav style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #6B7280;">
+                            <a href="./clients-list.html" style="color: #263c89; text-decoration: none;">
+                                <i class="fa-solid fa-arrow-left"></i> Retour à la liste
+                            </a>
+                        </nav>
+                    </div>
+
+                    <!-- Header Card -->
+                    <div class="header-card">
+                        <div class="client-header">
+                            <div class="client-info-main">
+                                <h1 id="client-name">SONACOM SARL</h1>
+                                <div class="client-meta">
+                                    <span class="code" id="client-code">CLI-2024-00156</span>
+                                    <span class="status-badge-large status-active" id="client-status">
+                                        <i class="fa-solid fa-circle" style="font-size: 8px;"></i> ACTIF
+                                    </span>
+                                    <span>Créé: <span id="created-date">15/01/2024</span></span>
+                                    <span>MAJ: <span id="updated-date">28/01/2024</span></span>
+                                </div>
+                            </div>
+                            <div class="header-actions">
+                                <button class="btn btn-secondary" onclick="editClient()">
+                                    <i class="fa-solid fa-edit"></i> Modifier
+                                </button>
+                                <button class="btn btn-primary" onclick="newOrder()">
+                                    <i class="fa-solid fa-cart-plus"></i> Nouvelle Commande
+                                </button>
+                                <button class="btn btn-secondary" onclick="generateStatement()">
+                                    <i class="fa-solid fa-file-invoice-dollar"></i> Relevé
+                                </button>
+                                <button class="btn btn-secondary" onclick="sendEmail()">
+                                    <i class="fa-solid fa-envelope"></i> Email
+                                </button>
+                                <button class="btn btn-secondary" style="color: #EF4444;" onclick="blockClient()">
+                                    <i class="fa-solid fa-lock"></i> Bloquer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs Navigation -->
+                    <div class="tabs-container">
+                        <div class="tabs-nav">
+                            <button class="tab-btn active" data-tab="general" onclick="switchTab('general')">
+                                <i class="fa-solid fa-info-circle"></i> Général
+                            </button>
+                            <button class="tab-btn" data-tab="addresses" onclick="switchTab('addresses')">
+                                <i class="fa-solid fa-map-marker-alt"></i> Adresses
+                            </button>
+                            <button class="tab-btn" data-tab="contacts" onclick="switchTab('contacts')">
+                                <i class="fa-solid fa-address-book"></i> Contacts
+                            </button>
+                            <button class="tab-btn" data-tab="commercial" onclick="switchTab('commercial')">
+                                <i class="fa-solid fa-handshake"></i> Commercial
+                            </button>
+                            <button class="tab-btn" data-tab="financial" onclick="switchTab('financial')">
+                                <i class="fa-solid fa-coins"></i> Financier
+                            </button>
+                            <button class="tab-btn" data-tab="documents" onclick="switchTab('documents')">
+                                <i class="fa-solid fa-folder-open"></i> Documents
+                            </button>
+                            <button class="tab-btn" data-tab="history" onclick="switchTab('history')">
+                                <i class="fa-solid fa-clock-rotate-left"></i> Historique
+                            </button>
+                            <button class="tab-btn" data-tab="orders" onclick="switchTab('orders')">
+                                <i class="fa-solid fa-shopping-cart"></i> Commandes
+                            </button>
+                            <button class="tab-btn" data-tab="invoices" onclick="switchTab('invoices')">
+                                <i class="fa-solid fa-file-invoice"></i> Factures
+                            </button>
+                            <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">
+                                <i class="fa-solid fa-sticky-note"></i> Notes
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab Contents -->
+
+                    <!-- ONGLET GÉNÉRAL -->
+                    <div class="tab-content active" id="tab-general">
+                        <!-- Identification -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-building"></i> IDENTIFICATION
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="editSection('identification')">
+                                    <i class="fa-solid fa-edit"></i> Modifier
+                                </button>
+                            </div>
+                            <div class="info-grid" id="identification-info">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Régime Fiscal -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-receipt"></i> RÉGIME FISCAL
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="editSection('fiscal')">
+                                    <i class="fa-solid fa-edit"></i> Modifier
+                                </button>
+                            </div>
+                            <div class="info-grid" id="fiscal-info">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Coordonnées Principales -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-location-dot"></i> COORDONNÉES PRINCIPALES
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="editSection('coordinates')">
+                                    <i class="fa-solid fa-edit"></i> Modifier
+                                </button>
+                            </div>
+                            <div id="main-coordinates">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Alertes et Notifications -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-bell"></i> ALERTES ET NOTIFICATIONS
+                                </h3>
+                            </div>
+                            <div id="alerts-container">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET ADRESSES -->
+                    <div class="tab-content" id="tab-addresses">
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-map-marker-alt"></i> ADRESSES DU CLIENT
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="addAddress()">
+                                    <i class="fa-solid fa-plus"></i> Ajouter Adresse
+                                </button>
+                            </div>
+                            <div id="addresses-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET CONTACTS -->
+                    <div class="tab-content" id="tab-contacts">
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-address-book"></i> CONTACTS DU CLIENT
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="addContact()">
+                                    <i class="fa-solid fa-plus"></i> Ajouter Contact
+                                </button>
+                            </div>
+                            <div id="contacts-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET COMMERCIAL -->
+                    <div class="tab-content" id="tab-commercial">
+                        <!-- Commercial Attitré -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-user-tie"></i> COMMERCIAL ATTITRÉ
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="editSection('commercial')">
+                                    <i class="fa-solid fa-edit"></i> Modifier
+                                </button>
+                            </div>
+                            <div id="commercial-info">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Conditions de Paiement -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-credit-card"></i> CONDITIONS DE PAIEMENT
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="editSection('payment')">
+                                    <i class="fa-solid fa-edit"></i> Modifier
+                                </button>
+                            </div>
+                            <div id="payment-conditions">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Tarification -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-tags"></i> TARIFICATION
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="editSection('pricing')">
+                                    <i class="fa-solid fa-edit"></i> Modifier
+                                </button>
+                            </div>
+                            <div id="pricing-info">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET FINANCIER -->
+                    <div class="tab-content" id="tab-financial">
+                        <!-- Soldes et Encours -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-wallet"></i> SOLDES ET ENCOURS
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="refreshBalances()">
+                                    <i class="fa-solid fa-sync"></i> Actualiser
+                                </button>
+                            </div>
+                            <div id="balances-info">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Échéancier -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-calendar-alt"></i> ÉCHÉANCIER
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="exportSchedule()">
+                                    <i class="fa-solid fa-download"></i> Export
+                                </button>
+                            </div>
+                            <div id="schedule-info">
+                                <!-- Populated by JS -->
+                            </div>
+                            <div style="margin-top: 16px; display: flex; gap: 12px;">
+                                <button class="btn btn-secondary btn-sm" onclick="sendReminder()">
+                                    <i class="fa-solid fa-envelope"></i> Relance
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="generateStatement()">
+                                    <i class="fa-solid fa-file-alt"></i> Relevé de compte
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="createPaymentPlan()">
+                                    <i class="fa-solid fa-calendar-check"></i> Plan de paiement
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Métriques Financières -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-chart-line"></i> MÉTRIQUES FINANCIÈRES
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="showFinancialChart()">
+                                    <i class="fa-solid fa-chart-bar"></i> Voir graphique 12 mois
+                                </button>
+                            </div>
+                            <div id="financial-metrics">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET DOCUMENTS -->
+                    <div class="tab-content" id="tab-documents">
+                        <!-- Documents Obligatoires -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-file-contract"></i> DOCUMENTS OBLIGATOIRES
+                                </h3>
+                                <button class="btn btn-secondary btn-sm" onclick="uploadDocument()">
+                                    <i class="fa-solid fa-upload"></i> Ajouter Document
+                                </button>
+                            </div>
+                            <div id="required-documents">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Documents Optionnels -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-paperclip"></i> DOCUMENTS OPTIONNELS
+                                </h3>
+                            </div>
+                            <div id="optional-documents">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET HISTORIQUE -->
+                    <div class="tab-content" id="tab-history">
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-clock-rotate-left"></i> TIMELINE DES ÉVÉNEMENTS
+                                </h3>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <select class="form-select" id="history-type-filter" style="width: 150px;">
+                                        <option value="">Tous types</option>
+                                        <option value="ORDER">Commandes</option>
+                                        <option value="DELIVERY">Livraisons</option>
+                                        <option value="INVOICE">Factures</option>
+                                        <option value="PAYMENT">Paiements</option>
+                                        <option value="REMINDER">Relances</option>
+                                        <option value="MODIFICATION">Modifications</option>
+                                    </select>
+                                    <select class="form-select" id="history-period-filter" style="width: 180px;">
+                                        <option value="3">3 derniers mois</option>
+                                        <option value="6">6 derniers mois</option>
+                                        <option value="12">12 derniers mois</option>
+                                        <option value="all">Tout l'historique</option>
+                                    </select>
+                                    <button class="btn btn-secondary btn-sm" onclick="filterHistory()">
+                                        <i class="fa-solid fa-filter"></i> Filtrer
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="history-timeline">
+                                <!-- Populated by JS -->
+                            </div>
+                            <div style="margin-top: 20px; text-align: center;">
+                                <button class="btn btn-secondary" onclick="loadMoreHistory()">
+                                    Charger plus...
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Statistiques Période -->
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-chart-pie"></i> STATISTIQUES PÉRIODE
+                                </h3>
+                            </div>
+                            <div id="period-stats">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET COMMANDES -->
+                    <div class="tab-content" id="tab-orders">
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-shopping-cart"></i> COMMANDES DU CLIENT
+                                </h3>
+                                <button class="btn btn-primary btn-sm" onclick="newOrder()">
+                                    <i class="fa-solid fa-plus"></i> Nouvelle Commande
+                                </button>
+                            </div>
+                            <div id="orders-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET FACTURES -->
+                    <div class="tab-content" id="tab-invoices">
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-file-invoice"></i> FACTURES DU CLIENT
+                                </h3>
+                                <div style="display: flex; gap: 12px;">
+                                    <button class="btn btn-secondary btn-sm" onclick="exportInvoices()">
+                                        <i class="fa-solid fa-download"></i> Exporter
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="invoices-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET NOTES -->
+                    <div class="tab-content" id="tab-notes">
+                        <div class="detail-section">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-sticky-note"></i> NOTES ET COMMENTAIRES
+                                </h3>
+                                <button class="btn btn-primary btn-sm" onclick="addNote()">
+                                    <i class="fa-solid fa-plus"></i> Ajouter Note
+                                </button>
+                            </div>
+                            <div id="notes-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/client-detail.js"></script>
+</body>
+</html>

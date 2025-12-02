@@ -1,0 +1,486 @@
+## 📋 **ECR-CMD-003 : CRÉATION BON DE COMMANDE (VERSION ONGLETS)**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NOUVEAU BON DE COMMANDE                         👤 Marie DJOMO (Commercial)│
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ N° BC: BC-CLIXXXX-2024-00457 (Auto)  |  Date: 29/01/2024 14:35     │  │
+│ │ Statut: BROUILLON  |  Commercial: Marie DJOMO  |  Caution: 3.5M XAF │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ [1.Client*] [2.Articles*] [3.Conditions] [4.Transport] [5.Validation]│  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 1 : CLIENT ET INFORMATIONS GÉNÉRALES                   ✓     ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ SÉLECTION CLIENT *                                                   │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Client *:           [CLI-2024-00156___________]🔍                    │  │
+│ │                     SONACOM SARL                                    │  │
+│ │                     NUI: P087201234567W | Type: 🏢 ENTREPRISE       │  │
+│ │                                                                       │  │
+│ │ ┌─────────────────────────────────────────────────────────────────┐ │  │
+│ │ │ Contact Principal:  Pierre FOTSO - Directeur Commercial        │ │  │
+│ │ │ Téléphone:         +237 699 123 456 (Mobile/WhatsApp)         │ │  │
+│ │ │ Email:             p.fotso@sonacom.cm                          │ │  │
+│ │ │ Adresse Siège:     Boulevard Liberté, Bonanjo, Douala          │ │  │
+│ │ └─────────────────────────────────────────────────────────────────┘ │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ INFORMATIONS COMMERCIALES                                            │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Société vendeuse *: [IOLA BTP_______________]▼                      │  │
+│ │ Liste de prix:      TARIF-GROSSISTE-2024 (automatique)             │  │
+│ │ Réf. client (BC):   [PO-2024-789_____________]                      │  │
+│ │                                                                       │  │
+│ │ Date livraison *:   [05/02/2024_____]📅  Délai: 7 jours            │  │
+│ │ Priorité:           ○ Normal  ○ Urgent 🔥  ○ Très urgent 🚨        │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ SITUATION CLIENT                                      [🔄 Actualiser]│  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ ┌───────────────────┬─────────────────┬─────────────────────────┐  │  │
+│ │ │ 💰 CRÉDIT          │ 📊 ENCOURS      │ 📄 DOCUMENTS           │  │  │
+│ │ ├───────────────────┼─────────────────┼─────────────────────────┤  │  │
+│ │ │ Limite: 5,000,000 │ Actuel: 2.5M    │ ANR: ✅ Valide         │  │  │
+│ │ │ Disponible: 2.5M  │ Échu: 0         │ Expire: 31/12/2024     │  │  │
+│ │ │ Délai: NET 30j    │ À échoir: 2.5M  │ RCCM: ✅ OK            │  │  │
+│ │ └───────────────────┴─────────────────┴─────────────────────────┘  │  │
+│ │                                                                       │  │
+│ │ ⚠️ Dernière commande impayée: FA-2024-0234 (800,000 XAF) - 28j      │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ADRESSES                                                             │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Adresse Facturation: [Siège - Bonanjo, Douala__________]▼           │  │
+│ │                      Boulevard Liberté, Bonanjo                      │  │
+│ │                                                                       │  │
+│ │ Adresse Livraison *: [Entrepôt - Bassa, Douala________]▼ [+ Nouvelle]│  │
+│ │                      Zone Industrielle, Bassa                        │  │
+│ │                      Contact: Paul NJOYA - 677 890 123              │  │
+│ │                                                                       │  │
+│ │ Instructions:        [Livraison portail Nord, appeler_________]     │  │
+│ │                      [30min avant arrivée_____________________]     │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│                           [Suivant →] (Articles)                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### **ONGLET 2 : ARTICLES**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NOUVEAU BON DE COMMANDE                                    [💾] [❌ Fermer] │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ [1.Client✓] [2.Articles*] [3.Conditions] [4.Transport] [5.Validation]│  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 2 : ARTICLES ET QUANTITÉS                              ⚠️     ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ACTIONS RAPIDES                                                      │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │ [+ Ajouter article] [+ Multi-articles] [📥 Import Excel] [📋 Coller] │  │
+│ │ [🔍 Recherche avancée] [⭐ Favoris client] [🕒 Dernières commandes]   │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ LIGNES DE COMMANDE                                                   │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Recherche rapide: [_______________] 🔍  ou  Scanner: [________] 📷   │  │
+│ │                                                                       │  │
+│ │┌─┬──────────┬────────────┬────┬───┬────┬──────┬────┬────────┬─────┐│  │
+│ ││#│Code      │Désignation │Stk │Qté│Uni │PU HT │Rem%│Total HT│ Act ││  │
+│ │├─┼──────────┼────────────┼────┼───┼────┼──────┼────┼────────┼─────┤│  │
+│ ││1│PEINT-BLC-│Peinture    │✅  │20 │POT │4,200 │ 0  │84,000  │[⚙️] ││  │
+│ ││ │05L       │Blanche 5L  │125 │   │5L  │      │    │        │[🗑️] ││  │
+│ ││ │          │Latex Mat   │    │   │    │      │    │        │     ││  │
+│ ││ │          │            │    │   │    │      │    │        │     ││  │
+│ ││2│CIMENT-   │Ciment      │✅  │100│SAC │6,800 │ 5  │646,000 │[⚙️] ││  │
+│ ││ │50KG      │Portland    │450 │   │50KG│      │    │        │[🗑️] ││  │
+│ ││ │          │CEM II 42.5 │    │   │    │      │    │        │     ││  │
+│ ││ │          │            │    │   │    │      │    │        │     ││  │
+│ ││3│FER-12MM  │Fer à béton │⚠️  │50 │BARR│4,500 │ 0  │225,000 │[⚙️] ││  │
+│ ││ │          │12mm x 12m  │89  │   │12M │      │    │        │[🗑️] ││  │
+│ ││ │          │Stock faible│    │   │    │      │    │        │     ││  │
+│ ││ │          │            │    │   │    │      │    │        │     ││  │
+│ ││4│AGGLO-15  │Agglo 15cm  │❌  │200│U   │  350 │ 0  │70,000  │[⚙️] ││  │
+│ ││ │          │Creux       │0   │   │    │      │    │RUPTURE │[🗑️] ││  │
+│ ││ │          │            │    │   │    │      │    │        │[🔄] ││  │
+│ │└─┴──────────┴────────────┴────┴───┴────┴──────┴────┴────────┴─────┘│  │
+│ │                                                                       │  │
+│ │ Total articles: 4  |  Total quantités: 370  |  Poids: 5,200 kg      │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ RÉCAPITULATIF                                                        │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Total Brut HT:          1,025,000 XAF                               │  │
+│ │ Remise articles:           32,300 XAF  (Ligne 2: 5%)                │  │
+│ │ ──────────────────────────────────                                  │  │
+│ │ Net HT:                   992,700 XAF                               │  │
+│ │ TVA 19.25%:               191,095 XAF                               │  │
+│ │ ──────────────────────────────────                                  │  │
+│ │ TOTAL TTC:              1,183,795 XAF                               │  │
+│ │                                                                       │  │
+│ │ ⚠️ Article en rupture: AGGLO-15 - Proposer alternative              │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [← Précédent] (Client)                         [Suivant →] (Conditions)    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+MODAL OPTIONS LIGNE (clic sur [⚙️])
+┌──────────────────────────────────────────────────────────────────────────┐
+│ OPTIONS LIGNE - PEINT-BLC-05L                           [❌ Fermer]      │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│ Quantité:        [20_____] POT 5L                                       │
+│ Prix unitaire:   [4,200__] XAF  (Liste: TARIF-GROSSISTE-2024)          │
+│ Remise:          [0______] %    Montant: [0_______] XAF                │
+│                                                                           │
+│ Date livraison:  [05/02/2024___] 📅  ☐ Différente du BC global        │
+│ Entrepôt source: [Entrepôt Principal___]▼                              │
+│ Note ligne:      [_______________________________________]              │
+│                                                                           │
+│ [🔄 Substituer article] [📦 Voir stock détail] [📊 Historique prix]     │
+│                                                                           │
+│ [Annuler] [Appliquer]                                                   │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+### **ONGLET 3 : CONDITIONS COMMERCIALES**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NOUVEAU BON DE COMMANDE                                    [💾] [❌ Fermer] │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ [1.Client✓] [2.Articles✓] [3.Conditions] [4.Transport] [5.Validation]│  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 3 : CONDITIONS COMMERCIALES ET PAIEMENT                  ✓    ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ MODE DE PAIEMENT                                                     │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Type *:              ● Crédit (conditions client)                    │  │
+│ │                      ○ Comptant (paiement immédiat)                  │  │
+│ │                      ○ Mixte (acompte + crédit)                      │  │
+│ │                                                                       │  │
+│ │ ┌── CONDITIONS CRÉDIT ─────────────────────────────────────────┐    │  │
+│ │ │ Délai paiement:     30 jours (NET30)                         │    │  │
+│ │ │ Date échéance:      28/02/2024                               │    │  │
+│ │ │ Escompte:           2% si paiement < 10 jours                │    │  │
+│ │ │                                                                │    │  │
+│ │ │ Modes autorisés:    ✓ Virement  ✓ Chèque                    │    │  │
+│ │ │                     ✗ Mobile Money  ✗ Espèces                │    │  │
+│ │ └────────────────────────────────────────────────────────────────┘    │  │
+│ │                                                                       │  │
+│ │ Acompte demandé:     [0________] XAF  ([0___] %)                    │  │
+│ │ Date limite acompte: [__/__/____] 📅                                │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ REMISES ET FRAIS                                                     │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Remise globale:      [0_______] %  = [0________] XAF                │  │
+│ │ Motif remise:        [_________________________________]            │  │
+│ │                      ⚠️ Validation manager si > 5%                   │  │
+│ │                                                                       │  │
+│ │ Frais additionnels:                                                  │  │
+│ │ - Manutention:       [0________] XAF                                │  │
+│ │ - Assurance:         [0________] XAF                                │  │
+│ │ - Autres:            [0________] XAF  Libellé: [_________]          │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ VALIDATION CRÉDIT AUTOMATIQUE                                        │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ ┌────────────────────────────┬──────────────────────────────────┐   │  │
+│ │ │ CRÉDIT CLIENT              │ CAUTION COMMERCIALE               │   │  │
+│ │ ├────────────────────────────┼──────────────────────────────────┤   │  │
+│ │ │ Limite:      5,000,000 XAF │ Caution totale:   3,500,000 XAF  │   │  │
+│ │ │ Utilisé:     2,500,000 XAF │ Caution requise:    828,657 XAF  │   │  │
+│ │ │ Cette BC:    1,183,795 XAF │ (70% du TTC)                     │   │  │
+│ │ │ Après BC:    3,683,795 XAF │ Disponible après: 2,671,343 XAF  │   │  │
+│ │ │                            │                                   │   │  │
+│ │ │ ✅ Crédit OK (73.7%)       │ ✅ Caution suffisante             │   │  │
+│ │ └────────────────────────────┴──────────────────────────────────┘   │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ CALCUL FISCAL                                                        │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Base HT:                     992,700 XAF                            │  │
+│ │ TVA 19.25%:                  191,095 XAF                            │  │
+│ │ Total TTC:                 1,183,795 XAF                            │  │
+│ │                                                                       │  │
+│ │ ☑ Retenue à la source (1.1%): 10,920 XAF                           │  │
+│ │ Net à payer:               1,172,875 XAF                            │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [← Précédent] (Articles)                       [Suivant →] (Transport)     │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### **ONGLET 4 : TRANSPORT ET LOGISTIQUE**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NOUVEAU BON DE COMMANDE                                    [💾] [❌ Fermer] │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ [1.Client✓] [2.Articles✓] [3.Conditions✓] [4.Transport] [5.Validation]│ │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 4 : TRANSPORT ET LOGISTIQUE                             ○     ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ MODE DE LIVRAISON                                                    │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Type *:              ○ Enlèvement client (EXW)                       │  │
+│ │                      ● Livraison par nos soins                       │  │
+│ │                      ○ Transporteur tiers                            │  │
+│ │                                                                       │  │
+│ │ Date souhaitée *:    05/02/2024 (confirmée dans onglet 1)           │  │
+│ │ Créneau:            [Matin (8h-12h)_______]▼                        │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ TRANSPORT SUBVENTIONNÉ                                               │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ ☐ Activer transport subventionné                                     │  │
+│ │                                                                       │  │
+│ │ ┌── DÉTAILS SUBVENTION (si activé) ───────────────────────────┐     │  │
+│ │ │ Coût transport total:      [________] XAF                    │     │  │
+│ │ │ Acompte client (100%):     [________] XAF (auto-calculé)     │     │  │
+│ │ │ Subvention société:        [________] XAF                    │     │  │
+│ │ │ Facture transport séparée: ○ Oui  ○ Non                     │     │  │
+│ │ └────────────────────────────────────────────────────────────────┘     │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ DÉTAILS LOGISTIQUES                                                  │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Transporteur:        [À planifier____________]▼ [+ Nouveau]         │  │
+│ │ Type véhicule:       [Camion 10T_____________]▼                     │  │
+│ │                                                                       │  │
+│ │ ┌── CALCUL AUTOMATIQUE ────────────────────────────────────────┐    │  │
+│ │ │ Poids total:       5,200 kg                                   │    │  │
+│ │ │ Volume estimé:     8.3 m³                                     │    │  │
+│ │ │ Palettes:          4 palettes Europe                          │    │  │
+│ │ │ Manutention:       ☑ Chariot élévateur requis                 │    │  │
+│ │ └────────────────────────────────────────────────────────────────┘    │  │
+│ │                                                                       │  │
+│ │ Instructions          [Appeler 30min avant arrivée.______________]  │  │
+│ │ chargement:          [Accès par portail Nord.____________________]  │  │
+│ │                                                                       │  │
+│ │ Conditions           [Déchargement à la charge du client._______]   │  │
+│ │ spéciales:           [Prévoir équipe de 2 personnes.____________]   │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ZONES ET TARIFS                                                      │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Zone livraison:      DOUALA - Zone 2 (Bassa)                       │  │
+│ │ Distance estimée:    12 km                                          │  │
+│ │ Frais transport:     35,000 XAF (estimation)                        │  │
+│ │                                                                       │  │
+│ │ ☐ Facturer transport au client                                       │  │
+│ │ ☐ Franco de port (gratuit)                                           │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [← Précédent] (Conditions)                     [Suivant →] (Validation)    │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### **ONGLET 5 : VALIDATION ET CONFIRMATION**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NOUVEAU BON DE COMMANDE                                    [💾] [❌ Fermer] │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ [1.Client✓] [2.Articles✓] [3.Conditions✓] [4.Transport✓] [5.Validation]│ │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 5 : VALIDATION ET CONFIRMATION                           ✓    ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ RÉCAPITULATIF COMPLET                                                │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ CLIENT                                                                │  │
+│ │ • SONACOM SARL (CLI-2024-00156)                                     │  │
+│ │ • Contact: Pierre FOTSO - 699 123 456                               │  │
+│ │ • Livraison: Zone Industrielle, Bassa, Douala                       │  │
+│ │                                                                       │  │
+│ │ ARTICLES (4 lignes)                                                  │  │
+│ │ • Peinture Blanche 5L      : 20 POT    =    84,000 XAF             │  │
+│ │ • Ciment Portland 50kg     : 100 SAC   =   646,000 XAF (-5%)       │  │
+│ │ • Fer à béton 12mm        : 50 BARR   =   225,000 XAF              │  │
+│ │ • Agglo 15cm (RUPTURE)    : 200 U     =    70,000 XAF              │  │
+│ │                                                                       │  │
+│ │ CONDITIONS                                                           │  │
+│ │ • Mode: Crédit 30 jours - Échéance: 28/02/2024                     │  │
+│ │ • Transport: Livraison société le 05/02/2024 (matin)               │  │
+│ │                                                                       │  │
+│ │ ┌────────────────────────────────────────────────────────────────┐  │  │
+│ │ │ MONTANTS                                                       │  │  │
+│ │ │ Total HT:              992,700 XAF                            │  │  │
+│ │ │ TVA 19.25%:            191,095 XAF                            │  │  │
+│ │ │ Total TTC:           1,183,795 XAF                            │  │  │
+│ │ │ Retenue source:        -10,920 XAF                            │  │  │
+│ │ │ NET À PAYER:         1,172,875 XAF                            │  │  │
+│ │ └────────────────────────────────────────────────────────────────┘  │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ POINTS DE CONTRÔLE                                                   │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ ✅ Client actif avec documents valides (ANR OK)                     │  │
+│ │ ✅ Crédit disponible suffisant (2.5M > 1.18M)                       │  │
+│ │ ✅ Caution commerciale suffisante (3.5M > 828K)                     │  │
+│ │ ⚠️ Article en rupture: AGGLO-15 (200 unités)                        │  │
+│ │ ✅ Adresse livraison confirmée                                       │  │
+│ │ ⏳ Transport à planifier                                            │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ NOTES ET OBSERVATIONS                                                │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Note interne:        [Article AGGLO-15 en rupture, proposer_____]   │  │
+│ │ (non imprimée)       [alternative ou délai supplémentaire_______]   │  │
+│ │                                                                       │  │
+│ │ Note sur BC:         [Merci de confirmer réception 24h avant____]   │  │
+│ │ (visible client)     [la date de livraison prévue_______________]   │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ WORKFLOW DE VALIDATION                                               │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Validation requise:  NON - Toutes les conditions sont remplies      │  │
+│ │ Statut après envoi:  VALIDÉ AUTOMATIQUEMENT                        │  │
+│ │                                                                       │  │
+│ │ Actions post-validation:                                             │  │
+│ │ • Envoi email confirmation au client                                │  │
+│ │ • Création réservation stock                                        │  │
+│ │ • Notification service logistique                                   │  │
+│ │ • Alerte pour article en rupture                                    │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │        [👁️ Aperçu PDF]  [💾 Sauvegarder brouillon]                    │  │
+│ │                                                                       │  │
+│ │        [← Retour]      [✅ VALIDER BON DE COMMANDE]                 │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+
+## 🔍 **PROPRIÉTÉS DU MODÈLE UTILISÉES**
+
+### **Table: `sales_documents`**
+| Section | Champs Modèle | Validation |
+|---------|---------------|------------|
+| **En-tête** | `documentNumber`, `documentDate`, `partnerClientId`, `commercialId`, `sellingCompanyId` | Client actif, ANR valide |
+| **Lignes** | `lines[]` avec tous les sous-champs | Stock disponible, prix liste client |
+| **Totaux** | `totals` avec calculs TVA | TVA 19.25% automatique |
+| **Crédit** | `creditValidation` avec caution | Règle 70% caution |
+| **Paiement** | `paymentCondition`, `paymentTermsDays` | Selon conditions client |
+| **Transport** | `deliveryMode`, `transportInfo` | Subvention si applicable |
+
+### **Validations temps réel**
+```yaml
+validations:
+  client:
+    - status: ACTIVE
+    - documentsValid: ANR non expiré
+    - creditAvailable: >= montantCommande
+  
+  commercial:
+    - cautionAvailable: >= (montantTTC * 0.70)
+  
+  articles:
+    - stockAvailable: >= quantityOrdered
+    - priceList: CLIENT_SPECIFIC or DEFAULT
+  
+  workflow:
+    - autoApprove: if all validations pass
+    - escalate: if amount > limits or caution insufficient
+```
+
+## 📌 **FONCTIONNALITÉS CLÉS**
+
+1. **Sélection client intelligente** :
+   - Recherche par code/nom/NUI
+   - Affichage situation temps réel
+   - Alertes documents expirés
+
+2. **Saisie articles optimisée** :
+   - Recherche avec stock disponible
+   - Prix selon liste client
+   - Calcul automatique remises
+
+3. **Validations automatiques** :
+   - Crédit disponible
+   - Caution 70%
+   - Stock suffisant
+   - Documents valides
+
+4. **Calculs temps réel** :
+   - TVA 19.25%
+   - Retenue source 1.1%
+   - Net à payer
+
+5. **Aperçu WYSIWYG** : 
+   - Visualisation avant validation
+   - Impression/Email direct
+
+## 🎯 **WORKFLOW POST-CRÉATION**
+
+1. **Si toutes validations OK** → BC validé automatiquement
+2. **Si dépassement crédit** → Envoi validation N+1
+3. **Si caution insuffisante** → Blocage avec alerte commercial
+4. **Si stock insuffisant** → Proposition commande fournisseur
+

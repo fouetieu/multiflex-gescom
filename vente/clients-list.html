@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../achat/styles/achats-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .customer-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .type-entreprise {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .type-particulier {
+            background: #E0E7FF;
+            color: #4338CA;
+        }
+
+        .type-technicien {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .type-quincaillerie {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .customer-meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-top: 6px;
+        }
+
+        .customer-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .quick-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quick-filter-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 2px solid var(--gray-300);
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .quick-filter-btn:hover {
+            border-color: var(--primary-color);
+        }
+
+        .quick-filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .quick-filter-count {
+            background: rgba(255,255,255,0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+            font-weight: 600;
+        }
+
+        .quick-filter-btn.active .quick-filter-count {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .status-badge-table {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.active { background: #10B981; }
+        .status-dot.warning { background: #F59E0B; }
+        .status-dot.blocked { background: #EF4444; }
+
+        .balance-positive {
+            color: #10B981;
+        }
+
+        .balance-negative {
+            color: #EF4444;
+        }
+
+        .balance-warning {
+            color: #F59E0B;
+        }
+
+        .commercial-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .commercial-name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .caution-info {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        .document-alert {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: #F59E0B;
+            margin-top: 4px;
+        }
+
+        .legend-bar {
+            display: flex;
+            gap: 20px;
+            padding: 12px 16px;
+            background: #F8F9FA;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bulk-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #F0F9FF;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .bulk-actions-left {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .bulk-actions-right {
+            display: flex;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Gestion des Clients</h1>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">3</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Ventes
+                    </div>
+
+                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-line mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="./clients-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-users mr-3"></i>
+                        <span>Clients</span>
+                    </a>
+
+                    <a href="./commandes-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Commandes</span>
+                    </a>
+
+                    <a href="./livraisons-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Livraisons</span>
+                    </a>
+
+                    <a href="./factures-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Factures</span>
+                    </a>
+
+                    <a href="./avoirs-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-receipt mr-3"></i>
+                        <span>Avoirs</span>
+                    </a>
+
+                    <a href="./retours-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-rotate-left mr-3"></i>
+                        <span>Retours</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Point de Vente
+                    </div>
+
+                    <a href="./pos.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-cash-register mr-3"></i>
+                        <span>Caisse POS</span>
+                    </a>
+
+                    <a href="./sessions-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-clock mr-3"></i>
+                        <span>Sessions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Reporting
+                    </div>
+
+                    <a href="./rapports.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-bar mr-3"></i>
+                        <span>Rapports</span>
+                    </a>
+
+                    <a href="./commissions.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-coins mr-3"></i>
+                        <span>Commissions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="achats-container" style="max-width: none; padding: 24px;">
+
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">
+                                    <i class="fa-solid fa-users"></i>
+                                    Gestion des Clients
+                                </h1>
+                                <p class="page-description">
+                                    Gérer les clients particuliers, entreprises, techniciens et quincailleries
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="exportClients()">
+                                    <i class="fa-solid fa-file-export"></i>
+                                    Exporter
+                                </button>
+                                <button class="btn btn-primary" onclick="location.href='./client-create.html'">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Nouveau Client
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Stats Cards - Résumé -->
+                        <div class="stats-grid" style="grid-template-columns: repeat(5, 1fr);">
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div>
+                                        <div class="stat-label">Actifs</div>
+                                    </div>
+                                    <div class="stat-icon success">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value" id="stat-active" style="color: #10B981;">1,245</div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div>
+                                        <div class="stat-label">Nouveaux (30j)</div>
+                                    </div>
+                                    <div class="stat-icon primary">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value" id="stat-new" style="color: #3B82F6;">45</div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div>
+                                        <div class="stat-label">Bloqués</div>
+                                    </div>
+                                    <div class="stat-icon danger">
+                                        <i class="fa-solid fa-ban"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value" id="stat-blocked" style="color: #EF4444;">12</div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div>
+                                        <div class="stat-label">Encours Total</div>
+                                    </div>
+                                    <div class="stat-icon info">
+                                        <i class="fa-solid fa-wallet"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value" id="stat-encours" style="color: #263c89; font-size: 18px;">125,450,000 XAF</div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div>
+                                        <div class="stat-label">Impayés</div>
+                                    </div>
+                                    <div class="stat-icon warning">
+                                        <i class="fa-solid fa-exclamation-triangle"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-value" id="stat-impayes" style="color: #F59E0B; font-size: 18px;">15,230,000 XAF</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Filters -->
+                    <div class="quick-filters">
+                        <button class="quick-filter-btn active" data-filter="all" onclick="applyQuickFilter('all')">
+                            <i class="fa-solid fa-list"></i> Tous
+                            <span class="quick-filter-count" id="count-all">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="active" onclick="applyQuickFilter('active')">
+                            <i class="fa-solid fa-check-circle"></i> Actifs
+                            <span class="quick-filter-count" id="count-active">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="entreprise" onclick="applyQuickFilter('entreprise')">
+                            <i class="fa-solid fa-building"></i> Entreprises
+                            <span class="quick-filter-count" id="count-entreprise">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="particulier" onclick="applyQuickFilter('particulier')">
+                            <i class="fa-solid fa-user"></i> Particuliers
+                            <span class="quick-filter-count" id="count-particulier">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="technicien" onclick="applyQuickFilter('technicien')">
+                            <i class="fa-solid fa-hard-hat"></i> Techniciens
+                            <span class="quick-filter-count" id="count-technicien">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="quincaillerie" onclick="applyQuickFilter('quincaillerie')">
+                            <i class="fa-solid fa-store"></i> Quincailleries
+                            <span class="quick-filter-count" id="count-quincaillerie">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="blocked" onclick="applyQuickFilter('blocked')">
+                            <i class="fa-solid fa-ban"></i> Bloqués
+                            <span class="quick-filter-count" id="count-blocked">0</span>
+                        </button>
+                    </div>
+
+                    <!-- Filters Bar -->
+                    <div class="filters-bar">
+                        <div class="filters-row">
+                            <div class="filter-group" style="flex: 2;">
+                                <input
+                                    type="text"
+                                    class="search-input"
+                                    id="search-input"
+                                    placeholder="Rechercher par code, nom, NUI, CNI..."
+                                    onkeyup="applyFilters()"
+                                >
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-type" onchange="applyFilters()">
+                                    <option value="">Type: Tous</option>
+                                    <option value="ENTREPRISE">Entreprise</option>
+                                    <option value="PARTICULIER">Particulier</option>
+                                    <option value="TECHNICIEN">Technicien</option>
+                                    <option value="QUINCAILLERIE">Quincaillerie</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-category" onchange="applyFilters()">
+                                    <option value="">Catégorie: Toutes</option>
+                                    <option value="GROSSISTE">Grossiste</option>
+                                    <option value="DETAILLANT">Détaillant</option>
+                                    <option value="APPLICATEUR">Applicateur</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-commercial" onchange="applyFilters()">
+                                    <option value="">Commercial: Tous</option>
+                                    <option value="COM001">M. DJOMO</option>
+                                    <option value="COM002">P. NGONO</option>
+                                    <option value="COM003">J. FOTSO</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-status" onchange="applyFilters()">
+                                    <option value="">Statut: Tous</option>
+                                    <option value="ACTIVE">Actif</option>
+                                    <option value="BLOCKED">Bloqué</option>
+                                    <option value="SUSPENDED">Suspendu</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-balance" onchange="applyFilters()">
+                                    <option value="">Solde: Tous</option>
+                                    <option value="OK">Solde OK</option>
+                                    <option value="OVERDUE">En retard</option>
+                                    <option value="EXCEEDED">Limite dépassée</option>
+                                </select>
+                            </div>
+                            <div class="filter-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                    Réinit.
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend Bar -->
+                    <div class="legend-bar">
+                        <div class="legend-item">
+                            <span style="font-size: 16px;">&#127970;</span> Entreprise
+                        </div>
+                        <div class="legend-item">
+                            <span style="font-size: 16px;">&#128100;</span> Particulier
+                        </div>
+                        <div class="legend-item">
+                            <span style="font-size: 16px;">&#128119;</span> Technicien
+                        </div>
+                        <div class="legend-item">
+                            <span style="font-size: 16px;">&#128295;</span> Quincaillerie
+                        </div>
+                        <div class="legend-item">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #10B981; display: inline-block;"></span> OK
+                        </div>
+                        <div class="legend-item">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #F59E0B; display: inline-block;"></span> Attention (&lt;30j)
+                        </div>
+                        <div class="legend-item">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #EF4444; display: inline-block;"></span> Bloqué
+                        </div>
+                        <div class="legend-item">
+                            <strong>BL</strong> = Blocage vente
+                        </div>
+                    </div>
+
+                    <!-- Data Table -->
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;">
+                                        <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                                    </th>
+                                    <th class="sortable" data-sort="code" onclick="sortTable('code')">Code Client</th>
+                                    <th class="sortable" data-sort="name" onclick="sortTable('name')">Raison Sociale / Nom</th>
+                                    <th class="text-center">Type</th>
+                                    <th class="text-center">Catégorie</th>
+                                    <th class="text-center">Commercial</th>
+                                    <th class="text-center sortable" data-sort="balance" onclick="sortTable('balance')">Solde</th>
+                                    <th class="text-center">Statut</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Données chargées dynamiquement -->
+                            </tbody>
+                        </table>
+
+                        <!-- Empty State -->
+                        <div id="empty-state" class="empty-state hidden">
+                            <div class="empty-state-icon">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <h3 class="empty-state-title">Aucun client trouvé</h3>
+                            <p class="empty-state-description">
+                                Créez votre premier client pour commencer
+                            </p>
+                            <button class="btn btn-primary mt-4" onclick="location.href='./client-create.html'">
+                                <i class="fa-solid fa-plus"></i>
+                                Nouveau Client
+                            </button>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="pagination" id="pagination">
+                            <div class="pagination-info" id="pagination-info">
+                                Affichage de 0 à 0 sur 0 clients
+                            </div>
+                            <div class="pagination-controls" id="pagination-controls">
+                                <!-- Généré dynamiquement -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bulk Actions -->
+                    <div class="bulk-actions" id="bulk-actions" style="display: none;">
+                        <div class="bulk-actions-left">
+                            <span id="selected-count">0</span> client(s) sélectionné(s)
+                        </div>
+                        <div class="bulk-actions-right">
+                            <button class="btn btn-secondary btn-sm" onclick="sendBulkEmail()">
+                                <i class="fa-solid fa-envelope"></i>
+                                Email groupé
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="generateBulkStatement()">
+                                <i class="fa-solid fa-file-lines"></i>
+                                Relevé
+                            </button>
+                            <button class="btn btn-warning btn-sm" onclick="blockSelectedClients()">
+                                <i class="fa-solid fa-lock"></i>
+                                Bloquer
+                            </button>
+                            <button class="btn btn-success btn-sm" onclick="unblockSelectedClients()">
+                                <i class="fa-solid fa-unlock"></i>
+                                Débloquer
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="archiveSelectedClients()">
+                                <i class="fa-solid fa-archive"></i>
+                                Archiver
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Actions Confirmation -->
+    <div class="modal-overlay" id="action-modal" style="display: none;">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Confirmer l'action</h2>
+                <button class="modal-close" onclick="closeActionModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Contenu dynamique -->
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <!-- Boutons dynamiques -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Quick View Client -->
+    <div class="modal-overlay" id="quickview-modal" style="display: none;">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="quickview-title">Aperçu Client</h2>
+                <button class="modal-close" onclick="closeQuickViewModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="quickview-body">
+                <!-- Contenu dynamique -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeQuickViewModal()">Fermer</button>
+                <button class="btn btn-primary" id="btn-view-full" onclick="viewFullClient()">
+                    <i class="fa-solid fa-eye"></i>
+                    Voir la fiche complète
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/clients-list.js"></script>
+</body>
+</html>

@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bons de Commande Client - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../achat/styles/achats-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        /* Custom styles for sales orders */
+        .order-row {
+            transition: all 0.2s;
+        }
+
+        .order-row:hover {
+            background: #F8FAFC;
+        }
+
+        .order-row.urgent {
+            background: #FEF2F2;
+            border-left: 3px solid #EF4444;
+        }
+
+        .order-row.caution-warning {
+            background: #FFFBEB;
+            border-left: 3px solid #F59E0B;
+        }
+
+        .client-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .client-name {
+            font-weight: 600;
+            color: #1F2937;
+            font-size: 13px;
+        }
+
+        .client-contact {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .client-phone {
+            font-size: 11px;
+            color: #9CA3AF;
+        }
+
+        .payment-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 12px;
+        }
+
+        .payment-mode {
+            font-weight: 600;
+        }
+
+        .payment-mode.credit {
+            color: #3B82F6;
+        }
+
+        .payment-mode.cash {
+            color: #10B981;
+        }
+
+        .caution-indicator {
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        .caution-indicator.warning {
+            color: #F59E0B;
+        }
+
+        .caution-indicator.danger {
+            color: #EF4444;
+        }
+
+        .delivery-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .delivery-date {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .delivery-days {
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        .delivery-days.urgent {
+            color: #EF4444;
+            font-weight: 600;
+        }
+
+        .urgent-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #FEE2E2;
+            color: #991B1B;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .validation-level {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #E0E7FF;
+            color: #3730A3;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* Legend */
+        .legend-container {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .legend-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Bulk actions */
+        .bulk-actions {
+            background: #263c89;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bulk-actions.visible {
+            display: flex;
+        }
+
+        .bulk-info {
+            font-size: 14px;
+        }
+
+        .bulk-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .bulk-buttons .btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        .bulk-buttons .btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* Tooltip styles */
+        .order-tooltip {
+            position: absolute;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            padding: 16px;
+            min-width: 350px;
+            display: none;
+        }
+
+        .order-tooltip.visible {
+            display: block;
+        }
+
+        .tooltip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .tooltip-title {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .tooltip-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .tooltip-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .tooltip-label {
+            color: #6B7280;
+            font-size: 11px;
+        }
+
+        .tooltip-value {
+            color: #1F2937;
+            font-weight: 500;
+        }
+
+        .tooltip-actions {
+            display: flex;
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 1px solid #E5E7EB;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Bons de Commande Client</h1>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="notification-badge">8</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO (Commercial)</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Ventes
+                    </div>
+
+                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-chart-line mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="./clients-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-users mr-3"></i>
+                        <span>Clients</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Commandes</span>
+                    </div>
+
+                    <a href="./commandes-validation.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors" style="padding-left: 3rem;">
+                        <i class="fa-solid fa-check-circle mr-3"></i>
+                        <span>Validation Crédit</span>
+                        <span class="notification-badge" style="position: relative; top: -2px; margin-left: 8px;">8</span>
+                    </a>
+
+                    <a href="./livraisons-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Livraisons</span>
+                    </a>
+
+                    <a href="./factures-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Factures</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="achats-container">
+
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div>
+                            <h2 class="page-title">Bons de Commande Client</h2>
+                            <p class="page-subtitle">Gérez vos commandes de vente</p>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="exportOrders()">
+                                <i class="fa-solid fa-download"></i>
+                                Export
+                            </button>
+                            <button class="btn btn-secondary" onclick="viewPipeline()">
+                                <i class="fa-solid fa-chart-bar"></i>
+                                Pipeline
+                            </button>
+                            <button class="btn btn-primary" onclick="location.href='./commande-create.html'">
+                                <i class="fa-solid fa-plus"></i>
+                                Nouveau BC
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">En Cours</span>
+                                <div class="stat-icon" style="background: #FEF3E2;">
+                                    <i class="fa-solid fa-hourglass-half" style="color: #F26F21;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-pending">45</div>
+                            <div class="stat-footer">
+                                <span class="stat-info">
+                                    <span style="color: #EF4444;"><strong>8</strong> en retard</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Validées Aujourd'hui</span>
+                                <div class="stat-icon" style="background: #D1FAE5;">
+                                    <i class="fa-solid fa-check-circle" style="color: #10B981;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-validated">12</div>
+                            <div class="stat-footer">
+                                <span class="stat-trend trend-up">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    Taux: 78%
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Montant Jour</span>
+                                <div class="stat-icon" style="background: #E8F4FD;">
+                                    <i class="fa-solid fa-coins" style="color: #263c89;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-amount" style="font-size: 18px;">15,450,000 XAF</div>
+                            <div class="stat-footer">
+                                <span class="stat-info">Pipeline: 125,350,000 XAF</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Caution Utilisée</span>
+                                <div class="stat-icon" style="background: #FEF3C7;">
+                                    <i class="fa-solid fa-shield-halved" style="color: #F59E0B;"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="stat-caution" style="font-size: 18px;">45,230,000 XAF</div>
+                            <div class="stat-footer">
+                                <span class="stat-info">65% de la caution totale</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Filters -->
+                    <div class="filters-bar">
+                        <div class="quick-filters">
+                            <button class="filter-chip active" data-status="all" onclick="filterByStatus('all')">
+                                Tous
+                            </button>
+                            <button class="filter-chip" data-status="PENDING" onclick="filterByStatus('PENDING')">
+                                <span class="status-dot" style="background: #F59E0B;"></span>
+                                En validation
+                            </button>
+                            <button class="filter-chip" data-status="VALIDATED" onclick="filterByStatus('VALIDATED')">
+                                <span class="status-dot" style="background: #10B981;"></span>
+                                Validé
+                            </button>
+                            <button class="filter-chip" data-status="IN_DELIVERY" onclick="filterByStatus('IN_DELIVERY')">
+                                <span class="status-dot" style="background: #3B82F6;"></span>
+                                En livraison
+                            </button>
+                            <button class="filter-chip" data-status="DELIVERED" onclick="filterByStatus('DELIVERED')">
+                                <span class="status-dot" style="background: #059669;"></span>
+                                Livré
+                            </button>
+                            <button class="filter-chip" data-status="INVOICED" onclick="filterByStatus('INVOICED')">
+                                <span class="status-dot" style="background: #8B5CF6;"></span>
+                                Facturé
+                            </button>
+                            <button class="filter-chip" data-status="REJECTED" onclick="filterByStatus('REJECTED')">
+                                <span class="status-dot" style="background: #EF4444;"></span>
+                                Rejeté
+                            </button>
+                        </div>
+
+                        <button class="btn btn-secondary btn-sm" onclick="toggleAdvancedFilters()">
+                            <i class="fa-solid fa-filter"></i>
+                            Filtres avancés
+                        </button>
+                    </div>
+
+                    <!-- Advanced Filters -->
+                    <div class="advanced-filters" id="advanced-filters" style="display: none;">
+                        <div class="filters-grid">
+                            <div class="form-group">
+                                <label class="form-label">N° BC</label>
+                                <input type="text" class="form-input" id="filter-ref" placeholder="BC-CLI..." oninput="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Client</label>
+                                <input type="text" class="form-input" id="filter-client" placeholder="Rechercher client..." oninput="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Commercial</label>
+                                <select class="form-select" id="filter-commercial" onchange="applyFilters()">
+                                    <option value="">Tous</option>
+                                    <option value="mine">Mes BC</option>
+                                    <option value="COM001">Marie DJOMO</option>
+                                    <option value="COM002">Jean FOTSO</option>
+                                    <option value="COM003">Paul NGA</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Période</label>
+                                <select class="form-select" id="filter-period" onchange="applyFilters()">
+                                    <option value="week">Cette semaine</option>
+                                    <option value="month">Ce mois</option>
+                                    <option value="quarter">Ce trimestre</option>
+                                    <option value="custom">Personnalisé</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Urgence</label>
+                                <select class="form-select" id="filter-urgency" onchange="applyFilters()">
+                                    <option value="">Toutes</option>
+                                    <option value="urgent">Urgent</option>
+                                    <option value="normal">Normal</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Paiement</label>
+                                <select class="form-select" id="filter-payment" onchange="applyFilters()">
+                                    <option value="">Tous</option>
+                                    <option value="CASH">Comptant</option>
+                                    <option value="CREDIT">Crédit</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Société</label>
+                                <select class="form-select" id="filter-company" onchange="applyFilters()">
+                                    <option value="">Toutes</option>
+                                    <option value="IOLA_BTP">IOLA BTP</option>
+                                    <option value="IOLA_INDUSTRIE">IOLA INDUSTRIE</option>
+                                    <option value="IOLA_SERVICES">IOLA SERVICES</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Montant min (XAF)</label>
+                                <input type="number" class="form-input" id="filter-amount-min" placeholder="0" oninput="applyFilters()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Montant max (XAF)</label>
+                                <input type="number" class="form-input" id="filter-amount-max" placeholder="999999999" oninput="applyFilters()">
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px;">
+                            <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                Réinitialiser
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="applyFilters()">
+                                <i class="fa-solid fa-check"></i>
+                                Appliquer
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bulk Actions Bar -->
+                    <div class="bulk-actions" id="bulk-actions">
+                        <div class="bulk-info">
+                            <span id="selected-count">0</span> BC sélectionné(s) | Total: <span id="selected-total">0</span> XAF
+                        </div>
+                        <div class="bulk-buttons">
+                            <button class="btn btn-sm" onclick="bulkDuplicate()">
+                                <i class="fa-solid fa-copy"></i> Dupliquer
+                            </button>
+                            <button class="btn btn-sm" onclick="bulkPlanDelivery()">
+                                <i class="fa-solid fa-truck"></i> Planifier livraison
+                            </button>
+                            <button class="btn btn-sm" onclick="bulkTransform()">
+                                <i class="fa-solid fa-file-invoice"></i> Transformer
+                            </button>
+                            <button class="btn btn-sm" onclick="bulkCancel()">
+                                <i class="fa-solid fa-ban"></i> Annuler
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="legend-container">
+                        <div class="legend-title">LÉGENDE DES STATUTS</div>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <span class="status-badge status-badge-warning">En validation</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-badge status-badge-success">Validé</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-badge status-badge-info">En livraison</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-badge" style="background: #D1FAE5; color: #065F46;">Livré</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-badge" style="background: #EDE9FE; color: #5B21B6;">Facturé</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-badge status-badge-danger">Rejeté</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="urgent-badge"><i class="fa-solid fa-fire"></i> Urgent</span>
+                            </div>
+                            <div class="legend-item">
+                                <span style="color: #F59E0B; font-size: 11px;">!Cau = Caution insuffisante</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="validation-level">N+2 = Validation Direction</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Container -->
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;">
+                                        <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                                    </th>
+                                    <th style="width: 150px;">
+                                        <div class="th-content">
+                                            N° Commande
+                                            <i class="fa-solid fa-sort sort-icon" onclick="sortBy('ref')"></i>
+                                        </div>
+                                    </th>
+                                    <th style="width: 90px;">
+                                        <div class="th-content">
+                                            Date
+                                            <i class="fa-solid fa-sort sort-icon" onclick="sortBy('date')"></i>
+                                        </div>
+                                    </th>
+                                    <th style="width: 200px;">
+                                        <div class="th-content">
+                                            Client / Contact
+                                        </div>
+                                    </th>
+                                    <th style="width: 130px; text-align: right;">
+                                        <div class="th-content" style="justify-content: flex-end;">
+                                            Montant TTC
+                                            <i class="fa-solid fa-sort sort-icon" onclick="sortBy('amount')"></i>
+                                        </div>
+                                    </th>
+                                    <th style="width: 90px;">
+                                        <div class="th-content">
+                                            Livraison
+                                        </div>
+                                    </th>
+                                    <th style="width: 100px;">
+                                        <div class="th-content">
+                                            Paiement
+                                        </div>
+                                    </th>
+                                    <th style="width: 110px;">
+                                        <div class="th-content">
+                                            Statut
+                                        </div>
+                                    </th>
+                                    <th style="width: 80px; text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+
+                        <!-- Empty State -->
+                        <div id="empty-state" style="display: none; text-align: center; padding: 64px 24px;">
+                            <i class="fa-solid fa-shopping-cart" style="font-size: 64px; color: #E5E7EB; margin-bottom: 16px;"></i>
+                            <p style="font-size: 16px; color: #6B7280; margin-bottom: 8px;">Aucune commande trouvée</p>
+                            <p style="font-size: 14px; color: #9CA3AF;">Créez votre première commande pour commencer</p>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination">
+                        <div class="pagination-info">
+                            Affichage <strong id="pagination-from">1</strong> à <strong id="pagination-to">5</strong> sur <strong id="pagination-total">445</strong> résultats
+                        </div>
+                        <div class="pagination-controls" id="pagination-controls">
+                            <!-- Loaded dynamically -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip for order details -->
+    <div class="order-tooltip" id="order-tooltip">
+        <!-- Loaded dynamically -->
+    </div>
+
+    <!-- Modal: Order Details -->
+    <div class="modal" id="modal-order-details">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fa-solid fa-shopping-cart"></i>
+                    Détails Commande <span id="modal-order-code"></span>
+                </h3>
+                <button class="modal-close" onclick="closeModal('modal-order-details')">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-order-content">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modal-order-details')">Fermer</button>
+                <button class="btn btn-secondary" onclick="duplicateOrder()">
+                    <i class="fa-solid fa-copy"></i> Dupliquer
+                </button>
+                <button class="btn btn-primary" onclick="editOrderFromModal()">
+                    <i class="fa-solid fa-edit"></i> Modifier
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Cancel Order -->
+    <div class="modal" id="modal-cancel-order">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fa-solid fa-ban" style="color: #EF4444;"></i>
+                    Annuler la commande
+                </h3>
+                <button class="modal-close" onclick="closeModal('modal-cancel-order')">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 16px;">Voulez-vous vraiment annuler la commande <strong id="cancel-order-code"></strong> ?</p>
+                <div class="form-group">
+                    <label class="form-label">Motif d'annulation <span style="color: #DC2626;">*</span></label>
+                    <textarea class="form-textarea" id="cancel-reason" placeholder="Précisez le motif..." rows="4"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modal-cancel-order')">Annuler</button>
+                <button class="btn btn-danger" onclick="confirmCancelOrder()">
+                    <i class="fa-solid fa-ban"></i>
+                    Confirmer l'annulation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/commandes-list.js"></script>
+</body>
+</html>

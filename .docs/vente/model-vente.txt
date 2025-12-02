@@ -1,0 +1,1515 @@
+# **MODÈLE DE DONNÉES COMPLET - MODULE VENTES ERP MULTIFLEX**
+
+```yaml
+# ============================================================================
+# SCHÉMA PRINCIPAL : sales (PostgreSQL)
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# TABLE: sales_documents
+# Description: Table principale pour tous les documents de vente
+# Gère: Devis, Commandes, Livraisons, Factures, Avoirs
+# ----------------------------------------------------------------------------
+
+sales_documents:
+  # === IDENTIFIANTS ===
+  id: "uuid"                                          # Identifiant unique du document
+  documentNumber: "string"                           # Format: {TYPE}-{CLIENT}-YYYY-XXXXX (ex: BC-CLI001-2024-00123)
+  documentType: "DocumentType"                       # Enum: QUOTE, ORDER, DELIVERY, INVOICE, CREDIT_NOTE
+  documentVersion: "integer"                         # Version du document (pour traçabilité modifications)
+  
+  # === DATES ET PÉRIODES ===
+  documentDate: "date"                               # Date du document
+  fiscalYear: "integer"                              # Année fiscale (calculée depuis documentDate)
+  accountingPeriod: "string"                         # Période comptable (format: YYYY-MM)
+  
+  # === STATUTS ===
+  status: "DocumentStatus"                           # Enum: DRAFT, PENDING_VALIDATION, VALIDATED, IN_PREPARATION, 
+                                                      #       PARTIALLY_DELIVERED, DELIVERED, PARTIALLY_INVOICED, 
+                                                      #       INVOICED, CANCELLED, CLOSED
+  isLocked: "boolean"                                # Document verrouillé (non modifiable)
+  paymentStatus: "PaymentStatus"                     # Enum: UNPAID, PARTIALLY_PAID, PAID, OVERDUE
+  
+  # === PARTIES PRENANTES ===
+  partnerClientId: "string(24)"                      # Référence MongoDB vers customer
+  clientCode: "string"                               # Code client format: CLI-YYYY-XXXXX
+  clientName: "string"                               # Nom/Raison sociale du client (dénormalisé pour performance)
+  clientType: "CustomerType"                         # Enum: PARTICULIER, ENTREPRISE, TECHNICIEN, QUINCAILLERIE
+  clientTaxRegime: "TaxRegime"                       # Enum: REEL, SIMPLIFIE, LIBERATOIRE
+  
+  sellingCompanyId: "string(24)"                     # Société vendeuse du groupe IOLA
+  sellingCompanyName: "string"                       # Nom de la société (dénormalisé)
+  
+  commercialId: "string(24)"                         # Commercial responsable (référence MongoDB)
+  commercialName: "string"                           # Nom du commercial (dénormalisé)
+  commercialCautionUsed: "decimal(15,2)"            # Montant caution utilisée pour cette vente
+  
+  # === INFORMATIONS COMMERCIALES ===
+  priceListId: "string(24)"                          # Liste de prix appliquée
+  priceListCode: "string"                            # Code liste prix (ex: TARIF-B2B-2024)
+  salesChannel: "SalesChannel"                       # Enum: DIRECT, DISTRIBUTOR, POS, ECOMMERCE, PHONE
+  salesCampaignId: "string(24)"                      # Campagne commerciale associée (optionnel)
+  quoteReference: "string"                           # Référence devis d'origine (si applicable)
+  customerOrderReference: "string"                   # Référence bon de commande client
+  
+  # === ADRESSES ET LIVRAISON ===
+  billingAddress: "Address"                          # Adresse de facturation
+  deliveryAddress: "Address"                         # Adresse de livraison
+    # Structure Address:
+    # {
+    #   type: "SIEGE|FACTURATION|LIVRAISON|OPERATIONNEL"
+    #   label: "string"                               # Libellé de l'adresse
+    #   street: "string"                               # Rue/Avenue
+    #   quarter: "string"                              # Quartier
+    #   city: "string"                                 # Ville
+    #   postalCode: "string"                           # Code postal (optionnel)
+    #   country: "string"                              # Code pays (CM par défaut)
+    #   gps: {lat: "float", lng: "float"}             # Coordonnées GPS (optionnel)
+    #   contactPerson: "string"                        # Personne à contacter
+    #   contactPhone: "string"                         # Téléphone du contact
+    # }
+  
+  requestedDeliveryDate: "date"                      # Date de livraison souhaitée par le client
+  promisedDeliveryDate: "date"                       # Date promise par la société
+  actualDeliveryDate: "datetime"                     # Date/heure réelle de livraison
+  deliveryMode: "DeliveryMode"                       # Enum: PICKUP, DELIVERY, THIRD_PARTY
+  
+  # === INFORMATIONS TRANSPORT ===
+  transportInfo: "TransportInfo"                     # Informations détaillées du transport
+    # Structure TransportInfo:
+    # {
+    #   transporterId: "string(24)"                   # Référence transporteur
+    #   transporterName: "string"                      # Nom du transporteur
+    #   vehicleNumber: "string"                        # Immatriculation véhicule (ex: LT-123-YDE)
+    #   vehicleType: "string"                          # Type véhicule (CAMION, PICKUP, etc.)
+    #   driverName: "string"                           # Nom complet du chauffeur
+    #   driverPhone: "string"                          # Téléphone du chauffeur
+    #   driverCNI: "string"                           # Numéro CNI du chauffeur
+    #   loaderName: "string"                           # Nom du chargeur
+    #   loaderPhone: "string"                          # Téléphone du chargeur
+    #   warehouseKeeperName: "string"                 # Nom du magasinier
+    #   departureTime: "datetime"                      # Heure de départ
+    #   arrivalTime: "datetime"                        # Heure d'arrivée
+    #   deliveryPhotos: ["string"]                    # URLs des photos de livraison
+    #   deliverySignature: "string"                   # URL signature électronique
+    #   trackingNumber: "string"                       # Numéro de suivi
+    # }
+  
+  hasSubsidizedTransport: "boolean"                  # Transport subventionné (true/false)
+  transportDepositAmount: "decimal(15,2)"           # Montant acompte transport (100%)
+  transportSubsidyAmount: "decimal(15,2)"           # Montant subvention société
+  
+  # === CONDITIONS DE PAIEMENT ===
+  paymentCondition: "PaymentCondition"               # Enum: CASH, CREDIT
+  paymentTermsCode: "string"                         # Code conditions (NET30, NET45, 2/10NET30, etc.)
+  paymentTermsDays: "integer"                        # Nombre de jours de crédit
+  expectedPaymentDate: "date"                        # Date d'échéance calculée
+  paymentMethods: ["PaymentMethod"]                  # Liste: [CASH, TRANSFER, CHECK, MOBILE_MONEY]
+  
+  # === VALIDATION CRÉDIT (Règle 70%) ===
+  creditValidation: "CreditValidation"               # Validation du crédit commercial
+    # Structure CreditValidation:
+    # {
+    #   cautionRequired: "decimal(15,2)"              # Montant caution requise (70% du TTC)
+    #   cautionAvailable: "decimal(15,2)"             # Caution disponible du commercial
+    #   cautionStatus: "SUFFICIENT|INSUFFICIENT|EXEMPTED|VALIDATED"
+    #   validationLevel: "string"                     # Niveau requis (COMMERCIAL, MANAGER, DIRECTOR, CEO)
+    #   exemptionReason: "string"                     # Raison exemption (GERANT, DG, PDG)
+    # }
+  
+  # === WORKFLOW DE VALIDATION ===
+  validationWorkflow: "ValidationWorkflow"           # Historique des validations
+    # Structure ValidationWorkflow:
+    # {
+    #   workflowType: "CREDIT|DISCOUNT|EXCEPTIONAL"   # Type de validation
+    #   currentStep: "integer"                        # Étape actuelle
+    #   totalSteps: "integer"                         # Nombre total d'étapes
+    #   steps: [
+    #     {
+    #       stepNumber: "integer"                     # Numéro de l'étape
+    #       stepName: "string"                        # Nom (CREDIT_CHECK, MANAGER_APPROVAL, etc.)
+    #       requiredRole: "string"                    # Rôle requis pour valider
+    #       status: "PENDING|APPROVED|REJECTED|SKIPPED"
+    #       assignedTo: "string(24)"                  # ID utilisateur assigné
+    #       validatedBy: "string(24)"                 # ID validateur
+    #       validatedAt: "datetime"                   # Date/heure validation
+    #       comments: "string"                        # Commentaires
+    #       escalationDeadline: "datetime"            # Deadline avant escalade
+    #     }
+    #   ],
+    #   completedAt: "datetime"                       # Date fin workflow
+    #   finalStatus: "APPROVED|REJECTED"              # Statut final
+    # }
+  
+  # === LIGNES DU DOCUMENT ===
+  lines: ["DocumentLine"]                            # Lignes de détail du document
+    # Structure DocumentLine:
+    # {
+    #   lineNumber: "integer"                         # Numéro de ligne
+    #   lineId: "uuid"                               # ID unique de ligne (traçabilité)
+    #   articleId: "string(24)"                      # Référence article MongoDB
+    #   articleReference: "string"                    # Code article (ex: PEINT-BLC-05L)
+    #   designation: "string"                          # Désignation complète
+    #   articleType: "PRODUCT|SERVICE"                # Type d'article
+    #   familyCode: "string"                          # Code famille produit
+    #   
+    #   # Quantités et unités
+    #   quantity: "decimal(15,3)"                    # Quantité commandée/livrée/facturée
+    #   unit: "string"                                # Unité de mesure (POT, L, KG, etc.)
+    #   packagingId: "string(24)"                    # Référence conditionnement
+    #   packagingCode: "string"                       # Code conditionnement
+    #   conversionFactor: "decimal(10,5)"            # Facteur conversion unité/conditionnement
+    #   
+    #   # Prix et remises
+    #   unitPriceHT: "decimal(15,2)"                 # Prix unitaire HT
+    #   discountRate: "decimal(5,2)"                 # Taux remise en %
+    #   discountAmount: "decimal(15,2)"              # Montant remise
+    #   discountReason: "string"                      # Motif remise
+    #   netUnitPriceHT: "decimal(15,2)"              # Prix net après remise
+    #   
+    #   # TVA
+    #   vatRate: "decimal(5,2)"                      # Taux TVA (19.25% standard)
+    #   vatCode: "string"                             # Code TVA
+    #   vatExempt: "boolean"                          # Exonéré de TVA
+    #   
+    #   # Montants
+    #   netAmountHT: "decimal(15,2)"                 # Montant HT ligne
+    #   vatAmount: "decimal(15,2)"                   # Montant TVA ligne
+    #   amountTTC: "decimal(15,2)"                   # Montant TTC ligne
+    #   
+    #   # Stock et livraison
+    #   stockLocation: "string(24)"                   # Emplacement stock source
+    #   availableStock: "decimal(15,3)"              # Stock disponible au moment de la saisie
+    #   reservedQuantity: "decimal(15,3)"            # Quantité réservée
+    #   deliveredQuantity: "decimal(15,3)"           # Quantité livrée (cumul)
+    #   invoicedQuantity: "decimal(15,3)"            # Quantité facturée (cumul)
+    #   
+    #   # Traçabilité
+    #   requestedDeliveryDate: "date"                # Date livraison demandée pour cette ligne
+    #   promisedDeliveryDate: "date"                 # Date promise pour cette ligne
+    #   notes: "string"                               # Notes spécifiques ligne
+    # }
+  
+  # === TOTAUX DU DOCUMENT ===
+  totals: "DocumentTotals"                           # Totaux consolidés
+    # Structure DocumentTotals:
+    # {
+    #   totalLinesHT: "decimal(15,2)"                # Total lignes HT
+    #   totalDiscountHT: "decimal(15,2)"             # Total remises HT
+    #   totalNetHT: "decimal(15,2)"                  # Total net HT
+    #   
+    #   # TVA détaillée par taux
+    #   vatDetails: [
+    #     {
+    #       vatRate: "decimal(5,2)"                  # Taux TVA
+    #       vatBaseHT: "decimal(15,2)"               # Base HT pour ce taux
+    #       vatAmount: "decimal(15,2)"               # Montant TVA pour ce taux
+    #     }
+    #   ],
+    #   totalVAT: "decimal(15,2)"                    # Total TVA tous taux
+    #   
+    #   # Autres charges
+    #   transportCharges: "decimal(15,2)"            # Frais de transport
+    #   handlingCharges: "decimal(15,2)"             # Frais de manutention
+    #   insuranceCharges: "decimal(15,2)"            # Frais d'assurance
+    #   otherCharges: "decimal(15,2)"                # Autres frais
+    #   
+    #   # Total final
+    #   totalTTC: "decimal(15,2)"                    # Total TTC final
+    #   
+    #   # Précomptes et retenues
+    #   withholdingTax: "decimal(15,2)"              # Retenue à la source (1.1%)
+    #   netPayable: "decimal(15,2)"                  # Net à payer après retenues
+    # }
+  
+  totalHT: "decimal(15,2)"                           # Total HT (dénormalisé pour performance)
+  totalVAT: "decimal(15,2)"                          # Total TVA (dénormalisé)
+  totalTTC: "decimal(15,2)"                          # Total TTC (dénormalisé)
+  
+  # === ÉCHÉANCIER DE PAIEMENT ===
+  paymentSchedule: ["PaymentDue"]                    # Échéances multiples (optionnel)
+    # Structure PaymentDue:
+    # {
+    #   dueNumber: "integer"                          # Numéro d'échéance
+    #   dueDate: "date"                               # Date d'échéance
+    #   dueAmount: "decimal(15,2)"                   # Montant de l'échéance
+    #   status: "PENDING|PAID|OVERDUE"                # Statut échéance
+    #   paidAmount: "decimal(15,2)"                  # Montant payé
+    #   paidDate: "date"                              # Date de paiement
+    #   paymentReference: "string"                    # Référence paiement
+    # }
+  
+  # === DOCUMENTS LIÉS ===
+  parentDocumentId: "uuid"                           # Document parent (ex: BC pour un BL)
+  parentDocumentNumber: "string"                     # Numéro document parent (dénormalisé)
+  sourceDocumentIds: ["uuid"]                        # Documents sources multiples
+  relatedDocuments: ["RelatedDocument"]              # Tous les documents liés
+    # Structure RelatedDocument:
+    # {
+    #   documentId: "uuid"                            # ID du document lié
+    #   documentNumber: "string"                      # Numéro du document
+    #   documentType: "string"                        # Type de document
+    #   documentDate: "date"                          # Date du document
+    #   relationship: "PARENT|CHILD|SIBLING"          # Type de relation
+    # }
+  
+  # === ATTESTATIONS ET CONFORMITÉ ===
+  complianceInfo: "ComplianceInfo"                   # Informations de conformité
+    # Structure ComplianceInfo:
+    # {
+    #   hasNonLiabilityAttestation: "boolean"        # Attestation non-redevance présente
+    #   attestationNumber: "string"                   # Numéro attestation
+    #   attestationExpiryDate: "date"                # Date expiration attestation
+    #   attestationStatus: "VALID|EXPIRED|MISSING"   # Statut attestation
+    #   invoiceLimitExceeded: "boolean"              # Dépassement limite 100K XAF
+    #   cashLimitExceeded: "boolean"                 # Dépassement limite espèces
+    #   requiresSpecialApproval: "boolean"           # Approbation spéciale requise
+    # }
+  
+  # === NOTES ET COMMENTAIRES ===
+  internalNotes: "text"                              # Notes internes (non imprimées)
+  customerNotes: "text"                              # Notes client (imprimées sur document)
+  deliveryInstructions: "text"                       # Instructions de livraison
+  
+  # === IMPRESSION ET EXPORT ===
+  printCount: "integer"                              # Nombre d'impressions
+  lastPrintDate: "datetime"                          # Dernière impression
+  lastPrintBy: "string(24)"                          # Dernier utilisateur ayant imprimé
+  exportedToAccounting: "boolean"                    # Exporté vers comptabilité
+  exportDate: "datetime"                             # Date d'export
+  
+  # === MÉTADONNÉES ET AUDIT ===
+  createdAt: "datetime"                              # Date/heure création
+  createdBy: "string(24)"                            # Utilisateur créateur
+  createdByName: "string"                            # Nom créateur (dénormalisé)
+  updatedAt: "datetime"                              # Date/heure dernière modification
+  updatedBy: "string(24)"                            # Dernier modificateur
+  updatedByName: "string"                            # Nom modificateur (dénormalisé)
+  deletedAt: "datetime"                              # Date suppression logique
+  deletedBy: "string(24)"                            # Utilisateur ayant supprimé
+  
+  # === DONNÉES PERSONNALISÉES ===
+  customFields: "object"                             # Champs personnalisés client
+  tags: ["string"]                                   # Tags libres pour catégorisation
+
+# ----------------------------------------------------------------------------
+# TABLE: pos_sessions
+# Description: Gestion des sessions de caisse pour ventes au comptoir
+# Cycle: Ouverture → Ventes → Clôture → Réconciliation
+# ----------------------------------------------------------------------------
+
+pos_sessions:
+  # === IDENTIFIANTS ===
+  id: "uuid"                                          # Identifiant unique de session
+  sessionNumber: "string"                            # Format: SES-{POS}-YYYY-MM-DD-{SEQ}
+  
+  # === POINT DE VENTE ET CAISSIER ===
+  posId: "string(24)"                                # Référence point de vente
+  posName: "string"                                  # Nom du point de vente
+  posLocation: "string"                              # Emplacement physique
+  cashRegisterId: "string"                           # Identifiant caisse enregistreuse
+  
+  cashierId: "string(24)"                            # Référence caissier
+  cashierName: "string"                              # Nom complet du caissier
+  cashierCode: "string"                              # Code caissier
+  
+  # === DATES ET STATUT ===
+  openingDate: "datetime"                            # Date/heure ouverture
+  closingDate: "datetime"                            # Date/heure clôture
+  reconciliationDate: "datetime"                     # Date réconciliation
+  
+  status: "SessionStatus"                            # Enum: OPEN, SUSPENDED, CLOSED, RECONCILED, DISCREPANCY
+  suspensionReason: "string"                         # Motif suspension (si applicable)
+  
+  # === FONDS DE CAISSE OUVERTURE ===
+  openingCash: "decimal(15,2)"                       # Montant total fond de caisse
+  openingCashDetails: "CashDetails"                  # Détail par coupure
+    # Structure CashDetails:
+    # {
+    #   bills_10000: "integer"                        # Nombre billets 10,000 XAF
+    #   bills_5000: "integer"                         # Nombre billets 5,000 XAF
+    #   bills_2000: "integer"                         # Nombre billets 2,000 XAF
+    #   bills_1000: "integer"                         # Nombre billets 1,000 XAF
+    #   bills_500: "integer"                          # Nombre billets 500 XAF
+    #   coins_500: "integer"                          # Nombre pièces 500 XAF
+    #   coins_100: "integer"                          # Nombre pièces 100 XAF
+    #   coins_50: "integer"                           # Nombre pièces 50 XAF
+    #   coins_25: "integer"                           # Nombre pièces 25 XAF
+    #   coins_10: "integer"                           # Nombre pièces 10 XAF
+    #   coins_5: "integer"                            # Nombre pièces 5 XAF
+    #   totalCalculated: "decimal(15,2)"              # Total calculé automatiquement
+    # }
+  
+  # === MOUVEMENTS DE LA SESSION ===
+  salesSummary: "SalesSummary"                       # Résumé des ventes
+    # Structure SalesSummary:
+    # {
+    #   totalSales: "decimal(15,2)"                   # Total ventes TTC
+    #   totalReturns: "decimal(15,2)"                 # Total retours/avoirs
+    #   netSales: "decimal(15,2)"                     # Ventes nettes
+    #   
+    #   # Détail par mode de paiement
+    #   cashSales: "decimal(15,2)"                    # Ventes espèces
+    #   mobileMoneySales: "decimal(15,2)"            # Ventes mobile money
+    #   checkSales: "decimal(15,2)"                   # Ventes chèques
+    #   transferSales: "decimal(15,2)"                # Ventes virements
+    #   creditSales: "decimal(15,2)"                  # Ventes à crédit
+    #   
+    #   # Mobile money détaillé
+    #   mobileMoneyDetails: [
+    #     {
+    #       operator: "ORANGE|MTN|MOOV|OTHER"          # Opérateur
+    #       amount: "decimal(15,2)"                   # Montant total
+    #       transactionCount: "integer"               # Nombre transactions
+    #     }
+    #   ]
+    # }
+  
+  # === MOUVEMENTS DE CAISSE ===
+  cashMovements: ["CashMovement"]                    # Entrées/sorties de caisse
+    # Structure CashMovement:
+    # {
+    #   movementType: "IN|OUT"                        # Type mouvement
+    #   reason: "string"                               # Motif (SALE, RETURN, DEPOSIT, WITHDRAWAL, etc.)
+    #   amount: "decimal(15,2)"                      # Montant
+    #   reference: "string"                           # Référence transaction
+    #   timestamp: "datetime"                         # Heure du mouvement
+    #   authorizedBy: "string(24)"                   # Autorisé par (si retrait)
+    # }
+  
+  # === CLÔTURE DE CAISSE ===
+  closingCashExpected: "decimal(15,2)"               # Caisse attendue (calculée)
+  closingCashDeclared: "decimal(15,2)"               # Caisse déclarée par caissier
+  closingCashCounted: "decimal(15,2)"                # Caisse comptée physiquement
+  closingCashDetails: "CashDetails"                  # Détail comptage par coupure
+  
+  cashDifference: "decimal(15,2)"                    # Écart de caisse (compté - attendu)
+  differencePercentage: "decimal(5,2)"               # Écart en pourcentage
+  differenceJustification: "text"                    # Justification écart
+  differenceAcceptable: "boolean"                    # Écart dans tolérance (<1%)
+  
+  # === VALIDATION ET RÉCONCILIATION ===
+  validatedBy: "string(24)"                          # Superviseur validateur
+  validatedByName: "string"                          # Nom validateur
+  validatedAt: "datetime"                            # Date/heure validation
+  validationComments: "text"                         # Commentaires validation
+  validationStatus: "APPROVED|REJECTED|INVESTIGATION" # Statut validation
+  
+  # === STATISTIQUES SESSION ===
+  statistics: "SessionStatistics"                    # Statistiques détaillées
+    # Structure SessionStatistics:
+    # {
+    #   transactionCount: "integer"                   # Nombre total transactions
+    #   saleCount: "integer"                          # Nombre ventes
+    #   returnCount: "integer"                        # Nombre retours
+    #   voidCount: "integer"                          # Nombre annulations
+    #   customerCount: "integer"                      # Nombre clients uniques
+    #   
+    #   averageBasket: "decimal(15,2)"                # Panier moyen
+    #   minBasket: "decimal(15,2)"                    # Plus petit panier
+    #   maxBasket: "decimal(15,2)"                    # Plus gros panier
+    #   
+    #   firstTransactionTime: "datetime"              # Première transaction
+    #   lastTransactionTime: "datetime"               # Dernière transaction
+    #   
+    #   topSellingItems: [                            # Articles les plus vendus
+    #     {
+    #       articleId: "string(24)"
+    #       articleName: "string"
+    #       quantity: "decimal(15,3)"
+    #       revenue: "decimal(15,2)"
+    #     }
+    #   ],
+    #   
+    #   hourlyDistribution: [                         # Répartition horaire
+    #     {
+    #       hour: "integer"                           # Heure (0-23)
+    #       transactionCount: "integer"
+    #       revenue: "decimal(15,2)"
+    #     }
+    #   ]
+    # }
+  
+  # === REMISE EN BANQUE ===
+  bankDeposit: "BankDeposit"                         # Informations remise en banque
+    # Structure BankDeposit:
+    # {
+    #   depositDate: "date"                           # Date de remise
+    #   depositAmount: "decimal(15,2)"                # Montant remis
+    #   depositReference: "string"                    # Référence bordereau
+    #   bankAccount: "string"                         # Compte bancaire
+    #   depositSlipUrl: "string"                      # URL scan bordereau
+    #   confirmedBy: "string(24)"                     # Confirmé par (comptable)
+    #   confirmedAt: "datetime"                       # Date confirmation
+    # }
+  
+  # === MÉTADONNÉES ===
+  createdAt: "datetime"                              # Date/heure création
+  createdBy: "string(24)"                            # Créateur
+  updatedAt: "datetime"                              # Dernière modification
+  updatedBy: "string(24)"                            # Modificateur
+
+# ----------------------------------------------------------------------------
+# TABLE: pos_transactions
+# Description: Transactions individuelles au point de vente
+# Types: Vente, Retour, Échange, Annulation
+# ----------------------------------------------------------------------------
+
+pos_transactions:
+  # === IDENTIFIANTS ===
+  id: "uuid"                                          # Identifiant unique transaction
+  transactionNumber: "string"                        # Format: TKT-{POS}-YYYY-{SEQUENCE}
+  sessionId: "uuid"                                  # Référence session de caisse
+  
+  # === TYPE ET STATUT ===
+  transactionType: "TransactionType"                 # Enum: SALE, RETURN, EXCHANGE, VOID
+  status: "TransactionStatus"                        # Enum: PENDING, COMPLETED, CANCELLED, FAILED
+  
+  # === DATE ET HEURE ===
+  transactionDate: "datetime"                        # Date/heure transaction
+  processingDuration: "integer"                      # Durée traitement (secondes)
+  
+  # === CLIENT (Optionnel pour POS) ===
+  customerId: "string(24)"                           # Référence client (si identifié)
+  customerName: "string"                             # Nom client
+  customerPhone: "string"                            # Téléphone (pour mobile money)
+  customerEmail: "string"                            # Email (pour envoi ticket)
+  isWalkInCustomer: "boolean"                        # Client de passage (sans fiche)
+  
+  # === LIGNES DE VENTE ===
+  lines: ["TransactionLine"]                         # Articles vendus
+    # Structure TransactionLine:
+    # {
+    #   lineNumber: "integer"                         # Numéro de ligne
+    #   articleId: "string(24)"                      # Référence article
+    #   articleReference: "string"                    # Code article
+    #   barcode: "string"                             # Code-barres scanné
+    #   designation: "string"                         # Désignation article
+    #   
+    #   quantity: "decimal(15,3)"                    # Quantité vendue
+    #   unit: "string"                                # Unité de vente
+    #   
+    #   unitPrice: "decimal(15,2)"                   # Prix unitaire TTC affiché
+    #   unitPriceHT: "decimal(15,2)"                 # Prix unitaire HT
+    #   vatRate: "decimal(5,2)"                      # Taux TVA
+    #   
+    #   discountRate: "decimal(5,2)"                 # Remise appliquée (%)
+    #   discountAmount: "decimal(15,2)"              # Montant remise
+    #   
+    #   lineTotalHT: "decimal(15,2)"                 # Total ligne HT
+    #   lineVAT: "decimal(15,2)"                     # TVA ligne
+    #   lineTotalTTC: "decimal(15,2)"                # Total ligne TTC
+    #   
+    #   stockLocation: "string(24)"                   # Emplacement stock débité
+    #   serialNumbers: ["string"]                     # Numéros série (si applicable)
+    #   
+    #   promotionApplied: "string"                    # Promotion appliquée
+    #   loyaltyPoints: "integer"                      # Points fidélité gagnés
+    # }
+  
+  # === TOTAUX ===
+  subtotalHT: "decimal(15,2)"                        # Sous-total HT
+  totalDiscounts: "decimal(15,2)"                    # Total remises accordées
+  totalHT: "decimal(15,2)"                           # Total HT après remises
+  
+  vatDetails: ["VATDetail"]                          # TVA par taux
+    # Structure VATDetail:
+    # {
+    #   vatRate: "decimal(5,2)"                      # Taux TVA
+    #   vatBase: "decimal(15,2)"                     # Base HT
+    #   vatAmount: "decimal(15,2)"                   # Montant TVA
+    # }
+  
+  totalVAT: "decimal(15,2)"                          # Total TVA
+  totalTTC: "decimal(15,2)"                          # Total TTC à payer
+  
+  # === PAIEMENT ===
+  paymentDetails: "PaymentDetails"                   # Détails paiement
+    # Structure PaymentDetails:
+    # {
+    #   totalDue: "decimal(15,2)"                    # Montant dû
+    #   totalReceived: "decimal(15,2)"               # Montant reçu total
+    #   changeGiven: "decimal(15,2)"                 # Monnaie rendue
+    #   
+    #   methods: [                                    # Modes de paiement utilisés
+    #     {
+    #       type: "CASH|MOBILE_MONEY|CHECK|TRANSFER|CREDIT"
+    #       amount: "decimal(15,2)"                  # Montant payé par ce mode
+    #       received: "decimal(15,2)"                # Montant reçu (pour espèces)
+    #       
+    #       # Détails spécifiques par type
+    #       # Pour MOBILE_MONEY:
+    #       operator: "ORANGE|MTN|MOOV|OTHER"        # Opérateur
+    #       phoneNumber: "string"                     # Numéro client
+    #       transactionRef: "string"                  # Référence transaction opérateur
+    #       confirmationCode: "string"                # Code confirmation
+    #       
+    #       # Pour CHECK:
+    #       checkNumber: "string"                     # Numéro chèque
+    #       bankName: "string"                        # Banque émettrice
+    #       checkDate: "date"                         # Date chèque
+    #       drawerName: "string"                      # Nom tireur
+    #       
+    #       # Pour TRANSFER:
+    #       transferReference: "string"               # Référence virement
+    #       bankAccount: "string"                     # Compte créditeur
+    #       
+    #       # Pour CREDIT:
+    #       creditApprovalCode: "string"              # Code autorisation crédit
+    #       dueDate: "date"                           # Date échéance
+    #     }
+    #   ]
+    # }
+  
+  # === TICKET ET IMPRESSION ===
+  ticketPrinted: "boolean"                           # Ticket imprimé
+  ticketNumber: "string"                             # Numéro ticket (si différent)
+  printerUsed: "string"                              # Imprimante utilisée
+  reprintCount: "integer"                            # Nombre de réimpressions
+  ticketSentByEmail: "boolean"                       # Envoyé par email
+  ticketSentBySMS: "boolean"                         # Envoyé par SMS
+  
+  # === ANNULATION/RETOUR ===
+  voidReason: "VoidReason"                           # Motif annulation
+    # Enum: ERROR, CUSTOMER_REQUEST, PAYMENT_FAILED, STOCK_UNAVAILABLE, OTHER
+  voidReasonDetails: "string"                        # Détails motif
+  voidBy: "string(24)"                               # Annulé par
+  voidByName: "string"                               # Nom de l'annulateur
+  voidAt: "datetime"                                 # Date/heure annulation
+  supervisorApproval: "string(24)"                   # Approbation superviseur requise
+  
+  originalTransactionId: "uuid"                      # Transaction originale (si retour)
+  originalTransactionNumber: "string"                # Numéro transaction originale
+  returnReason: "string"                             # Motif retour
+  returnCondition: "string"                          # État marchandise retournée
+  
+  # === PROGRAMME FIDÉLITÉ ===
+  loyaltyCard: "string"                              # Numéro carte fidélité
+  loyaltyPointsEarned: "integer"                     # Points gagnés
+  loyaltyPointsUsed: "integer"                       # Points utilisés
+  loyaltyBalance: "integer"                          # Solde points après transaction
+  
+  # === MÉTADONNÉES ===
+  createdAt: "datetime"                              # Date/heure création
+  createdBy: "string(24)"                            # Caissier
+  deviceInfo: "DeviceInfo"                           # Informations terminal
+    # Structure DeviceInfo:
+    # {
+    #   terminalId: "string"                          # ID terminal/caisse
+    #   ipAddress: "string"                           # Adresse IP
+    #   appVersion: "string"                          # Version application
+    #   osInfo: "string"                              # Système exploitation
+    # }
+
+# ----------------------------------------------------------------------------
+# TABLE: customer_returns
+# Description: Gestion des retours marchandises clients
+# Workflow: Création → Validation → Génération avoir → Traitement stock
+# ----------------------------------------------------------------------------
+
+customer_returns:
+  # === IDENTIFIANTS ===
+  id: "uuid"                                          # Identifiant unique
+  returnNumber: "string"                             # Format: BR-{CLIENT}-YYYY-XXXXX
+  
+  # === DOCUMENT SOURCE ===
+  sourceDocumentId: "uuid"                           # Document origine (facture/BL)
+  sourceDocumentNumber: "string"                     # Numéro document source
+  sourceDocumentType: "DocumentType"                 # Type: INVOICE, DELIVERY
+  sourceDocumentDate: "date"                         # Date document source
+  
+  # === CLIENT ET COMMERCIAL ===
+  customerId: "string(24)"                           # Référence client
+  customerName: "string"                             # Nom client
+  customerCode: "string"                             # Code client
+  commercialId: "string(24)"                         # Commercial responsable
+  commercialName: "string"                           # Nom commercial
+  
+  # === DATES ET STATUT ===
+  returnDate: "date"                                 # Date du retour
+  receptionDate: "datetime"                          # Date/heure réception effective
+  status: "ReturnStatus"                             # Enum: PENDING, VALIDATED, REJECTED, PROCESSED
+  
+  # === ARTICLES RETOURNÉS ===
+  returnLines: ["ReturnLine"]                        # Détail articles retournés
+    # Structure ReturnLine:
+    # {
+    #   lineNumber: "integer"                         # Numéro ligne
+    #   sourceLineId: "uuid"                          # Ligne document source
+    #   
+    #   articleId: "string(24)"                      # Référence article
+    #   articleReference: "string"                    # Code article
+    #   designation: "string"                         # Désignation
+    #   
+    #   quantityDelivered: "decimal(15,3)"           # Quantité livrée origine
+    #   quantityReturned: "decimal(15,3)"            # Quantité retournée
+    #   unit: "string"                                # Unité
+    #   
+    #   returnReason: "ReturnReason"                  # Motif retour
+    #     # Enum: DEFECTIVE, NON_COMPLIANT, DELIVERY_ERROR, 
+    #     #       UNSATISFIED, DUPLICATE, EXPIRED, OTHER
+    #   
+    #   reasonDetails: "string"                       # Détails motif
+    #   
+    #   productCondition: "ProductCondition"          # État produit
+    #     # Enum: NEW, DAMAGED, EXPIRED, DEFECTIVE, INCOMPLETE
+    #   
+    #   stockAction: "StockAction"                    # Action stock
+    #     # Enum: QUARANTINE, DESTROY, RESTOCK, RETURN_SUPPLIER
+    #   
+    #   photos: ["string"]                            # URLs photos produit retourné
+    #   
+    #   unitPrice: "decimal(15,2)"                   # Prix unitaire
+    #   vatRate: "decimal(5,2)"                      # Taux TVA
+    #   returnValueHT: "decimal(15,2)"               # Valeur retour HT
+    #   returnValueTTC: "decimal(15,2)"              # Valeur retour TTC
+    #   
+    #   qualityCheckBy: "string(24)"                 # Contrôlé par
+    #   qualityCheckDate: "datetime"                  # Date contrôle qualité
+    #   qualityCheckResult: "string"                  # Résultat contrôle
+    # }
+  
+  # === MOTIF GLOBAL ET VALIDATION ===
+  globalReturnReason: "string"                       # Motif principal retour
+  returnDescription: "text"                          # Description détaillée
+  customerComplaint: "text"                          # Réclamation client verbatim
+  
+  maxReturnPeriodDays: "integer"                     # Délai max retour (30j standard)
+  returnPeriodExceeded: "boolean"                    # Hors délai
+  
+  # === VALIDATION ===
+  requiresApproval: "boolean"                        # Approbation requise
+  approvalLevel: "string"                            # Niveau approbation requis
+  approvedBy: "string(24)"                           # Approuvé par
+  approvedByName: "string"                           # Nom approbateur
+  approvedAt: "datetime"                             # Date/heure approbation
+  approvalComments: "text"                           # Commentaires approbation
+  
+  rejectionReason: "string"                          # Motif rejet (si rejeté)
+  rejectedBy: "string(24)"                           # Rejeté par
+  rejectedAt: "datetime"                             # Date/heure rejet
+  
+  # === AVOIR GÉNÉRÉ ===
+  creditNoteGenerated: "boolean"                     # Avoir généré
+  creditNoteId: "uuid"                               # ID avoir
+  creditNoteNumber: "string"                         # Numéro avoir
+  creditNoteDate: "date"                             # Date avoir
+  creditNoteAmount: "decimal(15,2)"                  # Montant avoir TTC
+  
+  # === REMBOURSEMENT ===
+  refundMethod: "RefundMethod"                       # Mode remboursement
+    # Enum: CREDIT_NOTE, CASH, TRANSFER, MOBILE_MONEY, EXCHANGE
+  refundAmount: "decimal(15,2)"                      # Montant remboursé
+  refundDate: "date"                                 # Date remboursement
+  refundReference: "string"                          # Référence remboursement
+  
+  # === TRANSPORT RETOUR ===
+  returnTransport: "ReturnTransport"                 # Info transport retour
+    # Structure ReturnTransport:
+    # {
+    #   transportMode: "CUSTOMER|COMPANY|THIRD_PARTY" # Mode transport
+    #   transporterName: "string"                     # Nom transporteur
+    #   vehicleNumber: "string"                       # Immatriculation
+    #   driverName: "string"                          # Nom chauffeur
+    #   transportCost: "decimal(15,2)"               # Coût transport
+    #   costBearer: "CUSTOMER|COMPANY"               # Qui paie transport
+    # }
+  
+  # === IMPACT STOCK ===
+  stockMovementId: "uuid"                            # Mouvement stock généré
+  warehouseId: "string(24)"                          # Entrepôt réception
+  quarantineLocation: "string"                       # Emplacement quarantaine
+  
+  # === MÉTADONNÉES ===
+  createdAt: "datetime"                              # Date création
+  createdBy: "string(24)"                            # Créateur
+  updatedAt: "datetime"                              # Modification
+  updatedBy: "string(24)"                            # Modificateur
+
+# ----------------------------------------------------------------------------
+# TABLE: sales_commissions
+# Description: Calcul et suivi des commissions commerciales
+# Cycle: Provisoire → Confirmé → Validé → Payé
+# ----------------------------------------------------------------------------
+
+sales_commissions:
+  # === IDENTIFIANTS ===
+  id: "uuid"                                          # Identifiant unique
+  commissionNumber: "string"                         # Numéro commission
+  
+  # === COMMERCIAL ET PÉRIODE ===
+  commercialId: "string(24)"                         # Référence commercial
+  commercialName: "string"                           # Nom commercial
+  commercialCode: "string"                           # Code commercial
+  
+  periodType: "PeriodType"                           # Enum: MONTHLY, QUARTERLY, ANNUAL, CUSTOM
+  periodStart: "date"                                # Début période
+  periodEnd: "date"                                  # Fin période
+  periodLabel: "string"                              # Libellé période (ex: "Janvier 2024")
+  
+  # === DOCUMENT SOURCE ===
+  documentId: "uuid"                                 # Document vente source
+  documentNumber: "string"                           # Numéro document
+  documentType: "DocumentType"                       # Type document
+  documentDate: "date"                               # Date document
+  
+  customerId: "string(24)"                           # Client concerné
+  customerName: "string"                             # Nom client
+  
+  # === CALCUL COMMISSION ===
+  calculationBasis: "CalculationBasis"               # Base de calcul
+    # Enum: INVOICE_HT, INVOICE_TTC, MARGIN, PAYMENT_RECEIVED
+  
+  baseAmount: "decimal(15,2)"                        # Montant de base
+  commissionRate: "decimal(5,3)"                     # Taux commission (%)
+  commissionAmount: "decimal(15,2)"                  # Montant commission calculé
+  
+  # === AJUSTEMENTS ===
+  adjustments: ["CommissionAdjustment"]              # Ajustements manuels
+    # Structure CommissionAdjustment:
+    # {
+    #   type: "BONUS|PENALTY|CORRECTION"              # Type ajustement
+    #   reason: "string"                               # Motif
+    #   amount: "decimal(15,2)"                      # Montant (+/-)
+    #   appliedBy: "string(24)"                      # Appliqué par
+    #   appliedAt: "datetime"                        # Date application
+    # }
+  
+  finalAmount: "decimal(15,2)"                       # Montant final après ajustements
+  
+  # === STATUT ET VALIDATION ===
+  status: "CommissionStatus"                         # Statut commission
+    # Enum: PROVISIONAL, CONFIRMED, VALIDATED, PAID, CANCELLED, DISPUTED
+  
+  # Dates de transition de statut
+  calculationDate: "date"                            # Date calcul initial
+  confirmationDate: "date"                           # Date confirmation (facture émise)
+  validationDate: "date"                             # Date validation (paiement reçu)
+  paymentDate: "date"                                # Date paiement commission
+  
+  # === PAIEMENT ===
+  paymentReference: "string"                         # Référence paiement
+  paymentMethod: "PaymentMethod"                     # Mode paiement
+  paymentBatch: "string"                             # Lot de paiement
+  
+  # === CAUTION COMMERCIALE ===
+  cautionImpact: "CautionImpact"                    # Impact sur caution
+    # Structure CautionImpact:
+    # {
+    #   cautionBefore: "decimal(15,2)"               # Caution avant
+    #   cautionUsed: "decimal(15,2)"                 # Caution utilisée
+    #   cautionAfter: "decimal(15,2)"                # Caution après
+    #   cautionReleaseDate: "date"                   # Date libération
+    # }
+  
+  # === CONTESTATION ===
+  isDisputed: "boolean"                              # Commission contestée
+  disputeReason: "string"                            # Motif contestation
+  disputeDate: "date"                                # Date contestation
+  disputeResolvedDate: "date"                        # Date résolution
+  disputeResolution: "string"                        # Résolution appliquée
+  
+  # === MÉTADONNÉES ===
+  createdAt: "datetime"                              # Date création
+  createdBy: "string(24)"                            # Créateur
+  updatedAt: "datetime"                              # Modification
+  updatedBy: "string(24)"                            # Modificateur
+
+# ----------------------------------------------------------------------------
+# TABLE: customer_claims
+# Description: Gestion des réclamations clients
+# Workflow: Ouverture → Attribution → Traitement → Résolution → Clôture
+# ----------------------------------------------------------------------------
+
+customer_claims:
+  # === IDENTIFIANTS ===
+  id: "uuid"                                          # Identifiant unique
+  claimNumber: "string"                              # Format: REC-YYYY-{SEQUENCE}
+  
+  # === CLIENT ET CONTEXTE ===
+  customerId: "string(24)"                           # Référence client
+  customerName: "string"                             # Nom client
+  customerCode: "string"                             # Code client
+  customerContact: "Contact"                         # Contact client
+    # Structure Contact:
+    # {
+    #   name: "string"                                # Nom contact
+    #   phone: "string"                               # Téléphone
+    #   email: "string"                               # Email
+    #   preferredChannel: "PHONE|EMAIL|SMS|WHATSAPP" # Canal préféré
+    # }
+  
+  # === DOCUMENT CONCERNÉ ===
+  relatedDocumentId: "uuid"                          # Document concerné
+  relatedDocumentNumber: "string"                    # Numéro document
+  relatedDocumentType: "string"                      # Type document
+  relatedDocumentDate: "date"                        # Date document
+  
+  # === RÉCLAMATION ===
+  claimType: "ClaimType"                             # Type réclamation
+    # Enum: QUALITY, DELIVERY, BILLING, SERVICE, COMMERCIAL, OTHER
+  
+  claimSubType: "string"                             # Sous-type détaillé
+  claimDate: "datetime"                              # Date/heure réclamation
+  claimChannel: "ClaimChannel"                       # Canal réception
+    # Enum: PHONE, EMAIL, COUNTER, WEBSITE, SOCIAL_MEDIA, MAIL
+  
+  description: "text"                                # Description détaillée
+  expectedResolution: "text"                         # Résolution attendue par client
+  
+  urgency: "Urgency"                                 # Niveau urgence
+    # Enum: LOW, MEDIUM, HIGH, CRITICAL
+  
+  impact: "Impact"                                   # Impact business
+    # Enum: MINIMAL, MODERATE, SIGNIFICANT, SEVERE
+  
+  # === TRAITEMENT ===
+  status: "ClaimStatus"                              # Statut réclamation
+    # Enum: OPEN, ASSIGNED, IN_PROGRESS, PENDING_INFO, 
+    #       RESOLVED, CLOSED, REOPENED
+  
+  assignedTo: "string(24)"                           # Assigné à
+  assignedToName: "string"                           # Nom responsable
+  assignedDate: "datetime"                           # Date assignation
+  assignmentGroup: "string"                          # Groupe/Service responsable
+  
+  # === WORKFLOW ET ESCALADE ===
+  workflowSteps: ["WorkflowStep"]                    # Étapes de traitement
+    # Structure WorkflowStep:
+    # {
+    #   stepNumber: "integer"                         # Numéro étape
+    #   stepName: "string"                            # Nom étape
+    #   startDate: "datetime"                        # Début étape
+    #   endDate: "datetime"                          # Fin étape
+    #   assignedTo: "string(24)"                     # Responsable étape
+    #   action: "string"                              # Action effectuée
+    #   comments: "text"                              # Commentaires
+    #   attachments: ["string"]                       # Documents joints
+    # }
+  
+  escalationLevel: "integer"                         # Niveau escalade (0-3)
+  escalatedTo: "string(24)"                          # Escaladé à
+  escalationDate: "datetime"                         # Date escalade
+  escalationReason: "string"                         # Motif escalade
+  
+  # === SLA (Service Level Agreement) ===
+  sla: "SLA"                                          # Paramètres SLA
+    # Structure SLA:
+    # {
+    #   responseTimeHours: "integer"                  # Délai première réponse
+    #   resolutionTimeHours: "integer"               # Délai résolution
+    #   firstResponseDate: "datetime"                # Date première réponse
+    #   targetResolutionDate: "datetime"             # Date résolution cible
+    #   actualResolutionDate: "datetime"             # Date résolution réelle
+    #   slaStatus: "ON_TIME|AT_RISK|BREACHED"        # Statut SLA
+    #   breachReason: "string"                        # Motif dépassement
+    # }
+  
+  # === RÉSOLUTION ===
+  resolutionDate: "datetime"                         # Date résolution
+  resolutionDescription: "text"                      # Description résolution
+  resolutionType: "ResolutionType"                   # Type résolution
+    # Enum: REFUND, CREDIT_NOTE, EXCHANGE, REPAIR, 
+    #       APOLOGY, COMPENSATION, NO_ACTION
+  
+  compensationAmount: "decimal(15,2)"                # Montant compensation
+  compensationType: "string"                         # Type compensation
+  
+  rootCause: "string"                                # Cause racine identifiée
+  correctiveActions: ["string"]                      # Actions correctives
+  preventiveActions: ["string"]                      # Actions préventives
+  
+  # === SATISFACTION CLIENT ===
+  customerSatisfaction: "integer"                    # Note satisfaction (1-5)
+  satisfactionSurveyDate: "date"                     # Date enquête
+  customerFeedback: "text"                           # Feedback client
+  wouldRecommend: "boolean"                          # Recommanderait (NPS)
+  
+  # === COMMUNICATIONS ===
+  communications: ["Communication"]                   # Historique communications
+    # Structure Communication:
+    # {
+    #   type: "INBOUND|OUTBOUND"                      # Direction
+    #   channel: "PHONE|EMAIL|SMS|VISIT"              # Canal
+    #   date: "datetime"                              # Date/heure
+    #   subject: "string"                             # Objet
+    #   content: "text"                               # Contenu
+    #   attachments: ["string"]                       # Pièces jointes
+    #   sender: "string"                              # Émetteur
+    #   recipient: "string"                           # Destinataire
+    # }
+  
+  # === DOCUMENTS ===
+  attachments: ["Attachment"]                        # Documents attachés
+    # Structure Attachment:
+    # {
+    #   name: "string"                                # Nom fichier
+    #   type: "string"                                # Type MIME
+    #   size: "integer"                               # Taille octets
+    #   url: "string"                                 # URL document
+    #   uploadedBy: "string(24)"                      # Uploadé par
+    #   uploadedAt: "datetime"                        # Date upload
+    # }
+  
+  # === COÛTS ET IMPACTS ===
+  internalCost: "decimal(15,2)"                      # Coût interne traitement
+  revenueLoss: "decimal(15,2)"                       # Perte de revenus
+  reputationalImpact: "string"                       # Impact réputationnel
+  
+  # === MÉTADONNÉES ===
+  createdAt: "datetime"                              # Date création
+  createdBy: "string(24)"                            # Créateur
+  updatedAt: "datetime"                              # Dernière modification
+  updatedBy: "string(24)"                            # Modificateur
+  closedAt: "datetime"                               # Date clôture
+  closedBy: "string(24)"                             # Clôturé par
+
+# ============================================================================
+# COLLECTIONS MongoDB
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# COLLECTION: customers
+# Description: Extension de la collection partners pour les clients
+# Hérite de: partners (identity-service)
+# ----------------------------------------------------------------------------
+
+customers:
+  # === IDENTIFIANTS ===
+  _id: "ObjectId"                                     # Identifiant MongoDB
+  code: "string"                                      # Format: CLI-YYYY-{SEQUENCE}
+  partnerType: "string"                              # Valeur fixe: "CLIENT"
+  
+  # === INFORMATIONS DE BASE (hérité partners) ===
+  businessName: "string"                             # Raison sociale
+  tradeName: "string"                                # Nom commercial
+  legalForm: "string"                                # Forme juridique (SARL, SA, etc.)
+  
+  # Pour personne physique
+  firstName: "string"                                # Prénom
+  lastName: "string"                                 # Nom
+  
+  # === IDENTIFIANTS LÉGAUX ===
+  registrationNumber: "string"                       # N° registre commerce (RCCM)
+  taxId: "string"                                    # NUI (Numéro Unique Identifiant)
+  cniNumber: "string"                                # CNI pour particuliers
+  passportNumber: "string"                           # Passeport (alternatif)
+  
+  # === CLASSIFICATION CLIENT ===
+  customerType: "CustomerType"                       # Enum: PARTICULIER, ENTREPRISE, 
+                                                     #       TECHNICIEN, QUINCAILLERIE
+  customerCategory: "string"                         # B2B, B2C, B2B2C
+  customerSegment: "string"                          # PREMIUM, STANDARD, BASIC
+  salesChannel: "SalesChannel"                       # DIRECT, REVENDEUR, EN_LIGNE
+  
+  # === ADRESSES MULTIPLES ===
+  addresses: ["Address"]                             # Liste des adresses
+    # Structure Address:
+    # {
+    #   id: "string"                                  # ID interne adresse
+    #   type: "SIEGE|FACTURATION|LIVRAISON|OPERATIONNEL"
+    #   label: "string"                               # Libellé personnalisé
+    #   street: "string"                              # Rue/Avenue
+    #   quarter: "string"                             # Quartier
+    #   city: "string"                                # Ville
+    #   region: "string"                              # Région
+    #   country: "string"                             # Code pays (CM)
+    #   postalCode: "string"                          # Code postal
+    #   gps: {
+    #     lat: "float"                                # Latitude
+    #     lng: "float"                                # Longitude
+    #     accuracy: "float"                           # Précision GPS
+    #   }
+    #   contactPerson: "string"                       # Responsable sur place
+    #   contactPhone: "string"                        # Téléphone contact
+    #   contactEmail: "string"                        # Email contact
+    #   deliveryInstructions: "text"                  # Instructions spéciales
+    #   accessCode: "string"                          # Code accès
+    #   isDefault: "boolean"                          # Adresse par défaut
+    #   isActive: "boolean"                           # Adresse active
+    #   validFrom: "date"                             # Date début validité
+    #   validTo: "date"                               # Date fin validité
+    # }
+  
+  defaultBillingAddressId: "string"                  # ID adresse facturation par défaut
+  defaultShippingAddressId: "string"                 # ID adresse livraison par défaut
+  
+  # === CONTACTS MULTIPLES ===
+  contacts: ["Contact"]                              # Liste des contacts
+    # Structure Contact:
+    # {
+    #   id: "string"                                  # ID interne contact
+    #   firstName: "string"                           # Prénom
+    #   lastName: "string"                            # Nom
+    #   title: "string"                               # Civilité (M., Mme, Dr, etc.)
+    #   role: "COMMERCIAL|COMPTABLE|TECHNIQUE|DIRECTION|ACHAT|AUTRE"
+    #   function: "string"                            # Fonction exacte
+    #   department: "string"                          # Service
+    #   email: "string"                               # Email professionnel
+    #   personalEmail: "string"                       # Email personnel
+    #   mobile: "string"                              # Téléphone mobile
+    #   phone: "string"                               # Téléphone fixe
+    #   whatsapp: "string"                            # WhatsApp
+    #   linkedin: "string"                            # Profil LinkedIn
+    #   preferredContactMethod: "EMAIL|PHONE|WHATSAPP|SMS"
+    #   preferredContactTime: "string"                # Heures préférées
+    #   language: "string"                            # Langue (FR, EN)
+    #   isPrimary: "boolean"                          # Contact principal
+    #   isDecisionMaker: "boolean"                    # Décisionnaire
+    #   isActive: "boolean"                           # Contact actif
+    #   notes: "text"                                 # Notes sur le contact
+    # }
+  
+  primaryContactId: "string"                         # ID contact principal
+  
+  # === CONDITIONS COMMERCIALES ===
+  commercialTerms: "CommercialTerms"                 # Conditions négociées
+    # Structure CommercialTerms:
+    # {
+    #   # Crédit
+    #   creditAllowed: "boolean"                      # Crédit autorisé
+    #   creditLimit: "decimal"                        # Limite crédit XAF
+    #   creditUsed: "decimal"                         # Crédit utilisé actuel
+    #   creditAvailable: "decimal"                    # Crédit disponible
+    #   paymentTerms: "integer"                       # Délai paiement (jours)
+    #   paymentTermsCode: "string"                    # Code (NET30, 2/10NET30)
+    #   
+    #   # Modes de paiement
+    #   paymentMethods: ["CASH|TRANSFER|CHECK|MOBILE_MONEY|CREDIT_CARD"]
+    #   preferredPaymentMethod: "string"              # Mode préféré
+    #   
+    #   # Tarification
+    #   priceListId: "string"                         # Liste prix associée
+    #   priceListCode: "string"                       # Code liste prix
+    #   discountRate: "decimal"                       # Remise permanente (%)
+    #   specialPricing: [                             # Tarifs spéciaux
+    #     {
+    #       articleId: "string"
+    #       specialPrice: "decimal"
+    #       validFrom: "date"
+    #       validTo: "date"
+    #     }
+    #   ]
+    #   
+    #   # Blocages et validations
+    #   blockIfUnpaid: "boolean"                      # Bloquer si impayé
+    #   requirePreviousBalance: "boolean"             # Validation solde obligatoire
+    #   maxDaysOverdue: "integer"                     # Jours retard max
+    #   
+    #   # Minimum commande
+    #   minimumOrderAmount: "decimal"                 # Montant minimum commande
+    #   minimumOrderQuantity: "decimal"               # Quantité minimum
+    #   
+    #   # Frais
+    #   deliveryFeeExempt: "boolean"                  # Exonéré frais livraison
+    #   handlingFeeRate: "decimal"                    # Taux frais manutention
+    # }
+  
+  # === DOCUMENTS ET ATTESTATIONS ===
+  documents: ["Document"]                            # Documents administratifs
+    # Structure Document:
+    # {
+    #   type: "CNI|PASSPORT|RCCM|ATTESTATION_NON_REDEVANCE|CONTRACT|OTHER"
+    #   number: "string"                              # Numéro document
+    #   name: "string"                                # Nom document
+    #   issueDate: "date"                             # Date émission
+    #   expiryDate: "date"                            # Date expiration
+    #   issuer: "string"                              # Organisme émetteur
+    #   fileUrl: "string"                             # URL fichier
+    #   fileSize: "integer"                           # Taille fichier
+    #   uploadDate: "datetime"                        # Date upload
+    #   uploadedBy: "string"                          # Uploadé par
+    #   status: "VALID|EXPIRED|PENDING|REJECTED"      # Statut document
+    #   verificationStatus: "VERIFIED|UNVERIFIED"     # Statut vérification
+    #   verifiedBy: "string"                          # Vérifié par
+    #   verificationDate: "date"                      # Date vérification
+    #   alertDays: "integer"                          # Jours avant alerte expiration
+    #   notes: "text"                                 # Notes/Observations
+    # }
+  
+  # === RÉGIME FISCAL ===
+  taxRegime: "TaxRegime"                             # Régime imposition
+    # Enum: REEL, SIMPLIFIE, LIBERATOIRE, EXONERE
+  
+  taxExempt: "boolean"                               # Exonéré TVA
+  taxExemptionNumber: "string"                       # N° exonération
+  taxExemptionExpiry: "date"                         # Expiration exonération
+  
+  withholdingTaxRate: "decimal"                      # Taux retenue source (%)
+  withholdingTaxApplicable: "boolean"                # Retenue applicable
+  
+  # === COMMERCIAL ATTITRÉ ===
+  assignedCommercial: "CommercialAssignment"         # Commercial responsable
+    # Structure CommercialAssignment:
+    # {
+    #   id: "string"                                  # ID commercial
+    #   name: "string"                                # Nom complet
+    #   code: "string"                                # Code commercial
+    #   email: "string"                               # Email
+    #   phone: "string"                               # Téléphone
+    #   cautionTotal: "decimal"                       # Caution totale
+    #   cautionAvailable: "decimal"                   # Caution disponible
+    #   assignedDate: "date"                          # Date assignation
+    #   assignedBy: "string"                          # Assigné par
+    # }
+  
+  previousCommercials: ["PreviousCommercial"]        # Historique commerciaux
+    # Structure similaire avec dates début/fin
+  
+  # === MÉTRIQUES CLIENT ===
+  metrics: "CustomerMetrics"                         # KPIs client
+    # Structure CustomerMetrics:
+    # {
+    #   # Revenus
+    #   totalRevenue: "decimal"                       # CA total historique
+    #   currentYearRevenue: "decimal"                 # CA année en cours
+    #   lastYearRevenue: "decimal"                    # CA année précédente
+    #   averageMonthlyRevenue: "decimal"              # CA moyen mensuel
+    #   
+    #   # Transactions
+    #   orderCount: "integer"                         # Nombre commandes total
+    #   currentYearOrders: "integer"                  # Commandes année
+    #   averageOrderValue: "decimal"                  # Panier moyen
+    #   largestOrderValue: "decimal"                  # Plus grosse commande
+    #   
+    #   # Produits
+    #   topProducts: [                                # Top produits achetés
+    #     {
+    #       productId: "string"
+    #       productName: "string"
+    #       quantity: "decimal"
+    #       revenue: "decimal"
+    #     }
+    #   ]
+    #   productCategories: ["string"]                 # Catégories achetées
+    #   
+    #   # Comportement
+    #   firstOrderDate: "date"                        # Date première commande
+    #   lastOrderDate: "date"                         # Date dernière commande
+    #   daysSinceLastOrder: "integer"                 # Jours depuis dernière commande
+    #   orderFrequency: "decimal"                     # Fréquence commande (jours)
+    #   
+    #   # Paiement
+    #   paymentBehavior: "EXCELLENT|GOOD|AVERAGE|POOR" # Comportement paiement
+    #   averagePaymentDays: "decimal"                 # Délai moyen paiement
+    #   onTimePaymentRate: "decimal"                  # Taux paiement à temps (%)
+    #   
+    #   # Qualité
+    #   returnRate: "decimal"                         # Taux retour (%)
+    #   claimRate: "decimal"                          # Taux réclamation (%)
+    #   satisfactionScore: "decimal"                  # Score satisfaction (1-5)
+    #   
+    #   # Valeur
+    #   customerLifetimeValue: "decimal"              # Valeur vie client
+    #   profitability: "decimal"                      # Rentabilité (%)
+    #   acquisitionCost: "decimal"                    # Coût acquisition
+    # }
+  
+  # === SOLDES ET ENCOURS ===
+  financials: "CustomerFinancials"                   # Situation financière
+    # Structure CustomerFinancials:
+    # {
+    #   # Soldes actuels
+    #   currentBalance: "decimal"                     # Solde actuel
+    #   overdueAmount: "decimal"                      # Montant en retard
+    #   disputedAmount: "decimal"                     # Montant contesté
+    #   availableCredit: "decimal"                    # Crédit disponible
+    #   
+    #   # Consolidation groupe
+    #   consolidatedBalance: "decimal"                # Solde toutes sociétés
+    #   balanceByCompany: [                           # Solde par société
+    #     {
+    #       companyId: "string"
+    #       companyName: "string"
+    #       balance: "decimal"
+    #       overdueAmount: "decimal"
+    #     }
+    #   ]
+    #   
+    #   # Échéances
+    #   nextPaymentDue: "date"                        # Prochaine échéance
+    #   nextPaymentAmount: "decimal"                  # Montant échéance
+    #   oldestUnpaidInvoice: "date"                   # Plus vieille facture impayée
+    #   oldestUnpaidAmount: "decimal"                 # Montant plus vieille facture
+    #   
+    #   # Historique
+    #   lastPaymentDate: "date"                       # Dernier paiement
+    #   lastPaymentAmount: "decimal"                  # Montant dernier paiement
+    #   totalPaidThisYear: "decimal"                  # Total payé cette année
+    #   totalPaidLastYear: "decimal"                  # Total payé année dernière
+    #   
+    #   # Provisions
+    #   provisionAmount: "decimal"                    # Provision créance douteuse
+    #   provisionRate: "decimal"                      # Taux provision (%)
+    # }
+  
+  # === STATUTS ===
+  status: "CustomerStatus"                           # Statut client
+    # Enum: DRAFT, ACTIVE, INACTIVE, SUSPENDED, BLOCKED
+  
+  blockedForSales: "boolean"                         # Bloqué pour ventes
+  blockReason: "string"                              # Motif blocage
+  blockDate: "datetime"                              # Date blocage
+  blockedBy: "string"                                # Bloqué par
+  
+  suspensionReason: "string"                         # Motif suspension
+  suspensionDate: "date"                             # Date suspension
+  reactivationDate: "date"                           # Date réactivation prévue
+  
+  # === CLASSIFICATION AVANCÉE ===
+  industry: "string"                                 # Secteur activité
+  subIndustry: "string"                              # Sous-secteur
+  employeeCount: "string"                            # Tranche effectif
+  annualRevenue: "string"                            # Tranche CA
+  
+  customerGroup: "string"                            # Groupe client
+  parentCustomerId: "string"                         # Client parent (si filiale)
+  subsidiaryCustomerIds: ["string"]                  # Clients filiales
+  
+  # === MARKETING ET FIDÉLITÉ ===
+  marketingConsent: "boolean"                        # Consent marketing
+  marketingChannels: ["EMAIL|SMS|PHONE|MAIL"]       # Canaux autorisés
+  
+  loyaltyProgram: "LoyaltyProgram"                   # Programme fidélité
+    # Structure LoyaltyProgram:
+    # {
+    #   enrolled: "boolean"                           # Inscrit
+    #   enrollmentDate: "date"                        # Date inscription
+    #   tier: "BRONZE|SILVER|GOLD|PLATINUM"           # Niveau
+    #   points: "integer"                             # Points actuels
+    #   lifetimePoints: "integer"                     # Points totaux gagnés
+    #   cardNumber: "string"                          # N° carte fidélité
+    #   expiryDate: "date"                            # Expiration
+    # }
+  
+  # === DONNÉES BANCAIRES ===
+  bankAccounts: ["BankAccount"]                      # Comptes bancaires
+    # Structure BankAccount:
+    # {
+    #   bankName: "string"                            # Nom banque
+    #   accountName: "string"                         # Titulaire compte
+    #   accountNumber: "string"                       # Numéro compte
+    #   iban: "string"                                # IBAN
+    #   swift: "string"                               # Code SWIFT
+    #   isDefault: "boolean"                          # Compte par défaut
+    #   isVerified: "boolean"                         # Vérifié
+    # }
+  
+  # === NOTES ET TAGS ===
+  internalNotes: "text"                              # Notes internes
+  publicNotes: "text"                                # Notes visibles client
+  tags: ["string"]                                   # Tags catégorisation
+  customFields: "object"                             # Champs personnalisés
+  
+  # === MÉTADONNÉES ===
+  source: "string"                                   # Source acquisition (WEB, DIRECT, etc.)
+  acquisitionDate: "date"                            # Date acquisition
+  acquisitionChannel: "string"                       # Canal acquisition
+  acquisitionCampaign: "string"                      # Campagne acquisition
+  
+  createdAt: "datetime"                              # Date création
+  createdBy: "string"                                # Créateur
+  createdByName: "string"                            # Nom créateur
+  
+  updatedAt: "datetime"                              # Dernière modification
+  updatedBy: "string"                                # Modificateur
+  updatedByName: "string"                            # Nom modificateur
+  
+  importedFrom: "string"                             # Système origine (si import)
+  importDate: "datetime"                             # Date import
+  externalId: "string"                               # ID système externe
+  
+  # === VALIDATION ET WORKFLOW ===
+  validationStatus: "PENDING|VALIDATED|REJECTED"     # Statut validation
+  validatedBy: "string"                              # Validé par
+  validatedAt: "datetime"                            # Date validation
+  validationComments: "text"                         # Commentaires validation
+  
+  # === RGPD ET CONFORMITÉ ===
+  dataPrivacy: "DataPrivacy"                         # Confidentialité données
+    # Structure DataPrivacy:
+    # {
+    #   consentDate: "datetime"                       # Date consentement
+    #   consentMethod: "string"                       # Méthode (WEB, PAPER, etc.)
+    #   dataRetentionYears: "integer"                 # Durée conservation
+    #   deletionRequestDate: "date"                   # Demande suppression
+    #   anonymizationDate: "date"                     # Date anonymisation
+    # }
+
+# ============================================================================
+# ÉNUMÉRATIONS (Enums)
+# ============================================================================
+
+enums:
+  DocumentType:
+    - QUOTE                    # Devis
+    - ORDER                    # Bon de commande
+    - DELIVERY                 # Bon de livraison
+    - INVOICE                  # Facture
+    - CREDIT_NOTE             # Avoir
+    - PROFORMA_INVOICE        # Facture proforma
+    - TRANSPORT_INVOICE       # Facture transport
+    
+  DocumentStatus:
+    - DRAFT                    # Brouillon
+    - PENDING_VALIDATION      # En attente validation
+    - VALIDATED               # Validé
+    - IN_PREPARATION         # En préparation
+    - PARTIALLY_DELIVERED    # Partiellement livré
+    - DELIVERED              # Livré
+    - PARTIALLY_INVOICED     # Partiellement facturé
+    - INVOICED               # Facturé
+    - CANCELLED              # Annulé
+    - CLOSED                 # Clôturé
+    
+  PaymentStatus:
+    - UNPAID                  # Non payé
+    - PARTIALLY_PAID         # Partiellement payé
+    - PAID                   # Payé
+    - OVERDUE                # En retard
+    
+  CustomerType:
+    - PARTICULIER            # Client particulier
+    - ENTREPRISE             # Client entreprise
+    - TECHNICIEN             # Technicien applicateur
+    - QUINCAILLERIE          # Revendeur/Quincaillerie
+    
+  TaxRegime:
+    - REEL                   # Régime réel
+    - SIMPLIFIE              # Régime simplifié
+    - LIBERATOIRE            # Régime libératoire
+    - EXONERE                # Exonéré
+    
+  SalesChannel:
+    - DIRECT                 # Vente directe
+    - DISTRIBUTOR            # Via distributeur
+    - POS                    # Point de vente
+    - ECOMMERCE              # E-commerce
+    - PHONE                  # Téléphone
+    
+  PaymentCondition:
+    - CASH                   # Comptant
+    - CREDIT                 # À crédit
+    
+  PaymentMethod:
+    - CASH                   # Espèces
+    - TRANSFER               # Virement
+    - CHECK                  # Chèque
+    - MOBILE_MONEY          # Mobile money
+    - CREDIT_CARD           # Carte crédit
+    
+  DeliveryMode:
+    - PICKUP                 # Enlèvement client
+    - DELIVERY               # Livraison société
+    - THIRD_PARTY           # Transporteur tiers
+    
+  SessionStatus:
+    - OPEN                   # Ouverte
+    - SUSPENDED              # Suspendue
+    - CLOSED                 # Fermée
+    - RECONCILED            # Réconciliée
+    - DISCREPANCY           # Écart détecté
+    
+  TransactionType:
+    - SALE                   # Vente
+    - RETURN                 # Retour
+    - EXCHANGE               # Échange
+    - VOID                   # Annulation
+    
+  ReturnReason:
+    - DEFECTIVE              # Défectueux
+    - NON_COMPLIANT         # Non conforme
+    - DELIVERY_ERROR        # Erreur livraison
+    - UNSATISFIED           # Client insatisfait
+    - DUPLICATE             # Doublon
+    - EXPIRED               # Périmé
+    - OTHER                 # Autre
+    
+  CommissionStatus:
+    - PROVISIONAL           # Provisoire
+    - CONFIRMED             # Confirmée (facturée)
+    - VALIDATED             # Validée (payée client)
+    - PAID                  # Payée au commercial
+    - CANCELLED             # Annulée
+    - DISPUTED              # Contestée
+    
+  ClaimType:
+    - QUALITY               # Qualité
+    - DELIVERY              # Livraison
+    - BILLING               # Facturation
+    - SERVICE               # Service
+    - COMMERCIAL            # Commercial
+    - OTHER                 # Autre
+    
+  ClaimStatus:
+    - OPEN                  # Ouverte
+    - ASSIGNED              # Assignée
+    - IN_PROGRESS          # En cours
+    - PENDING_INFO         # En attente info
+    - RESOLVED             # Résolue
+    - CLOSED               # Clôturée
+    - REOPENED             # Réouverte
+
+# ============================================================================
+# ÉVÉNEMENTS KAFKA
+# ============================================================================
+
+kafka_events:
+  sales_order_events:
+    - sales.order.created          # Commande créée
+    - sales.order.validated        # Commande validée
+    - sales.order.modified         # Commande modifiée
+    - sales.order.cancelled        # Commande annulée
+    
+  sales_delivery_events:
+    - sales.delivery.created       # Livraison créée
+    - sales.delivery.started       # Livraison démarrée
+    - sales.delivery.completed     # Livraison terminée
+    - sales.delivery.failed        # Livraison échouée
+    
+  sales_invoice_events:
+    - sales.invoice.created        # Facture créée
+    - sales.invoice.sent           # Facture envoyée
+    - sales.invoice.paid           # Facture payée
+    - sales.invoice.overdue        # Facture en retard
+    
+  sales_return_events:
+    - sales.return.created         # Retour créé
+    - sales.return.validated       # Retour validé
+    - sales.return.processed       # Retour traité
+    
+  pos_events:
+    - pos.session.opened           # Session ouverte
+    - pos.session.closed           # Session fermée
+    - pos.session.reconciled       # Session réconciliée
+    - pos.transaction.completed    # Transaction terminée
+    - pos.transaction.voided       # Transaction annulée
+    
+  commission_events:
+    - sales.commission.calculated  # Commission calculée
+    - sales.commission.validated   # Commission validée
+    - sales.commission.paid        # Commission payée
+    
+  customer_events:
+    - customer.created             # Client créé
+    - customer.updated             # Client modifié
+    - customer.blocked             # Client bloqué
+    - customer.unblocked           # Client débloqué
+
+# ============================================================================
+# FIN DU MODÈLE DE DONNÉES MODULE VENTES
+# ============================================================================
+```
+
+Ce modèle YAML complet couvre :
+
+1. **30 User Stories** du module Ventes
+2. **Toutes les tables PostgreSQL** nécessaires
+3. **Collections MongoDB** pour données clients
+4. **Structures de données imbriquées** détaillées
+5. **Énumérations** pour tous les types
+6. **Événements Kafka** pour communication asynchrone
+7. **Commentaires explicatifs** pour chaque champ
+8. **Formats et contraintes** de données
+9. **Relations entre entités**
+10. **Spécificités Cameroun/CEMAC** intégrées
