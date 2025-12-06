@@ -1,0 +1,157 @@
+<!--
+    MultiFlex GESCOM - Menu Sidebar Unifié Module Ventes
+    Composant réutilisable pour tous les écrans du module vente
+
+    Usage: Inclure ce fichier et appeler initSidebar('nom-page-active')
+-->
+
+<!-- Sidebar Menu Structure -->
+<aside class="sidebar" id="sidebar">
+    <!-- Logo & Brand -->
+    <div class="sidebar-header">
+        <div class="brand">
+            <div class="brand-logo">
+                <i class="fa-solid fa-cube"></i>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">MultiFlex</span>
+                <span class="brand-module">GESCOM</span>
+            </div>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+        <!-- Dashboard -->
+        <div class="nav-section">
+            <a href="./dashboard.html" class="nav-item" data-page="dashboard">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Tableau de bord</span>
+            </a>
+        </div>
+
+        <!-- Gestion Clients -->
+        <div class="nav-section">
+            <div class="nav-section-title">Clients</div>
+            <a href="./clients-list.html" class="nav-item" data-page="clients-list">
+                <i class="fa-solid fa-users"></i>
+                <span>Liste clients</span>
+            </a>
+            <a href="./client-create.html" class="nav-item" data-page="client-create">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Nouveau client</span>
+            </a>
+        </div>
+
+        <!-- Gestion Commandes -->
+        <div class="nav-section">
+            <div class="nav-section-title">Commandes</div>
+            <a href="./commandes-list.html" class="nav-item" data-page="commandes-list">
+                <i class="fa-solid fa-shopping-cart"></i>
+                <span>Liste commandes</span>
+            </a>
+            <a href="./commande-create.html" class="nav-item" data-page="commande-create">
+                <i class="fa-solid fa-file-circle-plus"></i>
+                <span>Nouvelle commande</span>
+            </a>
+            <a href="./commandes-validation.html" class="nav-item" data-page="commandes-validation">
+                <i class="fa-solid fa-clipboard-check"></i>
+                <span>Validation</span>
+                <span class="nav-badge">3</span>
+            </a>
+        </div>
+
+        <!-- Livraisons -->
+        <div class="nav-section">
+            <div class="nav-section-title">Livraisons</div>
+            <a href="./livraisons-list.html" class="nav-item" data-page="livraisons-list">
+                <i class="fa-solid fa-truck"></i>
+                <span>Planning livraisons</span>
+            </a>
+            <a href="./livraison-create.html" class="nav-item" data-page="livraison-create">
+                <i class="fa-solid fa-truck-loading"></i>
+                <span>Nouveau BL</span>
+            </a>
+        </div>
+
+        <!-- Facturation -->
+        <div class="nav-section">
+            <div class="nav-section-title">Facturation</div>
+            <a href="./factures-list.html" class="nav-item" data-page="factures-list">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                <span>Liste factures</span>
+            </a>
+            <a href="./facture-create.html" class="nav-item" data-page="facture-create">
+                <i class="fa-solid fa-file-circle-plus"></i>
+                <span>Nouvelle facture</span>
+            </a>
+            <a href="./avoirs-list.html" class="nav-item" data-page="avoirs-list">
+                <i class="fa-solid fa-file-invoice"></i>
+                <span>Avoirs</span>
+            </a>
+            <a href="./facture-transport.html" class="nav-item" data-page="facture-transport">
+                <i class="fa-solid fa-truck-fast"></i>
+                <span>Facture transport</span>
+            </a>
+        </div>
+
+        <!-- Point de Vente -->
+        <div class="nav-section">
+            <div class="nav-section-title">Point de Vente</div>
+            <a href="./caisse-ouverture.html" class="nav-item" data-page="caisse-ouverture">
+                <i class="fa-solid fa-door-open"></i>
+                <span>Ouverture caisse</span>
+            </a>
+            <a href="./caisse.html" class="nav-item" data-page="caisse">
+                <i class="fa-solid fa-cash-register"></i>
+                <span>Caisse</span>
+            </a>
+            <a href="./caisse-cloture.html" class="nav-item" data-page="caisse-cloture">
+                <i class="fa-solid fa-door-closed"></i>
+                <span>Clôture caisse</span>
+            </a>
+            <a href="./caisse-historique.html" class="nav-item" data-page="caisse-historique">
+                <i class="fa-solid fa-history"></i>
+                <span>Historique sessions</span>
+            </a>
+        </div>
+
+        <!-- Service Après-Vente -->
+        <div class="nav-section">
+            <div class="nav-section-title">Service Client</div>
+            <a href="./retours-list.html" class="nav-item" data-page="retours-list">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>Retours</span>
+            </a>
+            <a href="./reclamations-list.html" class="nav-item" data-page="reclamations-list">
+                <i class="fa-solid fa-headset"></i>
+                <span>Réclamations</span>
+                <span class="nav-badge warning">5</span>
+            </a>
+        </div>
+
+        <!-- Commissions & Reporting -->
+        <div class="nav-section">
+            <div class="nav-section-title">Reporting</div>
+            <a href="./commissions-dashboard.html" class="nav-item" data-page="commissions-dashboard">
+                <i class="fa-solid fa-coins"></i>
+                <span>Mes commissions</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+        <a href="#" class="nav-item" onclick="showSettings()">
+            <i class="fa-solid fa-cog"></i>
+            <span>Paramètres</span>
+        </a>
+        <a href="../index.html" class="nav-item">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Retour accueil</span>
+        </a>
+    </div>
+</aside>

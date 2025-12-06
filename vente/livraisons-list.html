@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Livraisons - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/ventes-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            border-left: 4px solid #263c89;
+        }
+
+        .stat-card.warning { border-left-color: #D97706; }
+        .stat-card.danger { border-left-color: #DC2626; }
+        .stat-card.success { border-left-color: #059669; }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .stat-detail {
+            font-size: 11px;
+            color: #9CA3AF;
+            margin-top: 8px;
+        }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: #F3F4F6;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .view-toggle-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6B7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .view-toggle-btn:hover {
+            color: #1F2937;
+        }
+
+        .view-toggle-btn.active {
+            background: white;
+            color: #263c89;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Filters */
+        .filters-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .filter-input, .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: #263c89;
+            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
+        }
+
+        .filters-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #E5E7EB;
+            flex-wrap: wrap;
+        }
+
+        /* Planning View */
+        .planning-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .planning-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: #F9FAFB;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .planning-date-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .planning-date-nav button {
+            background: white;
+            border: 1px solid #D1D5DB;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .planning-date-nav button:hover {
+            background: #F3F4F6;
+        }
+
+        .planning-date {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .planning-timeline {
+            overflow-x: auto;
+        }
+
+        .timeline-header {
+            display: flex;
+            border-bottom: 2px solid #E5E7EB;
+            background: #F9FAFB;
+        }
+
+        .timeline-vehicle-col {
+            min-width: 200px;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 12px;
+            border-right: 1px solid #E5E7EB;
+        }
+
+        .timeline-hours {
+            display: flex;
+            flex: 1;
+        }
+
+        .timeline-hour {
+            min-width: 80px;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6B7280;
+            border-right: 1px solid #F3F4F6;
+        }
+
+        .timeline-row {
+            display: flex;
+            border-bottom: 1px solid #E5E7EB;
+            min-height: 80px;
+        }
+
+        .timeline-vehicle {
+            min-width: 200px;
+            padding: 12px 16px;
+            border-right: 1px solid #E5E7EB;
+            background: #FAFAFA;
+        }
+
+        .vehicle-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1F2937;
+        }
+
+        .vehicle-info {
+            font-size: 11px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .vehicle-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        .vehicle-status.available { background: #D1FAE5; color: #065F46; }
+        .vehicle-status.busy { background: #FEF3C7; color: #92400E; }
+        .vehicle-status.unavailable { background: #FEE2E2; color: #991B1B; }
+
+        .timeline-slots {
+            display: flex;
+            flex: 1;
+            position: relative;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .timeline-slot {
+            min-width: 80px;
+            height: 60px;
+            border-right: 1px solid #F3F4F6;
+        }
+
+        .delivery-block {
+            position: absolute;
+            height: 50px;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+        }
+
+        .delivery-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .delivery-block.loading { background: #DBEAFE; border: 1px solid #93C5FD; }
+        .delivery-block.in-transit { background: #FEF3C7; border: 1px solid #FCD34D; }
+        .delivery-block.delivered { background: #D1FAE5; border: 1px solid #6EE7B7; }
+        .delivery-block.return { background: #F3F4F6; border: 1px solid #D1D5DB; }
+
+        .delivery-block-title {
+            font-weight: 600;
+            color: #1F2937;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .delivery-block-info {
+            color: #6B7280;
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        /* List View */
+        .list-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: #F9FAFB;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .deliveries-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .deliveries-table thead {
+            background: #F3F4F6;
+        }
+
+        .deliveries-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .deliveries-table td {
+            padding: 16px;
+            border-bottom: 1px solid #E5E7EB;
+            vertical-align: top;
+        }
+
+        .deliveries-table tbody tr:hover {
+            background: #F9FAFB;
+        }
+
+        .bl-number {
+            font-weight: 600;
+            color: #263c89;
+            font-size: 13px;
+        }
+
+        .bl-date {
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        .bc-ref {
+            font-size: 12px;
+            color: #374151;
+        }
+
+        .bc-amount {
+            font-size: 11px;
+            color: #059669;
+            font-weight: 500;
+        }
+
+        .client-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1F2937;
+        }
+
+        .client-contact {
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        .client-phone {
+            font-size: 11px;
+            color: #263c89;
+        }
+
+        .client-articles {
+            font-size: 11px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .vehicle-cell {
+            font-size: 12px;
+        }
+
+        .transporter-name {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .time-cell {
+            font-size: 12px;
+        }
+
+        .time-range {
+            font-weight: 500;
+            color: #1F2937;
+        }
+
+        .time-duration {
+            font-size: 10px;
+            color: #6B7280;
+        }
+
+        .zone-cell {
+            text-align: center;
+        }
+
+        .zone-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .zone-distance {
+            font-size: 10px;
+            color: #6B7280;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.prepared { background: #DBEAFE; color: #1E40AF; }
+        .status-badge.planned { background: #F3E8FF; color: #7C3AED; }
+        .status-badge.in-transit { background: #FEF3C7; color: #92400E; }
+        .status-badge.delivered { background: #D1FAE5; color: #065F46; }
+        .status-badge.failed { background: #FEE2E2; color: #991B1B; }
+        .status-badge.postponed { background: #F3F4F6; color: #374151; }
+
+        .urgent-badge {
+            background: #FEE2E2;
+            color: #991B1B;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+
+        .cash-badge {
+            background: #FEF3C7;
+            color: #92400E;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        /* Actions */
+        .actions-cell {
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #6B7280;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #F3F4F6;
+            color: #263c89;
+        }
+
+        .action-btn.primary { color: #263c89; }
+        .action-btn.success { color: #059669; }
+        .action-btn.warning { color: #D97706; }
+
+        /* Legend */
+        .legend-bar {
+            display: flex;
+            gap: 20px;
+            padding: 12px 20px;
+            background: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pagination-btn {
+            padding: 6px 12px;
+            border: 1px solid #D1D5DB;
+            background: white;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .pagination-btn:hover {
+            background: #F3F4F6;
+        }
+
+        .pagination-btn.active {
+            background: #263c89;
+            color: white;
+            border-color: #263c89;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #263c89;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a2959;
+        }
+
+        .btn-secondary {
+            background: #E5E7EB;
+            color: #1F2937;
+        }
+
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #D1D5DB;
+            color: #374151;
+        }
+
+        .btn-outline:hover {
+            background: #F3F4F6;
+            border-color: #263c89;
+        }
+
+        /* Tooltip */
+        .tooltip-card {
+            position: absolute;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 16px;
+            width: 350px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .tooltip-card.show {
+            display: block;
+        }
+
+        .tooltip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .tooltip-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1F2937;
+        }
+
+        .tooltip-subtitle {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .tooltip-content {
+            font-size: 12px;
+            color: #374151;
+        }
+
+        .tooltip-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+
+        .tooltip-label {
+            color: #6B7280;
+        }
+
+        .tooltip-value {
+            font-weight: 500;
+        }
+
+        .tooltip-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .tooltip-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #D1D5DB;
+            background: white;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .tooltip-btn:hover {
+            background: #F3F4F6;
+        }
+
+        .tooltip-btn.primary {
+            background: #263c89;
+            color: white;
+            border-color: #263c89;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #1F2937;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #6B7280;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Form elements in modal */
+        .modal .form-group {
+            margin-bottom: 16px;
+        }
+
+        .modal .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .modal .form-input,
+        .modal .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .modal .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .modal .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 20px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: #263c89;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
+        .info-box {
+            background: #F9FAFB;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 13px;
+        }
+
+        .info-label {
+            color: #6B7280;
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: #1F2937;
+        }
+
+        .vehicle-option {
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .vehicle-option:hover {
+            border-color: #263c89;
+        }
+
+        .vehicle-option.selected {
+            border-color: #263c89;
+            background: #EFF6FF;
+        }
+
+        .vehicle-option input[type="radio"] {
+            display: none;
+        }
+
+        .vehicle-option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vehicle-option-name {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .vehicle-option-status {
+            font-size: 11px;
+        }
+
+        .vehicle-option-details {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .capacity-ok { color: #059669; }
+        .capacity-warning { color: #D97706; }
+        .capacity-error { color: #DC2626; }
+
+        /* Hide views */
+        .view-content {
+            display: none;
+        }
+
+        .view-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Planning Livraisons</h1>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto" id="main-sidebar">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Ventes
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Clients
+                    </div>
+
+                    <a href="./clients-list.html" class="sidebar-link" data-page="clients-list">
+                        <i class="fa-solid fa-users mr-3"></i>
+                        <span>Liste Clients</span>
+                    </a>
+
+                    <a href="./client-create.html" class="sidebar-link" data-page="client-create">
+                        <i class="fa-solid fa-user-plus mr-3"></i>
+                        <span>Nouveau Client</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Commandes
+                    </div>
+
+                    <a href="./commandes-list.html" class="sidebar-link" data-page="commandes-list">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Liste Commandes</span>
+                    </a>
+
+                    <a href="./commande-create.html" class="sidebar-link" data-page="commande-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Commande</span>
+                    </a>
+
+                    <a href="./commandes-validation.html" class="sidebar-link" data-page="commandes-validation">
+                        <i class="fa-solid fa-clipboard-check mr-3"></i>
+                        <span>Validation Crédit</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Livraisons
+                    </div>
+
+                    <a href="./livraisons-list.html" class="sidebar-link" data-page="livraisons-list">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Planning Livraisons</span>
+                    </a>
+
+                    <a href="./livraison-create.html" class="sidebar-link" data-page="livraison-create">
+                        <i class="fa-solid fa-truck-loading mr-3"></i>
+                        <span>Nouveau BL</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Facturation
+                    </div>
+
+                    <a href="./factures-list.html" class="sidebar-link" data-page="factures-list">
+                        <i class="fa-solid fa-file-invoice-dollar mr-3"></i>
+                        <span>Liste Factures</span>
+                    </a>
+
+                    <a href="./facture-create.html" class="sidebar-link" data-page="facture-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Facture</span>
+                    </a>
+
+                    <a href="./avoirs-list.html" class="sidebar-link" data-page="avoirs-list">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Avoirs</span>
+                    </a>
+
+                    <a href="./facture-transport.html" class="sidebar-link" data-page="facture-transport">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Facture Transport</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Point de Vente
+                    </div>
+
+                    <a href="./caisse-ouverture.html" class="sidebar-link" data-page="caisse-ouverture">
+                        <i class="fa-solid fa-door-open mr-3"></i>
+                        <span>Ouverture Caisse</span>
+                    </a>
+
+                    <a href="./caisse.html" class="sidebar-link" data-page="caisse">
+                        <i class="fa-solid fa-cash-register mr-3"></i>
+                        <span>Interface Caisse</span>
+                    </a>
+
+                    <a href="./caisse-cloture.html" class="sidebar-link" data-page="caisse-cloture">
+                        <i class="fa-solid fa-door-closed mr-3"></i>
+                        <span>Clôture Caisse</span>
+                    </a>
+
+                    <a href="./caisse-historique.html" class="sidebar-link" data-page="caisse-historique">
+                        <i class="fa-solid fa-history mr-3"></i>
+                        <span>Historique Sessions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Service Client
+                    </div>
+
+                    <a href="./retours-list.html" class="sidebar-link" data-page="retours-list">
+                        <i class="fa-solid fa-rotate-left mr-3"></i>
+                        <span>Retours</span>
+                    </a>
+
+                    <a href="./reclamations-list.html" class="sidebar-link" data-page="reclamations-list">
+                        <i class="fa-solid fa-headset mr-3"></i>
+                        <span>Réclamations</span>
+                        <span class="ml-2 bg-[#EF4444] text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Reporting
+                    </div>
+
+                    <a href="./commissions-dashboard.html" class="sidebar-link" data-page="commissions-dashboard">
+                        <i class="fa-solid fa-coins mr-3"></i>
+                        <span>Mes Commissions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="ventes-container">
+                <div style="max-width: 1400px; margin: 0 auto;">
+
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="statToPrepare">12</div>
+                            <div class="stat-label">À préparer</div>
+                            <div class="stat-detail">Volume: 45.3 m³</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-value" id="statInProgress">8</div>
+                            <div class="stat-label">En cours</div>
+                            <div class="stat-detail">Poids: 12.5 T</div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="stat-value" id="statDelivered">15</div>
+                            <div class="stat-label">Livrées aujourd'hui</div>
+                            <div class="stat-detail">Taux: 94%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">4/6</div>
+                            <div class="stat-label">Véhicules actifs</div>
+                            <div class="stat-detail">2 indisponibles</div>
+                        </div>
+                        <div class="stat-card danger">
+                            <div class="stat-value" id="statDelays">3</div>
+                            <div class="stat-label">Retards</div>
+                            <div class="stat-detail">1 incident</div>
+                        </div>
+                    </div>
+
+                    <!-- View Toggle + Filters -->
+                    <div class="filters-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <div class="view-toggle">
+                                <button class="view-toggle-btn" onclick="switchView('calendar')">
+                                    <i class="fa-solid fa-calendar"></i> Calendrier
+                                </button>
+                                <button class="view-toggle-btn active" onclick="switchView('list')">
+                                    <i class="fa-solid fa-list"></i> Liste
+                                </button>
+                                <button class="view-toggle-btn" onclick="switchView('planning')">
+                                    <i class="fa-solid fa-chart-gantt"></i> Planning
+                                </button>
+                                <button class="view-toggle-btn" onclick="switchView('map')">
+                                    <i class="fa-solid fa-map"></i> Carte
+                                </button>
+                            </div>
+
+                            <div style="display: flex; gap: 8px;">
+                                <a href="livraison-create.html" class="btn btn-primary">
+                                    <i class="fa-solid fa-plus"></i> Nouveau BL
+                                </a>
+                                <button class="btn btn-outline">
+                                    <i class="fa-solid fa-truck"></i> Planning
+                                </button>
+                                <button class="btn btn-outline">
+                                    <i class="fa-solid fa-download"></i> Export
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="filters-grid">
+                            <div class="filter-group">
+                                <label class="filter-label">Date</label>
+                                <input type="date" class="filter-input" id="filterDate">
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Zone</label>
+                                <select class="filter-select" id="filterZone">
+                                    <option value="">Toutes les zones</option>
+                                    <option value="BASSA">Bassa</option>
+                                    <option value="AKWA">Akwa</option>
+                                    <option value="BONANJO">Bonanjo</option>
+                                    <option value="LOGBESSOU">Logbessou</option>
+                                    <option value="BONABERI">Bonabéri</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Statut</label>
+                                <select class="filter-select" id="filterStatus">
+                                    <option value="">Tous les statuts</option>
+                                    <option value="PREPARED">Préparé</option>
+                                    <option value="PLANNED">Planifié</option>
+                                    <option value="IN_TRANSIT">En cours</option>
+                                    <option value="DELIVERED">Livré</option>
+                                    <option value="FAILED">Échec</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Transporteur</label>
+                                <select class="filter-select" id="filterTransporter">
+                                    <option value="">Tous</option>
+                                    <option value="KAMGA">KAMGA Transport</option>
+                                    <option value="NJOYA">NJOYA Logistics</option>
+                                    <option value="INTERNAL">Interne</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">N° BL</label>
+                                <input type="text" class="filter-input" id="filterBL" placeholder="BL-...">
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Client</label>
+                                <input type="text" class="filter-input" id="filterClient" placeholder="Rechercher...">
+                            </div>
+                        </div>
+
+                        <div class="filters-actions">
+                            <button class="btn btn-primary" onclick="applyFilters()">
+                                <i class="fa-solid fa-search"></i> Filtrer
+                            </button>
+                            <button class="btn btn-secondary" onclick="resetFilters()">
+                                <i class="fa-solid fa-rotate"></i> Réinitialiser
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- List View -->
+                    <div class="view-content active" id="view-list">
+                        <div class="list-container">
+                            <div class="list-header">
+                                <div>
+                                    <input type="checkbox" id="selectAll" style="margin-right: 8px;">
+                                    <label for="selectAll" style="font-size: 13px; color: #6B7280;">Tout sélectionner</label>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-outline" disabled id="bulkAssign">
+                                        <i class="fa-solid fa-truck"></i> Affecter véhicule
+                                    </button>
+                                    <button class="btn btn-outline" disabled id="bulkPrint">
+                                        <i class="fa-solid fa-print"></i> Imprimer
+                                    </button>
+                                </div>
+                            </div>
+
+                            <table class="deliveries-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px;"></th>
+                                        <th>N° BL</th>
+                                        <th>BC Source</th>
+                                        <th>Client / Contact</th>
+                                        <th>Véhicule</th>
+                                        <th>Horaires</th>
+                                        <th>Zone</th>
+                                        <th>Statut</th>
+                                        <th style="width: 100px;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="deliveriesTableBody">
+                                    <!-- Dynamically populated -->
+                                </tbody>
+                            </table>
+
+                            <div class="legend-bar">
+                                <div class="legend-item">
+                                    <span class="status-badge prepared"><i class="fa-solid fa-clipboard-list"></i></span>
+                                    Préparé
+                                </div>
+                                <div class="legend-item">
+                                    <span class="status-badge planned"><i class="fa-solid fa-clock"></i></span>
+                                    Planifié
+                                </div>
+                                <div class="legend-item">
+                                    <span class="status-badge in-transit"><i class="fa-solid fa-truck"></i></span>
+                                    En cours
+                                </div>
+                                <div class="legend-item">
+                                    <span class="status-badge delivered"><i class="fa-solid fa-check"></i></span>
+                                    Livré
+                                </div>
+                                <div class="legend-item">
+                                    <span class="status-badge failed"><i class="fa-solid fa-times"></i></span>
+                                    Échec
+                                </div>
+                                <div class="legend-item">
+                                    <span class="status-badge postponed"><i class="fa-solid fa-rotate"></i></span>
+                                    Reporté
+                                </div>
+                            </div>
+
+                            <div class="pagination">
+                                <div class="pagination-info">
+                                    Affichage 1-10 sur 58 livraisons
+                                </div>
+                                <div class="pagination-buttons">
+                                    <button class="pagination-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                                    <button class="pagination-btn active">1</button>
+                                    <button class="pagination-btn">2</button>
+                                    <button class="pagination-btn">3</button>
+                                    <button class="pagination-btn">...</button>
+                                    <button class="pagination-btn">6</button>
+                                    <button class="pagination-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Planning View -->
+                    <div class="view-content" id="view-planning">
+                        <div class="planning-container">
+                            <div class="planning-header">
+                                <div class="planning-date-nav">
+                                    <button onclick="prevDay()"><i class="fa-solid fa-chevron-left"></i></button>
+                                    <span class="planning-date" id="planningDate">29 Janvier 2024</span>
+                                    <button onclick="nextDay()"><i class="fa-solid fa-chevron-right"></i></button>
+                                    <button onclick="goToday()" style="margin-left: 12px;">Aujourd'hui</button>
+                                </div>
+                            </div>
+
+                            <div class="planning-timeline">
+                                <div class="timeline-header">
+                                    <div class="timeline-vehicle-col">Véhicule / Transporteur</div>
+                                    <div class="timeline-hours" id="timelineHours">
+                                        <!-- Generated dynamically -->
+                                    </div>
+                                </div>
+
+                                <div id="timelineBody">
+                                    <!-- Generated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar View (placeholder) -->
+                    <div class="view-content" id="view-calendar">
+                        <div class="list-container" style="padding: 40px; text-align: center;">
+                            <i class="fa-solid fa-calendar" style="font-size: 48px; color: #D1D5DB; margin-bottom: 16px;"></i>
+                            <h3 style="color: #6B7280;">Vue Calendrier</h3>
+                            <p style="color: #9CA3AF;">Cette vue sera implémentée prochainement</p>
+                        </div>
+                    </div>
+
+                    <!-- Map View (placeholder) -->
+                    <div class="view-content" id="view-map">
+                        <div class="list-container" style="padding: 40px; text-align: center;">
+                            <i class="fa-solid fa-map" style="font-size: 48px; color: #D1D5DB; margin-bottom: 16px;"></i>
+                            <h3 style="color: #6B7280;">Vue Carte</h3>
+                            <p style="color: #9CA3AF;">Cette vue sera implémentée prochainement</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip for hover details -->
+    <div class="tooltip-card" id="deliveryTooltip">
+        <div class="tooltip-header">
+            <div>
+                <div class="tooltip-title" id="tooltipTitle">BL-CLI156-2024-00234</div>
+                <div class="tooltip-subtitle" id="tooltipSubtitle">SONACOM SARL</div>
+            </div>
+            <span class="status-badge in-transit" id="tooltipStatus">
+                <i class="fa-solid fa-truck"></i> En cours
+            </span>
+        </div>
+        <div class="tooltip-content">
+            <div class="tooltip-row">
+                <span class="tooltip-label">Chauffeur:</span>
+                <span class="tooltip-value" id="tooltipDriver">MBOUOMBOUO Herman</span>
+            </div>
+            <div class="tooltip-row">
+                <span class="tooltip-label">CNI:</span>
+                <span class="tooltip-value" id="tooltipCNI">123456789</span>
+            </div>
+            <div class="tooltip-row">
+                <span class="tooltip-label">Téléphone:</span>
+                <span class="tooltip-value" id="tooltipPhone">677 111 222</span>
+            </div>
+            <div class="tooltip-row">
+                <span class="tooltip-label">Distance:</span>
+                <span class="tooltip-value" id="tooltipDistance">12 km</span>
+            </div>
+            <div class="tooltip-row">
+                <span class="tooltip-label">Durée est.:</span>
+                <span class="tooltip-value" id="tooltipDuration">45 min</span>
+            </div>
+        </div>
+        <div class="tooltip-actions">
+            <button class="tooltip-btn"><i class="fa-solid fa-eye"></i> Voir</button>
+            <button class="tooltip-btn"><i class="fa-solid fa-edit"></i> Modifier</button>
+            <button class="tooltip-btn"><i class="fa-solid fa-map-marker-alt"></i> Tracker</button>
+            <button class="tooltip-btn primary"><i class="fa-solid fa-phone"></i> Appeler</button>
+        </div>
+    </div>
+
+    <!-- Modal Affectation Véhicule -->
+    <div class="modal-overlay" id="assignVehicleModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-truck" style="color: #263c89; margin-right: 8px;"></i> Affectation Transport</h3>
+                <button class="modal-close" onclick="closeAssignModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4 class="section-title" style="margin-top: 0;">
+                    <i class="fa-solid fa-info-circle"></i> Client et Livraison
+                </h4>
+                <div class="info-box">
+                    <div class="info-row">
+                        <span class="info-label">Client:</span>
+                        <span class="info-value" id="modalClient">SONACOM SARL - Zone Industrielle, Bassa</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Distance:</span>
+                        <span class="info-value" id="modalDistance">12 km</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Poids:</span>
+                        <span class="info-value" id="modalWeight">2,500 kg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Volume:</span>
+                        <span class="info-value" id="modalVolume">8.3 m³</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Créneau:</span>
+                        <span class="info-value" id="modalSlot">29/01/2024 - Matin (8h-12h)</span>
+                    </div>
+                </div>
+
+                <h4 class="section-title">
+                    <i class="fa-solid fa-truck"></i> Sélection Véhicule
+                </h4>
+                <div id="vehicleOptions">
+                    <label class="vehicle-option selected">
+                        <input type="radio" name="vehicle" value="CAMION-01" checked>
+                        <div class="vehicle-option-header">
+                            <span class="vehicle-option-name">CAMION-01 | 10T | KAMGA Transport</span>
+                            <span class="vehicle-option-status capacity-ok">Capacité: OK ✓</span>
+                        </div>
+                        <div class="vehicle-option-details">
+                            Disponible: 8h-18h | Zone: OK
+                        </div>
+                    </label>
+                    <label class="vehicle-option">
+                        <input type="radio" name="vehicle" value="CAMION-02">
+                        <div class="vehicle-option-header">
+                            <span class="vehicle-option-name">CAMION-02 | 5T | NJOYA Logistics</span>
+                            <span class="vehicle-option-status capacity-ok">Capacité: OK ✓</span>
+                        </div>
+                        <div class="vehicle-option-details">
+                            <span class="capacity-warning">Occupé: 8h-11h ⚠</span> | Zone: OK
+                        </div>
+                    </label>
+                    <label class="vehicle-option">
+                        <input type="radio" name="vehicle" value="PICKUP-03">
+                        <div class="vehicle-option-header">
+                            <span class="vehicle-option-name">PICKUP-03 | 2T | Interne</span>
+                            <span class="vehicle-option-status capacity-error">Capacité: Insuffisant ✗</span>
+                        </div>
+                        <div class="vehicle-option-details">
+                            <span class="capacity-error">2.5T requis - Véhicule limité à 2T</span>
+                        </div>
+                    </label>
+                </div>
+
+                <h4 class="section-title">
+                    <i class="fa-solid fa-users"></i> Équipe de Livraison
+                </h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Chauffeur *</label>
+                        <select class="form-select" id="modalDriver">
+                            <option value="">Sélectionner...</option>
+                            <option value="MBOUOMBOUO">MBOUOMBOUO Herman</option>
+                            <option value="FOTSO">FOTSO Jean</option>
+                            <option value="NKENG">NKENG Paul</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CNI Chauffeur *</label>
+                        <input type="text" class="form-input" id="modalDriverCNI" placeholder="N° CNI">
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Chargeur *</label>
+                        <select class="form-select" id="modalLoader">
+                            <option value="">Sélectionner...</option>
+                            <option value="FOTSO_P">FOTSO Paul</option>
+                            <option value="DJOMO">DJOMO Jean</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Magasinier *</label>
+                        <select class="form-select" id="modalWarehouse">
+                            <option value="">Sélectionner...</option>
+                            <option value="DJOMO_M">DJOMO Marie</option>
+                            <option value="BELLE">BELLE Sophie</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h4 class="section-title">
+                    <i class="fa-solid fa-clock"></i> Horaires
+                </h4>
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Heure chargement</label>
+                        <input type="time" class="form-input" id="modalLoadingTime" value="08:00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Heure départ</label>
+                        <input type="time" class="form-input" id="modalDepartureTime" value="08:30">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Arrivée estimée</label>
+                        <input type="time" class="form-input" id="modalArrivalTime" value="09:15">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAssignModal()">Annuler</button>
+                <button class="btn btn-outline">Sauvegarder brouillon</button>
+                <button class="btn btn-primary" onclick="confirmAssignment()">
+                    <i class="fa-solid fa-check"></i> Confirmer affectation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/livraisons-list.js"></script>
+</body>
+</html>

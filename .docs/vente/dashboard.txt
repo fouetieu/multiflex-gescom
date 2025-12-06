@@ -1,0 +1,250 @@
+## 📋 **ECR-RPT-001 : DASHBOARD COMMERCIAL**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLEAU DE BORD COMMERCIAL                    👤 Directeur Commercial      │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│ Période: [Janvier 2024  ]▼  Société: [Groupe IOLA  ]▼  [🔄 Actualiser]    │
+│                                                                              │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ INDICATEURS CLÉS                                      MAJ: 29/01 14:45 │ │
+│ ├────────────────────────────────────────────────────────────────────────┤ │
+│ │ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌────────┐│ │
+│ │ │ CA MOIS        │ │ CA JOUR        │ │ OBJECTIF MOIS   │ │ TAUX   ││ │
+│ │ │ 458,750,000   │ │ 45,670,000    │ │ 600,000,000    │ │ 76.5%  ││ │
+│ │ │ XAF           │ │ XAF ↗️ +12%    │ │ XAF            │ │ ⚠️      ││ │
+│ │ │               │ │               │ │                │ │        ││ │
+│ │ │ vs N-1: +8.3% │ │ 23 BC validés │ │ Reste: 3 jours │ │        ││ │
+│ │ └─────────────────┘ └─────────────────┘ └─────────────────┘ └────────┘│ │
+│ │                                                                        │ │
+│ │ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌────────┐│ │
+│ │ │ NOUVEAUX CLIENTS│ │ ENCOURS TOTAL  │ │ IMPAYÉS        │ │ DSO    ││ │
+│ │ │ 45             │ │ 234,500,000   │ │ 45,230,000    │ │ 35 j   ││ │
+│ │ │ ce mois       │ │ XAF           │ │ XAF 🔴         │ │        ││ │
+│ │ │               │ │               │ │                │ │        ││ │
+│ │ │ Objectif: 50  │ │ Limite: 300M  │ │ > 30j: 15.2M  │ │ Cible:30││ │
+│ │ └─────────────────┘ └─────────────────┘ └─────────────────┘ └────────┘│ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ ÉVOLUTION CA - 12 DERNIERS MOIS                      [📊 Détails]     │ │
+│ ├────────────────────────────────────────────────────────────────────────┤ │
+│ │     600M ┤                                          ╭──○ Objectif      │ │
+│ │          │                                    ╭────╯                   │ │
+│ │     500M ┤                              ╭────╯    ● Réalisé            │ │
+│ │          │                        ╭────●╯                              │ │
+│ │     400M ┤                  ╭────●╯    ╰── 458M (Jan)                 │ │
+│ │          │            ╭────●╯                                          │ │
+│ │     300M ┤      ╭────●╯                                              │ │
+│ │          │ ────●╯                                                     │ │
+│ │     200M ┤                                                           │ │
+│ │          └──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──                    │ │
+│ │           Fév Mar Avr Mai Jun Jul Aou Sep Oct Nov Déc Jan             │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### **SECTION ANALYSE PAR SEGMENTS**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ RÉPARTITION DU CHIFFRE D'AFFAIRES                                          │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────┐ ┌──────────────────────────────────────┐ │
+│ │ PAR TYPE CLIENT              │ │ PAR CATÉGORIE PRODUITS              │ │
+│ ├──────────────────────────────┤ ├──────────────────────────────────────┤ │
+│ │                              │ │                                      │ │
+│ │    ╭─────────╮               │ │  Construction  ████████████ 45% 206M│ │
+│ │   ╱           ╲              │ │  Peinture      ██████ 25% 115M      │ │
+│ │  │  Entreprises│ 65%         │ │  Plomberie     ████ 15% 69M         │ │
+│ │  │   298.2M    │             │ │  Électricité   ██ 8% 37M            │ │
+│ │  │             │             │ │  Outillage     █ 5% 23M              │ │
+│ │  │Quinc│Part│Tech│           │ │  Autres        █ 2% 9M               │ │
+│ │  │ 15% │10% │10%│           │ │                                      │ │
+│ │   ╲69M │46M │46M╱           │ │  Top produit: Ciment 50kg (12,450u) │ │
+│ │    ╰─────────╯               │ │  Progression: Peinture +23% vs N-1   │ │
+│ └──────────────────────────────┘ └──────────────────────────────────────┘ │
+│                                                                              │
+│ ┌──────────────────────────────┐ ┌──────────────────────────────────────┐ │
+│ │ PAR ZONE GÉOGRAPHIQUE        │ │ PAR COMMERCIAL                       │ │
+│ ├──────────────────────────────┤ ├──────────────────────────────────────┤ │
+│ │                              │ │                                      │ │
+│ │ Douala      ████████ 55% 252M│ │ Commercial    │CA      │Obj│Taux│Rang│ │
+│ │ Yaoundé     ████ 20% 92M     │ │───────────────┼────────┼───┼────┼────┤ │
+│ │ Bafoussam   ██ 10% 46M       │ │M. DJOMO      │ 125.3M │150│84% │ 1  │ │
+│ │ Bamenda     █ 8% 37M         │ │J. FOTSO      │ 98.7M  │120│82% │ 2  │ │
+│ │ Garoua      █ 5% 23M         │ │P. NGONO      │ 87.2M  │110│79% │ 3  │ │
+│ │ Autres      █ 2% 9M          │ │S. KAMGA      │ 76.5M  │100│77% │ 4  │ │
+│ │                              │ │L. MBARGA     │ 45.2M  │80 │57% │ 5  │ │
+│ │ Croissance: Bamenda +45%     │ │K. TCHINDA    │ 26.1M  │60 │44% │ 6  │ │
+│ └──────────────────────────────┘ └──────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### **SECTION PIPELINE ET PRÉVISIONS**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PIPELINE COMMERCIAL                                                         │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ COMMANDES EN COURS                                   Total: 178.5M XAF │ │
+│ ├────────────────────────────────────────────────────────────────────────┤ │
+│ │                                                                        │ │
+│ │ État           │Nombre│Montant     │Délai moyen│Actions requises       │ │
+│ │────────────────┼──────┼────────────┼───────────┼───────────────────────┤ │
+│ │⏳ En validation│  12  │ 45.2M XAF  │ < 2h      │8 crédit, 4 caution    │ │
+│ │✅ Validées     │  34  │ 89.3M XAF  │ J+1       │Planifier livraison    │ │
+│ │🚚 En livraison │  15  │ 28.7M XAF  │ Aujourd'hui│3 retards signalés     │ │
+│ │📦 Livrées      │   8  │ 15.3M XAF  │ J-1       │À facturer             │ │
+│ │                │      │            │           │                       │ │
+│ │                │  69  │ 178.5M XAF │           │                       │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ TOP 5 OPPORTUNITÉS                                  [🎯 Voir toutes]  │ │
+│ ├────────────────────────────────────────────────────────────────────────┤ │
+│ │                                                                        │ │
+│ │Client          │Projet              │Montant est.│Prob│Statut         │ │
+│ │────────────────┼────────────────────┼────────────┼────┼───────────────┤ │
+│ │TECHNI-BUILD    │Extension entrepôt  │ 25.0M XAF  │80% │Devis envoyé   │ │
+│ │SONACOM SARL    │Chantier Bonanjo    │ 18.5M XAF  │60% │Négociation    │ │
+│ │ENTREPRISE XYZ  │Rénovation siège    │ 15.2M XAF  │40% │Premier contact│ │
+│ │KAMGA & FILS    │Nouvelle boutique   │ 12.8M XAF  │90% │Verbal OK      │ │
+│ │QUINCAILLERIE M.│Stock annuel        │  8.5M XAF  │70% │RDV planifié   │ │
+│ │                │                    │            │    │               │ │
+│ │                │TOTAL PONDÉRÉ       │ 56.8M XAF  │    │               │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### **SECTION ALERTES ET ACTIONS**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ALERTES ET POINTS D'ATTENTION                          [⚙️ Configurer]     │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ 🔴 CRITIQUES (3)                                                       │ │
+│ ├────────────────────────────────────────────────────────────────────────┤ │
+│ │                                                                        │ │
+│ │ • ENTREPRISE XYZ: Impayé 5.5M XAF depuis 45 jours          [Relancer] │ │
+│ │ • Stock CIMENT-50KG critique: 45 sacs (seuil: 100)        [Commander] │ │
+│ │ • Commercial TCHINDA K.: Réalisation 44% objectif          [Analyser] │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ ⚠️ IMPORTANTES (5)                                                      │ │
+│ ├────────────────────────────────────────────────────────────────────────┤ │
+│ │                                                                        │ │
+│ │ • 8 commandes en attente validation > 2h                    [Traiter] │ │
+│ │ • ANR expire dans 15j pour 3 clients                      [Notifier] │ │
+│ │ • Caution DJOMO M. utilisée à 85% (4.25M/5M)             [Surveiller] │ │
+│ │ • Retard livraison BL-00234 (2h)                           [Appeler] │ │
+│ │ • Objectif mensuel: 76.5% avec 3 jours restants           [Analyser] │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ ℹ️ INFORMATIONS (4)                                                     │ │
+│ ├────────────────────────────────────────────────────────────────────────┤ │
+│ │                                                                        │ │
+│ │ • Nouveau client CONSTRUCTION PLUS validé aujourd'hui               ✓ │ │
+│ │ • Paiement 2.5M reçu de SONACOM SARL                              ✓ │ │
+│ │ • Livraison spéciale programmée demain 6h                         📅 │ │
+│ │ • Formation équipe vente prévue vendredi                          📚 │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### **SECTION PERFORMANCE DÉTAILLÉE**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ANALYSE DE PERFORMANCE                                 [📥 Export Excel]   │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ MÉTRIQUES COMMERCIALES                                                │ │
+│ ├────────────────────────────────────────────────────────────────────────┤ │
+│ │                                                                        │ │
+│ │ ┌──────────────────┬─────────┬─────────┬─────────┬──────────────────┐│ │
+│ │ │ Indicateur       │ Janvier │ Décembre│ Var %   │ Moyenne 3 mois   ││ │
+│ │ ├──────────────────┼─────────┼─────────┼─────────┼──────────────────┤│ │
+│ │ │ Panier moyen     │ 750K    │ 680K    │ +10.3%  │ 710K             ││ │
+│ │ │ Taux conversion  │ 78%     │ 72%     │ +8.3%   │ 75%              ││ │
+│ │ │ Nouveaux/Total   │ 12%     │ 8%      │ +50%    │ 10%              ││ │
+│ │ │ Délai livraison  │ 1.8j    │ 2.1j    │ -14.3%  │ 2.0j             ││ │
+│ │ │ Satisfaction     │ 4.2/5   │ 4.0/5   │ +5%     │ 4.1/5            ││ │
+│ │ │ Réclamations     │ 3       │ 7       │ -57%    │ 5                ││ │
+│ │ └──────────────────┴─────────┴─────────┴─────────┴──────────────────┘│ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ TOP 10 CLIENTS DU MOIS                              [👁️ Voir tous]    │ │
+│ ├────────────────────────────────────────────────────────────────────────┤ │
+│ │                                                                        │ │
+│ │Rang│Client            │CA Mois    │Nb Cmd│Encours  │Statut           │ │
+│ │────┼──────────────────┼───────────┼──────┼─────────┼─────────────────┤ │
+│ │ 1  │SONACOM SARL      │ 45.2M XAF │  12  │ 12.3M   │🟢 OK            │ │
+│ │ 2  │TECHNI-BUILD      │ 38.7M XAF │   8  │  5.2M   │🟢 OK            │ │
+│ │ 3  │ENTREPRISE XYZ    │ 32.1M XAF │   6  │ 15.5M   │🔴 Bloqué        │ │
+│ │ 4  │QUINCAILLERIE MOD │ 28.5M XAF │  23  │     0   │🟢 OK            │ │
+│ │ 5  │KAMGA Jean Paul   │ 24.3M XAF │  15  │  3.2M   │🟡 Surveillance  │ │
+│ │ 6  │CONSTRUCTION PLUS │ 19.8M XAF │   4  │  8.7M   │🟢 OK            │ │
+│ │ 7  │BTP SERVICES      │ 17.2M XAF │   7  │  2.1M   │🟢 OK            │ │
+│ │ 8  │NJOYA & FILS      │ 15.6M XAF │   9  │     0   │🟢 OK            │ │
+│ │ 9  │DEPOT CENTRAL     │ 13.4M XAF │  11  │  4.5M   │🟢 OK            │ │
+│ │10  │MULTI-TRAVAUX     │ 11.2M XAF │   5  │  1.8M   │🟢 OK            │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ ACTIONS RAPIDES                                                       │ │
+│ ├────────────────────────────────────────────────────────────────────────┤ │
+│ │                                                                        │ │
+│ │ [📊 Rapport détaillé] [📧 Envoyer synthèse] [🖨️ Imprimer]             │ │
+│ │ [⚙️ Personnaliser] [📅 Programmer envoi] [💾 Sauvegarder vue]         │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+## 🔍 **PROPRIÉTÉS DU MODÈLE UTILISÉES**
+
+### **Sources de données**
+| Section | Tables/Collections | Calculs |
+|---------|-------------------|---------|
+| **KPIs** | `sales_documents`, `customers` | Agrégations temps réel |
+| **Pipeline** | `sales_documents` (status) | Filtres par état |
+| **Performances** | `commercials`, `sales_metrics` | Comparaisons N-1 |
+| **Alertes** | Toutes tables | Règles métier + seuils |
+
+## 📌 **FONCTIONNALITÉS CLÉS**
+
+1. **Vue 360°** : Synthèse complète activité commerciale
+2. **Temps réel** : Actualisation automatique
+3. **Drill-down** : Du global au détail en 1 clic
+4. **Alertes intelligentes** : Priorisation critique/important
+5. **Comparaisons** : vs objectifs, N-1, moyennes
+6. **Actions directes** : Boutons contextuels
+7. **Export** : Excel, PDF, programmation envois
+
+## 🎯 **INDICATEURS MÉTIER**
+
+- **CA et objectifs** : Suivi quotidien/mensuel
+- **DSO** : Days Sales Outstanding (délai encaissement)
+- **Pipeline** : Visibilité commandes en cours
+- **Taux conversion** : Devis → Commandes
+- **Performance équipes** : Ranking commerciaux
+- **Géographie** : Analyse zones de vente
+- **Produits** : Top ventes et progressions
+
+## 🚀 **OPTIMISATIONS UX**
+
+1. **Visualisations** : Graphiques, jauges, sparklines
+2. **Codes couleur** : 🟢 OK, 🟡 Attention, 🔴 Critique
+3. **Responsive** : Adapté écran/tablette
+4. **Personnalisation** : Widgets configurables
+5. **Alertes push** : Notifications temps réel
+

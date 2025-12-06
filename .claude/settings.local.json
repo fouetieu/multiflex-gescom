@@ -1,8 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir:*)",
-      "Bash(cat:*)"
+      "Bash(cd /mnt/d/LABS/Multiflex/multiflex-gescom/vente echo \"=== Vérification présence aside ===\")"
     ],
     "deny": [],
     "ask": []

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="../achat/styles/achats-common.css">
+    <link rel="stylesheet" href="./styles/ventes-common.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Tailwind CSS -->
@@ -27,48 +27,32 @@
             height: 100%;
         }
 
-        /* Header Card */
-        .header-card {
+        /* Detail Sections */
+        .detail-section {
             background: white;
             border-radius: 8px;
-            padding: 20px 24px;
+            padding: 24px;
             margin-bottom: 20px;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
-        .client-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .client-info-main h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #263c89;
-            margin: 0 0 8px 0;
-        }
-
-        .client-meta {
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 16px;
-            font-size: 14px;
-            color: #6B7280;
-        }
-
-        .client-meta .code {
-            font-weight: 600;
-            color: #374151;
+            gap: 8px;
         }
 
         .status-badge-large {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
+            gap: 8px;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
         }
 
@@ -90,12 +74,6 @@
         .status-suspended {
             background: #E5E7EB;
             color: #374151;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
         }
 
         /* Tabs */
@@ -156,29 +134,11 @@
             display: block;
         }
 
-        /* Detail Sections */
-        .detail-section {
-            background: #F9FAFB;
-            border: 1px solid #E5E7EB;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1F2937;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .section-title i {
@@ -211,8 +171,8 @@
         }
 
         .info-label {
-            font-size: 11px;
-            color: #6B7280;
+            font-size: 12px;
+            color: var(--gray-500);
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -220,7 +180,7 @@
 
         .info-value {
             font-size: 14px;
-            color: #1F2937;
+            color: var(--gray-900);
             font-weight: 500;
         }
 
@@ -271,7 +231,7 @@
 
         /* Cards */
         .contact-card, .address-card {
-            background: white;
+            background: #F9FAFB;
             border: 1px solid #E5E7EB;
             border-radius: 8px;
             padding: 16px;
@@ -292,6 +252,15 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .contact-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
         }
 
         .card-badge {
@@ -586,7 +555,7 @@
 
                     <div class="flex items-center cursor-pointer">
                         <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
-                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO (Commercial)</span>
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO</span>
                         <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
                     </div>
                 </div>
@@ -596,42 +565,142 @@
         <!-- Main Content -->
         <div class="flex-1 flex overflow-hidden">
             <!-- Sidebar -->
-            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto" id="main-sidebar">
                 <nav class="py-4">
                     <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
                         Module Ventes
                     </div>
 
-                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
-                        <i class="fa-solid fa-chart-line mr-3"></i>
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="./clients-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Clients
+                    </div>
+
+                    <a href="./clients-list.html" class="sidebar-link" data-page="clients-list">
                         <i class="fa-solid fa-users mr-3"></i>
-                        <span>Clients</span>
+                        <span>Liste Clients</span>
                     </a>
 
-                    <a href="./commandes-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                    <a href="./client-create.html" class="sidebar-link" data-page="client-create">
+                        <i class="fa-solid fa-user-plus mr-3"></i>
+                        <span>Nouveau Client</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Commandes
+                    </div>
+
+                    <a href="./commandes-list.html" class="sidebar-link" data-page="commandes-list">
                         <i class="fa-solid fa-shopping-cart mr-3"></i>
-                        <span>Commandes</span>
+                        <span>Liste Commandes</span>
                     </a>
 
-                    <a href="./livraisons-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                    <a href="./commande-create.html" class="sidebar-link" data-page="commande-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Commande</span>
+                    </a>
+
+                    <a href="./commandes-validation.html" class="sidebar-link" data-page="commandes-validation">
+                        <i class="fa-solid fa-clipboard-check mr-3"></i>
+                        <span>Validation Crédit</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Livraisons
+                    </div>
+
+                    <a href="./livraisons-list.html" class="sidebar-link" data-page="livraisons-list">
                         <i class="fa-solid fa-truck mr-3"></i>
-                        <span>Livraisons</span>
+                        <span>Planning Livraisons</span>
                     </a>
 
-                    <a href="./factures-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                    <a href="./livraison-create.html" class="sidebar-link" data-page="livraison-create">
+                        <i class="fa-solid fa-truck-loading mr-3"></i>
+                        <span>Nouveau BL</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Facturation
+                    </div>
+
+                    <a href="./factures-list.html" class="sidebar-link" data-page="factures-list">
+                        <i class="fa-solid fa-file-invoice-dollar mr-3"></i>
+                        <span>Liste Factures</span>
+                    </a>
+
+                    <a href="./facture-create.html" class="sidebar-link" data-page="facture-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Facture</span>
+                    </a>
+
+                    <a href="./avoirs-list.html" class="sidebar-link" data-page="avoirs-list">
                         <i class="fa-solid fa-file-invoice mr-3"></i>
-                        <span>Factures</span>
+                        <span>Avoirs</span>
+                    </a>
+
+                    <a href="./facture-transport.html" class="sidebar-link" data-page="facture-transport">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Facture Transport</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Point de Vente
+                    </div>
+
+                    <a href="./caisse-ouverture.html" class="sidebar-link" data-page="caisse-ouverture">
+                        <i class="fa-solid fa-door-open mr-3"></i>
+                        <span>Ouverture Caisse</span>
+                    </a>
+
+                    <a href="./caisse.html" class="sidebar-link" data-page="caisse">
+                        <i class="fa-solid fa-cash-register mr-3"></i>
+                        <span>Interface Caisse</span>
+                    </a>
+
+                    <a href="./caisse-cloture.html" class="sidebar-link" data-page="caisse-cloture">
+                        <i class="fa-solid fa-door-closed mr-3"></i>
+                        <span>Clôture Caisse</span>
+                    </a>
+
+                    <a href="./caisse-historique.html" class="sidebar-link" data-page="caisse-historique">
+                        <i class="fa-solid fa-history mr-3"></i>
+                        <span>Historique Sessions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Service Client
+                    </div>
+
+                    <a href="./retours-list.html" class="sidebar-link" data-page="retours-list">
+                        <i class="fa-solid fa-rotate-left mr-3"></i>
+                        <span>Retours</span>
+                    </a>
+
+                    <a href="./reclamations-list.html" class="sidebar-link" data-page="reclamations-list">
+                        <i class="fa-solid fa-headset mr-3"></i>
+                        <span>Réclamations</span>
+                        <span class="ml-2 bg-[#EF4444] text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Reporting
+                    </div>
+
+                    <a href="./commissions-dashboard.html" class="sidebar-link" data-page="commissions-dashboard">
+                        <i class="fa-solid fa-coins mr-3"></i>
+                        <span>Mes Commissions</span>
                     </a>
 
                     <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
                         Système
                     </div>
 
-                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                    <a href="../index.html" class="sidebar-link" data-page="home">
                         <i class="fa-solid fa-home mr-3"></i>
                         <span>Accueil</span>
                     </a>
@@ -640,47 +709,40 @@
 
             <!-- Main Content Area -->
             <div class="flex-1 overflow-auto bg-[#F8F9FA]">
-                <div class="achats-container" style="max-width: 1400px; padding: 24px;">
+                <div class="ventes-container" style="max-width: 1600px; padding: 24px;">
 
-                    <!-- Breadcrumb -->
-                    <div style="margin-bottom: 20px;">
+                    <!-- Breadcrumb & Actions -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <nav style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #6B7280;">
                             <a href="./clients-list.html" style="color: #263c89; text-decoration: none;">
                                 <i class="fa-solid fa-arrow-left"></i> Retour à la liste
                             </a>
                         </nav>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="editClient()">
+                                <i class="fa-solid fa-edit"></i>
+                                Éditer
+                            </button>
+                            <button class="btn btn-primary" onclick="newOrder()">
+                                <i class="fa-solid fa-plus"></i>
+                                Nouvelle Commande
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Header Card -->
-                    <div class="header-card">
-                        <div class="client-header">
-                            <div class="client-info-main">
-                                <h1 id="client-name">SONACOM SARL</h1>
-                                <div class="client-meta">
-                                    <span class="code" id="client-code">CLI-2024-00156</span>
+                    <div class="detail-section">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h1 style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 8px;" id="client-name">
+                                    SONACOM SARL
+                                </h1>
+                                <div style="display: flex; gap: 16px; align-items: center;">
+                                    <span style="font-size: 16px; color: var(--gray-600);" id="client-code">CLI-2024-00156</span>
                                     <span class="status-badge-large status-active" id="client-status">
                                         <i class="fa-solid fa-circle" style="font-size: 8px;"></i> ACTIF
                                     </span>
-                                    <span>Créé: <span id="created-date">15/01/2024</span></span>
-                                    <span>MAJ: <span id="updated-date">28/01/2024</span></span>
                                 </div>
-                            </div>
-                            <div class="header-actions">
-                                <button class="btn btn-secondary" onclick="editClient()">
-                                    <i class="fa-solid fa-edit"></i> Modifier
-                                </button>
-                                <button class="btn btn-primary" onclick="newOrder()">
-                                    <i class="fa-solid fa-cart-plus"></i> Nouvelle Commande
-                                </button>
-                                <button class="btn btn-secondary" onclick="generateStatement()">
-                                    <i class="fa-solid fa-file-invoice-dollar"></i> Relevé
-                                </button>
-                                <button class="btn btn-secondary" onclick="sendEmail()">
-                                    <i class="fa-solid fa-envelope"></i> Email
-                                </button>
-                                <button class="btn btn-secondary" style="color: #EF4444;" onclick="blockClient()">
-                                    <i class="fa-solid fa-lock"></i> Bloquer
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -1064,6 +1126,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
     <script src="./js/client-detail.js"></script>
 </body>
 </html>

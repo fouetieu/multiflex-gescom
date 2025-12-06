@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réclamation - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/ventes-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .ticket-number {
+            background: #263c89;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #F9FAFB;
+            padding: 16px 20px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: #263c89;
+        }
+
+        .section-body {
+            padding: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .priority-critical { background: #FEE2E2; color: #DC2626; }
+        .priority-high { background: #FEF3C7; color: #D97706; }
+        .priority-medium { background: #DBEAFE; color: #2563EB; }
+        .priority-low { background: #D1FAE5; color: #059669; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-open { background: #FEE2E2; color: #DC2626; }
+        .status-in_progress { background: #FEF3C7; color: #D97706; }
+        .status-pending { background: #DBEAFE; color: #2563EB; }
+        .status-resolved { background: #D1FAE5; color: #059669; }
+        .status-closed { background: #F3F4F6; color: #6B7280; }
+
+        .sla-box {
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 16px;
+        }
+
+        .sla-box.ok {
+            background: #D1FAE5;
+            border: 1px solid #A7F3D0;
+        }
+
+        .sla-box.warning {
+            background: #FEF3C7;
+            border: 1px solid #FDE68A;
+        }
+
+        .sla-box.breach {
+            background: #FEE2E2;
+            border: 1px solid #FECACA;
+        }
+
+        .sla-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .sla-box.ok .sla-title { color: #059669; }
+        .sla-box.warning .sla-title { color: #D97706; }
+        .sla-box.breach .sla-title { color: #DC2626; }
+
+        .sla-time {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .sla-box.ok .sla-time { color: #059669; }
+        .sla-box.warning .sla-time { color: #D97706; }
+        .sla-box.breach .sla-time { color: #DC2626; }
+
+        .description-box {
+            background: #F9FAFB;
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #E5E7EB;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -24px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #263c89;
+        }
+
+        .timeline-dot.action {
+            border-color: #059669;
+        }
+
+        .timeline-dot.system {
+            border-color: #6B7280;
+        }
+
+        .timeline-dot.escalation {
+            border-color: #DC2626;
+        }
+
+        .timeline-date {
+            font-size: 11px;
+            color: #6B7280;
+            margin-bottom: 4px;
+        }
+
+        .timeline-content {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1F2937;
+            margin-bottom: 4px;
+        }
+
+        .timeline-text {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .timeline-author {
+            font-size: 11px;
+            color: #9CA3AF;
+            margin-top: 8px;
+        }
+
+        .client-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #EFF6FF;
+            border-radius: 8px;
+        }
+
+        .client-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: #263c89;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .client-info {
+            flex: 1;
+        }
+
+        .client-name {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .client-code {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .doc-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #F9FAFB;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #374151;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .doc-link:hover {
+            background: #EFF6FF;
+        }
+
+        .doc-link i {
+            color: #263c89;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .quick-action-btn {
+            padding: 12px;
+            border: 1px solid #E5E7EB;
+            background: white;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-action-btn:hover {
+            border-color: #263c89;
+            background: #EFF6FF;
+        }
+
+        .quick-action-btn i {
+            display: block;
+            font-size: 20px;
+            color: #263c89;
+            margin-bottom: 6px;
+        }
+
+        .quick-action-btn span {
+            font-size: 12px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .resolution-box {
+            background: #D1FAE5;
+            border: 1px solid #A7F3D0;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .resolution-title {
+            font-weight: 600;
+            color: #059669;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .resolution-text {
+            font-size: 14px;
+            color: #065F46;
+        }
+
+        @media (max-width: 968px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+
+            <div class="flex-1 flex items-center justify-between px-6">
+                <div class="flex items-center gap-4">
+                    <h1 class="text-xl font-bold text-[#1A1A1A]">Réclamation</h1>
+                    <span class="ticket-number" id="ticketNumber">RCL-2024-00234</span>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <button class="btn btn-secondary" onclick="printClaim()">
+                        <i class="fa-solid fa-print"></i> Imprimer
+                    </button>
+                    <button class="btn btn-danger" onclick="escalateClaim()">
+                        <i class="fa-solid fa-arrow-up"></i> Escalader
+                    </button>
+                    <button class="btn btn-success" onclick="resolveClaim()">
+                        <i class="fa-solid fa-check"></i> Résoudre
+                    </button>
+
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">8</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto" id="main-sidebar">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Ventes
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Clients
+                    </div>
+
+                    <a href="./clients-list.html" class="sidebar-link" data-page="clients-list">
+                        <i class="fa-solid fa-users mr-3"></i>
+                        <span>Liste Clients</span>
+                    </a>
+
+                    <a href="./client-create.html" class="sidebar-link" data-page="client-create">
+                        <i class="fa-solid fa-user-plus mr-3"></i>
+                        <span>Nouveau Client</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Commandes
+                    </div>
+
+                    <a href="./commandes-list.html" class="sidebar-link" data-page="commandes-list">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Liste Commandes</span>
+                    </a>
+
+                    <a href="./commande-create.html" class="sidebar-link" data-page="commande-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Commande</span>
+                    </a>
+
+                    <a href="./commandes-validation.html" class="sidebar-link" data-page="commandes-validation">
+                        <i class="fa-solid fa-clipboard-check mr-3"></i>
+                        <span>Validation Crédit</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Livraisons
+                    </div>
+
+                    <a href="./livraisons-list.html" class="sidebar-link" data-page="livraisons-list">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Planning Livraisons</span>
+                    </a>
+
+                    <a href="./livraison-create.html" class="sidebar-link" data-page="livraison-create">
+                        <i class="fa-solid fa-truck-loading mr-3"></i>
+                        <span>Nouveau BL</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Facturation
+                    </div>
+
+                    <a href="./factures-list.html" class="sidebar-link" data-page="factures-list">
+                        <i class="fa-solid fa-file-invoice-dollar mr-3"></i>
+                        <span>Liste Factures</span>
+                    </a>
+
+                    <a href="./facture-create.html" class="sidebar-link" data-page="facture-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Facture</span>
+                    </a>
+
+                    <a href="./avoirs-list.html" class="sidebar-link" data-page="avoirs-list">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Avoirs</span>
+                    </a>
+
+                    <a href="./facture-transport.html" class="sidebar-link" data-page="facture-transport">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Facture Transport</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Point de Vente
+                    </div>
+
+                    <a href="./caisse-ouverture.html" class="sidebar-link" data-page="caisse-ouverture">
+                        <i class="fa-solid fa-door-open mr-3"></i>
+                        <span>Ouverture Caisse</span>
+                    </a>
+
+                    <a href="./caisse.html" class="sidebar-link" data-page="caisse">
+                        <i class="fa-solid fa-cash-register mr-3"></i>
+                        <span>Interface Caisse</span>
+                    </a>
+
+                    <a href="./caisse-cloture.html" class="sidebar-link" data-page="caisse-cloture">
+                        <i class="fa-solid fa-door-closed mr-3"></i>
+                        <span>Clôture Caisse</span>
+                    </a>
+
+                    <a href="./caisse-historique.html" class="sidebar-link" data-page="caisse-historique">
+                        <i class="fa-solid fa-history mr-3"></i>
+                        <span>Historique Sessions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Service Client
+                    </div>
+
+                    <a href="./retours-list.html" class="sidebar-link" data-page="retours-list">
+                        <i class="fa-solid fa-rotate-left mr-3"></i>
+                        <span>Retours</span>
+                    </a>
+
+                    <a href="./reclamations-list.html" class="sidebar-link" data-page="reclamations-list">
+                        <i class="fa-solid fa-headset mr-3"></i>
+                        <span>Réclamations</span>
+                        <span class="ml-2 bg-[#EF4444] text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Reporting
+                    </div>
+
+                    <a href="./commissions-dashboard.html" class="sidebar-link" data-page="commissions-dashboard">
+                        <i class="fa-solid fa-coins mr-3"></i>
+                        <span>Mes Commissions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="ventes-container">
+
+                    <div class="content-grid">
+                        <!-- Left Column -->
+                        <div class="left-column">
+                            <!-- Claim Info -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <div class="section-title">
+                                        <i class="fa-solid fa-info-circle"></i>
+                                        Informations
+                                    </div>
+                                    <span class="status-badge status-in_progress" id="statusBadge">En cours</span>
+                                </div>
+                                <div class="section-body">
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Type</span>
+                                            <span class="info-value" id="claimType">Qualité produit</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Priorité</span>
+                                            <span class="priority-badge priority-critical" id="priorityBadge">
+                                                <i class="fa-solid fa-fire"></i> Critique
+                                            </span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Date création</span>
+                                            <span class="info-value" id="creationDate">30/01/2024 09:15</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Assigné à</span>
+                                            <span class="info-value" id="assignedTo">Service Qualité</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="sla-box warning" id="slaBox">
+                                        <div class="sla-title">
+                                            <i class="fa-solid fa-clock"></i> Délai SLA
+                                        </div>
+                                        <div class="sla-time" id="slaTime">2h restantes</div>
+                                        <div style="font-size: 12px; margin-top: 4px;" id="slaDeadline">
+                                            Échéance: 30/01/2024 13:15
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <div class="section-title">
+                                        <i class="fa-solid fa-align-left"></i>
+                                        Description
+                                    </div>
+                                </div>
+                                <div class="section-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Objet <span class="required">*</span></label>
+                                        <input type="text" class="form-input" id="claimSubject"
+                                               value="Peinture ne tient pas après 2 jours">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label class="form-label">Description détaillée</label>
+                                        <div class="description-box" id="claimDescription">
+                                            Peinture qui ne tient pas après 2 jours, problème de qualité sur lot PEINT-0124-B.
+                                            Le client signale que la peinture s'écaille et se décolle sur plusieurs murs.
+                                            Demande un remplacement complet du lot.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Timeline -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <div class="section-title">
+                                        <i class="fa-solid fa-history"></i>
+                                        Historique des actions
+                                    </div>
+                                    <button class="btn btn-primary btn-sm" onclick="addAction()">
+                                        <i class="fa-solid fa-plus"></i> Action
+                                    </button>
+                                </div>
+                                <div class="section-body">
+                                    <div class="timeline" id="timeline">
+                                        <!-- Dynamic content -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="right-column">
+                            <!-- Client -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <div class="section-title">
+                                        <i class="fa-solid fa-user"></i>
+                                        Client
+                                    </div>
+                                </div>
+                                <div class="section-body">
+                                    <div class="client-box">
+                                        <div class="client-avatar" id="clientInitials">SS</div>
+                                        <div class="client-info">
+                                            <div class="client-name" id="clientName">SONACOM SARL</div>
+                                            <div class="client-code" id="clientCode">CLI-2024-00156</div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 16px;">
+                                        <div class="info-item" style="margin-bottom: 8px;">
+                                            <span class="info-label">Contact</span>
+                                            <span class="info-value">M. NKOULOU</span>
+                                        </div>
+                                        <div class="info-item" style="margin-bottom: 8px;">
+                                            <span class="info-label">Téléphone</span>
+                                            <span class="info-value">+237 699 123 456</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Email</span>
+                                            <span class="info-value">contact@sonacom.cm</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Related Documents -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <div class="section-title">
+                                        <i class="fa-solid fa-link"></i>
+                                        Documents liés
+                                    </div>
+                                </div>
+                                <div class="section-body" id="relatedDocs">
+                                    <a href="#" class="doc-link">
+                                        <i class="fa-solid fa-file-invoice"></i>
+                                        <div>
+                                            <div style="font-weight: 500;">FA-CLI156-2024-00567</div>
+                                            <div style="font-size: 11px; color: #6B7280;">Facture du 25/01/2024</div>
+                                        </div>
+                                    </a>
+                                    <a href="#" class="doc-link">
+                                        <i class="fa-solid fa-truck"></i>
+                                        <div>
+                                            <div style="font-weight: 500;">BL-CLI156-2024-00235</div>
+                                            <div style="font-size: 11px; color: #6B7280;">Bon de livraison</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <div class="section-title">
+                                        <i class="fa-solid fa-bolt"></i>
+                                        Actions rapides
+                                    </div>
+                                </div>
+                                <div class="section-body">
+                                    <div class="quick-actions">
+                                        <div class="quick-action-btn" onclick="createReturn()">
+                                            <i class="fa-solid fa-rotate-left"></i>
+                                            <span>Créer retour</span>
+                                        </div>
+                                        <div class="quick-action-btn" onclick="createAvoir()">
+                                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                                            <span>Créer avoir</span>
+                                        </div>
+                                        <div class="quick-action-btn" onclick="contactClient()">
+                                            <i class="fa-solid fa-phone"></i>
+                                            <span>Appeler client</span>
+                                        </div>
+                                        <div class="quick-action-btn" onclick="scheduleVisit()">
+                                            <i class="fa-solid fa-calendar-plus"></i>
+                                            <span>Planifier visite</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Resolution (shown when resolved) -->
+                            <div class="section-card" id="resolutionCard" style="display: none;">
+                                <div class="section-header">
+                                    <div class="section-title">
+                                        <i class="fa-solid fa-check-circle" style="color: #059669;"></i>
+                                        Résolution
+                                    </div>
+                                </div>
+                                <div class="section-body">
+                                    <div class="resolution-box">
+                                        <div class="resolution-title">
+                                            <i class="fa-solid fa-check"></i>
+                                            Solution apportée
+                                        </div>
+                                        <div class="resolution-text" id="resolutionText">
+                                            Remplacement lot complet + geste commercial de 10%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/reclamation-detail.js"></script>
+</body>
+</html>

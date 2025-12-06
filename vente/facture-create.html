@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle Facture - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/ventes-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        /* Invoice Header */
+        .invoice-header {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .invoice-header-info {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .invoice-number {
+            font-size: 16px;
+            font-weight: 600;
+            color: #263c89;
+        }
+        .invoice-date {
+            font-size: 14px;
+            color: #6B7280;
+        }
+        .invoice-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #FEF3C7;
+            color: #D97706;
+        }
+        .invoice-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+        .invoice-header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .tab-button {
+            flex: 1;
+            padding: 16px 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            transition: all 0.2s;
+        }
+        .tab-button:hover {
+            background: #F8FAFC;
+            color: #374151;
+        }
+        .tab-button.active {
+            color: #263c89;
+            background: #F0F4FF;
+        }
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #263c89;
+        }
+        .tab-button.completed .tab-check {
+            display: inline-flex;
+        }
+        .tab-check {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #10B981;
+            color: white;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+        .tab-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .tab-button.active .tab-number {
+            background: #263c89;
+            color: white;
+        }
+        .tab-button.completed .tab-number {
+            display: none;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 24px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin-bottom: 24px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title i {
+            color: #263c89;
+        }
+
+        /* Radio Options */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .radio-option:hover {
+            border-color: #263c89;
+            background: #F8FAFC;
+        }
+        .radio-option.selected {
+            border-color: #263c89;
+            background: #F0F4FF;
+        }
+        .radio-option input[type="radio"] {
+            accent-color: #263c89;
+        }
+        .radio-label {
+            font-size: 14px;
+            color: #374151;
+        }
+
+        /* BL Table */
+        .bl-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .bl-table th {
+            background: #F8FAFC;
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .bl-table td {
+            padding: 12px;
+            border-bottom: 1px solid #F3F4F6;
+            font-size: 13px;
+        }
+        .bl-number {
+            font-weight: 600;
+            color: #263c89;
+        }
+        .bl-status {
+            display: inline-flex;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .bl-status-partial {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+        .bl-status-complete {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        /* Verification Box */
+        .verification-box {
+            background: #F8FAFC;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .verification-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+        .verification-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+        .verification-item.success {
+            color: #059669;
+        }
+        .verification-item.warning {
+            color: #D97706;
+        }
+        .verification-item.error {
+            color: #DC2626;
+        }
+
+        /* Address Box */
+        .address-box {
+            background: #F8FAFC;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        /* Articles Table */
+        .articles-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .articles-table th {
+            background: #F8FAFC;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6B7280;
+            border-bottom: 1px solid #E5E7EB;
+            text-transform: uppercase;
+        }
+        .articles-table td {
+            padding: 12px;
+            border-bottom: 1px solid #F3F4F6;
+            font-size: 13px;
+        }
+        .article-code {
+            font-weight: 600;
+            color: #263c89;
+            font-size: 12px;
+        }
+        .article-name {
+            color: #374151;
+        }
+
+        /* Totals Box */
+        .totals-box {
+            background: #F8FAFC;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 400px;
+            margin-left: auto;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        .total-row.separator {
+            border-top: 1px dashed #D1D5DB;
+            margin-top: 8px;
+            padding-top: 16px;
+        }
+        .total-label {
+            color: #6B7280;
+        }
+        .total-value {
+            font-weight: 500;
+            color: #1F2937;
+        }
+        .total-row.grand-total {
+            background: #263c89;
+            color: white;
+            margin: 12px -20px -20px -20px;
+            padding: 16px 20px;
+            border-radius: 0 0 8px 8px;
+        }
+        .total-row.grand-total .total-label,
+        .total-row.grand-total .total-value {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Schedule Table */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        .schedule-table th {
+            background: #F8FAFC;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .schedule-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #F3F4F6;
+            font-size: 13px;
+        }
+        .schedule-table tfoot td {
+            font-weight: 600;
+            background: #F8FAFC;
+        }
+
+        /* Bank Info */
+        .bank-info {
+            background: #F0F4FF;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .bank-row {
+            display: flex;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+        .bank-label {
+            width: 140px;
+            color: #6B7280;
+        }
+        .bank-value {
+            color: #1F2937;
+            font-weight: 500;
+        }
+
+        /* Recap Section */
+        .recap-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        .recap-card {
+            background: #F8FAFC;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .recap-card-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .recap-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+        .recap-label {
+            color: #6B7280;
+        }
+        .recap-value {
+            color: #1F2937;
+            font-weight: 500;
+        }
+        .recap-value.highlight {
+            color: #263c89;
+            font-weight: 600;
+        }
+
+        /* Control Points */
+        .control-points {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .control-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+        .control-item.success { color: #059669; }
+        .control-item.warning { color: #D97706; }
+        .control-item.error { color: #DC2626; }
+
+        /* Preview Box */
+        .preview-box {
+            background: #F8FAFC;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .preview-placeholder {
+            color: #9CA3AF;
+            font-size: 14px;
+        }
+
+        /* Send Options */
+        .send-options {
+            background: #F8FAFC;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .send-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+        }
+        .send-option input[type="checkbox"] {
+            margin-top: 3px;
+            accent-color: #263c89;
+        }
+        .send-option-content {
+            flex: 1;
+        }
+        .send-option-label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+        .send-option-detail {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        /* Navigation Footer */
+        .tab-navigation {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 24px;
+            border-top: 1px solid #E5E7EB;
+            margin-top: 24px;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: #FEF3C7;
+            border: 1px solid #FCD34D;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #92400E;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Nouvelle Facture Client</h1>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="notification-badge">2</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Sylvie NGONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto" id="main-sidebar">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Ventes
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Clients
+                    </div>
+
+                    <a href="./clients-list.html" class="sidebar-link" data-page="clients-list">
+                        <i class="fa-solid fa-users mr-3"></i>
+                        <span>Liste Clients</span>
+                    </a>
+
+                    <a href="./client-create.html" class="sidebar-link" data-page="client-create">
+                        <i class="fa-solid fa-user-plus mr-3"></i>
+                        <span>Nouveau Client</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Commandes
+                    </div>
+
+                    <a href="./commandes-list.html" class="sidebar-link" data-page="commandes-list">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Liste Commandes</span>
+                    </a>
+
+                    <a href="./commande-create.html" class="sidebar-link" data-page="commande-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Commande</span>
+                    </a>
+
+                    <a href="./commandes-validation.html" class="sidebar-link" data-page="commandes-validation">
+                        <i class="fa-solid fa-clipboard-check mr-3"></i>
+                        <span>Validation Crédit</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Livraisons
+                    </div>
+
+                    <a href="./livraisons-list.html" class="sidebar-link" data-page="livraisons-list">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Planning Livraisons</span>
+                    </a>
+
+                    <a href="./livraison-create.html" class="sidebar-link" data-page="livraison-create">
+                        <i class="fa-solid fa-truck-loading mr-3"></i>
+                        <span>Nouveau BL</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Facturation
+                    </div>
+
+                    <a href="./factures-list.html" class="sidebar-link" data-page="factures-list">
+                        <i class="fa-solid fa-file-invoice-dollar mr-3"></i>
+                        <span>Liste Factures</span>
+                    </a>
+
+                    <a href="./facture-create.html" class="sidebar-link" data-page="facture-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Facture</span>
+                    </a>
+
+                    <a href="./avoirs-list.html" class="sidebar-link" data-page="avoirs-list">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Avoirs</span>
+                    </a>
+
+                    <a href="./facture-transport.html" class="sidebar-link" data-page="facture-transport">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Facture Transport</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Point de Vente
+                    </div>
+
+                    <a href="./caisse-ouverture.html" class="sidebar-link" data-page="caisse-ouverture">
+                        <i class="fa-solid fa-door-open mr-3"></i>
+                        <span>Ouverture Caisse</span>
+                    </a>
+
+                    <a href="./caisse.html" class="sidebar-link" data-page="caisse">
+                        <i class="fa-solid fa-cash-register mr-3"></i>
+                        <span>Interface Caisse</span>
+                    </a>
+
+                    <a href="./caisse-cloture.html" class="sidebar-link" data-page="caisse-cloture">
+                        <i class="fa-solid fa-door-closed mr-3"></i>
+                        <span>Clôture Caisse</span>
+                    </a>
+
+                    <a href="./caisse-historique.html" class="sidebar-link" data-page="caisse-historique">
+                        <i class="fa-solid fa-history mr-3"></i>
+                        <span>Historique Sessions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Service Client
+                    </div>
+
+                    <a href="./retours-list.html" class="sidebar-link" data-page="retours-list">
+                        <i class="fa-solid fa-rotate-left mr-3"></i>
+                        <span>Retours</span>
+                    </a>
+
+                    <a href="./reclamations-list.html" class="sidebar-link" data-page="reclamations-list">
+                        <i class="fa-solid fa-headset mr-3"></i>
+                        <span>Réclamations</span>
+                        <span class="ml-2 bg-[#EF4444] text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Reporting
+                    </div>
+
+                    <a href="./commissions-dashboard.html" class="sidebar-link" data-page="commissions-dashboard">
+                        <i class="fa-solid fa-coins mr-3"></i>
+                        <span>Mes Commissions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="ventes-container">
+
+                    <!-- Invoice Header -->
+                    <div class="invoice-header">
+                        <div class="invoice-header-info">
+                            <div>
+                                <div class="invoice-number" id="invoiceNumber">FA-XXXX-2024-00568 (Auto)</div>
+                                <div class="invoice-date">Date: <span id="invoiceDate">29/01/2024</span></div>
+                            </div>
+                            <div class="invoice-status">
+                                <i class="fa-solid fa-file-alt"></i>
+                                BROUILLON
+                            </div>
+                            <div class="invoice-amount" id="headerAmount">0 XAF</div>
+                        </div>
+                        <div class="invoice-header-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="saveDraft()">
+                                <i class="fa-solid fa-save"></i>
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="cancelForm()">
+                                <i class="fa-solid fa-times"></i>
+                                Fermer
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabs Container -->
+                    <div class="tabs-container">
+                        <!-- Tabs Header -->
+                        <div class="tabs-header">
+                            <button class="tab-button active" onclick="switchTab(0)">
+                                <span class="tab-number">1</span>
+                                <span class="tab-check"><i class="fa-solid fa-check"></i></span>
+                                Source
+                            </button>
+                            <button class="tab-button" onclick="switchTab(1)">
+                                <span class="tab-number">2</span>
+                                <span class="tab-check"><i class="fa-solid fa-check"></i></span>
+                                Client
+                            </button>
+                            <button class="tab-button" onclick="switchTab(2)">
+                                <span class="tab-number">3</span>
+                                <span class="tab-check"><i class="fa-solid fa-check"></i></span>
+                                Articles
+                            </button>
+                            <button class="tab-button" onclick="switchTab(3)">
+                                <span class="tab-number">4</span>
+                                <span class="tab-check"><i class="fa-solid fa-check"></i></span>
+                                Paiement
+                            </button>
+                            <button class="tab-button" onclick="switchTab(4)">
+                                <span class="tab-number">5</span>
+                                <span class="tab-check"><i class="fa-solid fa-check"></i></span>
+                                Validation
+                            </button>
+                        </div>
+
+                        <!-- Tab 1: Source -->
+                        <div class="tab-content active" id="tab-source">
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-file-alt"></i>
+                                        Type de Facturation
+                                    </h3>
+                                </div>
+                                <div class="radio-group" id="invoiceTypeGroup">
+                                    <label class="radio-option selected" onclick="selectInvoiceType('bl')">
+                                        <input type="radio" name="invoiceType" value="bl" checked>
+                                        <span class="radio-label">Depuis bon(s) de livraison (Standard)</span>
+                                    </label>
+                                    <label class="radio-option" onclick="selectInvoiceType('direct')">
+                                        <input type="radio" name="invoiceType" value="direct">
+                                        <span class="radio-label">Facture directe (sans BL)</span>
+                                    </label>
+                                    <label class="radio-option" onclick="selectInvoiceType('acompte')">
+                                        <input type="radio" name="invoiceType" value="acompte">
+                                        <span class="radio-label">Facture d'acompte</span>
+                                    </label>
+                                    <label class="radio-option" onclick="selectInvoiceType('situation')">
+                                        <input type="radio" name="invoiceType" value="situation">
+                                        <span class="radio-label">Facture de situation (travaux)</span>
+                                    </label>
+                                    <label class="radio-option" onclick="selectInvoiceType('transport')">
+                                        <input type="radio" name="invoiceType" value="transport">
+                                        <span class="radio-label">Facture de transport (separee)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-section" id="blSelectionSection">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-truck"></i>
+                                        Selection Bon(s) de Livraison
+                                    </h3>
+                                </div>
+                                <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                                    <div class="form-group">
+                                        <label class="form-label">Client</label>
+                                        <select class="form-select" id="sourceClient" onchange="loadClientBLs()">
+                                            <option value="">Selectionner un client...</option>
+                                            <option value="CLI156">CLI-2024-00156 - SONACOM SARL</option>
+                                            <option value="CLI089">CLI-2024-00089 - QUINCAILLERIE MODERNE</option>
+                                            <option value="CLI312">CLI-2024-00312 - TECHNI-BUILD</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Periode du</label>
+                                        <input type="date" class="form-input" id="periodFrom">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Au</label>
+                                        <input type="date" class="form-input" id="periodTo">
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 16px;">
+                                    <div style="font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 12px;">
+                                        BL disponibles a facturer:
+                                    </div>
+                                    <table class="bl-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 40px;">
+                                                    <input type="checkbox" id="selectAllBLs" onchange="toggleSelectAllBLs()">
+                                                </th>
+                                                <th>N° BL</th>
+                                                <th>Date</th>
+                                                <th>BC Source</th>
+                                                <th>Articles</th>
+                                                <th style="text-align: right;">Montant TTC</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="blTableBody">
+                                            <tr>
+                                                <td colspan="6" style="text-align: center; color: #6B7280; padding: 30px;">
+                                                    Selectionnez un client pour voir les BL disponibles
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                                    <div style="font-size: 14px; font-weight: 600; color: #263c89;" id="selectedBLTotal">
+                                        Total selectionne: 0 XAF
+                                    </div>
+                                    <div style="display: flex; gap: 16px;">
+                                        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151;">
+                                            <input type="checkbox" id="groupBLs">
+                                            Regrouper plusieurs BL en une facture
+                                        </label>
+                                        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151;">
+                                            <input type="checkbox" id="partialBL">
+                                            Facturation partielle du BL
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-navigation">
+                                <div></div>
+                                <button class="btn btn-primary" onclick="nextTab()">
+                                    Suivant
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Client -->
+                        <div class="tab-content" id="tab-client">
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-user"></i>
+                                        Client Facture (Auto depuis BL)
+                                    </h3>
+                                </div>
+                                <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                                    <div class="form-group">
+                                        <label class="form-label">Code / Raison sociale</label>
+                                        <input type="text" class="form-input" id="clientCode" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">NUI</label>
+                                        <input type="text" class="form-input" id="clientNUI" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Regime fiscal</label>
+                                        <input type="text" class="form-input" id="clientRegime" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Contact</label>
+                                        <input type="text" class="form-input" id="clientContact" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="verification-box">
+                                    <div class="verification-title">
+                                        <i class="fa-solid fa-shield-check"></i>
+                                        Verifications Automatiques
+                                    </div>
+                                    <div class="verification-item success">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        Attestation non-redevance valide jusqu'au 31/12/2024
+                                    </div>
+                                    <div class="verification-item success">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        Limite credit OK: disponible > montant facture
+                                    </div>
+                                    <div class="verification-item warning" id="unpaidWarning" style="display: none;">
+                                        <i class="fa-solid fa-exclamation-triangle"></i>
+                                        <span>Facture precedente impayee</span>
+                                    </div>
+                                    <div class="verification-item success">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        Documents legaux a jour (RCCM, NUI)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                        Adresse de Facturation
+                                    </h3>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Adresse</label>
+                                    <select class="form-select" id="addressSelect">
+                                        <option value="siege">Siege Social - Bonanjo</option>
+                                        <option value="chantier">Adresse Chantier</option>
+                                    </select>
+                                </div>
+                                <div class="address-box" id="addressPreview">
+                                    Boulevard de la Liberte<br>
+                                    Bonanjo, Douala<br>
+                                    BP 12345 Douala<br>
+                                    Cameroun
+                                </div>
+                                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151; margin-top: 12px;">
+                                    <input type="checkbox" id="differentAddress">
+                                    Utiliser une adresse differente
+                                </label>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-briefcase"></i>
+                                        Informations Commerciales
+                                    </h3>
+                                </div>
+                                <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                                    <div class="form-group">
+                                        <label class="form-label">Commercial</label>
+                                        <input type="text" class="form-input" id="commercial" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">BC client</label>
+                                        <input type="text" class="form-input" id="clientPO" placeholder="PO-2024-XXX">
+                                    </div>
+                                    <div class="form-group" style="grid-column: span 2;">
+                                        <label class="form-label">Votre reference</label>
+                                        <input type="text" class="form-input" id="clientRef" placeholder="Ex: Projet construction phase 2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-navigation">
+                                <button class="btn btn-secondary" onclick="prevTab()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Precedent
+                                </button>
+                                <button class="btn btn-primary" onclick="nextTab()">
+                                    Suivant
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tab 3: Articles -->
+                        <div class="tab-content" id="tab-articles">
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-boxes-stacked"></i>
+                                        Lignes de Facturation
+                                    </h3>
+                                    <button class="btn btn-secondary btn-sm" onclick="addManualLine()">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Ajouter ligne manuelle
+                                    </button>
+                                </div>
+                                <table class="articles-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 40px;">N°</th>
+                                            <th style="width: 120px;">Code Article</th>
+                                            <th>Designation</th>
+                                            <th style="width: 60px; text-align: center;">Qte</th>
+                                            <th style="width: 80px;">Unite</th>
+                                            <th style="width: 90px; text-align: right;">PU HT</th>
+                                            <th style="width: 60px; text-align: center;">Rem%</th>
+                                            <th style="width: 110px; text-align: right;">Total HT</th>
+                                            <th style="width: 50px;">TVA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="articlesTableBody">
+                                        <tr>
+                                            <td colspan="9" style="text-align: center; color: #6B7280; padding: 30px;">
+                                                Selectionnez des BL pour charger les articles
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="warning-box" id="missingArticleWarning" style="display: none;">
+                                <i class="fa-solid fa-exclamation-triangle"></i>
+                                <span>Article AGGLO-15 du BC initial non livre (rupture stock)</span>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-calculator"></i>
+                                        Calcul des Montants
+                                    </h3>
+                                </div>
+                                <div class="totals-box">
+                                    <div class="total-row">
+                                        <span class="total-label">Total brut HT:</span>
+                                        <span class="total-value" id="totalBrutHT">0 XAF</span>
+                                    </div>
+                                    <div class="total-row">
+                                        <span class="total-label">Remise articles:</span>
+                                        <span class="total-value" id="totalRemise">0 XAF</span>
+                                    </div>
+                                    <div class="total-row separator">
+                                        <span class="total-label">Net HT:</span>
+                                        <span class="total-value" id="totalNetHT">0 XAF</span>
+                                    </div>
+                                    <div class="total-row">
+                                        <span class="total-label">Base TVA 19.25%:</span>
+                                        <span class="total-value" id="baseTVA">0 XAF</span>
+                                    </div>
+                                    <div class="total-row">
+                                        <span class="total-label">Montant TVA:</span>
+                                        <span class="total-value" id="montantTVA">0 XAF</span>
+                                    </div>
+                                    <div class="total-row separator">
+                                        <span class="total-label">Total TTC:</span>
+                                        <span class="total-value" id="totalTTC">0 XAF</span>
+                                    </div>
+                                    <div style="padding: 12px 0;">
+                                        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151;">
+                                            <input type="checkbox" id="applyRetenue" checked onchange="calculateTotals()">
+                                            Appliquer retenue a la source (1.1%)
+                                        </label>
+                                    </div>
+                                    <div class="total-row">
+                                        <span class="total-label">Retenue source:</span>
+                                        <span class="total-value" id="retenueAmount">0 XAF</span>
+                                    </div>
+                                    <div class="total-row grand-total">
+                                        <span class="total-label">NET A PAYER:</span>
+                                        <span class="total-value" id="netAPayer">0 XAF</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-navigation">
+                                <button class="btn btn-secondary" onclick="prevTab()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Precedent
+                                </button>
+                                <button class="btn btn-primary" onclick="nextTab()">
+                                    Suivant
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tab 4: Paiement -->
+                        <div class="tab-content" id="tab-paiement">
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-handshake"></i>
+                                        Conditions Commerciales Client
+                                    </h3>
+                                </div>
+                                <div class="form-grid" style="grid-template-columns: repeat(3, 1fr);">
+                                    <div class="form-group">
+                                        <label class="form-label">Mode paiement</label>
+                                        <input type="text" class="form-input" value="CREDIT (conditions negociees)" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Delai standard</label>
+                                        <input type="text" class="form-input" value="NET 30 jours" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Escompte</label>
+                                        <input type="text" class="form-input" value="2% si paiement < 10 jours" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-grid" style="grid-template-columns: 1fr 1fr; margin-top: 16px;">
+                                    <div class="form-group">
+                                        <label class="form-label">Date facture</label>
+                                        <input type="date" class="form-input" id="invoiceDateInput">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Date echeance (calcul auto)</label>
+                                        <input type="date" class="form-input" id="dueDate">
+                                    </div>
+                                </div>
+                                <div style="margin-top: 12px; font-size: 13px; color: #6B7280;">
+                                    Modes acceptes:
+                                    <span style="color: #059669;"><i class="fa-solid fa-check"></i> Virement</span>
+                                    <span style="color: #059669; margin-left: 12px;"><i class="fa-solid fa-check"></i> Cheque</span>
+                                    <span style="color: #DC2626; margin-left: 12px;"><i class="fa-solid fa-times"></i> Mobile Money</span>
+                                    <span style="color: #DC2626; margin-left: 12px;"><i class="fa-solid fa-times"></i> Especes (limite 100K XAF depassee)</span>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-calendar-days"></i>
+                                        Echeancier de Paiement
+                                    </h3>
+                                </div>
+                                <div class="radio-group" style="flex-direction: row; gap: 24px;">
+                                    <label class="radio-option" style="flex: 1;" onclick="selectPaymentType('unique')">
+                                        <input type="radio" name="paymentType" value="unique" checked>
+                                        <span class="radio-label">Paiement unique a l'echeance</span>
+                                    </label>
+                                    <label class="radio-option" style="flex: 1;" onclick="selectPaymentType('echelonne')">
+                                        <input type="radio" name="paymentType" value="echelonne">
+                                        <span class="radio-label">Paiement echelonne</span>
+                                    </label>
+                                </div>
+
+                                <div id="scheduleSection" style="display: none; margin-top: 16px;">
+                                    <table class="schedule-table">
+                                        <thead>
+                                            <tr>
+                                                <th>N°</th>
+                                                <th>Date echeance</th>
+                                                <th style="text-align: right;">Montant</th>
+                                                <th style="text-align: center;">%</th>
+                                                <th>Statut</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>15/02/2024</td>
+                                                <td style="text-align: right;">586,438 XAF</td>
+                                                <td style="text-align: center;">50%</td>
+                                                <td>A echoir</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>28/02/2024</td>
+                                                <td style="text-align: right;">586,437 XAF</td>
+                                                <td style="text-align: center;">50%</td>
+                                                <td>A echoir</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="2">TOTAL</td>
+                                                <td style="text-align: right;">1,172,875 XAF</td>
+                                                <td style="text-align: center;">100%</td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <button class="btn btn-secondary btn-sm" style="margin-top: 12px;">
+                                        <i class="fa-solid fa-edit"></i>
+                                        Modifier echeancier
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-building-columns"></i>
+                                        Coordonnees Bancaires pour Paiement
+                                    </h3>
+                                </div>
+                                <div class="bank-info">
+                                    <div class="bank-row">
+                                        <span class="bank-label">Banque:</span>
+                                        <span class="bank-value">BICEC DOUALA</span>
+                                    </div>
+                                    <div class="bank-row">
+                                        <span class="bank-label">Titulaire:</span>
+                                        <span class="bank-value">IOLA BTP SARL</span>
+                                    </div>
+                                    <div class="bank-row">
+                                        <span class="bank-label">IBAN:</span>
+                                        <span class="bank-value">CM21 10005 00001 12345678901 23</span>
+                                    </div>
+                                    <div class="bank-row">
+                                        <span class="bank-label">Code SWIFT:</span>
+                                        <span class="bank-value">BICECMCX</span>
+                                    </div>
+                                    <div class="bank-row">
+                                        <span class="bank-label">Reference a indiquer:</span>
+                                        <span class="bank-value" id="paymentRef">FA-XXXX-2024-00568</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-gavel"></i>
+                                        Penalites et Conditions
+                                    </h3>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151;">
+                                        <input type="checkbox" id="applyPenalties" checked>
+                                        Appliquer penalites de retard (Taux BCE + 3%)
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151;">
+                                        <input type="checkbox" id="reservationClause" checked>
+                                        Clause de reserve de propriete jusqu'au paiement complet
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151;">
+                                        <input type="checkbox" id="deductAcompte">
+                                        Facture d'acompte deductible
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="tab-navigation">
+                                <button class="btn btn-secondary" onclick="prevTab()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Precedent
+                                </button>
+                                <button class="btn btn-primary" onclick="nextTab()">
+                                    Suivant
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tab 5: Validation -->
+                        <div class="tab-content" id="tab-validation">
+                            <div class="recap-grid">
+                                <div class="recap-card">
+                                    <div class="recap-card-title">Recapitulatif Facture</div>
+                                    <div class="recap-row">
+                                        <span class="recap-label">N° Facture:</span>
+                                        <span class="recap-value highlight" id="recapNumber">FA-XXXX-2024-00568</span>
+                                    </div>
+                                    <div class="recap-row">
+                                        <span class="recap-label">Date:</span>
+                                        <span class="recap-value" id="recapDate">29/01/2024</span>
+                                    </div>
+                                    <div class="recap-row">
+                                        <span class="recap-label">Client:</span>
+                                        <span class="recap-value" id="recapClient">-</span>
+                                    </div>
+                                    <div class="recap-row">
+                                        <span class="recap-label">NUI:</span>
+                                        <span class="recap-value" id="recapNUI">-</span>
+                                    </div>
+                                    <div class="recap-row">
+                                        <span class="recap-label">BL source:</span>
+                                        <span class="recap-value highlight" id="recapBL">-</span>
+                                    </div>
+                                    <div class="recap-row">
+                                        <span class="recap-label">BC origine:</span>
+                                        <span class="recap-value" id="recapBC">-</span>
+                                    </div>
+                                </div>
+
+                                <div class="recap-card">
+                                    <div class="recap-card-title">Montants</div>
+                                    <div class="recap-row">
+                                        <span class="recap-label">Articles:</span>
+                                        <span class="recap-value" id="recapArticles">0 lignes facturees</span>
+                                    </div>
+                                    <div class="recap-row">
+                                        <span class="recap-label">Total HT:</span>
+                                        <span class="recap-value" id="recapHT">0 XAF</span>
+                                    </div>
+                                    <div class="recap-row">
+                                        <span class="recap-label">TVA 19.25%:</span>
+                                        <span class="recap-value" id="recapTVA">0 XAF</span>
+                                    </div>
+                                    <div class="recap-row">
+                                        <span class="recap-label">Total TTC:</span>
+                                        <span class="recap-value" id="recapTTC">0 XAF</span>
+                                    </div>
+                                    <div class="recap-row">
+                                        <span class="recap-label">Retenue 1.1%:</span>
+                                        <span class="recap-value" id="recapRetenue">-</span>
+                                    </div>
+                                    <div class="recap-row" style="background: #263c89; margin: 12px -16px -16px -16px; padding: 12px 16px; border-radius: 0 0 8px 8px;">
+                                        <span class="recap-label" style="color: white; font-weight: 600;">NET A PAYER:</span>
+                                        <span class="recap-value" style="color: white; font-weight: 700; font-size: 16px;" id="recapNet">0 XAF</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section" style="margin-top: 24px;">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-clipboard-check"></i>
+                                        Points de Controle
+                                    </h3>
+                                </div>
+                                <div class="control-points">
+                                    <div class="control-item success">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        BL valide et signe par le client
+                                    </div>
+                                    <div class="control-item success">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        Attestation non-redevance valide
+                                    </div>
+                                    <div class="control-item success">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        Credit client suffisant
+                                    </div>
+                                    <div class="control-item success">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        TVA calculee correctement (19.25%)
+                                    </div>
+                                    <div class="control-item success">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        Retenue source appliquee (1.1%)
+                                    </div>
+                                    <div class="control-item warning" id="unpaidControlWarning" style="display: none;">
+                                        <i class="fa-solid fa-exclamation-triangle"></i>
+                                        Facture precedente en attente de paiement
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                        Apercu Document
+                                    </h3>
+                                    <button class="btn btn-secondary btn-sm" onclick="openFullPreview()">
+                                        <i class="fa-solid fa-expand"></i>
+                                        Plein ecran
+                                    </button>
+                                </div>
+                                <div class="preview-box">
+                                    <i class="fa-solid fa-file-invoice" style="font-size: 48px; color: #E5E7EB; margin-bottom: 16px;"></i>
+                                    <div class="preview-placeholder">
+                                        Apercu de la facture<br>
+                                        <small>Selectionnez des BL pour generer l'apercu</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                        Options d'Envoi
+                                    </h3>
+                                </div>
+                                <div class="send-options">
+                                    <div class="send-option">
+                                        <input type="checkbox" id="sendEmail" checked>
+                                        <div class="send-option-content">
+                                            <div class="send-option-label">Envoyer par email immediatement</div>
+                                            <div class="send-option-detail">
+                                                Destinataires: <span id="clientEmail">-</span>
+                                                <button class="btn btn-secondary btn-sm" style="margin-left: 8px; padding: 2px 8px; font-size: 11px;" onclick="editRecipients()">
+                                                    Modifier
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="send-option">
+                                        <input type="checkbox" id="printCopy" checked>
+                                        <div class="send-option-content">
+                                            <div class="send-option-label">Imprimer une copie</div>
+                                        </div>
+                                    </div>
+                                    <div class="send-option">
+                                        <input type="checkbox" id="archiveGED">
+                                        <div class="send-option-content">
+                                            <div class="send-option-label">Archiver en GED</div>
+                                        </div>
+                                    </div>
+                                    <div class="send-option">
+                                        <input type="checkbox" id="exportCompta">
+                                        <div class="send-option-content">
+                                            <div class="send-option-label">Exporter vers comptabilite</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-navigation">
+                                <button class="btn btn-secondary" onclick="prevTab()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Precedent
+                                </button>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-secondary" onclick="saveDraft()">
+                                        <i class="fa-solid fa-save"></i>
+                                        Sauvegarder brouillon
+                                    </button>
+                                    <button class="btn btn-primary" onclick="validateInvoice()">
+                                        <i class="fa-solid fa-check"></i>
+                                        VALIDER FACTURE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/facture-create.js"></script>
+</body>
+</html>

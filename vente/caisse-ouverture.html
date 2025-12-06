@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ouverture Session Caisse - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/ventes-common.css">
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        /* Header Info Box */
+        .header-info-box {
+            background: linear-gradient(135deg, #263c89 0%, #1a2959 100%);
+            border-radius: 8px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .header-info-item {
+            text-align: center;
+        }
+
+        .header-info-label {
+            font-size: 11px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .header-info-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #E5E7EB;
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #263c89;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-label .required {
+            color: #DC2626;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #263c89;
+            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
+        }
+
+        /* PIN Input */
+        .pin-input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .pin-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .pin-input:focus {
+            outline: none;
+            border-color: #263c89;
+            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
+        }
+
+        .pin-input.filled {
+            border-color: #059669;
+            background: #D1FAE5;
+        }
+
+        /* Caisse Cards */
+        .caisse-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .caisse-card {
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .caisse-card:hover {
+            border-color: #263c89;
+        }
+
+        .caisse-card.selected {
+            border-color: #263c89;
+            background: #EFF6FF;
+        }
+
+        .caisse-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .caisse-card.disabled:hover {
+            border-color: #E5E7EB;
+        }
+
+        .caisse-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: #263c89;
+        }
+
+        .caisse-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: #1F2937;
+            margin-bottom: 4px;
+        }
+
+        .caisse-status {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .caisse-status.available {
+            color: #059669;
+        }
+
+        .caisse-status.busy {
+            color: #DC2626;
+        }
+
+        /* Last Session Info */
+        .session-info-card {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .session-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .session-info-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+        }
+
+        .session-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .session-status-badge.closed {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .session-status-badge.open {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .session-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .session-info-item {
+            text-align: center;
+        }
+
+        .session-info-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .session-info-label {
+            font-size: 11px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        /* Fond de caisse */
+        .fond-caisse-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .fond-item {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .fond-item.highlight {
+            background: linear-gradient(135deg, #263c89 0%, #1a2959 100%);
+            color: white;
+        }
+
+        .fond-item-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 8px;
+        }
+
+        .fond-item.highlight .fond-item-label {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .fond-item-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .fond-item.highlight .fond-item-value {
+            color: white;
+        }
+
+        .fond-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .fond-input:focus {
+            outline: none;
+            border-color: #263c89;
+            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
+        }
+
+        /* Alert boxes */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 13px;
+        }
+
+        .alert-warning {
+            background: #FEF3C7;
+            border: 1px solid #FCD34D;
+            color: #92400E;
+        }
+
+        .alert-danger {
+            background: #FEE2E2;
+            border: 1px solid #FCA5A5;
+            color: #991B1B;
+        }
+
+        .alert-info {
+            background: #DBEAFE;
+            border: 1px solid #93C5FD;
+            color: #1E40AF;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #263c89;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a2959;
+        }
+
+        .btn-primary:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .btn-secondary {
+            background: #E5E7EB;
+            color: #1F2937;
+        }
+
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+
+        .btn-lg {
+            padding: 14px 32px;
+            font-size: 15px;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 20px 0;
+            margin-top: 24px;
+        }
+
+        /* Date/Time display */
+        .datetime-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .datetime-icon {
+            width: 40px;
+            height: 40px;
+            background: #EFF6FF;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #263c89;
+        }
+
+        .datetime-text {
+            line-height: 1.3;
+        }
+
+        .datetime-date {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .datetime-time {
+            font-size: 12px;
+            color: #6B7280;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Ouverture Session Caisse</h1>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">5</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean MBARGA</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto" id="main-sidebar">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Ventes
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Clients
+                    </div>
+
+                    <a href="./clients-list.html" class="sidebar-link" data-page="clients-list">
+                        <i class="fa-solid fa-users mr-3"></i>
+                        <span>Liste Clients</span>
+                    </a>
+
+                    <a href="./client-create.html" class="sidebar-link" data-page="client-create">
+                        <i class="fa-solid fa-user-plus mr-3"></i>
+                        <span>Nouveau Client</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Commandes
+                    </div>
+
+                    <a href="./commandes-list.html" class="sidebar-link" data-page="commandes-list">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Liste Commandes</span>
+                    </a>
+
+                    <a href="./commande-create.html" class="sidebar-link" data-page="commande-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Commande</span>
+                    </a>
+
+                    <a href="./commandes-validation.html" class="sidebar-link" data-page="commandes-validation">
+                        <i class="fa-solid fa-clipboard-check mr-3"></i>
+                        <span>Validation Crédit</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Livraisons
+                    </div>
+
+                    <a href="./livraisons-list.html" class="sidebar-link" data-page="livraisons-list">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Planning Livraisons</span>
+                    </a>
+
+                    <a href="./livraison-create.html" class="sidebar-link" data-page="livraison-create">
+                        <i class="fa-solid fa-truck-loading mr-3"></i>
+                        <span>Nouveau BL</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Facturation
+                    </div>
+
+                    <a href="./factures-list.html" class="sidebar-link" data-page="factures-list">
+                        <i class="fa-solid fa-file-invoice-dollar mr-3"></i>
+                        <span>Liste Factures</span>
+                    </a>
+
+                    <a href="./facture-create.html" class="sidebar-link" data-page="facture-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Facture</span>
+                    </a>
+
+                    <a href="./avoirs-list.html" class="sidebar-link" data-page="avoirs-list">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Avoirs</span>
+                    </a>
+
+                    <a href="./facture-transport.html" class="sidebar-link" data-page="facture-transport">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Facture Transport</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Point de Vente
+                    </div>
+
+                    <a href="./caisse-ouverture.html" class="sidebar-link" data-page="caisse-ouverture">
+                        <i class="fa-solid fa-door-open mr-3"></i>
+                        <span>Ouverture Caisse</span>
+                    </a>
+
+                    <a href="./caisse.html" class="sidebar-link" data-page="caisse">
+                        <i class="fa-solid fa-cash-register mr-3"></i>
+                        <span>Interface Caisse</span>
+                    </a>
+
+                    <a href="./caisse-cloture.html" class="sidebar-link" data-page="caisse-cloture">
+                        <i class="fa-solid fa-door-closed mr-3"></i>
+                        <span>Clôture Caisse</span>
+                    </a>
+
+                    <a href="./caisse-historique.html" class="sidebar-link" data-page="caisse-historique">
+                        <i class="fa-solid fa-history mr-3"></i>
+                        <span>Historique Sessions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Service Client
+                    </div>
+
+                    <a href="./retours-list.html" class="sidebar-link" data-page="retours-list">
+                        <i class="fa-solid fa-rotate-left mr-3"></i>
+                        <span>Retours</span>
+                    </a>
+
+                    <a href="./reclamations-list.html" class="sidebar-link" data-page="reclamations-list">
+                        <i class="fa-solid fa-headset mr-3"></i>
+                        <span>Réclamations</span>
+                        <span class="ml-2 bg-[#EF4444] text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Reporting
+                    </div>
+
+                    <a href="./commissions-dashboard.html" class="sidebar-link" data-page="commissions-dashboard">
+                        <i class="fa-solid fa-coins mr-3"></i>
+                        <span>Mes Commissions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="ventes-container">
+                    <div style="max-width: 1200px; margin: 0 auto;">
+
+                        <!-- Header Info -->
+                        <div class="header-info-box">
+                            <div class="header-info-item">
+                                <div class="header-info-label">Date</div>
+                                <div class="header-info-value" id="currentDate">29 Janvier 2024</div>
+                            </div>
+                            <div class="header-info-item">
+                                <div class="header-info-label">Heure</div>
+                                <div class="header-info-value" id="currentTime">08:00:00</div>
+                            </div>
+                            <div class="header-info-item">
+                                <div class="header-info-label">Point de vente</div>
+                                <div class="header-info-value">IOLA BTP - Douala</div>
+                            </div>
+                            <div class="header-info-item">
+                                <div class="header-info-label">Statut</div>
+                                <div class="header-info-value">
+                                    <span style="background: #FEF3C7; color: #92400E; padding: 4px 12px; border-radius: 20px; font-size: 12px;">
+                                        <i class="fa-solid fa-clock"></i> En attente
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Warning Alert (if previous session not closed) -->
+                        <div class="alert alert-warning" id="warningBox" style="display: none;">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <div>
+                                <strong>Session non clôturée</strong><br>
+                                La session précédente n'a pas été clôturée. Veuillez contacter un superviseur pour la fermer avant d'ouvrir une nouvelle session.
+                            </div>
+                        </div>
+
+                        <!-- Error Alert -->
+                        <div class="alert alert-danger" id="errorMessage" style="display: none;">
+                            <i class="fa-solid fa-exclamation-circle"></i>
+                            <span id="errorText">Code PIN incorrect</span>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <!-- Left Column -->
+                            <div>
+                                <!-- Identification Section -->
+                                <div class="form-section">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-user-check"></i> Identification Caissier
+                                    </h3>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Caissier <span class="required">*</span></label>
+                                        <select class="form-select" id="cashierSelect" onchange="onCashierChange()">
+                                            <option value="">Sélectionner un caissier...</option>
+                                            <option value="USR-001">Jean MBARGA</option>
+                                            <option value="USR-002">Marie FOTSO</option>
+                                            <option value="USR-003">Paul NGONO</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Code PIN <span class="required">*</span></label>
+                                        <div class="pin-input-group">
+                                            <input type="password" class="pin-input" maxlength="1" id="pin1" oninput="handlePinInput(1)" onkeydown="handlePinKeydown(event, 1)">
+                                            <input type="password" class="pin-input" maxlength="1" id="pin2" oninput="handlePinInput(2)" onkeydown="handlePinKeydown(event, 2)">
+                                            <input type="password" class="pin-input" maxlength="1" id="pin3" oninput="handlePinInput(3)" onkeydown="handlePinKeydown(event, 3)">
+                                            <input type="password" class="pin-input" maxlength="1" id="pin4" oninput="handlePinInput(4)" onkeydown="handlePinKeydown(event, 4)">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Caisse Selection -->
+                                <div class="form-section">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-desktop"></i> Sélection de la Caisse
+                                    </h3>
+
+                                    <div class="caisse-cards">
+                                        <div class="caisse-card selected" data-caisse="CAISSE-01" onclick="selectCaisse(this)">
+                                            <div class="caisse-icon">
+                                                <i class="fa-solid fa-computer"></i>
+                                            </div>
+                                            <div class="caisse-name">CAISSE-01</div>
+                                            <div class="caisse-status available">
+                                                <i class="fa-solid fa-check-circle"></i> Disponible
+                                            </div>
+                                        </div>
+                                        <div class="caisse-card" data-caisse="CAISSE-02" onclick="selectCaisse(this)">
+                                            <div class="caisse-icon">
+                                                <i class="fa-solid fa-computer"></i>
+                                            </div>
+                                            <div class="caisse-name">CAISSE-02</div>
+                                            <div class="caisse-status available">
+                                                <i class="fa-solid fa-check-circle"></i> Disponible
+                                            </div>
+                                        </div>
+                                        <div class="caisse-card disabled" data-caisse="CAISSE-03">
+                                            <div class="caisse-icon">
+                                                <i class="fa-solid fa-computer"></i>
+                                            </div>
+                                            <div class="caisse-name">CAISSE-03</div>
+                                            <div class="caisse-status busy">
+                                                <i class="fa-solid fa-user"></i> En cours (FOTSO)
+                                            </div>
+                                        </div>
+                                        <div class="caisse-card" data-caisse="CAISSE-04" onclick="selectCaisse(this)">
+                                            <div class="caisse-icon">
+                                                <i class="fa-solid fa-computer"></i>
+                                            </div>
+                                            <div class="caisse-name">CAISSE-04</div>
+                                            <div class="caisse-status available">
+                                                <i class="fa-solid fa-check-circle"></i> Disponible
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div>
+                                <!-- Last Session Info -->
+                                <div class="form-section">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-history"></i> Dernière Session
+                                    </h3>
+
+                                    <div class="session-info-card">
+                                        <div class="session-info-header">
+                                            <span class="session-info-title">Session précédente</span>
+                                            <span class="session-status-badge closed" id="lastSessionStatus">
+                                                <i class="fa-solid fa-check-circle"></i> Clôturée
+                                            </span>
+                                        </div>
+                                        <div class="session-info-grid">
+                                            <div class="session-info-item">
+                                                <div class="session-info-value" id="lastSessionNumber">POS-2024-0088</div>
+                                                <div class="session-info-label">N° Session</div>
+                                            </div>
+                                            <div class="session-info-item">
+                                                <div class="session-info-value" id="lastSessionDate">28/01/2024 18:45</div>
+                                                <div class="session-info-label">Clôturée le</div>
+                                            </div>
+                                            <div class="session-info-item">
+                                                <div class="session-info-value" id="lastSessionCashier">Marie FOTSO</div>
+                                                <div class="session-info-label">Caissier</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Fond de caisse -->
+                                <div class="form-section">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-coins"></i> Fond de Caisse Initial
+                                    </h3>
+
+                                    <div class="fond-caisse-grid">
+                                        <div class="fond-item">
+                                            <div class="fond-item-label">Report session précédente</div>
+                                            <div class="fond-item-value" id="previousBalance">50,000 XAF</div>
+                                        </div>
+                                        <div class="fond-item">
+                                            <div class="fond-item-label">Ajout / Retrait</div>
+                                            <input type="number" class="fond-input" id="adjustment" value="0" placeholder="0" oninput="calculateTotal()">
+                                        </div>
+                                        <div class="fond-item highlight">
+                                            <div class="fond-item-label">Total fond de caisse</div>
+                                            <div class="fond-item-value" id="totalFond">50,000 XAF</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-info" style="margin-top: 16px;">
+                                        <i class="fa-solid fa-info-circle"></i>
+                                        <span>Le fond de caisse initial sera vérifié lors de la clôture. Tout écart devra être justifié.</span>
+                                    </div>
+                                </div>
+
+                                <!-- Notes Section -->
+                                <div class="form-section">
+                                    <h3 class="section-title">
+                                        <i class="fa-solid fa-clipboard"></i> Notes d'ouverture
+                                    </h3>
+
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <textarea class="form-input" id="openingNotes" rows="3" placeholder="Notes ou observations pour cette session..." style="resize: vertical;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <div>
+                                <button class="btn btn-secondary" onclick="goBack()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Annuler
+                                </button>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-primary btn-lg" id="openSessionBtn" onclick="openSession()" disabled>
+                                    <i class="fa-solid fa-door-open"></i>
+                                    OUVRIR SESSION CAISSE
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/caisse-ouverture.js"></script>
+</body>
+</html>

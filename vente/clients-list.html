@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="../achat/styles/achats-common.css">
+    <link rel="stylesheet" href="./styles/ventes-common.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Tailwind CSS -->
@@ -57,20 +57,54 @@
             color: #065F46;
         }
 
-        .customer-meta {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            font-size: 13px;
-            color: var(--gray-600);
-            margin-top: 6px;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
-        .customer-meta-item {
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            font-size: 18px;
         }
+
+        .stat-icon.success { background: #D1FAE5; color: #059669; }
+        .stat-icon.primary { background: #DBEAFE; color: #2563EB; }
+        .stat-icon.danger { background: #FEE2E2; color: #DC2626; }
+        .stat-icon.warning { background: #FEF3C7; color: #D97706; }
+        .stat-icon.info { background: #E0E7FF; color: #4338CA; }
 
         .quick-filters {
             display: flex;
@@ -111,6 +145,17 @@
             background: rgba(255,255,255,0.2);
         }
 
+
+        .client-name-cell {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .client-code {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
         .status-badge-table {
             display: inline-flex;
             align-items: center;
@@ -124,81 +169,28 @@
         }
 
         .status-dot.active { background: #10B981; }
+        .status-dot.inactive { background: #EF4444; }
+        .status-dot.blocked { background: #F59E0B; }
         .status-dot.warning { background: #F59E0B; }
-        .status-dot.blocked { background: #EF4444; }
 
-        .balance-positive {
-            color: #10B981;
+        .balance-positive { color: #10B981; }
+        .balance-negative { color: #EF4444; }
+        .balance-warning { color: #F59E0B; }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #6B7280;
+            transition: all 0.2s;
         }
 
-        .balance-negative {
-            color: #EF4444;
-        }
-
-        .balance-warning {
-            color: #F59E0B;
-        }
-
-        .commercial-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .commercial-name {
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .caution-info {
-            font-size: 11px;
-            color: var(--gray-500);
-        }
-
-        .document-alert {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            color: #F59E0B;
-            margin-top: 4px;
-        }
-
-        .legend-bar {
-            display: flex;
-            gap: 20px;
-            padding: 12px 16px;
-            background: #F8F9FA;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .bulk-actions {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            background: #F0F9FF;
-            border-radius: 8px;
-            margin-top: 16px;
-        }
-
-        .bulk-actions-left {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .bulk-actions-right {
-            display: flex;
-            gap: 8px;
+        .action-btn:hover {
+            background: var(--gray-100);
+            color: var(--primary-color);
         }
     </style>
 </head>
@@ -213,7 +205,7 @@
 
             <!-- Right Section -->
             <div class="flex-1 flex items-center justify-between px-6">
-                <h1 class="text-xl font-bold text-[#1A1A1A]">Gestion des Clients</h1>
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Clients</h1>
 
                 <div class="flex items-center gap-4">
                     <div class="relative">
@@ -223,7 +215,7 @@
 
                     <div class="flex items-center cursor-pointer">
                         <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
-                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO</span>
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie AKONO</span>
                         <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
                     </div>
                 </div>
@@ -233,80 +225,142 @@
         <!-- Main Content -->
         <div class="flex-1 flex overflow-hidden">
             <!-- Sidebar -->
-            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto" id="main-sidebar">
                 <nav class="py-4">
                     <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
                         Module Ventes
                     </div>
 
-                    <a href="./dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
-                        <i class="fa-solid fa-chart-line mr-3"></i>
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="./clients-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Clients
+                    </div>
+
+                    <a href="./clients-list.html" class="sidebar-link" data-page="clients-list">
                         <i class="fa-solid fa-users mr-3"></i>
-                        <span>Clients</span>
+                        <span>Liste Clients</span>
                     </a>
 
-                    <a href="./commandes-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                    <a href="./client-create.html" class="sidebar-link" data-page="client-create">
+                        <i class="fa-solid fa-user-plus mr-3"></i>
+                        <span>Nouveau Client</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Commandes
+                    </div>
+
+                    <a href="./commandes-list.html" class="sidebar-link" data-page="commandes-list">
                         <i class="fa-solid fa-shopping-cart mr-3"></i>
-                        <span>Commandes</span>
+                        <span>Liste Commandes</span>
                     </a>
 
-                    <a href="./livraisons-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                    <a href="./commande-create.html" class="sidebar-link" data-page="commande-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Commande</span>
+                    </a>
+
+                    <a href="./commandes-validation.html" class="sidebar-link" data-page="commandes-validation">
+                        <i class="fa-solid fa-clipboard-check mr-3"></i>
+                        <span>Validation Crédit</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Livraisons
+                    </div>
+
+                    <a href="./livraisons-list.html" class="sidebar-link" data-page="livraisons-list">
                         <i class="fa-solid fa-truck mr-3"></i>
-                        <span>Livraisons</span>
+                        <span>Planning Livraisons</span>
                     </a>
 
-                    <a href="./factures-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                    <a href="./livraison-create.html" class="sidebar-link" data-page="livraison-create">
+                        <i class="fa-solid fa-truck-loading mr-3"></i>
+                        <span>Nouveau BL</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Facturation
+                    </div>
+
+                    <a href="./factures-list.html" class="sidebar-link" data-page="factures-list">
+                        <i class="fa-solid fa-file-invoice-dollar mr-3"></i>
+                        <span>Liste Factures</span>
+                    </a>
+
+                    <a href="./facture-create.html" class="sidebar-link" data-page="facture-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Facture</span>
+                    </a>
+
+                    <a href="./avoirs-list.html" class="sidebar-link" data-page="avoirs-list">
                         <i class="fa-solid fa-file-invoice mr-3"></i>
-                        <span>Factures</span>
-                    </a>
-
-                    <a href="./avoirs-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
-                        <i class="fa-solid fa-receipt mr-3"></i>
                         <span>Avoirs</span>
                     </a>
 
-                    <a href="./retours-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                    <a href="./facture-transport.html" class="sidebar-link" data-page="facture-transport">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Facture Transport</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Point de Vente
+                    </div>
+
+                    <a href="./caisse-ouverture.html" class="sidebar-link" data-page="caisse-ouverture">
+                        <i class="fa-solid fa-door-open mr-3"></i>
+                        <span>Ouverture Caisse</span>
+                    </a>
+
+                    <a href="./caisse.html" class="sidebar-link" data-page="caisse">
+                        <i class="fa-solid fa-cash-register mr-3"></i>
+                        <span>Interface Caisse</span>
+                    </a>
+
+                    <a href="./caisse-cloture.html" class="sidebar-link" data-page="caisse-cloture">
+                        <i class="fa-solid fa-door-closed mr-3"></i>
+                        <span>Clôture Caisse</span>
+                    </a>
+
+                    <a href="./caisse-historique.html" class="sidebar-link" data-page="caisse-historique">
+                        <i class="fa-solid fa-history mr-3"></i>
+                        <span>Historique Sessions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Service Client
+                    </div>
+
+                    <a href="./retours-list.html" class="sidebar-link" data-page="retours-list">
                         <i class="fa-solid fa-rotate-left mr-3"></i>
                         <span>Retours</span>
                     </a>
 
-                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
-                        Point de Vente
-                    </div>
-
-                    <a href="./pos.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
-                        <i class="fa-solid fa-cash-register mr-3"></i>
-                        <span>Caisse POS</span>
+                    <a href="./reclamations-list.html" class="sidebar-link" data-page="reclamations-list">
+                        <i class="fa-solid fa-headset mr-3"></i>
+                        <span>Réclamations</span>
+                        <span class="ml-2 bg-[#EF4444] text-white text-xs px-2 py-0.5 rounded-full">5</span>
                     </a>
 
-                    <a href="./sessions-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
-                        <i class="fa-solid fa-clock mr-3"></i>
-                        <span>Sessions</span>
-                    </a>
-
-                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
                         Reporting
                     </div>
 
-                    <a href="./rapports.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
-                        <i class="fa-solid fa-chart-bar mr-3"></i>
-                        <span>Rapports</span>
-                    </a>
-
-                    <a href="./commissions.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                    <a href="./commissions-dashboard.html" class="sidebar-link" data-page="commissions-dashboard">
                         <i class="fa-solid fa-coins mr-3"></i>
-                        <span>Commissions</span>
+                        <span>Mes Commissions</span>
                     </a>
 
                     <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
                         Système
                     </div>
 
-                    <a href="../index.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                    <a href="../index.html" class="sidebar-link" data-page="home">
                         <i class="fa-solid fa-home mr-3"></i>
                         <span>Accueil</span>
                     </a>
@@ -315,7 +369,7 @@
 
             <!-- Main Content Area -->
             <div class="flex-1 overflow-auto bg-[#F8F9FA]">
-                <div class="achats-container" style="max-width: none; padding: 24px;">
+                <div class="ventes-container" style="max-width: none; padding: 24px;">
 
                     <!-- Page Header -->
                     <div class="page-header">
@@ -323,10 +377,10 @@
                             <div>
                                 <h1 class="page-title">
                                     <i class="fa-solid fa-users"></i>
-                                    Gestion des Clients
+                                    Clients
                                 </h1>
                                 <p class="page-description">
-                                    Gérer les clients particuliers, entreprises, techniciens et quincailleries
+                                    Gérer vos clients et leurs informations commerciales
                                 </p>
                             </div>
                             <div style="display: flex; gap: 12px;">
@@ -341,7 +395,7 @@
                             </div>
                         </div>
 
-                        <!-- Stats Cards - Résumé -->
+                        <!-- Stats Cards -->
                         <div class="stats-grid" style="grid-template-columns: repeat(5, 1fr);">
                             <div class="stat-card">
                                 <div class="stat-header">
@@ -493,37 +547,9 @@
                             <div class="filter-actions">
                                 <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
                                     <i class="fa-solid fa-rotate-right"></i>
-                                    Réinit.
+                                    Reset
                                 </button>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Legend Bar -->
-                    <div class="legend-bar">
-                        <div class="legend-item">
-                            <span style="font-size: 16px;">&#127970;</span> Entreprise
-                        </div>
-                        <div class="legend-item">
-                            <span style="font-size: 16px;">&#128100;</span> Particulier
-                        </div>
-                        <div class="legend-item">
-                            <span style="font-size: 16px;">&#128119;</span> Technicien
-                        </div>
-                        <div class="legend-item">
-                            <span style="font-size: 16px;">&#128295;</span> Quincaillerie
-                        </div>
-                        <div class="legend-item">
-                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #10B981; display: inline-block;"></span> OK
-                        </div>
-                        <div class="legend-item">
-                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #F59E0B; display: inline-block;"></span> Attention (&lt;30j)
-                        </div>
-                        <div class="legend-item">
-                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #EF4444; display: inline-block;"></span> Bloqué
-                        </div>
-                        <div class="legend-item">
-                            <strong>BL</strong> = Blocage vente
                         </div>
                     </div>
 
@@ -535,12 +561,12 @@
                                     <th style="width: 40px;">
                                         <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
                                     </th>
-                                    <th class="sortable" data-sort="code" onclick="sortTable('code')">Code Client</th>
-                                    <th class="sortable" data-sort="name" onclick="sortTable('name')">Raison Sociale / Nom</th>
+                                    <th>Code Client</th>
+                                    <th>Raison Sociale / Nom</th>
                                     <th class="text-center">Type</th>
                                     <th class="text-center">Catégorie</th>
                                     <th class="text-center">Commercial</th>
-                                    <th class="text-center sortable" data-sort="balance" onclick="sortTable('balance')">Solde</th>
+                                    <th class="text-center">Solde</th>
                                     <th class="text-center">Statut</th>
                                     <th class="text-center">Actions</th>
                                 </tr>
@@ -575,52 +601,7 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Bulk Actions -->
-                    <div class="bulk-actions" id="bulk-actions" style="display: none;">
-                        <div class="bulk-actions-left">
-                            <span id="selected-count">0</span> client(s) sélectionné(s)
-                        </div>
-                        <div class="bulk-actions-right">
-                            <button class="btn btn-secondary btn-sm" onclick="sendBulkEmail()">
-                                <i class="fa-solid fa-envelope"></i>
-                                Email groupé
-                            </button>
-                            <button class="btn btn-secondary btn-sm" onclick="generateBulkStatement()">
-                                <i class="fa-solid fa-file-lines"></i>
-                                Relevé
-                            </button>
-                            <button class="btn btn-warning btn-sm" onclick="blockSelectedClients()">
-                                <i class="fa-solid fa-lock"></i>
-                                Bloquer
-                            </button>
-                            <button class="btn btn-success btn-sm" onclick="unblockSelectedClients()">
-                                <i class="fa-solid fa-unlock"></i>
-                                Débloquer
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="archiveSelectedClients()">
-                                <i class="fa-solid fa-archive"></i>
-                                Archiver
-                            </button>
-                        </div>
-                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Actions Confirmation -->
-    <div class="modal-overlay" id="action-modal" style="display: none;">
-        <div class="modal" style="max-width: 500px;">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modal-title">Confirmer l'action</h2>
-                <button class="modal-close" onclick="closeActionModal()">&times;</button>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <!-- Contenu dynamique -->
-            </div>
-            <div class="modal-footer" id="modal-footer">
-                <!-- Boutons dynamiques -->
             </div>
         </div>
     </div>
@@ -630,7 +611,7 @@
         <div class="modal" style="max-width: 700px;">
             <div class="modal-header">
                 <h2 class="modal-title" id="quickview-title">Aperçu Client</h2>
-                <button class="modal-close" onclick="closeQuickViewModal()">&times;</button>
+                <button class="modal-close" onclick="closeQuickViewModal()">×</button>
             </div>
             <div class="modal-body" id="quickview-body">
                 <!-- Contenu dynamique -->
@@ -646,6 +627,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
     <script src="./js/clients-list.js"></script>
 </body>
 </html>

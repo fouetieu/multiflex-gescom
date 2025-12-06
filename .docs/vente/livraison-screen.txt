@@ -1,0 +1,412 @@
+## 📋 **ECR-LIV-001 : LISTE DES LIVRAISONS**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ GESTION DES LIVRAISONS                      👤 Paul TCHINDA (Logistique)   │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ 📊 RÉSUMÉ JOUR   À préparer: 12 | En cours: 8 | Livrées: 15        │  │
+│ │                  Volume: 45.3 m³ | Poids: 12.5 T | Véhicules: 4/6   │  │
+│ │                  Retards: 3 | Incidents: 1 | Taux service: 94%      │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ AFFICHAGE  [📅 Calendrier] [📋 Liste] [🗺️ Carte] [📊 Tableau bord]   │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ FILTRES                                                                     │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ Date: [Aujourd'hui    ]▼  Zone: [Toutes    ]▼  Statut: [Toutes   ]▼ │  │
+│ │ Transporteur: [Tous   ]▼  Urgence: [Toutes ]▼  Client: [_______]🔍  │  │
+│ │ N° BL: [BL-_________]    Chauffeur: [______]   [🔍 Filtrer] [↻]     │  │
+│ │                          [+ Nouveau BL] [🚚 Planning] [📥 Export]    │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ VUE PLANNING JOURNALIER - 29/01/2024                                       │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │    8h    9h    10h   11h   12h   13h   14h   15h   16h   17h   18h  │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │ CAMION-01 (KAMGA Transport - 10T)                                   │  │
+│ │ ├──[🏭 Chargement]──┤                                               │  │
+│ │      └─ BL-00234    ├────[🚚 SONACOM/Bassa]────┤                    │  │
+│ │                           └─ 12 km, 2.5T       ├──[🏠 Retour]──     │  │
+│ │                                                                      │  │
+│ │ CAMION-02 (NJOYA Logistics - 5T)                                    │  │
+│ │      ├─[🚚 QUINCAILLERIE]─┤                                         │  │
+│ │        └─ BL-00089        ├──[🚚 KAMGA J.P.]──┤                     │  │
+│ │                              └─ BL-00456      ├──[🚚 XYZ SARL]──    │  │
+│ │                                                  └─ BL-00178        │  │
+│ │                                                                      │  │
+│ │ PICKUP-03 (Interne - 2T)                                            │  │
+│ │ ├─[🚚]─┤├─[🚚]─┤├─[🚚]─┤├─[🚚]─┤                                  │  │
+│ │  Express Express Express Express                                    │  │
+│ │                                                                      │  │
+│ │ CAMION-04 ⚠️ (En panne - Indisponible)                              │  │
+│ │ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### **VUE LISTE DÉTAILLÉE**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ LISTE DES BONS DE LIVRAISON                                                │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │☐│N° BL      │BC Source │Client/Contact  │Véhicule│Heure│Zone│St │Act│ │
+│ ├─┼───────────┼──────────┼────────────────┼────────┼─────┼────┼───┼───┤ │
+│ │☐│BL-CLI156- │BC-00234  │SONACOM SARL    │CAMION- │10:30│Bassa│🚚│[→]│ │
+│ │ │2024-00234 │28/01/24  │└ Paul NJOYA    │01      │-    │12km│EC│   │ │
+│ │ │29/01 08:00│2.5M XAF  │☎️ 677 890 123   │10T     │12:30│   │  │   │ │
+│ │ │           │          │📦 125 articles  │KAMGA   │     │   │  │   │ │
+│ │ │           │          │                │        │     │   │  │   │ │
+│ │☐│BL-CLI089- │BC-00089  │QUINCAILLERIE   │CAMION- │08:00│Akwa│✅│[→]│ │
+│ │ │2024-00089 │28/01/24  │MODERNE         │02      │-    │5km │LI│   │ │
+│ │ │29/01 07:30│850K XAF  │└ Jean MBARGA   │5T      │09:00│   │  │   │ │
+│ │ │           │          │☎️ 699 456 789   │NJOYA   │     │   │  │   │ │
+│ │ │           │          │📦 45 articles   │        │     │   │  │   │ │
+│ │ │           │          │                │        │     │   │  │   │ │
+│ │☐│BL-CLI234- │BC-00456  │KAMGA Jean Paul │CAMION- │09:30│Bonab│📋│[→]│ │
+│ │ │2024-00456 │27/01/24  │Particulier     │02      │-    │8km │PR│   │ │
+│ │ │29/01 09:00│150K XAF  │☎️ 655 234 567   │5T      │10:30│   │  │   │ │
+│ │ │           │🔥 URGENT │📦 8 articles    │NJOYA   │     │   │  │   │ │
+│ │ │           │          │⚠️ Espèces 100K  │        │     │   │  │   │ │
+│ │ │           │          │                │        │     │   │  │   │ │
+│ │☐│BL-CLI312- │BC-00178  │TECHNI-BUILD    │PICKUP- │14:00│Logb│⏳│[→]│ │
+│ │ │2024-00178 │27/01/24  │└ Marie BELL    │03      │-    │15km│PL│   │ │
+│ │ │29/01 14:00│3.2M XAF  │☎️ 690 123 456   │2T      │16:00│   │  │   │ │
+│ │ │           │          │📦 200 articles  │Interne │     │   │  │   │ │
+│ │ │           │          │📎 ANR requis    │        │     │   │  │   │ │
+│ └─┴───────────┴──────────┴────────────────┴────────┴─────┴────┴───┴───┘ │
+│                                                                              │
+│ LÉGENDE STATUTS                                                            │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ 📋 Préparé | ⏳ Planifié | 🚚 En cours | ✅ Livré | ❌ Échec | 🔄 Report│  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [◀ 1 2 3 ... 15 ▶] Page 1/15 - Affichage 1-4 sur 58                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+DÉTAIL RAPIDE AU SURVOL
+┌──────────────────────────────────────────────────────────────────────────┐
+│ BL-CLI156-2024-00234 - SONACOM SARL                                     │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Chauffeur: MBOUOMBOUO Herman | CNI: 123456789 | ☎️ 677 111 222          │
+│ Chargeur: FOTSO Paul | Magasinier: DJOMO Marie                          │
+│ GPS: 4.0511, 9.7679 | Distance: 12 km | Durée est.: 45 min             │
+│ Instructions: Portail Nord, appeler 30min avant                          │
+│                                                                           │
+│ [👁️ Voir] [✏️ Modifier] [📍 Tracker] [📞 Appeler] [📄 Imprimer]         │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+### **MODAL AFFECTATION VÉHICULE**
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│ AFFECTATION TRANSPORT - BL-CLI156-2024-00234           [❌ Fermer]      │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│ CLIENT ET LIVRAISON                                                      │
+│ ┌───────────────────────────────────────────────────────────────────┐   │
+│ │ Client:     SONACOM SARL - Zone Industrielle, Bassa               │   │
+│ │ Distance:   12 km | Poids: 2,500 kg | Volume: 8.3 m³             │   │
+│ │ Créneau:    29/01/2024 - Matin (8h-12h)                          │   │
+│ └───────────────────────────────────────────────────────────────────┘   │
+│                                                                           │
+│ SÉLECTION VÉHICULE                                                       │
+│ ┌───────────────────────────────────────────────────────────────────┐   │
+│ │ Véhicules disponibles:                                            │   │
+│ │                                                                    │   │
+│ │ ○ CAMION-01 | 10T | KAMGA Transport                              │   │
+│ │   Capacité: OK ✅ | Disponible: 8h-18h | Zone: OK               │   │
+│ │                                                                    │   │
+│ │ ○ CAMION-02 | 5T | NJOYA Logistics                               │   │
+│ │   Capacité: OK ✅ | Occupé: 8h-11h ⚠️ | Zone: OK                │   │
+│ │                                                                    │   │
+│ │ ○ PICKUP-03 | 2T | Interne                                       │   │
+│ │   Capacité: ❌ Insuffisant (2.5T requis)                         │   │
+│ │                                                                    │   │
+│ │ ○ Transporteur externe [Rechercher___________]                    │   │
+│ └───────────────────────────────────────────────────────────────────┘   │
+│                                                                           │
+│ ÉQUIPE DE LIVRAISON                                                     │
+│ ┌───────────────────────────────────────────────────────────────────┐   │
+│ │ Chauffeur *:    [MBOUOMBOUO Herman_____]▼ [📷 Photo CNI]         │   │
+│ │                 CNI: [123456789012______] ✅ Vérifié             │   │
+│ │                 Tél: [677 111 222_______]                        │   │
+│ │                                                                    │   │
+│ │ Chargeur *:     [FOTSO Paul____________]▼                        │   │
+│ │                 Tél: [677 333 444_______]                        │   │
+│ │                                                                    │   │
+│ │ Magasinier *:   [DJOMO Marie___________]▼                        │   │
+│ └───────────────────────────────────────────────────────────────────┘   │
+│                                                                           │
+│ HORAIRES                                                                 │
+│ ┌───────────────────────────────────────────────────────────────────┐   │
+│ │ Heure chargement:   [08:00___] Durée est.: 30 min                │   │
+│ │ Heure départ:       [08:30___] Route: 45 min                     │   │
+│ │ Heure arrivée est.: [09:15___] Déchargement: 30 min              │   │
+│ │ Retour prévu:       [10:30___]                                    │   │
+│ └───────────────────────────────────────────────────────────────────┘   │
+│                                                                           │
+│ [Annuler] [Sauvegarder brouillon] [✅ Confirmer affectation]            │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+## 📋 **ECR-LIV-002 : CRÉATION BON DE LIVRAISON**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NOUVEAU BON DE LIVRAISON                       👤 Paul TCHINDA (Logistique)│
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ N° BL: BL-CLIXXXX-2024-00235 (Auto)  |  Date: 29/01/2024 11:30     │  │
+│ │ Statut: BROUILLON  |  Type: Livraison standard                      │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ SÉLECTION BON DE COMMANDE SOURCE                                     │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ BC Source *:        [BC-CLI156-2024-00234_____]🔍                   │  │
+│ │                     SONACOM SARL - 28/01/2024                       │  │
+│ │                     Montant: 2,500,000 XAF | Articles: 12          │  │
+│ │                     Statut: ✅ Validé | Crédit: OK                  │  │
+│ │                                                                       │  │
+│ │ ☐ Livraison partielle    ☐ Regrouper plusieurs BC                   │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ARTICLES À LIVRER                                    [Tout cocher ☑] │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ ☑│Article         │Commandé│Stock│À livrer│Unité│Reste│Emplacement │ │
+│ │──┼────────────────┼────────┼─────┼────────┼─────┼─────┼────────────┤ │
+│ │☑ │PEINT-BLC-05L   │   20   │ 125 │   20   │POT  │  0  │A1-R3-E2    │ │
+│ │  │Peinture Blanche│        │ ✅  │ [20__] │5L   │     │            │ │
+│ │  │                │        │     │        │     │     │            │ │
+│ │☑ │CIMENT-50KG     │  100   │ 450 │  100   │SAC  │  0  │EXT-Z2      │ │
+│ │  │Ciment Portland │        │ ✅  │ [100_] │50KG │     │            │ │
+│ │  │                │        │     │        │     │     │            │ │
+│ │☑ │FER-12MM        │   50   │  89 │   50   │BARR │  0  │EXT-Z4      │ │
+│ │  │Fer à béton 12mm│        │ ✅  │ [50__] │12M  │     │            │ │
+│ │  │                │        │     │        │     │     │            │ │
+│ │☐ │AGGLO-15        │  200   │   0 │    0   │U    │ 200 │-           │ │
+│ │  │Agglo 15cm      │        │ ❌  │ [0___] │     │     │RUPTURE     │ │
+│ │  │                │        │     │        │     │     │            │ │
+│ └──┴────────────────┴────────┴─────┴────────┴─────┴─────┴────────────┘ │
+│                                                                              │
+│ │ Total à livrer: 3/4 articles | Poids: 5,200 kg | Volume: 8.3 m³    │  │
+│ │ ⚠️ Livraison partielle: Article AGGLO-15 non disponible             │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### **SECTION TRANSPORT ET ÉQUIPE**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ INFORMATIONS TRANSPORT                                                     │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ VÉHICULE ET TRANSPORTEUR                                             │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Transporteur *:     [KAMGA Transport________]▼                       │  │
+│ │ Véhicule *:         [CAMION-01_____________]▼                        │  │
+│ │ Immatriculation *:  [LT-2345-DLA___________]                        │  │
+│ │ Type/Capacité:      Camion 10T - Bâché                              │  │
+│ │                                                                       │  │
+│ │ ☐ Transport subventionné                                             │  │
+│ │ ┌── SI SUBVENTIONNÉ ───────────────────────────────────────────┐    │  │
+│ │ │ Acompte transport (100%):  [_________] XAF                   │    │  │
+│ │ │ Part société:              [_________] XAF                   │    │  │
+│ │ │ Facture séparée:           ○ Oui  ○ Non                     │    │  │
+│ │ └────────────────────────────────────────────────────────────────┘    │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ÉQUIPE DE LIVRAISON                          ⚠️ CNI obligatoires     │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ CHAUFFEUR *                                                          │  │
+│ │ Nom complet *:      [MBOUOMBOUO Herman________]                     │  │
+│ │ N° CNI *:           [123456789012345__________] [📷 Scan/Photo]     │  │
+│ │ Téléphone *:        [+237 677 111 222_________]                     │  │
+│ │ Permis:             [B2453678__________________] Cat: [C]▼          │  │
+│ │                                                                       │  │
+│ │ CHARGEUR *                                                           │  │
+│ │ Nom complet *:      [FOTSO Paul_______________]                     │  │
+│ │ Téléphone:          [+237 677 333 444_________]                     │  │
+│ │                                                                       │  │
+│ │ MAGASINIER *                                                         │  │
+│ │ Nom complet *:      [DJOMO Marie______________]                     │  │
+│ │ Validation sortie:  ☐ Effectuée à [__:__]                          │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ HORAIRES PRÉVISIONNELS                                               │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Date livraison *:   [29/01/2024____] 📅                             │  │
+│ │ Heure chargement:   [08:00____] Durée: [30__] min                  │  │
+│ │ Heure départ:       [08:30____] ⏱️                                   │  │
+│ │ Heure arrivée est.: [09:15____] (45 min trajet)                    │  │
+│ │ Heure retour est.:  [10:30____]                                     │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### **SECTION VALIDATION ET IMPRESSION**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ VALIDATION ET DOCUMENTS                                                    │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ADRESSE DE LIVRAISON                                                 │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Client:             SONACOM SARL                                    │  │
+│ │ Adresse:            Zone Industrielle, Bassa, Douala                │  │
+│ │ Contact sur place:  Paul NJOYA - 677 890 123                       │  │
+│ │ GPS:                4.0234, 9.7123 [📍 Voir carte]                 │  │
+│ │                                                                       │  │
+│ │ Instructions:       Portail Nord, appeler 30min avant arrivée       │  │
+│ │ Accès:              Badge visiteur à récupérer à l'entrée           │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ DOCUMENTS REQUIS                                                     │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ ✅ Bon de commande client (BC-CLI156-2024-00234)                    │  │
+│ │ ✅ Liste de colisage générée                                        │  │
+│ │ ⚠️ Attestation non-redevance (Client entreprise)                    │  │
+│ │ ☐ Facture (sera générée après livraison)                            │  │
+│ │ ☐ Bon de transport (si subventionné)                                │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ RÉCAPITULATIF AVANT VALIDATION                                       │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ • BC Source:        BC-CLI156-2024-00234                            │  │
+│ │ • Client:           SONACOM SARL - Bassa                            │  │
+│ │ • Articles:         3/4 (livraison partielle)                       │  │
+│ │ • Transport:        CAMION-01 - KAMGA Transport                     │  │
+│ │ • Chauffeur:        MBOUOMBOUO Herman (CNI OK)                      │  │
+│ │ • Départ prévu:     29/01/2024 à 08:30                             │  │
+│ │                                                                       │  │
+│ │ Points de contrôle:                                                  │  │
+│ │ ✅ Stock disponible pour tous les articles sélectionnés             │  │
+│ │ ✅ Véhicule et équipe affectés                                      │  │
+│ │ ✅ CNI chauffeur enregistré                                         │  │
+│ │ ⚠️ Livraison partielle (AGGLO-15 non disponible)                    │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ [💾 Sauvegarder brouillon]  [👁️ Aperçu BL]  [🖨️ Imprimer]           │  │
+│ │                                                                       │  │
+│ │ [Annuler]                   [✅ VALIDER BON DE LIVRAISON]           │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+APERÇU BON DE LIVRAISON
+┌──────────────────────────────────────────────────────────────────────────┐
+│                    BON DE LIVRAISON                                      │
+│                 N° BL-CLI156-2024-00235                                 │
+│                                                                           │
+│ EXPÉDITEUR                    CLIENT                                     │
+│ IOLA BTP                      SONACOM SARL                              │
+│ Av. de Gaulle, Douala         Zone Industrielle                         │
+│                               Bassa, Douala                              │
+│                               Contact: Paul NJOYA                        │
+│                               Tél: 677 890 123                          │
+│                                                                           │
+│ Date: 29/01/2024              BC Réf: BC-CLI156-2024-00234              │
+│ Transport: KAMGA Transport    Véhicule: CAMION-01 (LT-2345-DLA)         │
+│ Chauffeur: MBOUOMBOUO H.      CNI: 123456789012345                      │
+│                                                                           │
+│ ┌────────────────────────────────────────────────────────────────────┐  │
+│ │N°│Article            │Qté commandée│Qté livrée│Observations       │  │
+│ ├──┼───────────────────┼────────────┼──────────┼───────────────────┤  │
+│ │1 │Peinture Blanche 5L│     20     │    20    │Conforme           │  │
+│ │2 │Ciment Portland 50kg│    100    │   100    │Conforme           │  │
+│ │3 │Fer à béton 12mm   │     50     │    50    │Conforme           │  │
+│ │4 │Agglo 15cm         │    200     │     0    │Rupture stock      │  │
+│ └────────────────────────────────────────────────────────────────────┘  │
+│                                                                           │
+│ Heure départ: _______ Heure arrivée: _______ Heure retour: _______      │
+│                                                                           │
+│ Réceptionné par: _________________ Signature: ________________          │
+│ CNI/Fonction: ____________________ Date/Heure: _______________          │
+│                                                                           │
+│ Observations: _________________________________________________          │
+│                                                                           │
+│ [Imprimer 3 exemplaires: Client, Transport, Archives]                   │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+## 🔍 **PROPRIÉTÉS DU MODÈLE UTILISÉES**
+
+### **Tables principales**
+| Écran | Table/Collection | Champs clés |
+|-------|-----------------|-------------|
+| **ECR-LIV-001** | `sales_documents` (type=DELIVERY) | `status`, `transportInfo`, planning |
+| **ECR-LIV-002** | `sales_documents` + stock | `lines[]`, `deliveryAddress`, `transportInfo` détaillé |
+
+### **Structure TransportInfo complète**
+```yaml
+transportInfo:
+  transporterId: "KAMGA-TRANSPORT"
+  vehicleNumber: "LT-2345-DLA"
+  vehicleType: "CAMION_10T"
+  
+  driverName: "MBOUOMBOUO Herman"
+  driverCNI: "123456789012345"  # Obligatoire
+  driverPhone: "677111222"
+  
+  loaderName: "FOTSO Paul"
+  warehouseKeeperName: "DJOMO Marie"
+  
+  departureTime: "2024-01-29T08:30:00"
+  estimatedArrivalTime: "2024-01-29T09:15:00"
+  
+  hasSubsidizedTransport: false
+  transportDepositAmount: 0
+```
+
+## 📌 **FONCTIONNALITÉS CLÉS**
+
+### Liste des livraisons (ECR-LIV-001)
+1. **Vues multiples** : Planning, Liste, Carte, Dashboard
+2. **Planning visuel** : Timeline par véhicule
+3. **Optimisation** : Tournées et affectations
+4. **Tracking** : GPS et statuts temps réel
+5. **Alertes** : Retards, incidents, véhicules indisponibles
+
+### Création BL (ECR-LIV-002)
+1. **Sélection BC** : Simple ou multiple
+2. **Livraison partielle** : Gestion ruptures
+3. **CNI obligatoire** : Photo/scan chauffeur
+4. **Transport subventionné** : Calcul acompte 100%
+5. **Validation stock** : Temps réel
+6. **Documents** : Génération automatique
+
+## 🎯 **RÈGLES MÉTIER APPLIQUÉES**
+
+- **RG-V040** : CNI chauffeur obligatoire avec photo
+- **RG-V041** : Identification complète équipe (chargeur, magasinier)
+- **RG-V042** : Horodatage précis (départ, arrivée, retour)
+- **RG-V043** : GPS obligatoire livraisons hors ville
+- **RG-V044** : Transport subventionné = acompte 100%
+- **RG-V045** : Validation magasinier avant départ
+

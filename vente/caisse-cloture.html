@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clôture de Caisse - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/ventes-common.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+
+        /* Session info bar */
+        .session-info-bar {
+            background: white;
+            padding: 12px 24px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .session-info-bar strong {
+            color: #1F2937;
+        }
+
+        .session-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .session-item i {
+            opacity: 0.8;
+        }
+
+        .duration-badge {
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* Section Card */
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #F9FAFB;
+            padding: 16px 20px;
+            border-bottom: 1px solid #E5E7EB;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header i {
+            color: #263c89;
+        }
+
+        .section-body {
+            padding: 20px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #263c89;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .stat-detail {
+            font-size: 11px;
+            color: #9CA3AF;
+            margin-top: 2px;
+        }
+
+        /* CA Box */
+        .ca-box {
+            background: linear-gradient(135deg, #263c89 0%, #1a2959 100%);
+            border-radius: 12px;
+            padding: 24px;
+            color: white;
+        }
+
+        .ca-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .ca-row.separator {
+            border-top: 1px solid rgba(255,255,255,0.2);
+            margin-top: 8px;
+            padding-top: 16px;
+        }
+
+        .ca-row.total {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .ca-row.remise {
+            color: #FCA5A5;
+        }
+
+        .ca-row.net {
+            background: rgba(255,255,255,0.1);
+            margin: 12px -24px -24px;
+            padding: 16px 24px;
+            border-radius: 0 0 12px 12px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* Payment Table */
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .payment-table th {
+            background: #F9FAFB;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .payment-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #F3F4F6;
+            font-size: 14px;
+        }
+
+        .payment-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .payment-table .total-row {
+            background: #F9FAFB;
+            font-weight: 600;
+        }
+
+        .payment-table .total-row td {
+            border-top: 2px solid #E5E7EB;
+        }
+
+        .payment-mode {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mode-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .mode-icon.cash {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .mode-icon.mobile {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .mode-icon.check {
+            background: #DBEAFE;
+            color: #2563EB;
+        }
+
+        .mode-icon.transfer {
+            background: #E0E7FF;
+            color: #4F46E5;
+        }
+
+        .amount-cell {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .percent-cell {
+            text-align: center;
+        }
+
+        .percent-badge {
+            background: #F3F4F6;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .observation-cell {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        /* Cash Counting Section */
+        .counting-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .counting-left {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .theoretical-box {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .theoretical-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+
+        .theoretical-row.add {
+            color: #059669;
+        }
+
+        .theoretical-row.subtract {
+            color: #DC2626;
+        }
+
+        .theoretical-row.total {
+            border-top: 2px solid #E5E7EB;
+            margin-top: 8px;
+            padding-top: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            color: #263c89;
+        }
+
+        /* Bill Counting */
+        .bill-counting {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .bill-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .bill-grid {
+            display: grid;
+            grid-template-columns: 100px 1fr 100px;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .bill-label {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .bill-input {
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            width: 80px;
+        }
+
+        .bill-input:focus {
+            outline: none;
+            border-color: #263c89;
+            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
+        }
+
+        .bill-result {
+            text-align: right;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .bill-separator {
+            grid-column: 1 / -1;
+            border-top: 1px dashed #D1D5DB;
+            margin: 8px 0;
+        }
+
+        .counted-total {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        .counted-total-label {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .counted-total-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #263c89;
+        }
+
+        /* Variance Box */
+        .variance-box {
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .variance-box.ok {
+            background: #D1FAE5;
+            border: 2px solid #059669;
+        }
+
+        .variance-box.warning {
+            background: #FEF3C7;
+            border: 2px solid #D97706;
+        }
+
+        .variance-box.error {
+            background: #FEE2E2;
+            border: 2px solid #DC2626;
+        }
+
+        .variance-label {
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .variance-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .variance-box.ok .variance-value {
+            color: #059669;
+        }
+
+        .variance-box.warning .variance-value {
+            color: #D97706;
+        }
+
+        .variance-box.error .variance-value {
+            color: #DC2626;
+        }
+
+        .variance-icon {
+            font-size: 24px;
+            margin-left: 8px;
+        }
+
+        /* Anomalies Section */
+        .anomaly-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .anomaly-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: #FEF3C7;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .anomaly-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #F59E0B;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .anomaly-content {
+            flex: 1;
+        }
+
+        .anomaly-type {
+            font-weight: 600;
+            color: #92400E;
+        }
+
+        .anomaly-detail {
+            color: #78350F;
+            margin-top: 2px;
+        }
+
+        .comment-box {
+            margin-top: 16px;
+        }
+
+        .comment-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: #263c89;
+            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
+        }
+
+        /* Actions Footer */
+        .actions-footer {
+            background: white;
+            border-top: 1px solid #E5E7EB;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            margin-top: auto;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #263c89;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a2959;
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .btn-secondary {
+            background: #E5E7EB;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #D1D5DB;
+            color: #374151;
+        }
+
+        .btn-outline:hover {
+            border-color: #263c89;
+            color: #263c89;
+        }
+
+        .btn-danger {
+            background: #DC2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #B91C1C;
+        }
+
+        .actions-left {
+            display: flex;
+            gap: 12px;
+        }
+
+        .actions-right {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Two Column Layout */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .counting-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Print Z Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: #263c89;
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        .modal-body {
+            padding: 24px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            background: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Z Report Preview */
+        .z-report {
+            font-family: monospace;
+            font-size: 12px;
+            background: #1F2937;
+            color: #E5E7EB;
+            padding: 20px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+        }
+
+        .z-report-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .z-report-line {
+            border-top: 1px dashed #4B5563;
+            margin: 12px 0;
+        }
+
+        /* Confirmation Modal */
+        .confirm-content {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .confirm-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #FEF3C7;
+            color: #D97706;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 20px;
+        }
+
+        .confirm-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+
+        .confirm-text {
+            font-size: 14px;
+            color: #6B7280;
+            margin-bottom: 20px;
+        }
+
+        .confirm-checklist {
+            text-align: left;
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .confirm-checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+
+        .confirm-checklist-item i.fa-check-circle {
+            color: #059669;
+        }
+
+        .confirm-checklist-item i.fa-times-circle {
+            color: #DC2626;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Clôture de Caisse</h1>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">5</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean MBARGA</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto" id="main-sidebar">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Ventes
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Clients
+                    </div>
+
+                    <a href="./clients-list.html" class="sidebar-link" data-page="clients-list">
+                        <i class="fa-solid fa-users mr-3"></i>
+                        <span>Liste Clients</span>
+                    </a>
+
+                    <a href="./client-create.html" class="sidebar-link" data-page="client-create">
+                        <i class="fa-solid fa-user-plus mr-3"></i>
+                        <span>Nouveau Client</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Commandes
+                    </div>
+
+                    <a href="./commandes-list.html" class="sidebar-link" data-page="commandes-list">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Liste Commandes</span>
+                    </a>
+
+                    <a href="./commande-create.html" class="sidebar-link" data-page="commande-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Commande</span>
+                    </a>
+
+                    <a href="./commandes-validation.html" class="sidebar-link" data-page="commandes-validation">
+                        <i class="fa-solid fa-clipboard-check mr-3"></i>
+                        <span>Validation Crédit</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Livraisons
+                    </div>
+
+                    <a href="./livraisons-list.html" class="sidebar-link" data-page="livraisons-list">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Planning Livraisons</span>
+                    </a>
+
+                    <a href="./livraison-create.html" class="sidebar-link" data-page="livraison-create">
+                        <i class="fa-solid fa-truck-loading mr-3"></i>
+                        <span>Nouveau BL</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Facturation
+                    </div>
+
+                    <a href="./factures-list.html" class="sidebar-link" data-page="factures-list">
+                        <i class="fa-solid fa-file-invoice-dollar mr-3"></i>
+                        <span>Liste Factures</span>
+                    </a>
+
+                    <a href="./facture-create.html" class="sidebar-link" data-page="facture-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Facture</span>
+                    </a>
+
+                    <a href="./avoirs-list.html" class="sidebar-link" data-page="avoirs-list">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Avoirs</span>
+                    </a>
+
+                    <a href="./facture-transport.html" class="sidebar-link" data-page="facture-transport">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Facture Transport</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Point de Vente
+                    </div>
+
+                    <a href="./caisse-ouverture.html" class="sidebar-link" data-page="caisse-ouverture">
+                        <i class="fa-solid fa-door-open mr-3"></i>
+                        <span>Ouverture Caisse</span>
+                    </a>
+
+                    <a href="./caisse.html" class="sidebar-link" data-page="caisse">
+                        <i class="fa-solid fa-cash-register mr-3"></i>
+                        <span>Interface Caisse</span>
+                    </a>
+
+                    <a href="./caisse-cloture.html" class="sidebar-link" data-page="caisse-cloture">
+                        <i class="fa-solid fa-door-closed mr-3"></i>
+                        <span>Clôture Caisse</span>
+                    </a>
+
+                    <a href="./caisse-historique.html" class="sidebar-link" data-page="caisse-historique">
+                        <i class="fa-solid fa-history mr-3"></i>
+                        <span>Historique Sessions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Service Client
+                    </div>
+
+                    <a href="./retours-list.html" class="sidebar-link" data-page="retours-list">
+                        <i class="fa-solid fa-rotate-left mr-3"></i>
+                        <span>Retours</span>
+                    </a>
+
+                    <a href="./reclamations-list.html" class="sidebar-link" data-page="reclamations-list">
+                        <i class="fa-solid fa-headset mr-3"></i>
+                        <span>Réclamations</span>
+                        <span class="ml-2 bg-[#EF4444] text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Reporting
+                    </div>
+
+                    <a href="./commissions-dashboard.html" class="sidebar-link" data-page="commissions-dashboard">
+                        <i class="fa-solid fa-coins mr-3"></i>
+                        <span>Mes Commissions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="ventes-container" style="max-width: none; padding: 24px;">
+                    <!-- Session Info Bar -->
+                    <div class="session-info-bar">
+                        <div class="session-item">
+                            <i class="fa-solid fa-hashtag"></i>
+                            Session: <strong id="sessionNumber">POS-2024-0089</strong>
+                        </div>
+                        <div class="session-item">
+                            <i class="fa-solid fa-clock"></i>
+                            Ouverte: <strong id="sessionStart">29/01/2024 08:00</strong>
+                        </div>
+                        <div class="duration-badge">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                            Durée: <span id="sessionDuration">10h35min</span>
+                        </div>
+                    </div>
+            <div class="two-columns">
+                <!-- Left Column -->
+                <div>
+                    <!-- Recap Ventes -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <i class="fa-solid fa-chart-line"></i>
+                            RÉCAPITULATIF DES VENTES
+                        </div>
+                        <div class="section-body">
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <div class="stat-value" id="totalTickets">67</div>
+                                    <div class="stat-label">Tickets émis</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value" id="totalArticles">489</div>
+                                    <div class="stat-label">Articles vendus</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value" id="totalClients">65</div>
+                                    <div class="stat-label">Clients servis</div>
+                                    <div class="stat-detail" id="multipleVisits">(2 passages multiples)</div>
+                                </div>
+                            </div>
+
+                            <div class="ca-box">
+                                <div class="ca-row">
+                                    <span>Total HT:</span>
+                                    <span id="totalHT">1,234,567 XAF</span>
+                                </div>
+                                <div class="ca-row">
+                                    <span>TVA collectée:</span>
+                                    <span id="totalTVA">237,654 XAF</span>
+                                </div>
+                                <div class="ca-row separator total">
+                                    <span>TOTAL TTC:</span>
+                                    <span id="totalTTC">1,472,221 XAF</span>
+                                </div>
+                                <div class="ca-row remise">
+                                    <span>Remises accordées:</span>
+                                    <span id="totalRemises">-23,450 XAF</span>
+                                </div>
+                                <div class="ca-row net">
+                                    <span>Net encaissé:</span>
+                                    <span id="netEncaisse">1,448,771 XAF</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Détail par mode de paiement -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <i class="fa-solid fa-credit-card"></i>
+                            DÉTAIL PAR MODE DE PAIEMENT
+                        </div>
+                        <div class="section-body" style="padding: 0;">
+                            <table class="payment-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mode</th>
+                                        <th style="text-align: center;">Nb Trans</th>
+                                        <th style="text-align: right;">Montant</th>
+                                        <th style="text-align: center;">%</th>
+                                        <th>Observations</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentTableBody">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <!-- Comptage Physique -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <i class="fa-solid fa-coins"></i>
+                            COMPTAGE PHYSIQUE ESPÈCES
+                        </div>
+                        <div class="section-body">
+                            <div class="counting-grid">
+                                <!-- Théorique -->
+                                <div class="counting-left">
+                                    <div class="theoretical-box">
+                                        <div class="theoretical-row">
+                                            <span>Fond de caisse initial:</span>
+                                            <span id="fondCaisse">50,000 XAF</span>
+                                        </div>
+                                        <div class="theoretical-row add">
+                                            <span>+ Encaissements espèces:</span>
+                                            <span id="encaissementsEspeces">+856,230 XAF</span>
+                                        </div>
+                                        <div class="theoretical-row subtract">
+                                            <span>- Sorties (remboursements):</span>
+                                            <span id="sortiesEspeces">-12,500 XAF</span>
+                                        </div>
+                                        <div class="theoretical-row total">
+                                            <span>Total théorique:</span>
+                                            <span id="totalTheorique">893,730 XAF</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Variance -->
+                                    <div class="variance-box ok" id="varianceBox">
+                                        <div class="variance-label">Écart:</div>
+                                        <div class="variance-value">
+                                            <span id="varianceAmount">0 XAF</span>
+                                            <span class="variance-icon" id="varianceIcon">✅</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Comptage -->
+                                <div class="bill-counting">
+                                    <div class="bill-title">Comptage physique:</div>
+                                    <div class="bill-grid">
+                                        <span class="bill-label">Billets 10,000</span>
+                                        <span>x</span>
+                                        <input type="number" class="bill-input" id="bill10000" value="45" min="0" oninput="calculateCounted()">
+                                        <span></span>
+                                        <span>=</span>
+                                        <span class="bill-result" id="result10000">450,000</span>
+
+                                        <span class="bill-label">Billets 5,000</span>
+                                        <span>x</span>
+                                        <input type="number" class="bill-input" id="bill5000" value="67" min="0" oninput="calculateCounted()">
+                                        <span></span>
+                                        <span>=</span>
+                                        <span class="bill-result" id="result5000">335,000</span>
+
+                                        <span class="bill-label">Billets 2,000</span>
+                                        <span>x</span>
+                                        <input type="number" class="bill-input" id="bill2000" value="32" min="0" oninput="calculateCounted()">
+                                        <span></span>
+                                        <span>=</span>
+                                        <span class="bill-result" id="result2000">64,000</span>
+
+                                        <span class="bill-label">Billets 1,000</span>
+                                        <span>x</span>
+                                        <input type="number" class="bill-input" id="bill1000" value="35" min="0" oninput="calculateCounted()">
+                                        <span></span>
+                                        <span>=</span>
+                                        <span class="bill-result" id="result1000">35,000</span>
+
+                                        <div class="bill-separator"></div>
+
+                                        <span class="bill-label">Pièces 500</span>
+                                        <span>x</span>
+                                        <input type="number" class="bill-input" id="coin500" value="15" min="0" oninput="calculateCounted()">
+                                        <span></span>
+                                        <span>=</span>
+                                        <span class="bill-result" id="result500">7,500</span>
+
+                                        <span class="bill-label">Pièces 100</span>
+                                        <span>x</span>
+                                        <input type="number" class="bill-input" id="coin100" value="22" min="0" oninput="calculateCounted()">
+                                        <span></span>
+                                        <span>=</span>
+                                        <span class="bill-result" id="result100">2,200</span>
+
+                                        <span class="bill-label">Pièces 50</span>
+                                        <span>x</span>
+                                        <input type="number" class="bill-input" id="coin50" value="6" min="0" oninput="calculateCounted()">
+                                        <span></span>
+                                        <span>=</span>
+                                        <span class="bill-result" id="result50">300</span>
+
+                                        <span class="bill-label">Autres pièces</span>
+                                        <span></span>
+                                        <input type="number" class="bill-input" id="otherCoins" value="230" min="0" oninput="calculateCounted()">
+                                        <span></span>
+                                        <span>=</span>
+                                        <span class="bill-result" id="resultOther">230</span>
+                                    </div>
+
+                                    <div class="counted-total">
+                                        <span class="counted-total-label">Total compté:</span>
+                                        <span class="counted-total-value" id="totalCounted">893,730 XAF</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Anomalies -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <i class="fa-solid fa-exclamation-triangle"></i>
+                            ANOMALIES ET OBSERVATIONS
+                        </div>
+                        <div class="section-body">
+                            <div class="anomaly-list" id="anomalyList">
+                                <!-- Dynamic anomalies -->
+                            </div>
+
+                            <div class="comment-box">
+                                <label class="comment-label">Commentaire caissier:</label>
+                                <textarea class="comment-input" id="cashierComment" placeholder="Saisir vos observations...">Session normale, RAS</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Footer -->
+            <div class="actions-footer">
+                <div class="actions-left">
+                    <button class="btn btn-outline" onclick="window.location.href='./caisse.html'">
+                        <i class="fa-solid fa-arrow-left"></i> Retour caisse
+                    </button>
+                </div>
+                <div class="actions-right">
+                    <button class="btn btn-secondary" onclick="openPrintZModal()">
+                        <i class="fa-solid fa-print"></i> Imprimer Z
+                    </button>
+                    <button class="btn btn-outline" onclick="showDetails()">
+                        <i class="fa-solid fa-chart-bar"></i> Détails
+                    </button>
+                    <button class="btn btn-primary" onclick="sendReport()">
+                        <i class="fa-solid fa-envelope"></i> Envoyer rapport
+                    </button>
+                    <button class="btn btn-success" onclick="openCloseConfirmation()">
+                        <i class="fa-solid fa-check"></i> CLÔTURER CAISSE
+                    </button>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Z Modal -->
+    <div class="modal-overlay" id="printZModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">
+                    <i class="fa-solid fa-print"></i> Rapport Z - Aperçu
+                </span>
+                <button class="modal-close" onclick="closePrintZModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="z-report" id="zReportContent">
+                    <!-- Dynamic Z report content -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePrintZModal()">Fermer</button>
+                <button class="btn btn-primary" onclick="printZReport()">
+                    <i class="fa-solid fa-print"></i> Imprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal" style="max-width: 480px;">
+            <div class="modal-header">
+                <span class="modal-title">
+                    <i class="fa-solid fa-power-off"></i> Confirmation de clôture
+                </span>
+                <button class="modal-close" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-content">
+                    <div class="confirm-icon">
+                        <i class="fa-solid fa-exclamation"></i>
+                    </div>
+                    <div class="confirm-title">Clôturer la session ?</div>
+                    <div class="confirm-text">
+                        Cette action est irréversible. Assurez-vous que toutes les informations sont correctes.
+                    </div>
+
+                    <div class="confirm-checklist" id="confirmChecklist">
+                        <!-- Dynamic checklist -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">Annuler</button>
+                <button class="btn btn-danger" onclick="confirmClose()">
+                    <i class="fa-solid fa-power-off"></i> Confirmer la clôture
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/caisse-cloture.js"></script>
+</body>
+</html>

@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique Sessions Caisse - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/ventes-common.css">
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+
+        /* Page-specific Styles */
+
+        /* Filters */
+        .filters-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .filter-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+        }
+
+        .filter-select {
+            padding: 10px 14px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 13px;
+            min-width: 160px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #263c89;
+        }
+
+        .filter-date {
+            padding: 10px 14px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: #263c89;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .filter-btn:hover {
+            background: #1a2959;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .stat-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .stat-icon.blue { background: #EFF6FF; color: #263c89; }
+        .stat-icon.green { background: #D1FAE5; color: #059669; }
+        .stat-icon.orange { background: #FEF3C7; color: #D97706; }
+        .stat-icon.red { background: #FEE2E2; color: #DC2626; }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .stat-unit {
+            font-size: 14px;
+            font-weight: 400;
+            color: #6B7280;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .stat-change.up { color: #059669; }
+        .stat-change.down { color: #DC2626; }
+
+        /* Sessions Table */
+        .sessions-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .sessions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .sessions-table th {
+            text-align: left;
+            padding: 14px 16px;
+            background: #F9FAFB;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .sessions-table td {
+            padding: 16px;
+            border-bottom: 1px solid #F3F4F6;
+            vertical-align: top;
+        }
+
+        .sessions-table tr:hover {
+            background: #F9FAFB;
+        }
+
+        .session-number {
+            font-weight: 600;
+            color: #263c89;
+        }
+
+        .session-date {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .cashier-name {
+            font-weight: 500;
+            color: #1F2937;
+        }
+
+        .duration-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #F3F4F6;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .ca-amount {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .variance-cell {
+            font-weight: 600;
+        }
+
+        .variance-cell.ok { color: #059669; }
+        .variance-cell.warning { color: #D97706; }
+        .variance-cell.error { color: #DC2626; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.ok { background: #D1FAE5; color: #059669; }
+        .status-badge.warning { background: #FEF3C7; color: #D97706; }
+        .status-badge.open { background: #DBEAFE; color: #2563EB; }
+
+        .session-details {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: 1px solid #D1D5DB;
+            background: white;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            border-color: #263c89;
+            color: #263c89;
+        }
+
+        .action-btn.primary {
+            background: #263c89;
+            color: white;
+            border-color: #263c89;
+        }
+
+        .action-btn.primary:hover {
+            background: #1a2959;
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 500px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .detail-panel.show {
+            right: 0;
+        }
+
+        .detail-header {
+            background: #263c89;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .detail-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .detail-body {
+            padding: 24px;
+        }
+
+        .detail-section {
+            margin-bottom: 24px;
+        }
+
+        .detail-section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-section-title i {
+            color: #263c89;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .detail-label {
+            color: #6B7280;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: #1F2937;
+        }
+
+        /* Tickets List in Detail */
+        .tickets-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .ticket-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: #F9FAFB;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .ticket-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ticket-num {
+            font-weight: 600;
+            color: #263c89;
+        }
+
+        .ticket-time {
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        .ticket-amount {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-btn {
+                margin-left: 0;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Historique Sessions Caisse</h1>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">5</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean MBARGA</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto" id="main-sidebar">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Ventes
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Clients
+                    </div>
+
+                    <a href="./clients-list.html" class="sidebar-link" data-page="clients-list">
+                        <i class="fa-solid fa-users mr-3"></i>
+                        <span>Liste Clients</span>
+                    </a>
+
+                    <a href="./client-create.html" class="sidebar-link" data-page="client-create">
+                        <i class="fa-solid fa-user-plus mr-3"></i>
+                        <span>Nouveau Client</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Commandes
+                    </div>
+
+                    <a href="./commandes-list.html" class="sidebar-link" data-page="commandes-list">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Liste Commandes</span>
+                    </a>
+
+                    <a href="./commande-create.html" class="sidebar-link" data-page="commande-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Commande</span>
+                    </a>
+
+                    <a href="./commandes-validation.html" class="sidebar-link" data-page="commandes-validation">
+                        <i class="fa-solid fa-clipboard-check mr-3"></i>
+                        <span>Validation Crédit</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Livraisons
+                    </div>
+
+                    <a href="./livraisons-list.html" class="sidebar-link" data-page="livraisons-list">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Planning Livraisons</span>
+                    </a>
+
+                    <a href="./livraison-create.html" class="sidebar-link" data-page="livraison-create">
+                        <i class="fa-solid fa-truck-loading mr-3"></i>
+                        <span>Nouveau BL</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Facturation
+                    </div>
+
+                    <a href="./factures-list.html" class="sidebar-link" data-page="factures-list">
+                        <i class="fa-solid fa-file-invoice-dollar mr-3"></i>
+                        <span>Liste Factures</span>
+                    </a>
+
+                    <a href="./facture-create.html" class="sidebar-link" data-page="facture-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Facture</span>
+                    </a>
+
+                    <a href="./avoirs-list.html" class="sidebar-link" data-page="avoirs-list">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Avoirs</span>
+                    </a>
+
+                    <a href="./facture-transport.html" class="sidebar-link" data-page="facture-transport">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Facture Transport</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Point de Vente
+                    </div>
+
+                    <a href="./caisse-ouverture.html" class="sidebar-link" data-page="caisse-ouverture">
+                        <i class="fa-solid fa-door-open mr-3"></i>
+                        <span>Ouverture Caisse</span>
+                    </a>
+
+                    <a href="./caisse.html" class="sidebar-link" data-page="caisse">
+                        <i class="fa-solid fa-cash-register mr-3"></i>
+                        <span>Interface Caisse</span>
+                    </a>
+
+                    <a href="./caisse-cloture.html" class="sidebar-link" data-page="caisse-cloture">
+                        <i class="fa-solid fa-door-closed mr-3"></i>
+                        <span>Clôture Caisse</span>
+                    </a>
+
+                    <a href="./caisse-historique.html" class="sidebar-link" data-page="caisse-historique">
+                        <i class="fa-solid fa-history mr-3"></i>
+                        <span>Historique Sessions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Service Client
+                    </div>
+
+                    <a href="./retours-list.html" class="sidebar-link" data-page="retours-list">
+                        <i class="fa-solid fa-rotate-left mr-3"></i>
+                        <span>Retours</span>
+                    </a>
+
+                    <a href="./reclamations-list.html" class="sidebar-link" data-page="reclamations-list">
+                        <i class="fa-solid fa-headset mr-3"></i>
+                        <span>Réclamations</span>
+                        <span class="ml-2 bg-[#EF4444] text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Reporting
+                    </div>
+
+                    <a href="./commissions-dashboard.html" class="sidebar-link" data-page="commissions-dashboard">
+                        <i class="fa-solid fa-coins mr-3"></i>
+                        <span>Mes Commissions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="ventes-container" style="max-width: none; padding: 24px;">
+            <!-- Filters -->
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <span class="filter-label">Période</span>
+                    <select class="filter-select" id="periodFilter">
+                        <option value="today">Aujourd'hui</option>
+                        <option value="week" selected>Cette semaine</option>
+                        <option value="month">Ce mois</option>
+                        <option value="custom">Personnalisée</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Du</span>
+                    <input type="date" class="filter-date" id="dateFrom" value="2024-01-22">
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Au</span>
+                    <input type="date" class="filter-date" id="dateTo" value="2024-01-29">
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Caisse</span>
+                    <select class="filter-select" id="caisseFilter">
+                        <option value="all">Toutes</option>
+                        <option value="CAISSE-01">CAISSE-01</option>
+                        <option value="CAISSE-02">CAISSE-02</option>
+                        <option value="CAISSE-03">CAISSE-03</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Caissier</span>
+                    <select class="filter-select" id="cashierFilter">
+                        <option value="all">Tous</option>
+                        <option value="MBARGA">Jean MBARGA</option>
+                        <option value="FOTSO">Marie FOTSO</option>
+                        <option value="NGONO">Paul NGONO</option>
+                    </select>
+                </div>
+                <button class="filter-btn" onclick="applyFilters()">
+                    <i class="fa-solid fa-filter"></i> Filtrer
+                </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Sessions</span>
+                        <div class="stat-icon blue"><i class="fa-solid fa-cash-register"></i></div>
+                    </div>
+                    <div class="stat-value">14</div>
+                    <div class="stat-change up">
+                        <i class="fa-solid fa-arrow-up"></i> +2 vs semaine précédente
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">CA Total</span>
+                        <div class="stat-icon green"><i class="fa-solid fa-coins"></i></div>
+                    </div>
+                    <div class="stat-value">12.8M <span class="stat-unit">XAF</span></div>
+                    <div class="stat-change up">
+                        <i class="fa-solid fa-arrow-up"></i> +15% vs semaine précédente
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Tickets</span>
+                        <div class="stat-icon orange"><i class="fa-solid fa-receipt"></i></div>
+                    </div>
+                    <div class="stat-value">423</div>
+                    <div class="stat-change up">
+                        <i class="fa-solid fa-arrow-up"></i> Moy. 30/session
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Écarts</span>
+                        <div class="stat-icon red"><i class="fa-solid fa-balance-scale"></i></div>
+                    </div>
+                    <div class="stat-value">2</div>
+                    <div class="stat-change down">
+                        <i class="fa-solid fa-exclamation-triangle"></i> Sessions avec écart
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sessions Table -->
+            <div class="sessions-card">
+                <div class="card-header">
+                    <span class="card-title">Sessions de la période</span>
+                    <button class="action-btn primary" onclick="exportSessions()">
+                        <i class="fa-solid fa-download"></i> Export Excel
+                    </button>
+                </div>
+                <table class="sessions-table">
+                    <thead>
+                        <tr>
+                            <th>Session</th>
+                            <th>Caissier</th>
+                            <th>Durée</th>
+                            <th>CA TTC</th>
+                            <th>Écart</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sessionsTableBody">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeDetailPanel()"></div>
+
+    <!-- Detail Panel -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="detail-header">
+            <span class="detail-title">Détails session</span>
+            <button class="detail-close" onclick="closeDetailPanel()">&times;</button>
+        </div>
+        <div class="detail-body">
+            <!-- Session Info -->
+            <div class="detail-section">
+                <div class="detail-section-title">
+                    <i class="fa-solid fa-info-circle"></i> Informations session
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">N° Session:</span>
+                    <span class="detail-value" id="detailSessionNumber">POS-2024-0089</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Caisse:</span>
+                    <span class="detail-value" id="detailCaisse">CAISSE-01</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Caissier:</span>
+                    <span class="detail-value" id="detailCashier">Jean MBARGA</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Ouverture:</span>
+                    <span class="detail-value" id="detailOpen">29/01/2024 08:00</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Clôture:</span>
+                    <span class="detail-value" id="detailClose">29/01/2024 18:35</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Durée:</span>
+                    <span class="detail-value" id="detailDuration">10h35min</span>
+                </div>
+            </div>
+
+            <!-- CA Section -->
+            <div class="detail-section">
+                <div class="detail-section-title">
+                    <i class="fa-solid fa-coins"></i> Chiffre d'affaires
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Total HT:</span>
+                    <span class="detail-value" id="detailHT">1,215,650 XAF</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">TVA:</span>
+                    <span class="detail-value" id="detailTVA">234,012 XAF</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Total TTC:</span>
+                    <span class="detail-value" style="font-size: 16px; color: #263c89;" id="detailTTC">1,449,662 XAF</span>
+                </div>
+            </div>
+
+            <!-- Comptage Section -->
+            <div class="detail-section">
+                <div class="detail-section-title">
+                    <i class="fa-solid fa-calculator"></i> Comptage caisse
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Fond initial:</span>
+                    <span class="detail-value" id="detailFond">50,000 XAF</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Encaissements:</span>
+                    <span class="detail-value" id="detailEncaiss">856,230 XAF</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Théorique:</span>
+                    <span class="detail-value" id="detailTheorique">906,230 XAF</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Compté:</span>
+                    <span class="detail-value" id="detailCompte">906,230 XAF</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Écart:</span>
+                    <span class="detail-value" id="detailEcart" style="color: #059669;">0 XAF ✓</span>
+                </div>
+            </div>
+
+            <!-- Tickets Section -->
+            <div class="detail-section">
+                <div class="detail-section-title">
+                    <i class="fa-solid fa-receipt"></i> Tickets (<span id="detailTicketsCount">67</span>)
+                </div>
+                <div class="tickets-list" id="ticketsList">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button class="action-btn primary" style="flex: 1; justify-content: center;" onclick="printRapportZ()">
+                    <i class="fa-solid fa-print"></i> Rapport Z
+                </button>
+                <button class="action-btn" style="flex: 1; justify-content: center;" onclick="exportSession()">
+                    <i class="fa-solid fa-download"></i> Export
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/caisse-historique.js"></script>
+</body>
+</html>

@@ -760,102 +760,279 @@ function viewOrder(orderId) {
 
     document.getElementById('modal-order-code').textContent = order.ref;
 
+    // Mock articles data
+    const articlesData = [
+        { code: 'CIM-50-DAN', designation: 'Ciment DANGOTE 50kg', qte: 50, unite: 'Sac', puHT: 4500, remise: 0 },
+        { code: 'FER-10-TOR', designation: 'Fer à béton Ø10 Tor', qte: 100, unite: 'Barre', puHT: 3200, remise: 5 },
+        { code: 'SAB-RIV-M3', designation: 'Sable rivière', qte: 5, unite: 'm³', puHT: 25000, remise: 0 },
+        { code: 'GRA-15-M3', designation: 'Gravier 15/25', qte: 3, unite: 'm³', puHT: 35000, remise: 0 }
+    ];
+
+    // Calculate totals
+    let totalHT = 0;
+    let totalRemise = 0;
+    articlesData.forEach(art => {
+        const ligneHT = art.qte * art.puHT;
+        const remiseAmount = ligneHT * art.remise / 100;
+        totalHT += ligneHT;
+        totalRemise += remiseAmount;
+    });
+    const netHT = totalHT - totalRemise;
+    const tva = netHT * 0.1925;
+    const totalTTC = netHT + tva;
+
+    // Get timeline status
+    const getTimelineClass = (step) => {
+        const statusOrder = ['PENDING', 'VALIDATED', 'IN_DELIVERY', 'DELIVERED', 'INVOICED'];
+        const currentIndex = statusOrder.indexOf(order.status);
+        const stepIndex = statusOrder.indexOf(step);
+
+        if (order.status === 'REJECTED' || order.status === 'CANCELLED') {
+            return stepIndex === 0 ? 'completed' : '';
+        }
+        if (stepIndex < currentIndex) return 'completed';
+        if (stepIndex === currentIndex) return 'active';
+        return '';
+    };
+
     const content = document.getElementById('modal-order-content');
     content.innerHTML = `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-            <div>
-                <h4 style="font-size: 14px; font-weight: 600; color: #263c89; margin-bottom: 12px;">
-                    <i class="fa-solid fa-info-circle"></i> Informations Générales
-                </h4>
-                <div style="background: #F9FAFB; padding: 16px; border-radius: 8px;">
-                    <div style="margin-bottom: 12px;">
-                        <div style="font-size: 11px; color: #6B7280;">Référence</div>
-                        <div style="font-weight: 600;">${order.ref}</div>
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <div style="font-size: 11px; color: #6B7280;">Date</div>
-                        <div>${order.date} à ${order.time}</div>
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <div style="font-size: 11px; color: #6B7280;">Statut</div>
-                        <div><span class="status-badge ${getStatusClass(order.status)}">${order.statusLabel}</span></div>
-                    </div>
-                    <div>
-                        <div style="font-size: 11px; color: #6B7280;">Commercial</div>
-                        <div>${order.commercial}</div>
-                    </div>
+        <!-- Header Bar -->
+        <div class="detail-header-bar">
+            <div class="detail-header-left">
+                <div class="detail-order-ref">${order.ref}</div>
+                <div class="detail-order-date">
+                    <i class="fa-regular fa-calendar"></i> ${order.date} à ${order.time} |
+                    <i class="fa-regular fa-user"></i> ${order.commercial}
                 </div>
             </div>
-
-            <div>
-                <h4 style="font-size: 14px; font-weight: 600; color: #263c89; margin-bottom: 12px;">
-                    <i class="fa-solid fa-user"></i> Client
-                </h4>
-                <div style="background: #F9FAFB; padding: 16px; border-radius: 8px;">
-                    <div style="margin-bottom: 12px;">
-                        <div style="font-size: 11px; color: #6B7280;">Nom</div>
-                        <div style="font-weight: 600;">${order.clientName}</div>
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <div style="font-size: 11px; color: #6B7280;">Contact</div>
-                        <div>${order.contactName}</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 11px; color: #6B7280;">Téléphone</div>
-                        <div>${order.contactPhone}</div>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <h4 style="font-size: 14px; font-weight: 600; color: #263c89; margin-bottom: 12px;">
-                    <i class="fa-solid fa-truck"></i> Livraison
-                </h4>
-                <div style="background: #F9FAFB; padding: 16px; border-radius: 8px;">
-                    <div style="margin-bottom: 12px;">
-                        <div style="font-size: 11px; color: #6B7280;">Date souhaitée</div>
-                        <div style="font-weight: 500;">${order.deliveryDate}</div>
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <div style="font-size: 11px; color: #6B7280;">Adresse</div>
-                        <div>${order.deliveryAddress}</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 11px; color: #6B7280;">Transport</div>
-                        <div>${order.transportPlanned ? 'Planifié' : 'Non planifié'}</div>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <h4 style="font-size: 14px; font-weight: 600; color: #263c89; margin-bottom: 12px;">
-                    <i class="fa-solid fa-coins"></i> Paiement
-                </h4>
-                <div style="background: #F9FAFB; padding: 16px; border-radius: 8px;">
-                    <div style="margin-bottom: 12px;">
-                        <div style="font-size: 11px; color: #6B7280;">Montant TTC</div>
-                        <div style="font-size: 18px; font-weight: 700; color: #263c89;">${formatMoney(order.amount)} XAF</div>
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <div style="font-size: 11px; color: #6B7280;">Mode</div>
-                        <div><span class="payment-mode ${order.paymentMode.toLowerCase()}">${order.paymentMode === 'CREDIT' ? 'CRÉDIT' : 'COMPTANT'}</span></div>
-                    </div>
-                    ${order.paymentMode === 'CREDIT' ? `
-                    <div>
-                        <div style="font-size: 11px; color: #6B7280;">Délai</div>
-                        <div>${order.paymentTerms} jours</div>
-                    </div>
-                    ` : ''}
+            <div class="detail-header-right">
+                <div class="detail-order-amount">${formatMoney(order.amount)} XAF</div>
+                <div class="detail-order-status">
+                    <span class="status-badge ${getStatusClass(order.status)}">${order.statusLabel}</span>
+                    ${order.urgent ? '<span class="urgent-badge" style="margin-left: 8px;"><i class="fa-solid fa-fire"></i> URGENT</span>' : ''}
                 </div>
             </div>
         </div>
 
-        <div style="margin-top: 24px;">
-            <h4 style="font-size: 14px; font-weight: 600; color: #263c89; margin-bottom: 12px;">
-                <i class="fa-solid fa-box"></i> Articles (${order.items} lignes)
-            </h4>
-            <div style="background: #F9FAFB; padding: 16px; border-radius: 8px; text-align: center; color: #6B7280;">
-                Affichage des lignes de commande...
+        <!-- Info Cards Grid -->
+        <div class="detail-grid">
+            <!-- Client Card -->
+            <div class="detail-card">
+                <div class="detail-card-title">
+                    <i class="fa-solid fa-user"></i> Client
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Raison sociale</span>
+                    <span class="detail-value highlight">${order.clientName}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Code client</span>
+                    <span class="detail-value">${order.clientCode}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Type</span>
+                    <span class="detail-value">${order.clientType}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Contact</span>
+                    <span class="detail-value">${order.contactName}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Téléphone</span>
+                    <span class="detail-value">${order.contactPhone}</span>
+                </div>
+            </div>
+
+            <!-- Livraison Card -->
+            <div class="detail-card">
+                <div class="detail-card-title">
+                    <i class="fa-solid fa-truck"></i> Livraison
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date souhaitée</span>
+                    <span class="detail-value ${order.daysToDelivery < 0 ? 'danger' : order.daysToDelivery <= 2 ? 'warning' : ''}">${order.deliveryDate}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Délai</span>
+                    <span class="detail-value ${order.daysToDelivery < 0 ? 'danger' : ''}">
+                        ${order.daysToDelivery < 0 ? 'Échu' : order.daysToDelivery === 0 ? 'Aujourd\'hui' : order.daysToDelivery + ' jours'}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Adresse</span>
+                    <span class="detail-value">${order.deliveryAddress}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Transport</span>
+                    <span class="detail-value ${order.transportPlanned ? 'success' : 'warning'}">
+                        ${order.transportPlanned ? '<i class="fa-solid fa-check"></i> Planifié' : '<i class="fa-solid fa-clock"></i> Non planifié'}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Poids / Volume</span>
+                    <span class="detail-value">${order.weight} kg / ${order.volume} m³</span>
+                </div>
+            </div>
+
+            <!-- Paiement Card -->
+            <div class="detail-card">
+                <div class="detail-card-title">
+                    <i class="fa-solid fa-credit-card"></i> Paiement
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Mode</span>
+                    <span class="detail-value">
+                        <span class="payment-mode ${order.paymentMode.toLowerCase()}">${order.paymentMode === 'CREDIT' ? 'CRÉDIT' : 'COMPTANT'}</span>
+                    </span>
+                </div>
+                ${order.paymentMode === 'CREDIT' ? `
+                <div class="detail-row">
+                    <span class="detail-label">Délai paiement</span>
+                    <span class="detail-value">${order.paymentTerms} jours</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Caution</span>
+                    <span class="detail-value ${order.cautionStatus === 'insufficient' ? 'danger' : 'success'}">
+                        ${order.cautionPercent}% ${order.cautionStatus === 'insufficient' ? '(Insuffisante)' : '(OK)'}
+                    </span>
+                </div>
+                ` : `
+                <div class="detail-row">
+                    <span class="detail-label">Paiement</span>
+                    <span class="detail-value success">À la commande</span>
+                </div>
+                `}
+                ${order.validationLevel ? `
+                <div class="detail-row">
+                    <span class="detail-label">Validation</span>
+                    <span class="detail-value warning">
+                        <span class="validation-level">${order.validationLevel}</span>
+                        ${order.validationReason || ''}
+                    </span>
+                </div>
+                ` : ''}
+            </div>
+
+            <!-- Documents Card -->
+            <div class="detail-card">
+                <div class="detail-card-title">
+                    <i class="fa-solid fa-file-alt"></i> Documents & Infos
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Documents</span>
+                    <span class="detail-value ${order.documentsOk ? 'success' : 'warning'}">
+                        ${order.documentsOk ? '<i class="fa-solid fa-check-circle"></i> Complets' : '<i class="fa-solid fa-exclamation-triangle"></i> Incomplets'}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Nb articles</span>
+                    <span class="detail-value">${order.items} lignes</span>
+                </div>
+                ${order.invoiceRef ? `
+                <div class="detail-row">
+                    <span class="detail-label">Facture</span>
+                    <span class="detail-value highlight">${order.invoiceRef}</span>
+                </div>
+                ` : ''}
+                ${order.rejectReason ? `
+                <div class="detail-row">
+                    <span class="detail-label">Motif rejet</span>
+                    <span class="detail-value danger">${order.rejectReason}</span>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+
+        <!-- Articles Table -->
+        <div style="margin-bottom: 24px;">
+            <div class="detail-card-title" style="margin-bottom: 12px;">
+                <i class="fa-solid fa-boxes-stacked"></i> Articles commandés
+            </div>
+            <div style="overflow-x: auto; border-radius: 8px; border: 1px solid #E5E7EB;">
+                <table class="detail-articles-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">Code</th>
+                            <th>Désignation</th>
+                            <th style="width: 60px; text-align: center;">Qté</th>
+                            <th style="width: 60px;">Unité</th>
+                            <th style="width: 90px; text-align: right;">PU HT</th>
+                            <th style="width: 50px; text-align: center;">Rem%</th>
+                            <th style="width: 100px; text-align: right;">Total HT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${articlesData.map(art => {
+                            const ligneHT = art.qte * art.puHT;
+                            const remiseAmount = ligneHT * art.remise / 100;
+                            const netLigne = ligneHT - remiseAmount;
+                            return `
+                                <tr>
+                                    <td style="font-weight: 600; color: #263c89;">${art.code}</td>
+                                    <td>${art.designation}</td>
+                                    <td style="text-align: center;">${art.qte}</td>
+                                    <td>${art.unite}</td>
+                                    <td style="text-align: right;">${formatMoney(art.puHT)}</td>
+                                    <td style="text-align: center;">${art.remise > 0 ? art.remise + '%' : '-'}</td>
+                                    <td style="text-align: right; font-weight: 500;">${formatMoney(netLigne)}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Totals -->
+            <div class="detail-totals">
+                <div class="detail-total-row">
+                    <span>Total brut HT</span>
+                    <span>${formatMoney(totalHT)} XAF</span>
+                </div>
+                <div class="detail-total-row">
+                    <span>Remises</span>
+                    <span style="color: #059669;">- ${formatMoney(totalRemise)} XAF</span>
+                </div>
+                <div class="detail-total-row">
+                    <span>Net HT</span>
+                    <span>${formatMoney(netHT)} XAF</span>
+                </div>
+                <div class="detail-total-row">
+                    <span>TVA 19.25%</span>
+                    <span>${formatMoney(Math.round(tva))} XAF</span>
+                </div>
+                <div class="detail-total-row grand-total">
+                    <span>TOTAL TTC</span>
+                    <span>${formatMoney(order.amount)} XAF</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="detail-timeline">
+            <div class="timeline-title">
+                <i class="fa-solid fa-route"></i> Suivi de la commande
+            </div>
+            <div class="timeline-items">
+                <div class="timeline-item ${getTimelineClass('PENDING')}">
+                    <i class="fa-solid fa-file-alt"></i> Créée
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: #D1D5DB; font-size: 10px;"></i>
+                <div class="timeline-item ${getTimelineClass('VALIDATED')}">
+                    <i class="fa-solid fa-check"></i> Validée
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: #D1D5DB; font-size: 10px;"></i>
+                <div class="timeline-item ${getTimelineClass('IN_DELIVERY')}">
+                    <i class="fa-solid fa-truck"></i> En livraison
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: #D1D5DB; font-size: 10px;"></i>
+                <div class="timeline-item ${getTimelineClass('DELIVERED')}">
+                    <i class="fa-solid fa-box-open"></i> Livrée
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: #D1D5DB; font-size: 10px;"></i>
+                <div class="timeline-item ${getTimelineClass('INVOICED')}">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Facturée
+                </div>
             </div>
         </div>
     `;

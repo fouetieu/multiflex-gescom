@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail Commissions - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/ventes-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .summary-value.green {
+            color: #059669;
+        }
+
+        .summary-value.orange {
+            color: #D97706;
+        }
+
+        .summary-value.red {
+            color: #DC2626;
+        }
+
+        .filters-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+        }
+
+        .filter-input {
+            padding: 10px 14px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+            min-width: 160px;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #263c89;
+        }
+
+        .search-input {
+            min-width: 280px;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .table-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 14px 16px;
+            background: #F9FAFB;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid #F3F4F6;
+            font-size: 14px;
+        }
+
+        .data-table tr:hover {
+            background: #F9FAFB;
+        }
+
+        .doc-number {
+            font-weight: 600;
+            color: #059669;
+        }
+
+        .client-name {
+            font-weight: 500;
+            color: #1F2937;
+        }
+
+        .client-code {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .amount-cell {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .commission-cell {
+            font-weight: 600;
+            color: #059669;
+            text-align: right;
+        }
+
+        .rate-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            background: #F3F4F6;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+        }
+
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .category-badge.construction { background: #FEF3C7; color: #D97706; }
+        .category-badge.paint { background: #DBEAFE; color: #2563EB; }
+        .category-badge.plumbing { background: #D1FAE5; color: #059669; }
+        .category-badge.electrical { background: #EDE9FE; color: #7C3AED; }
+        .category-badge.other { background: #F3F4F6; color: #6B7280; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.paid { background: #D1FAE5; color: #059669; }
+        .status-badge.pending { background: #FEF3C7; color: #D97706; }
+        .status-badge.blocked { background: #FEE2E2; color: #DC2626; }
+
+        .action-btn {
+            padding: 6px 10px;
+            background: #F3F4F6;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .action-btn:hover {
+            background: #E5E7EB;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            background: white;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .page-btn:hover {
+            background: #F3F4F6;
+        }
+
+        .page-btn.active {
+            background: #263c89;
+            color: white;
+            border-color: #263c89;
+        }
+
+        .totals-row {
+            background: #F9FAFB;
+            font-weight: 600;
+        }
+
+        .totals-row td {
+            padding: 20px 16px;
+            border-top: 2px solid #E5E7EB;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <div class="flex items-center gap-4">
+                    <button onclick="goBack()" class="w-10 h-10 border border-[#E5E7EB] bg-white rounded-lg cursor-pointer flex items-center justify-center text-[#6B7280] hover:bg-[#F3F4F6]">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-xl font-bold text-[#1A1A1A]">Détail des ventes et commissions</h1>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">5</span>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto" id="main-sidebar">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Ventes
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Clients
+                    </div>
+
+                    <a href="./clients-list.html" class="sidebar-link" data-page="clients-list">
+                        <i class="fa-solid fa-users mr-3"></i>
+                        <span>Liste Clients</span>
+                    </a>
+
+                    <a href="./client-create.html" class="sidebar-link" data-page="client-create">
+                        <i class="fa-solid fa-user-plus mr-3"></i>
+                        <span>Nouveau Client</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Commandes
+                    </div>
+
+                    <a href="./commandes-list.html" class="sidebar-link" data-page="commandes-list">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Liste Commandes</span>
+                    </a>
+
+                    <a href="./commande-create.html" class="sidebar-link" data-page="commande-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Commande</span>
+                    </a>
+
+                    <a href="./commandes-validation.html" class="sidebar-link" data-page="commandes-validation">
+                        <i class="fa-solid fa-clipboard-check mr-3"></i>
+                        <span>Validation Crédit</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Livraisons
+                    </div>
+
+                    <a href="./livraisons-list.html" class="sidebar-link" data-page="livraisons-list">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Planning Livraisons</span>
+                    </a>
+
+                    <a href="./livraison-create.html" class="sidebar-link" data-page="livraison-create">
+                        <i class="fa-solid fa-truck-loading mr-3"></i>
+                        <span>Nouveau BL</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Facturation
+                    </div>
+
+                    <a href="./factures-list.html" class="sidebar-link" data-page="factures-list">
+                        <i class="fa-solid fa-file-invoice-dollar mr-3"></i>
+                        <span>Liste Factures</span>
+                    </a>
+
+                    <a href="./facture-create.html" class="sidebar-link" data-page="facture-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Facture</span>
+                    </a>
+
+                    <a href="./avoirs-list.html" class="sidebar-link" data-page="avoirs-list">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Avoirs</span>
+                    </a>
+
+                    <a href="./facture-transport.html" class="sidebar-link" data-page="facture-transport">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Facture Transport</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Point de Vente
+                    </div>
+
+                    <a href="./caisse-ouverture.html" class="sidebar-link" data-page="caisse-ouverture">
+                        <i class="fa-solid fa-door-open mr-3"></i>
+                        <span>Ouverture Caisse</span>
+                    </a>
+
+                    <a href="./caisse.html" class="sidebar-link" data-page="caisse">
+                        <i class="fa-solid fa-cash-register mr-3"></i>
+                        <span>Interface Caisse</span>
+                    </a>
+
+                    <a href="./caisse-cloture.html" class="sidebar-link" data-page="caisse-cloture">
+                        <i class="fa-solid fa-door-closed mr-3"></i>
+                        <span>Clôture Caisse</span>
+                    </a>
+
+                    <a href="./caisse-historique.html" class="sidebar-link" data-page="caisse-historique">
+                        <i class="fa-solid fa-history mr-3"></i>
+                        <span>Historique Sessions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Service Client
+                    </div>
+
+                    <a href="./retours-list.html" class="sidebar-link" data-page="retours-list">
+                        <i class="fa-solid fa-rotate-left mr-3"></i>
+                        <span>Retours</span>
+                    </a>
+
+                    <a href="./reclamations-list.html" class="sidebar-link" data-page="reclamations-list">
+                        <i class="fa-solid fa-headset mr-3"></i>
+                        <span>Réclamations</span>
+                        <span class="ml-2 bg-[#EF4444] text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Reporting
+                    </div>
+
+                    <a href="./commissions-dashboard.html" class="sidebar-link" data-page="commissions-dashboard">
+                        <i class="fa-solid fa-coins mr-3"></i>
+                        <span>Mes Commissions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="ventes-container" style="max-width: none; padding: 24px;">
+
+                    <!-- Summary Cards -->
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <div class="summary-label">Total ventes</div>
+                            <div class="summary-value" id="totalSales">47</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Commissions versées</div>
+                            <div class="summary-value green" id="paidCommissions">1,856,000 XAF</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Commissions en attente</div>
+                            <div class="summary-value orange" id="pendingCommissions">608,000 XAF</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Commissions bloquées</div>
+                            <div class="summary-value red" id="blockedCommissions">42,000 XAF</div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filters-card">
+                        <div class="filters-row">
+                            <div class="filter-group">
+                                <label class="filter-label">Recherche</label>
+                                <input type="text" class="filter-input search-input"
+                                       placeholder="N° facture, client..." id="searchInput">
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Période</label>
+                                <select class="filter-select filter-input" id="periodFilter">
+                                    <option value="all">Toutes</option>
+                                    <option value="today">Aujourd'hui</option>
+                                    <option value="week">Cette semaine</option>
+                                    <option value="month" selected>Ce mois</option>
+                                    <option value="quarter">Ce trimestre</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Statut commission</label>
+                                <select class="filter-select filter-input" id="statusFilter">
+                                    <option value="all">Tous</option>
+                                    <option value="paid">Versé</option>
+                                    <option value="pending">En attente</option>
+                                    <option value="blocked">Bloqué</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Catégorie</label>
+                                <select class="filter-select filter-input" id="categoryFilter">
+                                    <option value="all">Toutes</option>
+                                    <option value="construction">Construction</option>
+                                    <option value="paint">Peinture</option>
+                                    <option value="plumbing">Plomberie</option>
+                                    <option value="electrical">Électricité</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="applyFilters()" style="margin-top: auto;">
+                                <i class="fa-solid fa-filter"></i> Filtrer
+                            </button>
+                            <button class="btn btn-secondary" onclick="exportData()" style="margin-top: auto;">
+                                <i class="fa-solid fa-download"></i> Exporter
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-card">
+                        <div class="table-header">
+                            <span class="table-title">Liste des ventes</span>
+                            <span style="font-size: 13px; color: #6B7280;" id="resultCount">47 résultats</span>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Document</th>
+                                    <th>Client</th>
+                                    <th>Date</th>
+                                    <th>Catégorie</th>
+                                    <th style="text-align: right;">Montant HT</th>
+                                    <th>Taux</th>
+                                    <th style="text-align: right;">Commission</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="totals-row">
+                                    <td colspan="4" style="text-align: right;">TOTAL:</td>
+                                    <td class="amount-cell" id="totalAmount">125,300,000 XAF</td>
+                                    <td></td>
+                                    <td class="commission-cell" id="totalCommission">2,506,000 XAF</td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div class="pagination">
+                            <span class="pagination-info">Affichage 1-15 sur 47</span>
+                            <div class="pagination-buttons">
+                                <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button class="page-btn active">1</button>
+                                <button class="page-btn">2</button>
+                                <button class="page-btn">3</button>
+                                <button class="page-btn">4</button>
+                                <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/commissions-detail.js"></script>
+</body>
+</html>

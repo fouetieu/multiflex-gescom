@@ -1,0 +1,443 @@
+# 🔄 **ANALYSE ET PLANIFICATION D'INTÉGRATION DES USER STORIES**
+
+## 📊 **ÉTAT ACTUEL DE COUVERTURE**
+
+| User Story | Écrans déjà créés | Couverture | Écrans manquants |
+|------------|------------------|------------|------------------|
+| **US-VENTE-015** | ❌ Aucun | 0% | ECR-FAC-003 |
+| **US-VENTE-016** | ⚠️ Partiel - ECR-FAC-001 (liste avec avoirs) | 20% | ECR-FAC-004, ECR-FAC-005 |
+| **US-VENTE-018** | ⚠️ Partiel - ECR-POS-003 (interface vente) | 30% | ECR-POS-001 |
+| **US-VENTE-020** | ❌ Aucun | 0% | ECR-POS-004, ECR-POS-005 |
+| **US-VENTE-022** | ⚠️ Partiel - ECR-POS-003 (clôture basique) | 25% | ECR-POS-006 |
+| **US-VENTE-024** | ❌ Aucun | 0% | ECR-COM-001, ECR-COM-002 |
+| **US-VENTE-029** | ❌ Aucun | 0% | ECR-RET-001, ECR-RET-002 |
+| **US-VENTE-030** | ❌ Aucun | 0% | ECR-RCL-001, ECR-RCL-002 |
+
+## 🔗 **PLAN D'INTÉGRATION DÉTAILLÉ**
+
+### **1️⃣ US-VENTE-015 : CRÉER UNE FACTURE DE TRANSPORT**
+
+#### **Nouvel écran : ECR-FAC-003 - Facture Transport Subventionné**
+
+```yaml
+Intégration:
+  Point d'entrée:
+    - Depuis ECR-FAC-002 (onglet 1) : Option "Facture de transport"
+    - Depuis ECR-LIV-002 : Bouton "Générer facture transport" si subventionné
+    - Depuis ECR-FAC-001 : Bouton "+ Nouvelle facture" → Type transport
+
+  Interactions avec existants:
+    - Lit données depuis: ECR-LIV-002 (BL avec transport subventionné)
+    - Récupère client depuis: ECR-CLI-004 (fiche client)
+    - Utilise calculs de: ECR-CMD-003 (montant acompte transport)
+    - S'affiche dans: ECR-FAC-001 (liste avec type "TRANSPORT")
+
+  Données partagées:
+    - transportInfo.hasSubsidizedTransport = true
+    - transportInfo.transportDepositAmount (100% du transport)
+    - documentType = "TRANSPORT_INVOICE"
+```
+
+**Wireframe condensé ECR-FAC-003:**
+```
+┌─────────────────────────────────────────────────┐
+│ FACTURE TRANSPORT SUBVENTIONNÉ                  │
+├─────────────────────────────────────────────────┤
+│ BL Source: [BL-CLI156-2024-00235 ▼] ✓Subventionné│
+│ Client: SONACOM SARL                            │
+│ Transporteur: KAMGA Transport                   │
+│                                                  │
+│ Coût transport total:     150,000 XAF           │
+│ Acompte client (100%):    150,000 XAF ✓ Payé    │
+│ Subvention société:        45,000 XAF           │
+│ Net à facturer:           105,000 XAF           │
+│                                                  │
+│ [Valider] [Aperçu PDF]                          │
+└─────────────────────────────────────────────────┘
+```
+
+### **2️⃣ US-VENTE-016 : GÉRER UN AVOIR CLIENT**
+
+#### **Nouveaux écrans : ECR-FAC-004 (Création Avoir) + ECR-FAC-005 (Application Avoir)**
+
+```yaml
+Intégration:
+  Points d'entrée:
+    - Depuis ECR-FAC-001 : Bouton [📄 Avoir] sur facture
+    - Depuis ECR-RET-002 : Auto-génération après validation retour
+    - Depuis ECR-FAC-002 : Bouton "Créer avoir" si facture validée
+
+  Interactions:
+    ECR-FAC-004 (Création):
+      - Lit facture source depuis: ECR-FAC-001
+      - Peut lire retour depuis: ECR-RET-002 (si existe)
+      - Met à jour solde dans: ECR-CLI-004 (onglet financier)
+      
+    ECR-FAC-005 (Application):
+      - Liste avoirs disponibles du client
+      - S'applique sur: Nouvelle facture ECR-FAC-002
+      - Met à jour: ECR-CLI-004 (encours client)
+
+  Modifications écrans existants:
+    - ECR-FAC-001: Ajouter colonne "Avoirs liés" + filtre type
+    - ECR-FAC-002: Ajouter section "Avoirs à déduire" onglet 4
+    - ECR-CLI-004: Ajouter onglet "Avoirs" avec liste et soldes
+```
+
+**Wireframe ECR-FAC-004 (Création Avoir):**
+```
+┌─────────────────────────────────────────────────┐
+│ NOUVEL AVOIR CLIENT                             │
+├─────────────────────────────────────────────────┤
+│ Facture origine: FA-CLI156-2024-00567           │
+│ Motif: [Retour marchandise    ▼]                │
+│        [Description détaillée_______]           │
+│                                                  │
+│ Articles à créditer:                            │
+│ ☑ PEINT-BLC-05L    | 5/20 | 21,000 XAF         │
+│ ☐ CIMENT-50KG      | 0/100|      0 XAF         │
+│                                                  │
+│ Montant avoir HT:     17,647 XAF               │
+│ TVA 19.25%:            3,398 XAF               │
+│ Total avoir TTC:      21,045 XAF               │
+│                                                  │
+│ Application: ○ Sur prochaine facture            │
+│             ○ Remboursement                     │
+└─────────────────────────────────────────────────┘
+```
+
+### **3️⃣ US-VENTE-018 : OUVRIR UNE SESSION DE CAISSE**
+
+#### **Nouvel écran : ECR-POS-001 - Ouverture Session**
+
+```yaml
+Intégration:
+  Point d'entrée:
+    - Page d'accueil POS (avant ECR-POS-003)
+    - Obligatoire avant toute vente
+
+  Interactions:
+    - Bloque accès à: ECR-POS-003 si pas de session ouverte
+    - Crée session dans: pos_sessions (status = OPEN)
+    - Vérifie clôture précédente dans: ECR-POS-006
+    - Affiche fond de caisse de: Clôture précédente
+
+  Modifications:
+    - ECR-POS-003: Ajouter header "Session: POS-2024-0089"
+    - ECR-POS-003: Bloquer si sessionStatus != OPEN
+```
+
+**Wireframe ECR-POS-001:**
+```
+┌─────────────────────────────────────────────────┐
+│ OUVERTURE SESSION CAISSE                        │
+├─────────────────────────────────────────────────┤
+│ Caissier: [Jean MBARGA    ▼] PIN: [****]       │
+│ Caisse: CAISSE-01 | Date: 29/01/2024           │
+│                                                  │
+│ Dernière session: POS-2024-0088                 │
+│ Clôturée le: 28/01/2024 à 18:45 ✅              │
+│                                                  │
+│ Fond de caisse initial:                         │
+│ ┌──────────────────────────────────┐            │
+│ │ Report session précédente: 50,000│            │
+│ │ Ajout/Retrait: [________] XAF    │            │
+│ │ Total fond: 50,000 XAF           │            │
+│ └──────────────────────────────────┘            │
+│                                                  │
+│ [Annuler] [OUVRIR SESSION]                      │
+└─────────────────────────────────────────────────┘
+```
+
+### **4️⃣ US-VENTE-020 : ANNULER/RETOURNER UNE VENTE POS**
+
+#### **Nouveaux écrans : ECR-POS-004 (Recherche Ticket) + ECR-POS-005 (Retour/Annulation)**
+
+```yaml
+Intégration:
+  Points d'entrée:
+    - Depuis ECR-POS-003: Touche [F6 Retour]
+    - Depuis ECR-POS-006: Lien sur ticket dans historique
+
+  Interactions:
+    ECR-POS-004 (Recherche):
+      - Cherche dans: pos_transactions
+      - Affiche détails ticket
+      
+    ECR-POS-005 (Traitement):
+      - Génère avoir dans: ECR-FAC-004 (si facturé)
+      - Met à jour stock: Via API stock
+      - Impacte clôture: ECR-POS-006 (comptage)
+      - Crée entrée: customer_returns
+
+  Modifications:
+    - ECR-POS-003: Ajouter indicateur retours du jour
+    - ECR-POS-006: Section "Retours et annulations"
+```
+
+**Wireframe ECR-POS-005 (Retour):**
+```
+┌─────────────────────────────────────────────────┐
+│ RETOUR/ANNULATION TICKET                        │
+├─────────────────────────────────────────────────┤
+│ Ticket: 0015 du 29/01/2024 10:45               │
+│ Client: KAMGA Jean Paul                         │
+│ Montant: 51,107 XAF | Payé: Espèces            │
+│                                                  │
+│ Type opération: ○ Annulation complète           │
+│                ● Retour partiel                 │
+│                                                  │
+│ Articles à retourner:                           │
+│ ☑ PEINT-BLC-05L (2) - Défectueux               │
+│ ☐ CIMENT-50KG (5)                              │
+│                                                  │
+│ Montant à rembourser: 9,000 XAF                │
+│ Mode remboursement: [Espèces ▼]                 │
+│ Motif: [Produit défectueux_____]               │
+│                                                  │
+│ [Annuler] [VALIDER RETOUR]                     │
+└─────────────────────────────────────────────────┘
+```
+
+### **5️⃣ US-VENTE-022 : CONSULTER L'HISTORIQUE DES SESSIONS**
+
+#### **Nouvel écran : ECR-POS-006 - Historique Sessions**
+
+```yaml
+Intégration:
+  Points d'entrée:
+    - Depuis ECR-POS-003: [F9 Historique]
+    - Depuis menu principal: Rapports > Sessions caisse
+
+  Interactions:
+    - Lit données: pos_sessions, pos_closures
+    - Permet réimpression: Rapport Z de clôture
+    - Liens vers: ECR-POS-005 (détails tickets)
+    - Export vers: ECR-FAC-001 (factures du jour)
+
+  Affichage dans:
+    - ECR-RPT-001: Widget "Performance caisses"
+```
+
+**Wireframe ECR-POS-006:**
+```
+┌─────────────────────────────────────────────────┐
+│ HISTORIQUE SESSIONS CAISSE                      │
+├─────────────────────────────────────────────────┤
+│ Période: [Cette semaine ▼] Caisse: [Toutes ▼]  │
+│                                                  │
+│ Session     │Caissier│Durée│CA TTC  │Écart│St │
+│─────────────┼────────┼─────┼────────┼─────┼───│
+│POS-2024-0089│MBARGA  │10h35│1,448K  │  0  │🟢 │
+│29/01 08:00  │        │     │        │     │   │
+│             │67 tickets, 3 retours             │
+│                                                  │
+│POS-2024-0088│FOTSO   │ 9h20│1,235K  │-500 │🟡 │
+│28/01 08:30  │        │     │        │     │   │
+│             │55 tickets, 1 annulation          │
+│                                                  │
+│ [Détails] [Rapport Z] [Export]                 │
+└─────────────────────────────────────────────────┘
+```
+
+### **6️⃣ US-VENTE-024 : CONSULTER MES COMMISSIONS**
+
+#### **Nouveaux écrans : ECR-COM-001 (Dashboard) + ECR-COM-002 (Détail)**
+
+```yaml
+Intégration:
+  Points d'entrée:
+    - Menu principal: Mes commissions (commerciaux)
+    - Depuis ECR-RPT-001: Lien sur commercial
+
+  Interactions:
+    - Lit données: sales_commissions
+    - Calcule depuis: sales_documents (validés + payés)
+    - Affiche dans: ECR-CLI-004 (commercial assigné)
+    - Utilisé par: Paie/RH (export)
+
+  Modifications:
+    - ECR-CMD-001: Ajouter colonne commission estimée
+    - ECR-FAC-001: Indicateur commission acquise
+```
+
+**Wireframe ECR-COM-001 (Dashboard Commercial):**
+```
+┌─────────────────────────────────────────────────┐
+│ MES COMMISSIONS - Marie DJOMO                   │
+├─────────────────────────────────────────────────┤
+│ Janvier 2024                                    │
+│ ┌────────────┬────────────┬────────────┐       │
+│ │ CA Réalisé │ Commission │ Objectif   │       │
+│ │ 125.3M XAF │ 2,506,000 │ 84%        │       │
+│ │            │    XAF     │            │       │
+│ └────────────┴────────────┴────────────┘       │
+│                                                  │
+│ Détail par catégorie:                          │
+│ • Construction: 1,125,000 XAF (3% de 37.5M)    │
+│ • Peinture:       450,000 XAF (2% de 22.5M)    │
+│ • Nouveaux clients: 350,000 XAF (5% de 7M)     │
+│ • Bonus objectif:   581,000 XAF (si ≥80%)      │
+│                                                  │
+│ Évolution: [Graphique 6 mois]                  │
+│                                                  │
+│ [Détail ventes] [Export] [Contestation]        │
+└─────────────────────────────────────────────────┘
+```
+
+### **7️⃣ US-VENTE-029 : CRÉER UN BON DE RETOUR CLIENT**
+
+#### **Nouveaux écrans : ECR-RET-001 (Liste) + ECR-RET-002 (Création)**
+
+```yaml
+Intégration:
+  Points d'entrée:
+    - Depuis ECR-FAC-001: Action sur facture
+    - Depuis ECR-LIV-001: Retour sur BL
+    - Depuis ECR-CLI-004: Onglet SAV
+
+  Interactions:
+    ECR-RET-002:
+      - Lit BL source: ECR-LIV-002
+      - Génère avoir: ECR-FAC-004 (automatique)
+      - Met à jour stock: Via API
+      - Notifie: Magasin pour réception
+      - Impacte: Commissions (ECR-COM-001)
+
+  Modifications:
+    - ECR-CLI-004: Ajouter onglet "Retours"
+    - ECR-FAC-001: Badge "Retour" sur factures concernées
+```
+
+**Wireframe ECR-RET-002 (Création Retour):**
+```
+┌─────────────────────────────────────────────────┐
+│ NOUVEAU BON DE RETOUR                           │
+├─────────────────────────────────────────────────┤
+│ N° Retour: RET-2024-00045 (auto)               │
+│ Document source: [BL-CLI156-2024-00235 ▼]      │
+│                                                  │
+│ Client: SONACOM SARL                           │
+│ Date livraison: 29/01/2024                     │
+│ Date retour: [30/01/2024] (Max: J+7)           │
+│                                                  │
+│ Articles retournés:                             │
+│ ☑ PEINT-BLC-05L | Livré: 20 | Retour: [5]     │
+│   Motif: [Défaut fabrication ▼]                │
+│   État: ○ Neuf ● Endommagé ○ Périmé           │
+│                                                  │
+│ Action après contrôle:                          │
+│ ● Avoir client (21,000 XAF)                    │
+│ ○ Échange standard                              │
+│ ○ Réparation                                    │
+│                                                  │
+│ Photos: [📷 Ajouter photos]                     │
+│                                                  │
+│ [Annuler] [Valider retour]                     │
+└─────────────────────────────────────────────────┘
+```
+
+### **8️⃣ US-VENTE-030 : GÉRER LES RÉCLAMATIONS CLIENTS**
+
+#### **Nouveaux écrans : ECR-RCL-001 (Liste) + ECR-RCL-002 (Suivi Ticket)**
+
+```yaml
+Intégration:
+  Points d'entrée:
+    - Depuis ECR-CLI-004: Bouton "Nouvelle réclamation"
+    - Menu principal: Service Client > Réclamations
+    - Depuis ECR-RET-001: Escalade si problème
+
+  Interactions:
+    - Crée dans: customer_claims
+    - Peut générer: ECR-RET-002 (si accord retour)
+    - Peut créer: ECR-FAC-004 (avoir commercial)
+    - Notifie: Commercial assigné
+    - Escalade vers: Direction si critique
+
+  Modifications:
+    - ECR-CLI-004: Onglet "Réclamations" avec historique
+    - ECR-RPT-001: Widget "Réclamations ouvertes"
+```
+
+**Wireframe ECR-RCL-002 (Ticket Réclamation):**
+```
+┌─────────────────────────────────────────────────┐
+│ RÉCLAMATION #RCL-2024-00234                     │
+├─────────────────────────────────────────────────┤
+│ Client: SONACOM SARL | Priorité: 🔴 Haute       │
+│ Créée: 30/01/2024 09:15 | SLA: 4h restantes    │
+│                                                  │
+│ Type: [Qualité produit ▼]                       │
+│ Concerne: FA-CLI156-2024-00567                  │
+│                                                  │
+│ Description:                                     │
+│ [Peinture qui ne tient pas après 2 jours,      │
+│  problème de qualité sur lot PEINT-0124-B]     │
+│                                                  │
+│ ── Historique actions ──                        │
+│ 30/01 09:20 - Assigné à Service Qualité        │
+│ 30/01 10:00 - Contact client par téléphone     │
+│ 30/01 11:00 - Visite technique programmée      │
+│                                                  │
+│ Résolution proposée:                            │
+│ [Remplacement lot complet + geste commercial]  │
+│                                                  │
+│ [Escalader] [Créer retour] [Clôturer]          │
+└─────────────────────────────────────────────────┘
+```
+
+## 🔗 **MATRICE D'INTERACTIONS ENTRE ÉCRANS**
+
+| Écran source | Déclenche/Ouvre | Lit données de | Met à jour | Notifie |
+|--------------|-----------------|----------------|------------|---------|
+| **ECR-FAC-003** | - | ECR-LIV-002, ECR-CMD-003 | ECR-FAC-001 | Comptabilité |
+| **ECR-FAC-004** | ECR-FAC-005 | ECR-FAC-001, ECR-RET-002 | ECR-CLI-004 | Client |
+| **ECR-POS-001** | ECR-POS-003 | ECR-POS-006 | pos_sessions | - |
+| **ECR-POS-005** | ECR-FAC-004 | ECR-POS-003 | Stock, ECR-POS-006 | Caissier |
+| **ECR-COM-001** | ECR-COM-002 | ECR-FAC-001 | - | RH/Paie |
+| **ECR-RET-002** | ECR-FAC-004 | ECR-LIV-002 | Stock, ECR-CLI-004 | Magasin |
+| **ECR-RCL-002** | ECR-RET-002, ECR-FAC-004 | ECR-CLI-004 | customer_claims | Commercial |
+
+## 📅 **PLANNING D'IMPLÉMENTATION**
+
+### **Sprint 1 : POS Complet (3 jours)**
+1. **Jour 1** : ECR-POS-001 (Ouverture session)
+2. **Jour 2** : ECR-POS-004 + ECR-POS-005 (Retours/Annulations)  
+3. **Jour 3** : ECR-POS-006 (Historique sessions)
+
+**Justification** : Complète le flux POS déjà commencé, forte demande terrain
+
+### **Sprint 2 : Retours & Avoirs (4 jours)**
+4. **Jour 4** : ECR-RET-001 (Liste retours)
+5. **Jour 5** : ECR-RET-002 (Création retour)
+6. **Jour 6** : ECR-FAC-004 (Création avoir)
+7. **Jour 7** : ECR-FAC-005 (Application avoir)
+
+**Justification** : Flux SAV critique, génère satisfaction client
+
+### **Sprint 3 : Service Client (2 jours)**
+8. **Jour 8** : ECR-RCL-001 (Liste réclamations)
+9. **Jour 9** : ECR-RCL-002 (Gestion ticket)
+
+**Justification** : Complément naturel des retours
+
+### **Sprint 4 : Finances (3 jours)**
+10. **Jour 10** : ECR-FAC-003 (Facture transport)
+11. **Jour 11** : ECR-COM-001 (Dashboard commissions)
+12. **Jour 12** : ECR-COM-002 (Détail commissions)
+
+**Justification** : Impact paie et comptabilité
+
+## ✅ **MODIFICATIONS SUR ÉCRANS EXISTANTS**
+
+| Écran existant | Modifications à apporter |
+|----------------|-------------------------|
+| **ECR-FAC-001** | • Ajouter type "TRANSPORT", "AVOIR"<br>• Colonne "Avoirs liés"<br>• Actions retour/avoir |
+| **ECR-FAC-002** | • Option type "Transport" dans onglet 1<br>• Section "Avoirs à déduire" onglet 4 |
+| **ECR-CLI-004** | • Onglet "Retours" (liste)<br>• Onglet "Réclamations"<br>• Onglet "Avoirs" avec solde |
+| **ECR-POS-003** | • Header session obligatoire<br>• Touche F6 Retour<br>• Compteur retours jour |
+| **ECR-CMD-001** | • Colonne commission estimée<br>• Indicateur transport subventionné |
+| **ECR-LIV-002** | • Bouton "Facture transport" si subventionné<br>• Lien vers retours possibles |
+| **ECR-RPT-001** | • Widget "Réclamations ouvertes"<br>• Widget "Performance caisses"<br>• Section commissions |
+

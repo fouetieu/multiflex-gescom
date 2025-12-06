@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point de Vente - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/ventes-common.css">
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* POS Layout */
+        .pos-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+            background: #1F2937;
+        }
+
+        /* Header */
+        .pos-header {
+            grid-column: 1 / -1;
+            background: #263c89;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pos-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .pos-session-info {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .pos-session-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pos-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pos-user img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Area */
+        .pos-main {
+            display: flex;
+            flex-direction: column;
+            background: #F3F4F6;
+            overflow: hidden;
+        }
+
+        /* Cart Section */
+        .cart-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            margin: 16px;
+            margin-right: 8px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: #F9FAFB;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .cart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .ticket-number {
+            font-size: 14px;
+            color: #263c89;
+            font-weight: 600;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #263c89;
+            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
+        }
+
+        .search-btn {
+            padding: 12px 16px;
+            background: #263c89;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .search-btn:hover {
+            background: #1a2959;
+        }
+
+        /* Cart Items */
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 1fr 60px 80px 100px 40px;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid #F3F4F6;
+            gap: 12px;
+        }
+
+        .cart-item:hover {
+            background: #F9FAFB;
+        }
+
+        .item-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-code {
+            font-size: 12px;
+            color: #263c89;
+            font-weight: 600;
+        }
+
+        .item-name {
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .item-qty {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .qty-btn {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #D1D5DB;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:hover {
+            background: #F3F4F6;
+        }
+
+        .qty-value {
+            width: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .item-price {
+            text-align: right;
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .item-total {
+            text-align: right;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .item-delete {
+            background: none;
+            border: none;
+            color: #DC2626;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .item-delete:hover {
+            opacity: 1;
+        }
+
+        .cart-empty {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #9CA3AF;
+            padding: 40px;
+        }
+
+        .cart-empty i {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* Cart Footer */
+        .cart-footer {
+            padding: 12px 20px;
+            background: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        /* Client Panel */
+        .client-panel {
+            background: #1F2937;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 16px;
+        }
+
+        .client-section {
+            background: #374151;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #9CA3AF;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .client-search {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .client-search input {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 6px;
+            background: #1F2937;
+            color: white;
+            font-size: 13px;
+        }
+
+        .client-search input::placeholder {
+            color: #6B7280;
+        }
+
+        .client-search button {
+            padding: 10px 12px;
+            background: #263c89;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .client-type-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .client-type-btn {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #4B5563;
+            background: transparent;
+            border-radius: 6px;
+            color: #9CA3AF;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .client-type-btn.active {
+            border-color: #263c89;
+            background: #263c89;
+            color: white;
+        }
+
+        .client-info {
+            background: #1F2937;
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .client-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .client-detail {
+            font-size: 12px;
+            color: #9CA3AF;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .invoice-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .favorites {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .favorite-btn {
+            padding: 10px;
+            background: #1F2937;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .favorite-btn:hover {
+            background: #263c89;
+        }
+
+        .history-list {
+            font-size: 12px;
+        }
+
+        .history-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #4B5563;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-date {
+            color: #9CA3AF;
+        }
+
+        /* Totals Section */
+        .totals-section {
+            background: white;
+            margin: 0 16px 16px;
+            margin-right: 8px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .totals-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .totals-left {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .total-label {
+            color: #6B7280;
+        }
+
+        .total-value {
+            font-weight: 500;
+        }
+
+        .total-row.grand {
+            font-size: 24px;
+            font-weight: 700;
+            color: #263c89;
+            padding-top: 12px;
+            border-top: 2px solid #E5E7EB;
+            margin-top: 8px;
+        }
+
+        .discount-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .discount-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        .discount-row input[type="number"] {
+            width: 60px;
+            padding: 6px 8px;
+            border: 1px solid #D1D5DB;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        /* Payment Selection */
+        .payment-selection {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .payment-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .payment-option:hover {
+            border-color: #263c89;
+        }
+
+        .payment-option.active {
+            border-color: #263c89;
+            background: #EFF6FF;
+        }
+
+        .payment-option input[type="radio"] {
+            display: none;
+        }
+
+        .payment-radio {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #D1D5DB;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-option.active .payment-radio {
+            border-color: #263c89;
+        }
+
+        .payment-radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #263c89;
+            border-radius: 50%;
+            display: none;
+        }
+
+        .payment-option.active .payment-radio::after {
+            display: block;
+        }
+
+        /* Function Keys */
+        .function-keys {
+            grid-column: 1 / -1;
+            background: #111827;
+            padding: 12px 20px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .fn-key {
+            padding: 10px 16px;
+            background: #374151;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .fn-key:hover {
+            background: #4B5563;
+        }
+
+        .fn-key.primary {
+            background: #059669;
+        }
+
+        .fn-key.primary:hover {
+            background: #047857;
+        }
+
+        .fn-key.danger {
+            background: #DC2626;
+        }
+
+        .fn-key.danger:hover {
+            background: #B91C1C;
+        }
+
+        .fn-key-label {
+            background: #1F2937;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-right: 4px;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: #263c89;
+            color: white;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            background: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        /* Payment Modal */
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .payment-amount-box {
+            background: #263c89;
+            color: white;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .payment-amount-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .payment-amount-value {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .payment-client-box {
+            background: #F3F4F6;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .payment-limit-warning {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: #FEF3C7;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #92400E;
+        }
+
+        .payment-right {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .received-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .received-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .received-input {
+            padding: 16px;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: right;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+        }
+
+        .received-input:focus {
+            outline: none;
+            border-color: #263c89;
+        }
+
+        /* Bill Calculator */
+        .bill-calculator {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .bill-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .bill-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .bill-btn {
+            padding: 12px;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bill-btn:hover {
+            border-color: #263c89;
+            background: #EFF6FF;
+        }
+
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .quick-btn {
+            padding: 10px;
+            background: #263c89;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .quick-btn:hover {
+            background: #1a2959;
+        }
+
+        /* Change Box */
+        .change-box {
+            background: #D1FAE5;
+            border: 2px solid #059669;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .change-label {
+            font-size: 14px;
+            color: #065F46;
+            margin-bottom: 8px;
+        }
+
+        .change-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #059669;
+        }
+
+        .change-suggestion {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #A7F3D0;
+            text-align: left;
+        }
+
+        .change-suggestion-title {
+            font-size: 12px;
+            color: #065F46;
+            margin-bottom: 8px;
+        }
+
+        .change-suggestion-list {
+            font-size: 12px;
+            color: #374151;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .change-coin {
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        /* Search Modal */
+        .search-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .search-filters input,
+        .search-filters select {
+            padding: 10px 14px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .search-filters input {
+            flex: 1;
+        }
+
+        .search-results {
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .search-results-header {
+            background: #F3F4F6;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .search-results-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .search-result-item {
+            display: grid;
+            grid-template-columns: 100px 1fr 80px 100px 100px;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #F3F4F6;
+            gap: 12px;
+        }
+
+        .search-result-item:hover {
+            background: #F9FAFB;
+        }
+
+        .result-code {
+            font-weight: 600;
+            color: #263c89;
+            font-size: 13px;
+        }
+
+        .result-name {
+            font-size: 13px;
+        }
+
+        .result-name small {
+            display: block;
+            color: #6B7280;
+            font-size: 11px;
+        }
+
+        .result-stock {
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .result-price {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .result-add-btn {
+            padding: 8px 12px;
+            background: #263c89;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .result-add-btn:hover {
+            background: #1a2959;
+        }
+
+        /* Mobile Money Modal */
+        .operator-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .operator-card {
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .operator-card:hover {
+            border-color: #263c89;
+        }
+
+        .operator-card.selected {
+            border-color: #263c89;
+            background: #EFF6FF;
+        }
+
+        .operator-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .operator-name {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .mm-form-group {
+            margin-bottom: 16px;
+        }
+
+        .mm-form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .mm-form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .mm-instructions {
+            background: #F3F4F6;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .mm-instructions-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .mm-instructions ol {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .mm-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: #FEF3C7;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #92400E;
+        }
+
+        .mm-status i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #263c89;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a2959;
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .btn-secondary {
+            background: #E5E7EB;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #D1D5DB;
+            color: #374151;
+        }
+
+        .btn-outline:hover {
+            border-color: #263c89;
+            color: #263c89;
+        }
+        /* Override main-wrapper for POS full-screen layout */
+        .main-wrapper.pos-mode {
+            margin-left: 0;
+        }
+
+        .main-wrapper.pos-mode .top-header,
+        .main-wrapper.pos-mode .main-content {
+            display: none;
+        }
+
+        .main-wrapper.pos-mode .pos-container {
+            display: grid;
+        }
+    </style>
+</head>
+<body>
+    <!-- POS Container (Full Screen Mode) -->
+            <div class="pos-container">
+                <!-- Header -->
+                <div class="pos-header">
+                    <div class="pos-title">
+                        <i class="fa-solid fa-cash-register"></i>
+                        POINT DE VENTE - IOLA BTP DOUALA
+                    </div>
+                    <div class="pos-session-info">
+                        <div class="pos-session-item">
+                            <i class="fa-solid fa-hashtag"></i>
+                            Session: <strong id="sessionNumber">POS-2024-0089</strong>
+                        </div>
+                        <div class="pos-session-item">
+                            <i class="fa-solid fa-desktop"></i>
+                            Caisse: <strong>CAISSE-01</strong>
+                        </div>
+                        <div class="pos-session-item">
+                            <i class="fa-solid fa-clock"></i>
+                            <span id="currentTime">29/01/2024 14:35</span>
+                        </div>
+                    </div>
+                    <div class="pos-user">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="User">
+                        <div>
+                            <div style="font-weight: 600;">Jean MBARGA</div>
+                            <div style="font-size: 11px; opacity: 0.8;">Caissier</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-left: 20px;">
+                        <button class="header-btn" onclick="goToMenu()" title="Retour au menu">
+                            <i class="fa-solid fa-th-large"></i>
+                        </button>
+                        <button class="header-btn" onclick="confirmExit()" title="Quitter la caisse">
+                            <i class="fa-solid fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+        <!-- Main Cart Area -->
+        <div class="pos-main">
+            <div class="cart-section">
+                <div class="cart-header">
+                    <div class="cart-title">
+                        <i class="fa-solid fa-shopping-cart"></i> PANIER
+                    </div>
+                    <div class="ticket-number">Ticket N° <span id="ticketNumber">0024</span></div>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="barcodeInput"
+                           placeholder="Code article ou scanner..." autofocus
+                           onkeypress="handleBarcodeInput(event)">
+                    <button class="search-btn" onclick="openSearchModal()">
+                        <i class="fa-solid fa-barcode"></i>
+                    </button>
+                    <button class="search-btn" onclick="openSearchModal()">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+                </div>
+
+                <div class="cart-items" id="cartItems">
+                    <!-- Dynamic cart items -->
+                </div>
+
+                <div class="cart-footer" id="cartFooter">
+                    Articles: <span id="totalArticles">0</span> | Quantités: <span id="totalQty">0</span> unités
+                </div>
+            </div>
+
+            <div class="totals-section">
+                <div class="totals-grid">
+                    <div class="totals-left">
+                        <div class="total-row">
+                            <span class="total-label">Sous-total HT:</span>
+                            <span class="total-value" id="subtotalHT">0</span>
+                        </div>
+                        <div class="total-row">
+                            <span class="total-label">TVA 19.25%:</span>
+                            <span class="total-value" id="totalVAT">0</span>
+                        </div>
+                        <div class="total-row grand">
+                            <span>TOTAL TTC:</span>
+                            <span id="totalTTC">0 XAF</span>
+                        </div>
+                        <div class="discount-row">
+                            <input type="checkbox" id="applyDiscount" onchange="toggleDiscount()">
+                            <label for="applyDiscount">Remise:</label>
+                            <input type="number" id="discountPercent" value="0" min="0" max="100"
+                                   onchange="calculateTotals()" disabled>
+                            <span>%</span>
+                        </div>
+                    </div>
+
+                    <div class="payment-selection">
+                        <div class="payment-title">MODE DE PAIEMENT</div>
+                        <div class="payment-options">
+                            <label class="payment-option active" onclick="selectPaymentMethod('cash')">
+                                <input type="radio" name="paymentMethod" value="cash" checked>
+                                <span class="payment-radio"></span>
+                                <i class="fa-solid fa-money-bill-wave"></i>
+                                Espèces
+                            </label>
+                            <label class="payment-option" onclick="selectPaymentMethod('mobile')">
+                                <input type="radio" name="paymentMethod" value="mobile">
+                                <span class="payment-radio"></span>
+                                <i class="fa-solid fa-mobile-screen"></i>
+                                Mobile Money
+                            </label>
+                            <label class="payment-option" onclick="selectPaymentMethod('check')">
+                                <input type="radio" name="paymentMethod" value="check">
+                                <span class="payment-radio"></span>
+                                <i class="fa-solid fa-money-check"></i>
+                                Chèque
+                            </label>
+                            <label class="payment-option" onclick="selectPaymentMethod('transfer')">
+                                <input type="radio" name="paymentMethod" value="transfer">
+                                <span class="payment-radio"></span>
+                                <i class="fa-solid fa-building-columns"></i>
+                                Virement
+                            </label>
+                            <label class="payment-option" onclick="selectPaymentMethod('mixed')">
+                                <input type="radio" name="paymentMethod" value="mixed">
+                                <span class="payment-radio"></span>
+                                <i class="fa-solid fa-layer-group"></i>
+                                Mixte
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Client Panel -->
+        <div class="client-panel">
+            <div class="client-section">
+                <div class="section-title">CLIENT</div>
+                <div class="client-search">
+                    <input type="text" id="clientSearch" placeholder="Rechercher client...">
+                    <button onclick="searchClient()"><i class="fa-solid fa-search"></i></button>
+                </div>
+
+                <div class="client-type-selector">
+                    <button class="client-type-btn" id="btnPassage" onclick="selectClientType('passage')">
+                        Client de passage
+                    </button>
+                    <button class="client-type-btn active" id="btnEnregistre" onclick="selectClientType('registered')">
+                        Client enregistré
+                    </button>
+                </div>
+
+                <div class="client-info" id="clientInfo">
+                    <div class="client-name" id="clientName">KAMGA Jean Paul</div>
+                    <div class="client-detail">
+                        <i class="fa-solid fa-user"></i>
+                        <span id="clientType">Particulier</span>
+                    </div>
+                    <div class="client-detail">
+                        <i class="fa-solid fa-id-card"></i>
+                        <span id="clientCNI">CNI: 123456789012345</span>
+                    </div>
+                    <div class="client-detail">
+                        <i class="fa-solid fa-phone"></i>
+                        <span id="clientPhone">655 234 567</span>
+                    </div>
+                </div>
+
+                <label class="invoice-checkbox">
+                    <input type="checkbox" id="requestInvoice" onchange="toggleInvoiceRequest()">
+                    Demande facture
+                </label>
+            </div>
+
+            <div class="client-section">
+                <div class="section-title">FAVORIS CLIENT</div>
+                <div class="favorites">
+                    <button class="favorite-btn" onclick="addFavorite('ciment')">
+                        <i class="fa-solid fa-cube"></i> Ciment
+                    </button>
+                    <button class="favorite-btn" onclick="addFavorite('peinture')">
+                        <i class="fa-solid fa-paint-roller"></i> Peinture
+                    </button>
+                    <button class="favorite-btn" onclick="addFavorite('visserie')">
+                        <i class="fa-solid fa-screwdriver"></i> Visserie
+                    </button>
+                    <button class="favorite-btn" onclick="addFavorite('agglos')">
+                        <i class="fa-solid fa-cubes"></i> Agglos
+                    </button>
+                </div>
+            </div>
+
+            <div class="client-section" style="flex: 1;">
+                <div class="section-title">DERNIERS ACHATS</div>
+                <div class="history-list" id="historyList">
+                    <div class="history-item">
+                        <span class="history-date">15/01</span>
+                        <span>Fer 12mm (10)</span>
+                    </div>
+                    <div class="history-item">
+                        <span class="history-date">10/01</span>
+                        <span>Ciment (20)</span>
+                    </div>
+                    <div class="history-item">
+                        <span class="history-date">28/12</span>
+                        <span>Peinture (5)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Function Keys -->
+        <div class="function-keys">
+            <button class="fn-key" onclick="openSearchModal()">
+                <span class="fn-key-label">F1</span> Recherche
+            </button>
+            <button class="fn-key" onclick="openClientModal()">
+                <span class="fn-key-label">F2</span> Client
+            </button>
+            <button class="fn-key" onclick="applyManualDiscount()">
+                <span class="fn-key-label">F3</span> Remise
+            </button>
+            <button class="fn-key" onclick="holdTicket()">
+                <span class="fn-key-label">F4</span> Attente
+            </button>
+            <button class="fn-key" onclick="recallTicket()">
+                <span class="fn-key-label">F5</span> Rappel
+            </button>
+            <button class="fn-key" onclick="processReturn()">
+                <span class="fn-key-label">F6</span> Retour
+            </button>
+            <button class="fn-key" onclick="cancelTicket()">
+                <span class="fn-key-label">F7</span> Annuler
+            </button>
+            <button class="fn-key" onclick="openDrawer()">
+                <span class="fn-key-label">F8</span> Tiroir
+            </button>
+            <button class="fn-key" onclick="showHistory()">
+                <span class="fn-key-label">F9</span> Historique
+            </button>
+            <button class="fn-key primary" onclick="openPaymentModal()">
+                <span class="fn-key-label">F10</span> PAIEMENT
+            </button>
+            <div style="margin-left: auto; display: flex; gap: 8px;">
+                <button class="fn-key" onclick="goToMenu()">
+                    <i class="fa-solid fa-th-large"></i> Menu
+                </button>
+                <button class="fn-key" onclick="window.location.href='./caisse-cloture.html'">
+                    <i class="fa-solid fa-power-off"></i> Clôture
+                </button>
+                <button class="fn-key danger" onclick="confirmExit()">
+                    <i class="fa-solid fa-sign-out-alt"></i> Quitter
+                </button>
+            </div>
+        </div>
+    <!-- End POS Container -->
+
+    <!-- Payment Modal (Cash) -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-coins"></i> ENCAISSEMENT - Ticket <span id="modalTicketNumber">0024</span>
+                </div>
+                <button class="modal-close" onclick="closePaymentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-grid">
+                    <div>
+                        <div class="payment-amount-box">
+                            <div class="payment-amount-label">MONTANT À PAYER</div>
+                            <div class="payment-amount-value" id="paymentAmount">0 XAF</div>
+                        </div>
+
+                        <div class="payment-client-box">
+                            <div style="font-weight: 600;" id="paymentClientName">Client: KAMGA Jean Paul</div>
+                            <div style="font-size: 13px; color: #6B7280;" id="paymentClientCNI">CNI: 123456789012345</div>
+                            <div style="font-size: 13px; color: #6B7280;" id="paymentInvoiceStatus">Facture demandée: NON</div>
+                        </div>
+
+                        <div class="payment-limit-warning" id="cashLimitWarning" style="display: none;">
+                            <i class="fa-solid fa-exclamation-triangle"></i>
+                            <span>Maximum espèces: 100,000 XAF - <span id="limitStatus">Montant OK</span></span>
+                        </div>
+
+                        <div style="margin-top: 16px;">
+                            <div style="font-size: 13px; font-weight: 600; margin-bottom: 8px;">DÉTAIL ARTICLES</div>
+                            <div id="paymentArticlesList" style="font-size: 12px; color: #6B7280; max-height: 150px; overflow-y: auto;">
+                                <!-- Dynamic list -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-right">
+                        <div class="received-input-group">
+                            <label class="received-label">Reçu:</label>
+                            <input type="number" class="received-input" id="receivedAmount"
+                                   placeholder="0" oninput="calculateChange()">
+                        </div>
+
+                        <div class="bill-calculator">
+                            <div class="bill-title">Calculatrice Billets</div>
+                            <div class="bill-buttons">
+                                <button class="bill-btn" onclick="addBill(10000)">10,000</button>
+                                <button class="bill-btn" onclick="addBill(5000)">5,000</button>
+                                <button class="bill-btn" onclick="addBill(2000)">2,000</button>
+                                <button class="bill-btn" onclick="addBill(1000)">1,000</button>
+                                <button class="bill-btn" onclick="addBill(500)">500</button>
+                                <button class="bill-btn" onclick="addBill(100)">100</button>
+                            </div>
+                            <div class="quick-amounts">
+                                <button class="quick-btn" onclick="setQuickAmount(50000)">+50,000</button>
+                                <button class="quick-btn" onclick="setQuickAmount(20000)">+20,000</button>
+                                <button class="quick-btn" onclick="setQuickAmount(10000)">+10,000</button>
+                            </div>
+                        </div>
+
+                        <div class="change-box" id="changeBox">
+                            <div class="change-label">À RENDRE:</div>
+                            <div class="change-value" id="changeAmount">0 XAF</div>
+                            <div class="change-suggestion" id="changeSuggestion" style="display: none;">
+                                <div class="change-suggestion-title">Suggestion monnaie:</div>
+                                <div class="change-suggestion-list" id="changeSuggestionList">
+                                    <!-- Dynamic -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePaymentModal()">Annuler</button>
+                <button class="btn btn-success" onclick="validatePayment()">
+                    <i class="fa-solid fa-check"></i> VALIDER ET IMPRIMER
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Money Modal -->
+    <div class="modal-overlay" id="mobileMoneyModal">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-mobile-screen"></i> PAIEMENT MOBILE MONEY
+                </div>
+                <button class="modal-close" onclick="closeMobileMoneyModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-amount-box" style="margin-bottom: 24px;">
+                    <div class="payment-amount-label">MONTANT À PAYER</div>
+                    <div class="payment-amount-value" id="mmPaymentAmount">0 XAF</div>
+                </div>
+
+                <div style="margin-bottom: 16px; font-weight: 600;">SÉLECTION OPÉRATEUR</div>
+                <div class="operator-cards">
+                    <div class="operator-card" data-operator="orange" onclick="selectOperator('orange')">
+                        <div class="operator-icon" style="color: #FF6600;">📱</div>
+                        <div class="operator-name">ORANGE MONEY</div>
+                    </div>
+                    <div class="operator-card" data-operator="mtn" onclick="selectOperator('mtn')">
+                        <div class="operator-icon" style="color: #FFCC00;">📱</div>
+                        <div class="operator-name">MTN MOBILE MONEY</div>
+                    </div>
+                    <div class="operator-card" data-operator="express" onclick="selectOperator('express')">
+                        <div class="operator-icon" style="color: #0066CC;">📱</div>
+                        <div class="operator-name">EXPRESS UNION</div>
+                    </div>
+                </div>
+
+                <div class="mm-form-group">
+                    <label class="mm-form-label">N° Téléphone client *</label>
+                    <input type="tel" class="mm-form-input" id="mmPhone" placeholder="655 234 567">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="mm-form-group">
+                        <label class="mm-form-label">Code marchand</label>
+                        <input type="text" class="mm-form-input" value="OM-IOLA-BTP-001" disabled>
+                    </div>
+                    <div class="mm-form-group">
+                        <label class="mm-form-label">Terminal ID</label>
+                        <input type="text" class="mm-form-input" value="POS-CAISSE-01" disabled>
+                    </div>
+                </div>
+
+                <div class="mm-instructions" id="mmInstructions">
+                    <div class="mm-instructions-title">Instructions:</div>
+                    <ol>
+                        <li>Client compose *150*14# sur son téléphone</li>
+                        <li>Entre le code marchand: <strong>OM-IOLA-BTP-001</strong></li>
+                        <li>Montant: <strong id="mmInstructionAmount">0 XAF</strong></li>
+                        <li>Confirme avec son code PIN</li>
+                        <li>Reçoit SMS de confirmation</li>
+                    </ol>
+                </div>
+
+                <div class="mm-form-group">
+                    <label class="mm-form-label">N° Transaction (après paiement)</label>
+                    <input type="text" class="mm-form-input" id="mmTransactionRef" placeholder="Entrer la référence...">
+                </div>
+
+                <div class="mm-status" id="mmStatus">
+                    <i class="fa-solid fa-spinner"></i>
+                    <span>En attente de confirmation...</span>
+                    <button class="btn btn-outline" style="margin-left: auto; padding: 6px 12px; font-size: 12px;" onclick="checkMobileStatus()">
+                        <i class="fa-solid fa-rotate"></i> Vérifier statut
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeMobileMoneyModal()">Annuler</button>
+                <button class="btn btn-outline" onclick="switchToMixedPayment()">Paiement mixte</button>
+                <button class="btn btn-success" onclick="confirmMobilePayment()">
+                    <i class="fa-solid fa-check"></i> Confirmer réception
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="modal-overlay" id="searchModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-search"></i> RECHERCHE ARTICLE
+                </div>
+                <button class="modal-close" onclick="closeSearchModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="search-filters">
+                    <input type="text" id="searchQuery" placeholder="Rechercher..." oninput="filterArticles()">
+                    <select id="searchCategory" onchange="filterArticles()">
+                        <option value="">Toutes catégories</option>
+                        <option value="ciment">Ciment</option>
+                        <option value="peinture">Peinture</option>
+                        <option value="fer">Fer</option>
+                        <option value="visserie">Visserie</option>
+                    </select>
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                        <input type="checkbox" id="stockOnly" checked onchange="filterArticles()">
+                        Disponible uniquement
+                    </label>
+                </div>
+
+                <div class="search-results">
+                    <div class="search-results-header">
+                        RÉSULTATS (<span id="resultsCount">0</span> articles trouvés)
+                    </div>
+                    <div class="search-results-list" id="searchResultsList">
+                        <!-- Dynamic results -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSearchModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/caisse.js"></script>
+</body>
+</html>

@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouveau Bon de Livraison - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/ventes-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #E5E7EB;
+            background: white;
+            padding: 0;
+            margin-bottom: 24px;
+        }
+
+        .tab-button {
+            padding: 16px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6B7280;
+            position: relative;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-button:hover {
+            color: #1F2937;
+        }
+
+        .tab-button.active {
+            color: #263c89;
+            border-bottom-color: #263c89;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Header Info Box */
+        .header-info-box {
+            background: linear-gradient(135deg, #263c89 0%, #1a2959 100%);
+            border-radius: 8px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .header-info-item {
+            text-align: center;
+        }
+
+        .header-info-label {
+            font-size: 11px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .header-info-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Form Elements */
+        .form-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #E5E7EB;
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #263c89;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-label .required {
+            color: #DC2626;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #263c89;
+            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
+        }
+
+        .form-input:disabled, .form-select:disabled {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* BC Source Selection */
+        .bc-search-container {
+            position: relative;
+        }
+
+        .bc-search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #D1D5DB;
+            border-radius: 0 0 6px 6px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+        }
+
+        .bc-search-results.show {
+            display: block;
+        }
+
+        .bc-result-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .bc-result-item:hover {
+            background: #F9FAFB;
+        }
+
+        .bc-result-number {
+            font-weight: 600;
+            color: #263c89;
+        }
+
+        .bc-result-client {
+            font-size: 12px;
+            color: #374151;
+        }
+
+        .bc-result-meta {
+            font-size: 11px;
+            color: #6B7280;
+            display: flex;
+            gap: 16px;
+            margin-top: 4px;
+        }
+
+        /* Selected BC Card */
+        .selected-bc-card {
+            background: #EFF6FF;
+            border: 2px solid #263c89;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .selected-bc-card.show {
+            display: block;
+        }
+
+        .selected-bc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .selected-bc-info h4 {
+            margin: 0 0 4px 0;
+            color: #1F2937;
+        }
+
+        .selected-bc-info span {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .selected-bc-meta {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #BFDBFE;
+        }
+
+        .selected-bc-meta-item {
+            text-align: center;
+        }
+
+        .selected-bc-meta-value {
+            font-weight: 700;
+            color: #263c89;
+            font-size: 15px;
+        }
+
+        .selected-bc-meta-label {
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        /* Articles Table */
+        .articles-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .articles-table thead {
+            background: #F3F4F6;
+        }
+
+        .articles-table th {
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .articles-table td {
+            padding: 12px;
+            border-bottom: 1px solid #E5E7EB;
+            vertical-align: middle;
+        }
+
+        .articles-table tbody tr:hover {
+            background: #F9FAFB;
+        }
+
+        .articles-table input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .articles-table input[type="number"] {
+            width: 80px;
+            padding: 6px 8px;
+            border: 1px solid #D1D5DB;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .article-ref {
+            font-weight: 600;
+            color: #263c89;
+        }
+
+        .article-name {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .stock-ok {
+            color: #059669;
+            font-size: 11px;
+        }
+
+        .stock-warning {
+            color: #D97706;
+            font-size: 11px;
+        }
+
+        .stock-error {
+            color: #DC2626;
+            font-size: 11px;
+        }
+
+        .location-badge {
+            background: #F3F4F6;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #374151;
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background: #FEF3C7;
+            border: 1px solid #FCD34D;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+
+        .summary-label {
+            color: #92400E;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: #92400E;
+        }
+
+        /* Alert boxes */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 13px;
+        }
+
+        .alert-info {
+            background: #DBEAFE;
+            border: 1px solid #93C5FD;
+            color: #1E40AF;
+        }
+
+        .alert-warning {
+            background: #FEF3C7;
+            border: 1px solid #FCD34D;
+            color: #92400E;
+        }
+
+        .alert-danger {
+            background: #FEE2E2;
+            border: 1px solid #FCA5A5;
+            color: #991B1B;
+        }
+
+        .alert-success {
+            background: #D1FAE5;
+            border: 1px solid #6EE7B7;
+            color: #065F46;
+        }
+
+        /* Vehicle Selection */
+        .vehicle-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .vehicle-card {
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .vehicle-card:hover {
+            border-color: #263c89;
+        }
+
+        .vehicle-card.selected {
+            border-color: #263c89;
+            background: #EFF6FF;
+        }
+
+        .vehicle-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .vehicle-card input[type="radio"] {
+            display: none;
+        }
+
+        .vehicle-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .vehicle-card-name {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .vehicle-card-capacity {
+            background: #F3F4F6;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .vehicle-card-transporter {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .vehicle-card-plate {
+            font-size: 11px;
+            color: #9CA3AF;
+            margin-top: 4px;
+        }
+
+        .vehicle-card-status {
+            margin-top: 8px;
+            font-size: 11px;
+        }
+
+        .capacity-ok { color: #059669; }
+        .capacity-warning { color: #D97706; }
+        .capacity-error { color: #DC2626; }
+
+        /* CNI Section */
+        .cni-upload-zone {
+            border: 2px dashed #D1D5DB;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cni-upload-zone:hover {
+            border-color: #263c89;
+            background: #F9FAFB;
+        }
+
+        .cni-preview {
+            margin-top: 12px;
+            display: none;
+        }
+
+        .cni-preview.show {
+            display: block;
+        }
+
+        .cni-preview img {
+            max-width: 200px;
+            border-radius: 4px;
+            border: 1px solid #E5E7EB;
+        }
+
+        /* Address Card */
+        .address-card {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .address-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .address-content {
+            font-size: 13px;
+            color: #1F2937;
+            line-height: 1.5;
+        }
+
+        .address-gps {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .address-gps a {
+            color: #263c89;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .address-gps a:hover {
+            text-decoration: underline;
+        }
+
+        /* Checklist */
+        .checklist {
+            margin-top: 16px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+
+        .checklist-item i.fa-check-circle {
+            color: #059669;
+        }
+
+        .checklist-item i.fa-exclamation-circle {
+            color: #D97706;
+        }
+
+        .checklist-item i.fa-times-circle {
+            color: #DC2626;
+        }
+
+        .checklist-item i.fa-circle {
+            color: #D1D5DB;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 20px 0;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #263c89;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a2959;
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .btn-secondary {
+            background: #E5E7EB;
+            color: #1F2937;
+        }
+
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #D1D5DB;
+            color: #374151;
+        }
+
+        .btn-outline:hover {
+            background: #F3F4F6;
+            border-color: #263c89;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Print Preview Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #1F2937;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #6B7280;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Print Preview Content */
+        .print-preview {
+            border: 1px solid #E5E7EB;
+            padding: 30px;
+            font-size: 12px;
+        }
+
+        .print-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #1F2937;
+        }
+
+        .print-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .print-parties {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .print-party h4 {
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: #6B7280;
+        }
+
+        .print-party p {
+            margin: 4px 0;
+        }
+
+        .print-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 11px;
+        }
+
+        .print-articles-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .print-articles-table th,
+        .print-articles-table td {
+            border: 1px solid #D1D5DB;
+            padding: 8px;
+            text-align: left;
+            font-size: 11px;
+        }
+
+        .print-articles-table th {
+            background: #F3F4F6;
+            font-weight: 600;
+        }
+
+        .print-signatures {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .print-signature-box {
+            border-top: 1px solid #1F2937;
+            padding-top: 8px;
+            font-size: 11px;
+        }
+
+        .print-signature-line {
+            height: 60px;
+            border-bottom: 1px dotted #6B7280;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Nouveau Bon de Livraison</h1>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Marie DJOMO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto" id="main-sidebar">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Ventes
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Clients
+                    </div>
+
+                    <a href="./clients-list.html" class="sidebar-link" data-page="clients-list">
+                        <i class="fa-solid fa-users mr-3"></i>
+                        <span>Liste Clients</span>
+                    </a>
+
+                    <a href="./client-create.html" class="sidebar-link" data-page="client-create">
+                        <i class="fa-solid fa-user-plus mr-3"></i>
+                        <span>Nouveau Client</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Commandes
+                    </div>
+
+                    <a href="./commandes-list.html" class="sidebar-link" data-page="commandes-list">
+                        <i class="fa-solid fa-shopping-cart mr-3"></i>
+                        <span>Liste Commandes</span>
+                    </a>
+
+                    <a href="./commande-create.html" class="sidebar-link" data-page="commande-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Commande</span>
+                    </a>
+
+                    <a href="./commandes-validation.html" class="sidebar-link" data-page="commandes-validation">
+                        <i class="fa-solid fa-clipboard-check mr-3"></i>
+                        <span>Validation Crédit</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Livraisons
+                    </div>
+
+                    <a href="./livraisons-list.html" class="sidebar-link" data-page="livraisons-list">
+                        <i class="fa-solid fa-truck mr-3"></i>
+                        <span>Planning Livraisons</span>
+                    </a>
+
+                    <a href="./livraison-create.html" class="sidebar-link" data-page="livraison-create">
+                        <i class="fa-solid fa-truck-loading mr-3"></i>
+                        <span>Nouveau BL</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Facturation
+                    </div>
+
+                    <a href="./factures-list.html" class="sidebar-link" data-page="factures-list">
+                        <i class="fa-solid fa-file-invoice-dollar mr-3"></i>
+                        <span>Liste Factures</span>
+                    </a>
+
+                    <a href="./facture-create.html" class="sidebar-link" data-page="facture-create">
+                        <i class="fa-solid fa-file-circle-plus mr-3"></i>
+                        <span>Nouvelle Facture</span>
+                    </a>
+
+                    <a href="./avoirs-list.html" class="sidebar-link" data-page="avoirs-list">
+                        <i class="fa-solid fa-file-invoice mr-3"></i>
+                        <span>Avoirs</span>
+                    </a>
+
+                    <a href="./facture-transport.html" class="sidebar-link" data-page="facture-transport">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Facture Transport</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Point de Vente
+                    </div>
+
+                    <a href="./caisse-ouverture.html" class="sidebar-link" data-page="caisse-ouverture">
+                        <i class="fa-solid fa-door-open mr-3"></i>
+                        <span>Ouverture Caisse</span>
+                    </a>
+
+                    <a href="./caisse.html" class="sidebar-link" data-page="caisse">
+                        <i class="fa-solid fa-cash-register mr-3"></i>
+                        <span>Interface Caisse</span>
+                    </a>
+
+                    <a href="./caisse-cloture.html" class="sidebar-link" data-page="caisse-cloture">
+                        <i class="fa-solid fa-door-closed mr-3"></i>
+                        <span>Clôture Caisse</span>
+                    </a>
+
+                    <a href="./caisse-historique.html" class="sidebar-link" data-page="caisse-historique">
+                        <i class="fa-solid fa-history mr-3"></i>
+                        <span>Historique Sessions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Service Client
+                    </div>
+
+                    <a href="./retours-list.html" class="sidebar-link" data-page="retours-list">
+                        <i class="fa-solid fa-rotate-left mr-3"></i>
+                        <span>Retours</span>
+                    </a>
+
+                    <a href="./reclamations-list.html" class="sidebar-link" data-page="reclamations-list">
+                        <i class="fa-solid fa-headset mr-3"></i>
+                        <span>Réclamations</span>
+                        <span class="ml-2 bg-[#EF4444] text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Reporting
+                    </div>
+
+                    <a href="./commissions-dashboard.html" class="sidebar-link" data-page="commissions-dashboard">
+                        <i class="fa-solid fa-coins mr-3"></i>
+                        <span>Mes Commissions</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="ventes-container">
+                <div style="max-width: 1200px; margin: 0 auto;">
+
+                    <!-- Header Info -->
+                    <div class="header-info-box">
+                        <div class="header-info-item">
+                            <div class="header-info-label">N° BL</div>
+                            <div class="header-info-value" id="blNumber">BL-XXXX-2024-00235</div>
+                        </div>
+                        <div class="header-info-item">
+                            <div class="header-info-label">Date</div>
+                            <div class="header-info-value" id="blDate">29/01/2024 11:30</div>
+                        </div>
+                        <div class="header-info-item">
+                            <div class="header-info-label">Statut</div>
+                            <div class="header-info-value">BROUILLON</div>
+                        </div>
+                        <div class="header-info-item">
+                            <div class="header-info-label">Type</div>
+                            <div class="header-info-value">Livraison standard</div>
+                        </div>
+                    </div>
+
+                    <form id="bl-form">
+
+                        <!-- TABS NAVIGATION -->
+                        <div class="tabs-container">
+                            <button type="button" class="tab-button active" onclick="switchTab(0)">
+                                <i class="fa-solid fa-file-lines" style="margin-right: 8px;"></i>
+                                Commande source
+                            </button>
+                            <button type="button" class="tab-button" onclick="switchTab(1)">
+                                <i class="fa-solid fa-boxes-stacked" style="margin-right: 8px;"></i>
+                                Articles
+                            </button>
+                            <button type="button" class="tab-button" onclick="switchTab(2)">
+                                <i class="fa-solid fa-truck" style="margin-right: 8px;"></i>
+                                Transport
+                            </button>
+                            <button type="button" class="tab-button" onclick="switchTab(3)">
+                                <i class="fa-solid fa-check-circle" style="margin-right: 8px;"></i>
+                                Validation
+                            </button>
+                        </div>
+
+                        <!-- TAB 1: COMMANDE SOURCE -->
+                        <div class="tab-content active" id="tab-0">
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-file-lines"></i> Sélection Bon de Commande Source
+                                </h3>
+
+                                <div class="form-group">
+                                    <label class="form-label">BC Source <span class="required">*</span></label>
+                                    <div class="bc-search-container">
+                                        <input type="text" class="form-input" id="bcSearch"
+                                               placeholder="🔍 Rechercher par N° BC, client..."
+                                               autocomplete="off">
+                                        <div class="bc-search-results" id="bcSearchResults">
+                                            <!-- Dynamic results -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Selected BC Card -->
+                                <div class="selected-bc-card" id="selectedBCCard">
+                                    <div class="selected-bc-header">
+                                        <div class="selected-bc-info">
+                                            <h4 id="selectedBCNumber">BC-CLI156-2024-00234</h4>
+                                            <span id="selectedBCClient">SONACOM SARL - 28/01/2024</span>
+                                        </div>
+                                        <button type="button" class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="clearSelectedBC()">
+                                            <i class="fa-solid fa-times"></i> Changer
+                                        </button>
+                                    </div>
+                                    <div class="selected-bc-meta">
+                                        <div class="selected-bc-meta-item">
+                                            <div class="selected-bc-meta-value" id="selectedBCAmount">2,500,000 XAF</div>
+                                            <div class="selected-bc-meta-label">Montant</div>
+                                        </div>
+                                        <div class="selected-bc-meta-item">
+                                            <div class="selected-bc-meta-value" id="selectedBCArticles">12</div>
+                                            <div class="selected-bc-meta-label">Articles</div>
+                                        </div>
+                                        <div class="selected-bc-meta-item">
+                                            <div class="selected-bc-meta-value" id="selectedBCStatus">✓ Validé</div>
+                                            <div class="selected-bc-meta-label">Statut</div>
+                                        </div>
+                                        <div class="selected-bc-meta-item">
+                                            <div class="selected-bc-meta-value" id="selectedBCCredit">✓ OK</div>
+                                            <div class="selected-bc-meta-label">Crédit</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid-2" style="margin-top: 20px;">
+                                    <div class="form-group">
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                            <input type="checkbox" id="partialDelivery">
+                                            <span class="form-label" style="margin: 0;">Livraison partielle</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                            <input type="checkbox" id="groupBC">
+                                            <span class="form-label" style="margin: 0;">Regrouper plusieurs BC</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: ARTICLES -->
+                        <div class="tab-content" id="tab-1">
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-boxes-stacked"></i> Articles à Livrer
+                                    <button type="button" class="btn btn-outline" style="margin-left: auto; padding: 6px 12px; font-size: 12px;" onclick="selectAllArticles()">
+                                        <i class="fa-solid fa-check-double"></i> Tout cocher
+                                    </button>
+                                </h3>
+
+                                <table class="articles-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 40px;"></th>
+                                            <th>Article</th>
+                                            <th style="width: 80px;">Commandé</th>
+                                            <th style="width: 80px;">Stock</th>
+                                            <th style="width: 100px;">À livrer</th>
+                                            <th style="width: 60px;">Unité</th>
+                                            <th style="width: 60px;">Reste</th>
+                                            <th>Emplacement</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="articlesTableBody">
+                                        <!-- Dynamic content -->
+                                    </tbody>
+                                </table>
+
+                                <div class="summary-box">
+                                    <div class="summary-row">
+                                        <span class="summary-label">Articles à livrer:</span>
+                                        <span class="summary-value" id="summaryArticles">3/4 articles</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span class="summary-label">Poids total:</span>
+                                        <span class="summary-value" id="summaryWeight">5,200 kg</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span class="summary-label">Volume total:</span>
+                                        <span class="summary-value" id="summaryVolume">8.3 m³</span>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-warning" id="partialDeliveryAlert" style="margin-top: 16px; display: none;">
+                                    <i class="fa-solid fa-exclamation-triangle"></i>
+                                    <div>
+                                        <strong>Livraison partielle</strong><br>
+                                        Certains articles ne sont pas disponibles en stock.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: TRANSPORT -->
+                        <div class="tab-content" id="tab-2">
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-truck"></i> Véhicule et Transporteur
+                                </h3>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Transporteur <span class="required">*</span></label>
+                                        <select class="form-select" id="transporter">
+                                            <option value="">Sélectionner...</option>
+                                            <option value="KAMGA">KAMGA Transport</option>
+                                            <option value="NJOYA">NJOYA Logistics</option>
+                                            <option value="INTERNAL">Interne</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Véhicule <span class="required">*</span></label>
+                                        <select class="form-select" id="vehicle">
+                                            <option value="">Sélectionner...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Immatriculation</label>
+                                        <input type="text" class="form-input" id="vehiclePlate" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="vehicle-cards" id="vehicleCards" style="margin-top: 16px;">
+                                    <!-- Dynamic vehicle cards -->
+                                </div>
+
+                                <div class="form-group" style="margin-top: 20px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="subsidizedTransport">
+                                        <span class="form-label" style="margin: 0;">Transport subventionné</span>
+                                    </label>
+                                </div>
+
+                                <div id="subsidizedSection" style="display: none; margin-top: 16px; padding: 16px; background: #F9FAFB; border-radius: 8px;">
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">Acompte transport (100%)</label>
+                                            <input type="number" class="form-input" id="transportDeposit" placeholder="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Part société</label>
+                                            <input type="number" class="form-input" id="companyShare" placeholder="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Facture séparée</label>
+                                            <select class="form-select" id="separateInvoice">
+                                                <option value="NO">Non</option>
+                                                <option value="YES">Oui</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-users"></i> Équipe de Livraison
+                                    <span style="margin-left: auto; font-size: 12px; color: #D97706;">
+                                        <i class="fa-solid fa-exclamation-triangle"></i> CNI obligatoires
+                                    </span>
+                                </h3>
+
+                                <div style="margin-bottom: 24px;">
+                                    <h4 style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 12px;">CHAUFFEUR *</h4>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">Nom complet <span class="required">*</span></label>
+                                            <input type="text" class="form-input" id="driverName" placeholder="Nom du chauffeur">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">N° CNI <span class="required">*</span></label>
+                                            <div style="display: flex; gap: 8px;">
+                                                <input type="text" class="form-input" id="driverCNI" placeholder="N° CNI">
+                                                <button type="button" class="btn btn-outline" style="white-space: nowrap;" onclick="uploadCNI()">
+                                                    <i class="fa-solid fa-camera"></i> Photo
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Téléphone <span class="required">*</span></label>
+                                            <input type="tel" class="form-input" id="driverPhone" placeholder="+237 6XX XXX XXX">
+                                        </div>
+                                    </div>
+                                    <div class="form-grid-2">
+                                        <div class="form-group">
+                                            <label class="form-label">N° Permis</label>
+                                            <input type="text" class="form-input" id="driverLicense" placeholder="N° Permis">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Catégorie</label>
+                                            <select class="form-select" id="driverLicenseCategory">
+                                                <option value="">Sélectionner...</option>
+                                                <option value="B">B</option>
+                                                <option value="C">C</option>
+                                                <option value="D">D</option>
+                                                <option value="E">E</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid-2">
+                                    <div>
+                                        <h4 style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 12px;">CHARGEUR *</h4>
+                                        <div class="form-group">
+                                            <label class="form-label">Nom complet <span class="required">*</span></label>
+                                            <input type="text" class="form-input" id="loaderName" placeholder="Nom du chargeur">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Téléphone</label>
+                                            <input type="tel" class="form-input" id="loaderPhone" placeholder="+237 6XX XXX XXX">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 12px;">MAGASINIER *</h4>
+                                        <div class="form-group">
+                                            <label class="form-label">Nom complet <span class="required">*</span></label>
+                                            <input type="text" class="form-input" id="warehouseKeeperName" placeholder="Nom du magasinier">
+                                        </div>
+                                        <div class="form-group">
+                                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                                <input type="checkbox" id="warehouseValidation">
+                                                <span class="form-label" style="margin: 0;">Validation sortie effectuée</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-clock"></i> Horaires Prévisionnels
+                                </h3>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Date livraison <span class="required">*</span></label>
+                                        <input type="date" class="form-input" id="deliveryDate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Heure chargement</label>
+                                        <div style="display: flex; gap: 8px; align-items: center;">
+                                            <input type="time" class="form-input" id="loadingTime" style="flex: 1;">
+                                            <span style="font-size: 12px; color: #6B7280;">Durée:</span>
+                                            <input type="number" class="form-input" id="loadingDuration" style="width: 60px;" value="30">
+                                            <span style="font-size: 12px; color: #6B7280;">min</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Heure départ</label>
+                                        <input type="time" class="form-input" id="departureTime">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Heure arrivée estimée</label>
+                                        <input type="time" class="form-input" id="arrivalTime">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Heure retour estimée</label>
+                                        <input type="time" class="form-input" id="returnTime">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 4: VALIDATION -->
+                        <div class="tab-content" id="tab-3">
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-map-marker-alt"></i> Adresse de Livraison
+                                </h3>
+
+                                <div class="form-grid-2">
+                                    <div class="address-card">
+                                        <div class="address-label">Client</div>
+                                        <div class="address-content" id="deliveryClientName">SONACOM SARL</div>
+                                    </div>
+                                    <div class="address-card">
+                                        <div class="address-label">Adresse</div>
+                                        <div class="address-content" id="deliveryAddress">
+                                            Zone Industrielle, Bassa, Douala
+                                        </div>
+                                        <div class="address-gps">
+                                            <i class="fa-solid fa-location-dot" style="color: #263c89;"></i>
+                                            <span id="deliveryGPS">4.0234, 9.7123</span>
+                                            <a href="#" onclick="openMap()"><i class="fa-solid fa-external-link"></i> Voir carte</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid-2" style="margin-top: 16px;">
+                                    <div class="form-group">
+                                        <label class="form-label">Contact sur place</label>
+                                        <input type="text" class="form-input" id="deliveryContact" value="Paul NJOYA">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Téléphone</label>
+                                        <input type="tel" class="form-input" id="deliveryPhone" value="677 890 123">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Instructions spéciales</label>
+                                    <textarea class="form-textarea" id="deliveryInstructions" placeholder="Portail Nord, appeler 30min avant arrivée..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-file-alt"></i> Documents Requis
+                                </h3>
+
+                                <div class="checklist">
+                                    <div class="checklist-item">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        <span>Bon de commande client (BC-CLI156-2024-00234)</span>
+                                    </div>
+                                    <div class="checklist-item">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        <span>Liste de colisage générée</span>
+                                    </div>
+                                    <div class="checklist-item" id="anrCheck">
+                                        <i class="fa-solid fa-exclamation-circle"></i>
+                                        <span>Attestation non-redevance (Client entreprise)</span>
+                                    </div>
+                                    <div class="checklist-item">
+                                        <i class="fa-solid fa-circle"></i>
+                                        <span>Facture (sera générée après livraison)</span>
+                                    </div>
+                                    <div class="checklist-item" id="transportDocCheck" style="display: none;">
+                                        <i class="fa-solid fa-circle"></i>
+                                        <span>Bon de transport (si subventionné)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-clipboard-check"></i> Récapitulatif Avant Validation
+                                </h3>
+
+                                <div style="background: #F9FAFB; border-radius: 8px; padding: 16px;">
+                                    <div style="display: grid; gap: 8px; font-size: 13px;">
+                                        <div style="display: flex; gap: 8px;">
+                                            <span style="color: #6B7280; width: 120px;">BC Source:</span>
+                                            <span style="font-weight: 500;" id="recapBC">BC-CLI156-2024-00234</span>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <span style="color: #6B7280; width: 120px;">Client:</span>
+                                            <span style="font-weight: 500;" id="recapClient">SONACOM SARL - Bassa</span>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <span style="color: #6B7280; width: 120px;">Articles:</span>
+                                            <span style="font-weight: 500;" id="recapArticles">3/4 (livraison partielle)</span>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <span style="color: #6B7280; width: 120px;">Transport:</span>
+                                            <span style="font-weight: 500;" id="recapVehicle">CAMION-01 - KAMGA Transport</span>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <span style="color: #6B7280; width: 120px;">Chauffeur:</span>
+                                            <span style="font-weight: 500;" id="recapDriver">MBOUOMBOUO Herman (CNI OK)</span>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <span style="color: #6B7280; width: 120px;">Départ prévu:</span>
+                                            <span style="font-weight: 500;" id="recapDeparture">29/01/2024 à 08:30</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 20px;">
+                                    <h4 style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 12px;">Points de contrôle:</h4>
+                                    <div class="checklist" id="validationChecklist">
+                                        <div class="checklist-item">
+                                            <i class="fa-solid fa-check-circle"></i>
+                                            <span>Stock disponible pour tous les articles sélectionnés</span>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <i class="fa-solid fa-check-circle"></i>
+                                            <span>Véhicule et équipe affectés</span>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <i class="fa-solid fa-check-circle"></i>
+                                            <span>CNI chauffeur enregistré</span>
+                                        </div>
+                                        <div class="checklist-item" id="partialCheck" style="display: none;">
+                                            <i class="fa-solid fa-exclamation-circle"></i>
+                                            <span>Livraison partielle (articles non disponibles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <!-- Tab Navigation Actions -->
+                    <div class="form-actions" id="tabNavigation">
+                        <div>
+                            <button type="button" class="btn btn-secondary" id="btnPrevTab" onclick="prevTab()" style="display: none;">
+                                <i class="fa-solid fa-arrow-left"></i>
+                                Précédent
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button type="button" class="btn btn-secondary" onclick="cancelForm()">
+                                <i class="fa-solid fa-times"></i>
+                                Annuler
+                            </button>
+                            <button type="button" class="btn btn-outline" id="btnSkipTab" onclick="skipTab()" style="display: none;">
+                                <i class="fa-solid fa-forward"></i>
+                                Ignorer
+                            </button>
+                            <button type="button" class="btn btn-primary" id="btnNextTab" onclick="nextTab()">
+                                <i class="fa-solid fa-save"></i>
+                                Enregistrer et Suivant
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline" id="btnPreview" onclick="openPreviewModal()" style="display: none;">
+                                <i class="fa-solid fa-eye"></i>
+                                Aperçu BL
+                            </button>
+                            <button type="button" class="btn btn-success" id="btnValidate" onclick="validateBL()" style="display: none;">
+                                <i class="fa-solid fa-check"></i>
+                                Valider Bon de Livraison
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Preview Modal -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-alt" style="color: #263c89; margin-right: 8px;"></i> Aperçu Bon de Livraison</h3>
+                <button class="modal-close" onclick="closePreviewModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="print-preview" id="printPreviewContent">
+                    <div class="print-header">
+                        <div>
+                            <strong style="font-size: 16px;">IOLA BTP</strong><br>
+                            <span style="font-size: 11px; color: #6B7280;">
+                                Av. de Gaulle, Douala<br>
+                                Tel: 233 XX XX XX
+                            </span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="print-title" style="margin: 0;">BON DE LIVRAISON</div>
+                            <strong id="printBLNumber">N° BL-CLI156-2024-00235</strong>
+                        </div>
+                    </div>
+
+                    <div class="print-parties">
+                        <div class="print-party">
+                            <h4>EXPÉDITEUR</h4>
+                            <p><strong>IOLA BTP</strong></p>
+                            <p>Av. de Gaulle, Douala</p>
+                        </div>
+                        <div class="print-party">
+                            <h4>CLIENT</h4>
+                            <p><strong id="printClientName">SONACOM SARL</strong></p>
+                            <p id="printClientAddress">Zone Industrielle, Bassa, Douala</p>
+                            <p>Contact: <span id="printClientContact">Paul NJOYA</span></p>
+                            <p>Tél: <span id="printClientPhone">677 890 123</span></p>
+                        </div>
+                    </div>
+
+                    <div class="print-info-grid">
+                        <div>Date: <strong id="printDate">29/01/2024</strong></div>
+                        <div>BC Réf: <strong id="printBCRef">BC-CLI156-2024-00234</strong></div>
+                        <div>Transport: <strong id="printTransport">KAMGA Transport</strong></div>
+                        <div>Véhicule: <strong id="printVehicle">CAMION-01 (LT-2345-DLA)</strong></div>
+                        <div>Chauffeur: <strong id="printDriver">MBOUOMBOUO H.</strong></div>
+                        <div>CNI: <strong id="printDriverCNI">123456789012345</strong></div>
+                    </div>
+
+                    <table class="print-articles-table">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Article</th>
+                                <th>Qté commandée</th>
+                                <th>Qté livrée</th>
+                                <th>Observations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="printArticlesBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+
+                    <div class="print-info-grid" style="margin-top: 20px;">
+                        <div>Heure départ: _______</div>
+                        <div>Heure arrivée: _______</div>
+                        <div>Heure retour: _______</div>
+                    </div>
+
+                    <div class="print-signatures">
+                        <div class="print-signature-box">
+                            <strong>Réceptionné par:</strong>
+                            <div class="print-signature-line"></div>
+                            Nom: _________________<br>
+                            CNI/Fonction: _________________
+                        </div>
+                        <div class="print-signature-box">
+                            <strong>Signature client:</strong>
+                            <div class="print-signature-line"></div>
+                            Date/Heure: _________________
+                        </div>
+                        <div class="print-signature-box">
+                            <strong>Observations:</strong>
+                            <div class="print-signature-line"></div>
+                            _________________
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; font-size: 10px; color: #6B7280; text-align: center;">
+                        [Imprimer 3 exemplaires: Client, Transport, Archives]
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePreviewModal()">Fermer</button>
+                <button class="btn btn-primary" onclick="printBL()">
+                    <i class="fa-solid fa-print"></i> Imprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/livraison-create.js"></script>
+</body>
+</html>
