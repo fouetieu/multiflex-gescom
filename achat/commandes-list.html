@@ -26,6 +26,241 @@
             padding: 0;
             height: 100%;
         }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            max-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #E5E7EB;
+            background: #F9FAFB;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1F2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-title i {
+            color: #263c89;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #E5E7EB;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6B7280;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #DC2626;
+            color: white;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px;
+            border-top: 1px solid #E5E7EB;
+            background: #F9FAFB;
+        }
+
+        /* Info Label/Value for Modal */
+        .info-label {
+            font-size: 12px;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 15px;
+            color: #1F2937;
+            font-weight: 500;
+        }
+
+        /* Alert Box */
+        .alert-box {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 8px;
+            align-items: flex-start;
+        }
+
+        .alert-box i {
+            font-size: 18px;
+            margin-top: 2px;
+        }
+
+        .alert-box.alert-danger {
+            background: #FEE2E2;
+            border: 1px solid #FECACA;
+            color: #991B1B;
+        }
+
+        .alert-box.alert-warning {
+            background: #FEF3C7;
+            border: 1px solid #FDE68A;
+            color: #92400E;
+        }
+
+        .alert-box.alert-info {
+            background: #DBEAFE;
+            border: 1px solid #BFDBFE;
+            color: #1E40AF;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-icon-primary {
+            background: #EFF6FF;
+            color: #2563EB;
+        }
+
+        .btn-icon-primary:hover {
+            background: #2563EB;
+            color: white;
+        }
+
+        .btn-icon-success {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .btn-icon-success:hover {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-icon-warning {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .btn-icon-warning:hover {
+            background: #D97706;
+            color: white;
+        }
+
+        .btn-icon-danger {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .btn-icon-danger:hover {
+            background: #DC2626;
+            color: white;
+        }
+
+        /* Button Danger */
+        .btn-danger {
+            background: #DC2626;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #B91C1C;
+        }
+
+        /* Form Textarea */
+        .form-textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #263c89;
+            box-shadow: 0 0 0 3px rgba(38, 60, 137, 0.1);
+        }
     </style>
 </head>
 <body class="h-full text-gray-800">
