@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Journaux - Trésorerie | MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/tresorerie-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { font-family: "Poppins", sans-serif; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+
+        /* Position Globale Banner */
+        .position-globale {
+            background: linear-gradient(135deg, #263c89 0%, #1e3070 100%);
+            border-radius: 12px;
+            padding: 20px 24px;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .position-main {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .position-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .position-label {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .position-amount {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .position-breakdown {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .position-item {
+            text-align: center;
+            padding: 0 16px;
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .position-item:first-child {
+            border-left: none;
+        }
+
+        .position-item-icon {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .position-item-label {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+
+        .position-item-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .position-update {
+            font-size: 12px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .position-update .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #10B981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Journal Row Styles */
+        .journal-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 80px 120px 140px 70px 100px;
+            align-items: start;
+            padding: 16px;
+            border-bottom: 1px solid #E5E7EB;
+            transition: background 0.2s;
+        }
+
+        .journal-row:hover {
+            background: #F9FAFB;
+        }
+
+        .journal-code {
+            font-family: monospace;
+            font-weight: 600;
+            color: #263c89;
+        }
+
+        .journal-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .journal-name {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .journal-subinfo {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .journal-type-icon {
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .journal-company {
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .journal-balance {
+            text-align: right;
+        }
+
+        .journal-balance-amount {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .journal-balance-currency {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .journal-balance-available {
+            font-size: 11px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .journal-status {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-indicator {
+            font-size: 20px;
+        }
+
+        .status-indicator.normal { color: #10B981; }
+        .status-indicator.warning { color: #F59E0B; }
+        .status-indicator.critical { color: #EF4444; }
+
+        .status-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+
+        .journal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .journal-actions .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #E5E7EB;
+            background: white;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .journal-actions .btn-icon:hover {
+            background: #F3F4F6;
+            color: #263c89;
+            border-color: #263c89;
+        }
+
+        /* Table Header */
+        .table-header {
+            display: grid;
+            grid-template-columns: 100px 1fr 80px 120px 140px 70px 100px;
+            padding: 12px 16px;
+            background: #F9FAFB;
+            border-bottom: 2px solid #E5E7EB;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+        }
+
+        /* Legend */
+        .legend-bar {
+            display: flex;
+            gap: 24px;
+            padding: 12px 20px;
+            background: #F9FAFB;
+            border-radius: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .legend-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+        }
+
+        .legend-items {
+            display: flex;
+            gap: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #374151;
+        }
+
+        /* Negative balance */
+        .balance-negative {
+            color: #EF4444 !important;
+        }
+
+        /* Filters row */
+        .filters-row-enhanced {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .filters-row-enhanced select {
+            padding: 8px 12px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 13px;
+            min-width: 150px;
+        }
+
+        .action-buttons-row {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Journaux de Trésorerie</h1>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">3</span>
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean KAMGA</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Trésorerie
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Journaux
+                    </div>
+
+                    <a href="./journals-list.html" class="sidebar-link active" data-page="journals-list">
+                        <i class="fa-solid fa-book mr-3"></i>
+                        <span>Liste Journaux</span>
+                    </a>
+
+                    <a href="./journal-create.html" class="sidebar-link" data-page="journal-create">
+                        <i class="fa-solid fa-plus-circle mr-3"></i>
+                        <span>Nouveau Journal</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Encaissements
+                    </div>
+
+                    <a href="./encaissement-create.html" class="sidebar-link" data-page="encaissement-create">
+                        <i class="fa-solid fa-arrow-down mr-3"></i>
+                        <span>Nouvel Encaissement</span>
+                    </a>
+
+                    <a href="./encaissement-imputation.html" class="sidebar-link" data-page="encaissement-imputation">
+                        <i class="fa-solid fa-list-check mr-3"></i>
+                        <span>Imputation</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Décaissements
+                    </div>
+
+                    <a href="./decaissement-create.html" class="sidebar-link" data-page="decaissement-create">
+                        <i class="fa-solid fa-arrow-up mr-3"></i>
+                        <span>Nouveau Décaissement</span>
+                    </a>
+
+                    <a href="./validation-double-signature.html" class="sidebar-link" data-page="validation-double-signature">
+                        <i class="fa-solid fa-signature mr-3"></i>
+                        <span>Double Signature</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">2</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Banque
+                    </div>
+
+                    <a href="./remise-transporteur.html" class="sidebar-link" data-page="remise-transporteur">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Remise Transporteur</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="tresorerie-container" style="max-width: none; padding: 24px;">
+
+                    <!-- Position Globale Banner -->
+                    <div class="position-globale">
+                        <div class="position-main">
+                            <div class="position-icon">
+                                <i class="fa-solid fa-coins"></i>
+                            </div>
+                            <div>
+                                <div class="position-label">POSITION GLOBALE</div>
+                                <div class="position-amount" id="totalDisponible">125 450 000 XAF</div>
+                            </div>
+                        </div>
+
+                        <div class="position-breakdown">
+                            <div class="position-item">
+                                <div class="position-item-icon">🏦</div>
+                                <div class="position-item-label">Banques</div>
+                                <div class="position-item-value" id="totalBanques">120M</div>
+                            </div>
+                            <div class="position-item">
+                                <div class="position-item-icon">💵</div>
+                                <div class="position-item-label">Caisses</div>
+                                <div class="position-item-value" id="totalCaisses">5M</div>
+                            </div>
+                            <div class="position-item">
+                                <div class="position-item-icon">📱</div>
+                                <div class="position-item-label">Mobile Money</div>
+                                <div class="position-item-value" id="totalMobile">450K</div>
+                            </div>
+                        </div>
+
+                        <div class="position-update">
+                            <div class="live-dot"></div>
+                            <span>Dernière MAJ: <span id="lastUpdate">07/12/2024 14:35</span> (temps réel)</span>
+                        </div>
+                    </div>
+
+                    <!-- Filters Section -->
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-body" style="padding: 16px;">
+                            <div class="filters-row-enhanced">
+                                <select id="societeFilter" onchange="filterJournals()">
+                                    <option value="">Toutes les sociétés</option>
+                                    <option value="IOLA_BTP">IOLA BTP SARL</option>
+                                    <option value="IOLA_INDUS">IOLA INDUSTRIE SA</option>
+                                    <option value="MULTIFLEX">MULTIFLEX SARL</option>
+                                </select>
+
+                                <select id="typeFilter" onchange="filterJournals()">
+                                    <option value="">Tous les types</option>
+                                    <option value="BANK_ACCOUNT">🏦 Compte Bancaire</option>
+                                    <option value="CASH_DESK">💵 Caisse</option>
+                                    <option value="MOBILE_MONEY">📱 Mobile Money</option>
+                                    <option value="PETTY_CASH">💳 Petite Caisse</option>
+                                </select>
+
+                                <select id="statusFilter" onchange="filterJournals()">
+                                    <option value="ACTIVE">Actifs</option>
+                                    <option value="">Tous les statuts</option>
+                                    <option value="INACTIVE">Inactifs</option>
+                                    <option value="BLOCKED">Bloqués</option>
+                                </select>
+
+                                <input type="text" id="searchInput" placeholder="Rechercher..."
+                                       class="search-input" style="max-width: 200px;" oninput="filterJournals()">
+
+                                <div class="action-buttons-row">
+                                    <a href="./journal-create.html" class="btn btn-primary">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Nouveau Journal
+                                    </a>
+                                    <a href="./dashboard.html" class="btn btn-secondary">
+                                        <i class="fa-solid fa-chart-pie"></i>
+                                        Dashboard
+                                    </a>
+                                    <button class="btn btn-secondary" onclick="exportToExcel()">
+                                        <i class="fa-solid fa-file-excel"></i>
+                                        Export Excel
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="refreshData()">
+                                        <i class="fa-solid fa-sync"></i>
+                                        Actualiser
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Journals List -->
+                    <div class="card">
+                        <div class="table-header">
+                            <div>Code</div>
+                            <div>Libellé</div>
+                            <div class="text-center">Type</div>
+                            <div>Société</div>
+                            <div class="text-right">Solde</div>
+                            <div class="text-center">État</div>
+                            <div class="text-center">Actions</div>
+                        </div>
+
+                        <div id="journalsListBody">
+                            <!-- Dynamically loaded journals -->
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="legend-bar">
+                        <div class="legend-section">
+                            <span class="legend-title">États:</span>
+                            <div class="legend-items">
+                                <div class="legend-item">
+                                    <span style="color: #10B981; font-size: 16px;">🟢</span>
+                                    Normal
+                                </div>
+                                <div class="legend-item">
+                                    <span style="color: #F59E0B; font-size: 16px;">🟡</span>
+                                    Attention (proche seuil)
+                                </div>
+                                <div class="legend-item">
+                                    <span style="color: #EF4444; font-size: 16px;">🔴</span>
+                                    Critique
+                                </div>
+                                <div class="legend-item">
+                                    <span style="font-size: 16px;">⚠️</span>
+                                    À surveiller
+                                </div>
+                            </div>
+                        </div>
+                        <div class="legend-section">
+                            <span class="legend-title">Types:</span>
+                            <div class="legend-items">
+                                <div class="legend-item">🏦 Banque</div>
+                                <div class="legend-item">💵 Caisse</div>
+                                <div class="legend-item">📱 Mobile Money</div>
+                                <div class="legend-item">💳 Petite Caisse</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Détail du Journal</h3>
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDetailModal()">Fermer</button>
+                <button class="btn btn-primary" onclick="goToDetail()">
+                    <i class="fa-solid fa-eye"></i>
+                    Voir Détail Complet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/journals-list.js"></script>
+</body>
+</html>

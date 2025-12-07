@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres Sécurité Journal - Trésorerie | MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/tresorerie-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { font-family: "Poppins", sans-serif; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+
+        .permission-toggle {
+            width: 44px;
+            height: 24px;
+            background: #E5E7EB;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .permission-toggle.active {
+            background: #10B981;
+        }
+        .permission-toggle::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+        .permission-toggle.active::after {
+            transform: translateX(20px);
+        }
+
+        .user-row {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .user-row:last-child {
+            border-bottom: none;
+        }
+        .user-row:hover {
+            background: #F9FAFB;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+            margin-bottom: 1.5rem;
+        }
+        .section-card-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .section-card-header i {
+            color: #263c89;
+            font-size: 1.25rem;
+        }
+        .section-card-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 0;
+        }
+        .section-card-body {
+            padding: 1.5rem;
+        }
+
+        .info-highlight {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: #F3F4F6;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+        .info-highlight i {
+            color: #F59E0B;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            <div class="flex-1 flex items-center justify-between px-6">
+                <div class="breadcrumb">
+                    <a href="./dashboard.html">Trésorerie</a>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <a href="./journals-list.html">Journaux</a>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <a href="./journal-detail.html?code=BNK-001">BNK-001</a>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span>Paramètres de Sécurité</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-sm text-gray-500">
+                        <i class="fa-solid fa-user-tie mr-2"></i>
+                        Directeur Financier
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean KAMGA</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Trésorerie
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Journaux
+                    </div>
+
+                    <a href="./journals-list.html" class="sidebar-link" data-page="journals-list">
+                        <i class="fa-solid fa-book mr-3"></i>
+                        <span>Liste Journaux</span>
+                    </a>
+
+                    <a href="./journal-create.html" class="sidebar-link" data-page="journal-create">
+                        <i class="fa-solid fa-plus-circle mr-3"></i>
+                        <span>Nouveau Journal</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Encaissements
+                    </div>
+
+                    <a href="./encaissement-create.html" class="sidebar-link" data-page="encaissement-create">
+                        <i class="fa-solid fa-arrow-down mr-3"></i>
+                        <span>Nouvel Encaissement</span>
+                    </a>
+
+                    <a href="./encaissement-imputation.html" class="sidebar-link" data-page="encaissement-imputation">
+                        <i class="fa-solid fa-list-check mr-3"></i>
+                        <span>Imputation</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Décaissements
+                    </div>
+
+                    <a href="./decaissement-create.html" class="sidebar-link" data-page="decaissement-create">
+                        <i class="fa-solid fa-arrow-up mr-3"></i>
+                        <span>Nouveau Décaissement</span>
+                    </a>
+
+                    <a href="./validation-double-signature.html" class="sidebar-link" data-page="validation-double-signature">
+                        <i class="fa-solid fa-signature mr-3"></i>
+                        <span>Double Signature</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">2</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Banque
+                    </div>
+
+                    <a href="./remise-transporteur.html" class="sidebar-link" data-page="remise-transporteur">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Remise Transporteur</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="tresorerie-container" style="max-width: 1000px; margin: 0 auto; padding: 24px;">
+
+                    <!-- Page Header -->
+                    <div class="page-header mb-6">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    Paramètres de Sécurité
+                                </h1>
+                                <p class="page-description">
+                                    Journal : <strong class="font-mono">BNK-001</strong> - BICEC Principal
+                                </p>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="btn btn-secondary" onclick="history.back()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Retour
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Journal Summary -->
+                    <div class="card mb-6">
+                        <div class="card-body">
+                            <div class="grid grid-cols-5 gap-4">
+                                <div class="info-item">
+                                    <span class="info-label">Type</span>
+                                    <span class="badge badge-banque mt-1">
+                                        <i class="fa-solid fa-building-columns mr-1"></i>
+                                        Compte Bancaire
+                                    </span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Société</span>
+                                    <span class="info-value">IOLA BTP SARL</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Devise</span>
+                                    <span class="info-value">XAF</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Date ouverture</span>
+                                    <span class="info-value">01/01/2024</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Statut</span>
+                                    <span class="badge badge-success">ACTIF</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="securityForm">
+
+                        <!-- Section 1: Limites et Seuils -->
+                        <div class="section-card">
+                            <div class="section-card-header">
+                                <i class="fa-solid fa-gauge-high"></i>
+                                <h3>Limites et Seuils</h3>
+                            </div>
+                            <div class="section-card-body">
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Solde d'ouverture</label>
+                                        <div class="input-group">
+                                            <input type="number" id="openingBalance" class="form-input" value="1500000">
+                                            <span class="input-group-text">XAF</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Date d'ouverture</label>
+                                        <input type="date" id="openingDate" class="form-input" value="2024-01-01">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-6 mt-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Découvert autorisé</label>
+                                        <div class="input-group">
+                                            <input type="number" id="overdraftLimit" class="form-input" value="5000000">
+                                            <span class="input-group-text">XAF</span>
+                                        </div>
+                                        <div class="info-highlight mt-2">
+                                            <i class="fa-solid fa-exclamation-triangle"></i>
+                                            <span>Nécessite validation DG</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Plafond retrait/jour</label>
+                                        <div class="input-group">
+                                            <input type="number" id="dailyWithdrawLimit" class="form-input" value="10000000">
+                                            <span class="input-group-text">XAF</span>
+                                        </div>
+                                        <span class="form-help">Pour type CASH_DESK uniquement</span>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-6 mt-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Seuil d'alerte</label>
+                                        <div class="input-group">
+                                            <input type="number" id="alertThreshold" class="form-input" value="2000000">
+                                            <span class="input-group-text">XAF</span>
+                                        </div>
+                                        <div class="info-highlight mt-2">
+                                            <i class="fa-solid fa-envelope text-blue-500"></i>
+                                            <span>Notification si solde &lt; seuil</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Seuil critique</label>
+                                        <div class="input-group">
+                                            <input type="number" id="criticalThreshold" class="form-input" value="500000">
+                                            <span class="input-group-text">XAF</span>
+                                        </div>
+                                        <div class="info-highlight mt-2">
+                                            <i class="fa-solid fa-triangle-exclamation text-red-500"></i>
+                                            <span>Alerte urgente + blocage décaissements</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 2: Double Signature Électronique -->
+                        <div class="section-card">
+                            <div class="section-card-header">
+                                <i class="fa-solid fa-signature"></i>
+                                <h3>Double Signature Électronique</h3>
+                            </div>
+                            <div class="section-card-body">
+                                <div class="form-group mb-4">
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" id="dualSignatureEnabled" class="w-5 h-5 accent-[#263c89]" checked>
+                                        <span class="font-medium">Activer la double signature pour ce journal</span>
+                                    </label>
+                                </div>
+
+                                <div id="dualSignatureSettings">
+                                    <div class="form-group mb-6">
+                                        <label class="form-label">Seuil déclenchement</label>
+                                        <div class="input-group" style="max-width: 300px;">
+                                            <input type="number" id="dualSignatureThreshold" class="form-input" value="5000000">
+                                            <span class="input-group-text">XAF</span>
+                                        </div>
+                                        <span class="form-help">Montants ≥ seuil nécessitent 2 signatures</span>
+                                    </div>
+
+                                    <!-- Signataires autorisés -->
+                                    <div class="form-group">
+                                        <label class="form-label mb-3">Signataires autorisés</label>
+                                        <div class="bg-gray-50 rounded-lg overflow-hidden">
+                                            <table class="w-full text-sm">
+                                                <thead class="bg-gray-100">
+                                                    <tr class="text-left text-gray-600">
+                                                        <th class="px-4 py-3 font-medium">Nom</th>
+                                                        <th class="px-4 py-3 font-medium">Rôle</th>
+                                                        <th class="px-4 py-3 font-medium">Email</th>
+                                                        <th class="px-4 py-3 font-medium text-center">Actif</th>
+                                                        <th class="px-4 py-3 font-medium text-center">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="signatoriesList">
+                                                    <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                                        <td class="px-4 py-3 font-medium">KAMGA Jean-Paul</td>
+                                                        <td class="px-4 py-3 text-gray-600">Dir. Financier</td>
+                                                        <td class="px-4 py-3 text-gray-600">jp.kamga@iola.cm</td>
+                                                        <td class="px-4 py-3 text-center">
+                                                            <input type="checkbox" checked class="w-4 h-4 accent-[#10B981]">
+                                                        </td>
+                                                        <td class="px-4 py-3 text-center">
+                                                            <button type="button" class="btn-icon text-red-500" onclick="removeSignatory(this)" title="Retirer">
+                                                                <i class="fa-solid fa-times"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                                        <td class="px-4 py-3 font-medium">NGONO Sylvie</td>
+                                                        <td class="px-4 py-3 text-gray-600">Chef Comptable</td>
+                                                        <td class="px-4 py-3 text-gray-600">s.ngono@iola.cm</td>
+                                                        <td class="px-4 py-3 text-center">
+                                                            <input type="checkbox" checked class="w-4 h-4 accent-[#10B981]">
+                                                        </td>
+                                                        <td class="px-4 py-3 text-center">
+                                                            <button type="button" class="btn-icon text-red-500" onclick="removeSignatory(this)" title="Retirer">
+                                                                <i class="fa-solid fa-times"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                                        <td class="px-4 py-3 font-medium">MBARGA Pierre</td>
+                                                        <td class="px-4 py-3 text-gray-600">Trésorier</td>
+                                                        <td class="px-4 py-3 text-gray-600">p.mbarga@iola.cm</td>
+                                                        <td class="px-4 py-3 text-center">
+                                                            <input type="checkbox" checked class="w-4 h-4 accent-[#10B981]">
+                                                        </td>
+                                                        <td class="px-4 py-3 text-center">
+                                                            <button type="button" class="btn-icon text-red-500" onclick="removeSignatory(this)" title="Retirer">
+                                                                <i class="fa-solid fa-times"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="px-4 py-3 border-t border-gray-200">
+                                                <button type="button" class="btn btn-outline btn-sm" onclick="showAddSignatoryModal()">
+                                                    <i class="fa-solid fa-plus mr-1"></i>
+                                                    Ajouter signataire
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="alert-box alert-info mt-3">
+                                            <i class="fa-solid fa-info-circle"></i>
+                                            <div>Minimum 2 signataires requis. Le créateur ne peut pas signer.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Statut et Activation -->
+                        <div class="section-card">
+                            <div class="section-card-header">
+                                <i class="fa-solid fa-toggle-on"></i>
+                                <h3>Statut et Activation</h3>
+                            </div>
+                            <div class="section-card-body">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Statut du journal</label>
+                                    <div class="flex gap-6 mt-2">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="journalStatus" value="ACTIVE" checked class="w-4 h-4 accent-[#10B981]">
+                                            <span class="flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                                                Actif (ACTIVE)
+                                            </span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="journalStatus" value="SUSPENDED" class="w-4 h-4 accent-[#F59E0B]">
+                                            <span class="flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                                                Suspendu (SUSPENDED)
+                                            </span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="journalStatus" value="CLOSED" class="w-4 h-4 accent-[#EF4444]">
+                                            <span class="flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                                                Clôturé (CLOSED)
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="isDefault" class="w-4 h-4 accent-[#263c89]">
+                                        <span>Définir comme journal par défaut pour ce type</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Permissions Utilisateurs -->
+                        <div class="section-card">
+                            <div class="section-card-header">
+                                <i class="fa-solid fa-users-gear"></i>
+                                <h3>Permissions Utilisateurs</h3>
+                                <div class="ml-auto">
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="showAddUserModal()">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                        Ajouter Utilisateur
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="section-card-body" style="padding: 0;">
+                                <!-- Permissions Header -->
+                                <div class="user-row" style="background: #F3F4F6; font-weight: 600; font-size: 12px; text-transform: uppercase; color: #6B7280;">
+                                    <div style="flex: 2;">Utilisateur</div>
+                                    <div style="width: 90px; text-align: center;">Lecture</div>
+                                    <div style="width: 90px; text-align: center;">Écriture</div>
+                                    <div style="width: 90px; text-align: center;">Validation</div>
+                                    <div style="width: 90px; text-align: center;">Admin</div>
+                                    <div style="width: 120px; text-align: center;">Plafond</div>
+                                    <div style="width: 80px; text-align: center;">Actions</div>
+                                </div>
+
+                                <!-- User Rows -->
+                                <div class="user-row">
+                                    <div style="flex: 2; display: flex; align-items: center; gap: 12px;">
+                                        <div class="w-10 h-10 rounded-full bg-[#263c89] text-white flex items-center justify-center font-semibold text-sm">JK</div>
+                                        <div>
+                                            <div class="font-semibold text-[#1F2937]">Jean KAMGA</div>
+                                            <div class="text-xs text-[#6B7280]">Trésorier Principal</div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle active" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle active" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle active" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle active" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 120px; text-align: center;">
+                                        <span class="text-sm font-semibold text-[#10B981]">Illimité</span>
+                                    </div>
+                                    <div style="width: 80px; text-align: center;">
+                                        <button type="button" class="btn-icon" title="Modifier" onclick="editUserPermissions('USR001')">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="user-row">
+                                    <div style="flex: 2; display: flex; align-items: center; gap: 12px;">
+                                        <div class="w-10 h-10 rounded-full bg-[#F26F21] text-white flex items-center justify-center font-semibold text-sm">MN</div>
+                                        <div>
+                                            <div class="font-semibold text-[#1F2937]">Marie NJOYA</div>
+                                            <div class="text-xs text-[#6B7280]">Caissière Principale</div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle active" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle active" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 120px; text-align: center;">
+                                        <span class="text-sm font-semibold text-[#1F2937]">500 000 XAF</span>
+                                    </div>
+                                    <div style="width: 80px; text-align: center;">
+                                        <button type="button" class="btn-icon" title="Modifier" onclick="editUserPermissions('USR002')">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn-icon text-red-500" title="Retirer" onclick="removeUserAccess('USR002')">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="user-row">
+                                    <div style="flex: 2; display: flex; align-items: center; gap: 12px;">
+                                        <div class="w-10 h-10 rounded-full bg-[#10B981] text-white flex items-center justify-center font-semibold text-sm">PF</div>
+                                        <div>
+                                            <div class="font-semibold text-[#1F2937]">Paul FOTSO</div>
+                                            <div class="text-xs text-[#6B7280]">Comptable</div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle active" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 90px; text-align: center;">
+                                        <div class="permission-toggle" onclick="togglePermission(this)"></div>
+                                    </div>
+                                    <div style="width: 120px; text-align: center;">
+                                        <span class="text-sm text-[#6B7280]">N/A</span>
+                                    </div>
+                                    <div style="width: 80px; text-align: center;">
+                                        <button type="button" class="btn-icon" title="Modifier" onclick="editUserPermissions('USR003')">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn-icon text-red-500" title="Retirer" onclick="removeUserAccess('USR003')">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex justify-between items-center mt-6">
+                            <button type="button" class="btn btn-secondary" onclick="history.back()">
+                                <i class="fa-solid fa-arrow-left mr-2"></i>
+                                Précédent
+                            </button>
+                            <div class="flex gap-3">
+                                <button type="button" class="btn btn-outline" onclick="resetForm()">
+                                    <i class="fa-solid fa-rotate-left mr-2"></i>
+                                    Réinitialiser
+                                </button>
+                                <button type="button" class="btn btn-success" onclick="saveSecuritySettings()">
+                                    <i class="fa-solid fa-check mr-2"></i>
+                                    Enregistrer les Paramètres
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <!-- Audit Trail Section -->
+                    <div class="section-card mt-6">
+                        <div class="section-card-header">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <h3>Historique des Modifications</h3>
+                            <div class="ml-auto">
+                                <button class="btn btn-secondary btn-sm" onclick="exportAuditLog()">
+                                    <i class="fa-solid fa-download"></i>
+                                    Exporter
+                                </button>
+                            </div>
+                        </div>
+                        <div class="section-card-body">
+                            <div class="timeline">
+                                <div class="timeline-item info">
+                                    <div class="timeline-content">
+                                        <div class="timeline-date">29/01/2024 - 14:30</div>
+                                        <div class="timeline-title">Modification du seuil double signature</div>
+                                        <div class="timeline-description">
+                                            Jean KAMGA a modifié le seuil: 3 000 000 XAF → 5 000 000 XAF
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="timeline-item warning">
+                                    <div class="timeline-content">
+                                        <div class="timeline-date">25/01/2024 - 10:15</div>
+                                        <div class="timeline-title">Modification des permissions</div>
+                                        <div class="timeline-description">
+                                            Jean KAMGA a modifié les permissions de Marie NJOYA: Validation désactivée
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="timeline-item success">
+                                    <div class="timeline-content">
+                                        <div class="timeline-date">15/01/2024 - 09:00</div>
+                                        <div class="timeline-title">Ajout d'utilisateur</div>
+                                        <div class="timeline-description">
+                                            Jean KAMGA a ajouté Paul FOTSO avec permission de lecture
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="timeline-item success">
+                                    <div class="timeline-content">
+                                        <div class="timeline-date">01/01/2024 - 08:00</div>
+                                        <div class="timeline-title">Création du journal</div>
+                                        <div class="timeline-description">
+                                            Journal BNK-001 créé par Jean KAMGA
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal-overlay" id="addUserModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3 class="modal-title">Ajouter un Utilisateur</h3>
+                <button class="modal-close" onclick="closeAddUserModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label required">Utilisateur</label>
+                    <select id="newUserSelect" class="form-select">
+                        <option value="">Sélectionner un utilisateur</option>
+                        <option value="USR004">Alice TCHAMBA - Assistante</option>
+                        <option value="USR005">Robert MBARGA - Caissier</option>
+                        <option value="USR006">Claire ETOUNDI - Comptable Junior</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Permissions initiales</label>
+                    <div class="flex flex-col gap-2 mt-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="perm_read" checked class="w-4 h-4 accent-[#263c89]">
+                            <span>Lecture</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="perm_write" class="w-4 h-4 accent-[#263c89]">
+                            <span>Écriture</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="perm_validate" class="w-4 h-4 accent-[#263c89]">
+                            <span>Validation</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="perm_admin" class="w-4 h-4 accent-[#263c89]">
+                            <span>Administration</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Plafond de transaction</label>
+                    <div class="input-group">
+                        <input type="number" id="newUserLimit" class="form-input" placeholder="0 = illimité">
+                        <span class="input-group-text">XAF</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddUserModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="addUser()">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Ajouter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Signatory Modal -->
+    <div class="modal-overlay" id="addSignatoryModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3 class="modal-title">Ajouter un Signataire</h3>
+                <button class="modal-close" onclick="closeAddSignatoryModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label required">Signataire</label>
+                    <select id="newSignatorySelect" class="form-select">
+                        <option value="">Sélectionner un signataire</option>
+                        <option value="SIG001">FOUDA Michel - Directeur Général</option>
+                        <option value="SIG002">ATANGANA Rose - DAF Adjoint</option>
+                        <option value="SIG003">ESSOMBA Jacques - Contrôleur de Gestion</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="newSignatoryEmail" class="form-input" placeholder="email@iola.cm">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddSignatoryModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="addSignatory()">
+                    <i class="fa-solid fa-plus"></i>
+                    Ajouter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/journal-security.js"></script>
+</body>
+</html>

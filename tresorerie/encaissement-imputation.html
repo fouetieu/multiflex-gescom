@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imputation Encaissement - Trésorerie | MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/tresorerie-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { font-family: "Poppins", sans-serif; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+
+        .imputation-row {
+            display: grid;
+            grid-template-columns: 1fr 120px 120px 120px 150px;
+            gap: 16px;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .imputation-row:hover { background: #F9FAFB; }
+        .imputation-row.header {
+            background: #F3F4F6;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #6B7280;
+        }
+
+        .imputation-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #E5E7EB;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: right;
+        }
+        .imputation-input:focus {
+            outline: none;
+            border-color: #263c89;
+        }
+        .imputation-input.error {
+            border-color: #EF4444;
+            background: #FEF2F2;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            <div class="flex-1 flex items-center justify-between px-6">
+                <div class="breadcrumb">
+                    <a href="./dashboard.html">Trésorerie</a>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span>Imputation Encaissement</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean KAMGA</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">Module Trésorerie</div>
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard"><i class="fa-solid fa-chart-pie mr-3"></i><span>Dashboard</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Journaux</div>
+                    <a href="./journals-list.html" class="sidebar-link" data-page="journals-list"><i class="fa-solid fa-book mr-3"></i><span>Liste Journaux</span></a>
+                    <a href="./journal-create.html" class="sidebar-link" data-page="journal-create"><i class="fa-solid fa-plus-circle mr-3"></i><span>Nouveau Journal</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Encaissements</div>
+                    <a href="./encaissement-create.html" class="sidebar-link" data-page="encaissement-create"><i class="fa-solid fa-arrow-down mr-3"></i><span>Nouvel Encaissement</span></a>
+                    <a href="./encaissement-imputation.html" class="sidebar-link" data-page="encaissement-imputation"><i class="fa-solid fa-list-check mr-3"></i><span>Imputation</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Décaissements</div>
+                    <a href="./decaissement-create.html" class="sidebar-link" data-page="decaissement-create"><i class="fa-solid fa-arrow-up mr-3"></i><span>Nouveau Décaissement</span></a>
+                    <a href="./validation-double-signature.html" class="sidebar-link" data-page="validation-double-signature"><i class="fa-solid fa-signature mr-3"></i><span>Double Signature</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Banque</div>
+                    <a href="./remise-transporteur.html" class="sidebar-link" data-page="remise-transporteur"><i class="fa-solid fa-truck-fast mr-3"></i><span>Remise Transporteur</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">Système</div>
+                    <a href="../index.html" class="sidebar-link" data-page="home"><i class="fa-solid fa-home mr-3"></i><span>Accueil</span></a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="tresorerie-container" style="max-width: 1100px; margin: 0 auto; padding: 24px;">
+
+                    <!-- Page Header -->
+                    <div class="page-header mb-6">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">
+                                    <i class="fa-solid fa-list-check"></i>
+                                    Imputation des Encaissements
+                                </h1>
+                                <p class="page-description">
+                                    Affectez les encaissements non imputés aux factures clients (méthode FIFO)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Encaissement Selection -->
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                                Encaissement à Imputer
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="form-label">Sélectionner un encaissement non imputé</label>
+                                <select id="encaissementSelect" class="form-select" onchange="loadEncaissement()">
+                                    <option value="">-- Choisir un encaissement --</option>
+                                    <option value="ENC-001">ENC-2024-00123 | SONACOM SARL | 500 000 XAF | 15/01/2024</option>
+                                    <option value="ENC-002">ENC-2024-00124 | ETS NKOULOU | 200 000 XAF | 14/01/2024</option>
+                                    <option value="ENC-003">ENC-2024-00125 | PAINT HOUSE | 1 000 000 XAF | 13/01/2024</option>
+                                </select>
+                            </div>
+
+                            <!-- Selected Encaissement Info -->
+                            <div class="alert-box alert-info" id="encaissementInfo" style="display: none;">
+                                <i class="fa-solid fa-info-circle"></i>
+                                <div>
+                                    <strong id="encClientName">SONACOM SARL</strong><br>
+                                    <span class="text-sm">
+                                        Montant: <span id="encAmount" class="font-semibold">500 000 XAF</span> |
+                                        Mode: <span id="encMode">Espèces</span> |
+                                        Date: <span id="encDate">15/01/2024</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoices to Impute -->
+                    <div class="card" id="imputationCard" style="display: none;">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-file-invoice"></i>
+                                Factures à Imputer
+                            </h3>
+                            <button class="btn btn-secondary btn-sm" onclick="autoImputeFIFO()">
+                                <i class="fa-solid fa-magic"></i>
+                                Imputation Auto FIFO
+                            </button>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <!-- Header -->
+                            <div class="imputation-row header">
+                                <div>Facture</div>
+                                <div class="text-right">Total</div>
+                                <div class="text-right">Déjà Payé</div>
+                                <div class="text-right">Reste</div>
+                                <div class="text-right">À Imputer</div>
+                            </div>
+
+                            <!-- Invoices -->
+                            <div id="invoicesContainer">
+                                <div class="imputation-row" data-code="FAC-001" data-remaining="300000">
+                                    <div>
+                                        <div class="font-semibold text-[#263c89]">FAC-2024-00098</div>
+                                        <div class="text-sm text-muted">05/01/2024 - Le plus ancien</div>
+                                    </div>
+                                    <div class="text-right">800 000 XAF</div>
+                                    <div class="text-right text-success">500 000 XAF</div>
+                                    <div class="text-right text-danger font-semibold">300 000 XAF</div>
+                                    <div>
+                                        <input type="number" class="imputation-input" value="0"
+                                               oninput="updateImputationTotals()" data-max="300000">
+                                    </div>
+                                </div>
+                                <div class="imputation-row" data-code="FAC-002" data-remaining="1000000">
+                                    <div>
+                                        <div class="font-semibold text-[#263c89]">FAC-2024-00123</div>
+                                        <div class="text-sm text-muted">10/01/2024</div>
+                                    </div>
+                                    <div class="text-right">1 500 000 XAF</div>
+                                    <div class="text-right text-success">500 000 XAF</div>
+                                    <div class="text-right text-danger font-semibold">1 000 000 XAF</div>
+                                    <div>
+                                        <input type="number" class="imputation-input" value="0"
+                                               oninput="updateImputationTotals()" data-max="1000000">
+                                    </div>
+                                </div>
+                                <div class="imputation-row" data-code="FAC-003" data-remaining="700000">
+                                    <div>
+                                        <div class="font-semibold text-[#263c89]">FAC-2024-00145</div>
+                                        <div class="text-sm text-muted">12/01/2024</div>
+                                    </div>
+                                    <div class="text-right">700 000 XAF</div>
+                                    <div class="text-right text-success">0 XAF</div>
+                                    <div class="text-right text-danger font-semibold">700 000 XAF</div>
+                                    <div>
+                                        <input type="number" class="imputation-input" value="0"
+                                               oninput="updateImputationTotals()" data-max="700000">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Summary -->
+                        <div class="card-footer">
+                            <div class="summary-box" style="background: white; margin: 0;">
+                                <div class="summary-row">
+                                    <span>Montant Encaissement</span>
+                                    <span id="summaryEncAmount">500 000 XAF</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Total Imputé</span>
+                                    <span id="summaryImputed" class="text-success">0 XAF</span>
+                                </div>
+                                <div class="summary-row total">
+                                    <span>Reste Non Imputé</span>
+                                    <span id="summaryRemaining" class="text-warning">500 000 XAF</span>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between mt-4">
+                                <button class="btn btn-secondary" onclick="cancelImputation()">
+                                    <i class="fa-solid fa-times"></i>
+                                    Annuler
+                                </button>
+                                <button class="btn btn-success" onclick="validateImputation()" id="btnValidate" disabled>
+                                    <i class="fa-solid fa-check"></i>
+                                    Valider l'Imputation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/encaissement-imputation.js"></script>
+</body>
+</html>

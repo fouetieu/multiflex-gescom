@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouveau Bon d'Encaissement - Trésorerie | MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/tresorerie-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { font-family: "Poppins", sans-serif; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 16px 20px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .doc-number {
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: 600;
+            color: #263c89;
+        }
+
+        .doc-date {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .client-search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+        .client-search-results.active { display: block; }
+        .client-result-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .client-result-item:hover { background: #F3F4F6; }
+        .client-result-item:last-child { border-bottom: none; }
+
+        .client-situation-box {
+            background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+            border: 1px solid #C7D2FE;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .client-situation-box h4 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #3730A3;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .situation-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .situation-item {
+            font-size: 13px;
+        }
+
+        .situation-item-label {
+            color: #6B7280;
+            margin-bottom: 2px;
+        }
+
+        .situation-item-value {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .situation-item-value.danger {
+            color: #DC2626;
+        }
+
+        .payment-method-btn {
+            padding: 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .payment-method-btn:hover { border-color: #263c89; }
+        .payment-method-btn.selected {
+            border-color: #263c89;
+            background: rgba(38, 60, 137, 0.05);
+        }
+        .payment-method-btn i {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #263c89;
+        }
+
+        .payment-method-btn .limit-info {
+            font-size: 10px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .journal-info {
+            background: #F9FAFB;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .wire-details-section {
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .wire-details-section h4 {
+            margin: 0 0 16px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E40AF;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            <div class="flex-1 flex items-center justify-between px-6">
+                <div class="breadcrumb">
+                    <a href="./dashboard.html">Trésorerie</a>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span>Nouveau Bon d'Encaissement</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">3</span>
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean KAMGA</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Trésorerie
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Journaux
+                    </div>
+
+                    <a href="./journals-list.html" class="sidebar-link" data-page="journals-list">
+                        <i class="fa-solid fa-book mr-3"></i>
+                        <span>Liste Journaux</span>
+                    </a>
+
+                    <a href="./journal-create.html" class="sidebar-link" data-page="journal-create">
+                        <i class="fa-solid fa-plus-circle mr-3"></i>
+                        <span>Nouveau Journal</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Encaissements
+                    </div>
+
+                    <a href="./encaissement-create.html" class="sidebar-link active" data-page="encaissement-create">
+                        <i class="fa-solid fa-arrow-down mr-3"></i>
+                        <span>Nouvel Encaissement</span>
+                    </a>
+
+                    <a href="./encaissement-imputation.html" class="sidebar-link" data-page="encaissement-imputation">
+                        <i class="fa-solid fa-list-check mr-3"></i>
+                        <span>Imputation</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Décaissements
+                    </div>
+
+                    <a href="./decaissement-create.html" class="sidebar-link" data-page="decaissement-create">
+                        <i class="fa-solid fa-arrow-up mr-3"></i>
+                        <span>Nouveau Décaissement</span>
+                    </a>
+
+                    <a href="./validation-double-signature.html" class="sidebar-link" data-page="validation-double-signature">
+                        <i class="fa-solid fa-signature mr-3"></i>
+                        <span>Double Signature</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">2</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Banque
+                    </div>
+
+                    <a href="./remise-transporteur.html" class="sidebar-link" data-page="remise-transporteur">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Remise Transporteur</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="tresorerie-container" style="max-width: 1000px; margin: 0 auto; padding: 24px;">
+
+                    <!-- Page Header with Document Number -->
+                    <div class="page-header mb-4">
+                        <h1 class="page-title" style="font-size: 20px;">
+                            <i class="fa-solid fa-arrow-down text-success"></i>
+                            NOUVEAU BON D'ENCAISSEMENT
+                        </h1>
+                    </div>
+
+                    <!-- Document Header -->
+                    <div class="doc-header">
+                        <div>
+                            <span class="text-gray-500">N° Document:</span>
+                            <span class="doc-number" id="docNumber">ENC-2024-00235</span>
+                            <span class="text-gray-400 text-sm">(Aperçu)</span>
+                        </div>
+                        <div class="doc-date">
+                            <span>Date:</span>
+                            <span class="font-semibold" id="docDate">07/12/2024</span>
+                        </div>
+                    </div>
+
+                    <!-- Stepper -->
+                    <div class="stepper">
+                        <div class="stepper-step active" id="step1" onclick="goToStep(1)">
+                            <div class="step-circle">1</div>
+                            <div class="step-content">
+                                <div class="step-title">En-tête</div>
+                                <div class="step-subtitle">Client & Paiement</div>
+                            </div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="stepper-step" id="step2" onclick="goToStep(2)">
+                            <div class="step-circle">2</div>
+                            <div class="step-content">
+                                <div class="step-title">Imputation</div>
+                                <div class="step-subtitle">Factures</div>
+                            </div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="stepper-step" id="step3" onclick="goToStep(3)">
+                            <div class="step-circle">3</div>
+                            <div class="step-content">
+                                <div class="step-title">Validation</div>
+                                <div class="step-subtitle">Confirmation</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: En-tête Encaissement -->
+                    <div class="card step-content-card" id="stepContent1">
+                        <!-- Client Payeur Section -->
+                        <div class="section-card">
+                            <div class="section-card-header">
+                                <i class="fa-solid fa-user"></i>
+                                <h3>CLIENT PAYEUR</h3>
+                            </div>
+                            <div class="section-card-body">
+                                <div class="form-group">
+                                    <label class="form-label required">Client</label>
+                                    <div style="position: relative;">
+                                        <div style="display: flex; gap: 8px;">
+                                            <input type="text" class="form-input" id="clientSearch"
+                                                   placeholder="Rechercher par nom, code ou NUI..."
+                                                   oninput="searchClients(this.value)"
+                                                   onfocus="showClientResults()"
+                                                   style="flex: 1;">
+                                            <button type="button" class="btn btn-secondary" onclick="openClientSearch()">
+                                                <i class="fa-solid fa-search"></i>
+                                            </button>
+                                        </div>
+                                        <div class="client-search-results" id="clientSearchResults">
+                                            <!-- Results loaded dynamically -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Selected Client Info -->
+                                <div id="selectedClientInfo" style="display: none; margin-top: 16px;">
+                                    <div class="alert-box alert-info" style="margin-bottom: 0;">
+                                        <div style="flex: 1;">
+                                            <div style="display: flex; align-items: center; gap: 12px;">
+                                                <strong id="selectedClientName" style="font-size: 16px;">SONACOM SARL</strong>
+                                            </div>
+                                            <div class="text-sm" style="margin-top: 4px; color: #6B7280;">
+                                                <span id="selectedClientCode">CLI-2024-00156</span> |
+                                                NUI: <span id="selectedClientNUI">P087201234567W</span>
+                                            </div>
+                                            <div class="text-sm" style="margin-top: 4px;">
+                                                Contact: <span id="selectedClientContact">M. FOTSO Pierre</span><br>
+                                                <i class="fa-solid fa-phone"></i> <span id="selectedClientPhone">699 123 456</span> |
+                                                <i class="fa-solid fa-envelope"></i> <span id="selectedClientEmail">p.fotso@sonacom.cm</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Situation Client Box -->
+                                    <div class="client-situation-box">
+                                        <h4><i class="fa-solid fa-coins"></i> SITUATION CLIENT</h4>
+                                        <div class="situation-grid">
+                                            <div class="situation-item">
+                                                <div class="situation-item-label">Encours total</div>
+                                                <div class="situation-item-value" id="clientEncours">15 450 000 XAF</div>
+                                            </div>
+                                            <div class="situation-item">
+                                                <div class="situation-item-label">Dont échu</div>
+                                                <div class="situation-item-value danger" id="clientEchu">3 200 000 XAF (3 factures)</div>
+                                            </div>
+                                            <div class="situation-item">
+                                                <div class="situation-item-label">Plus ancien</div>
+                                                <div class="situation-item-value danger" id="clientOldest">45 jours (FA-2024-00123)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Détails du Paiement Section -->
+                        <div class="section-card" style="margin-top: 16px;">
+                            <div class="section-card-header">
+                                <i class="fa-solid fa-credit-card"></i>
+                                <h3>DÉTAILS DU PAIEMENT</h3>
+                            </div>
+                            <div class="section-card-body">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Date encaissement</label>
+                                        <input type="date" id="receiptDate" class="form-input" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Date valeur</label>
+                                        <input type="date" id="valueDate" class="form-input" value="">
+                                        <span class="form-help">Date crédit effectif</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label required">Mode de paiement</label>
+                                    <div class="grid grid-cols-4 gap-4 mt-2">
+                                        <div class="payment-method-btn" onclick="selectPaymentMethod('CASH', this)">
+                                            <i class="fa-solid fa-money-bill-wave"></i>
+                                            <div class="font-semibold">Espèces</div>
+                                            <div class="limit-info">(limite 100K XAF)</div>
+                                        </div>
+                                        <div class="payment-method-btn" onclick="selectPaymentMethod('WIRE_TRANSFER', this)">
+                                            <i class="fa-solid fa-building-columns"></i>
+                                            <div class="font-semibold">Virement</div>
+                                        </div>
+                                        <div class="payment-method-btn" onclick="selectPaymentMethod('CHECK', this)">
+                                            <i class="fa-solid fa-money-check"></i>
+                                            <div class="font-semibold">Chèque</div>
+                                        </div>
+                                        <div class="payment-method-btn" onclick="selectPaymentMethod('MOBILE_MONEY', this)">
+                                            <i class="fa-solid fa-mobile-screen"></i>
+                                            <div class="font-semibold">Mobile Money</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label required">Journal destination</label>
+                                        <select id="destinationJournal" class="form-select" onchange="updateJournalInfo()">
+                                            <option value="">Sélectionner un journal</option>
+                                            <option value="BNK-001">BNK-001 - BICEC Principal</option>
+                                            <option value="CSH-001">CSH-001 - Caisse Douala</option>
+                                            <option value="CSH-002">CSH-002 - Caisse Yaoundé</option>
+                                            <option value="MOB-001">MOB-001 - Orange Money</option>
+                                        </select>
+                                        <div class="journal-info" id="journalInfo" style="display: none;">
+                                            Solde actuel: <span id="journalBalance">85 234 567 XAF</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label required">Montant reçu</label>
+                                        <div class="input-group">
+                                            <input type="number" id="receiptAmount" class="form-input"
+                                                   placeholder="0" oninput="validateAmount()">
+                                            <span class="input-group-text">XAF</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Référence paiement</label>
+                                        <input type="text" id="paymentReference" class="form-input"
+                                               placeholder="Ex: VIR-SONACOM-07122024">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Description</label>
+                                        <input type="text" id="paymentDescription" class="form-input"
+                                               placeholder="Règlement factures...">
+                                    </div>
+                                </div>
+
+                                <!-- Wire Transfer Details (conditional) -->
+                                <div class="wire-details-section" id="wireDetailsSection" style="display: none;">
+                                    <h4><i class="fa-solid fa-building-columns"></i> DÉTAILS VIREMENT</h4>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">Banque émettrice</label>
+                                            <input type="text" id="senderBank" class="form-input"
+                                                   placeholder="Ex: SCB Cameroun">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">N° compte émetteur</label>
+                                            <input type="text" id="senderAccount" class="form-input"
+                                                   placeholder="Ex: 0012345678901">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Référence bancaire</label>
+                                        <input type="text" id="bankReference" class="form-input"
+                                               placeholder="Ex: REF-SCB-2024-00789">
+                                    </div>
+                                </div>
+
+                                <!-- Check Details (conditional) -->
+                                <div class="wire-details-section" id="checkDetailsSection" style="display: none;">
+                                    <h4><i class="fa-solid fa-money-check"></i> DÉTAILS CHÈQUE</h4>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">N° Chèque</label>
+                                            <input type="text" id="checkNumber" class="form-input"
+                                                   placeholder="Numéro du chèque">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Banque tirée</label>
+                                            <select id="checkBank" class="form-select">
+                                                <option value="">Sélectionner</option>
+                                                <option value="BICEC">BICEC</option>
+                                                <option value="SCB">SCB Cameroun</option>
+                                                <option value="SGBC">Société Générale</option>
+                                                <option value="UBA">UBA</option>
+                                                <option value="AFRILAND">Afriland First Bank</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="card-footer" style="margin-top: 16px; padding: 16px 0; display: flex; justify-content: space-between;">
+                            <button class="btn btn-secondary" onclick="cancelEncaissement()">
+                                Annuler
+                            </button>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="saveDraft()">
+                                    <i class="fa-solid fa-save"></i>
+                                    Enregistrer brouillon
+                                </button>
+                                <button class="btn btn-primary" onclick="goToStep(2)" id="btnNextStep1">
+                                    Suivant
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Imputation -->
+                    <div class="card step-content-card" id="stepContent2" style="display: none;">
+                        <div class="section-card">
+                            <div class="section-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <i class="fa-solid fa-list-check"></i>
+                                    <h3>FACTURES À LETTRER</h3>
+                                </div>
+                                <div style="display: flex; gap: 12px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="autoFifo" checked onchange="applyAutoFifo()">
+                                        <span class="text-sm">Auto FIFO</span>
+                                    </label>
+                                    <button class="btn btn-sm btn-secondary" onclick="refreshInvoices()">
+                                        <i class="fa-solid fa-sync"></i> MAJ
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="section-card-body">
+                                <div class="mb-4">
+                                    <span class="text-gray-600">Montant à imputer:</span>
+                                    <span class="font-bold text-lg" id="amountToAllocate">5 500 000 XAF</span>
+                                </div>
+
+                                <div class="table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 40px;"></th>
+                                                <th>N° Facture</th>
+                                                <th>Date</th>
+                                                <th>Échéance</th>
+                                                <th class="text-right">Original</th>
+                                                <th class="text-right">Payé</th>
+                                                <th class="text-right">Reste</th>
+                                                <th class="text-right">À payer</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="invoicesTableBody">
+                                            <!-- Loaded dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Calculation Summary -->
+                                <div class="summary-box" style="margin-top: 20px;">
+                                    <div class="summary-row">
+                                        <span>Total factures sélectionnées</span>
+                                        <span id="totalSelected">4 500 000 XAF</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>Escompte accordé</span>
+                                        <span id="totalDiscount">-100 000 XAF</span>
+                                    </div>
+                                    <div class="summary-row" style="border-top: 1px solid #E5E7EB; padding-top: 8px;">
+                                        <span>Total imputé</span>
+                                        <span id="totalAllocated">4 400 000 XAF</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>Montant reçu</span>
+                                        <span id="totalReceived">5 500 000 XAF</span>
+                                    </div>
+                                    <div class="summary-row total" style="background: #FEF3C7; padding: 12px; border-radius: 8px;">
+                                        <span><strong>Solde non affecté (avance)</strong></span>
+                                        <span class="text-warning" id="unallocatedAmount"><strong>1 100 000 XAF</strong></span>
+                                    </div>
+                                    <div class="text-sm text-gray-500 mt-2">
+                                        Code lettrage: <span class="font-mono" id="lettrageCode">LTR-2024-00567</span> (généré automatiquement)
+                                    </div>
+                                </div>
+
+                                <!-- Unallocated Amount Handling -->
+                                <div class="section-card" style="margin-top: 20px;" id="unallocatedSection">
+                                    <div class="section-card-header">
+                                        <i class="fa-solid fa-question-circle"></i>
+                                        <h3>TRAITEMENT DU SOLDE NON AFFECTÉ</h3>
+                                    </div>
+                                    <div class="section-card-body">
+                                        <div class="form-group">
+                                            <div class="form-check" style="margin-bottom: 12px;">
+                                                <input type="radio" name="unallocatedAction" value="advance" id="actionAdvance" checked>
+                                                <label for="actionAdvance">Conserver comme avance client (crédit compte client)</label>
+                                            </div>
+                                            <div class="form-check" style="margin-bottom: 12px;">
+                                                <input type="radio" name="unallocatedAction" value="order" id="actionOrder">
+                                                <label for="actionOrder">Imputer sur commande en cours:</label>
+                                                <input type="text" class="form-input" style="margin-left: 24px; margin-top: 8px; max-width: 300px;"
+                                                       placeholder="Rechercher une commande..." disabled id="orderSearchInput">
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="radio" name="unallocatedAction" value="refund" id="actionRefund">
+                                                <label for="actionRefund">Rembourser au client (générer ordre de paiement)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="card-footer" style="margin-top: 16px; padding: 16px 0; display: flex; justify-content: space-between;">
+                            <button class="btn btn-secondary" onclick="goToStep(1)">
+                                <i class="fa-solid fa-arrow-left"></i>
+                                Précédent
+                            </button>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="saveDraft()">
+                                    <i class="fa-solid fa-save"></i>
+                                    Enregistrer brouillon
+                                </button>
+                                <button class="btn btn-primary" onclick="goToStep(3)">
+                                    Valider
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Validation -->
+                    <div class="card step-content-card" id="stepContent3" style="display: none;">
+                        <div class="section-card">
+                            <div class="section-card-header">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <h3>RÉCAPITULATIF DE L'ENCAISSEMENT</h3>
+                            </div>
+                            <div class="section-card-body">
+                                <div class="info-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                                    <div class="info-item">
+                                        <span class="info-label">N° Document</span>
+                                        <span class="info-value font-mono" id="summaryDocNumber">ENC-2024-00235</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Date</span>
+                                        <span class="info-value" id="summaryDate">07/12/2024</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Client</span>
+                                        <span class="info-value" id="summaryClient">SONACOM SARL</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Mode de Paiement</span>
+                                        <span class="info-value" id="summaryPaymentMethod">Virement bancaire</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Journal</span>
+                                        <span class="info-value" id="summaryJournal">BNK-001 - BICEC Principal</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Référence</span>
+                                        <span class="info-value" id="summaryReference">VIR-SONACOM-07122024</span>
+                                    </div>
+                                </div>
+
+                                <div class="summary-box" style="margin-top: 24px;">
+                                    <div class="summary-row">
+                                        <span>Montant encaissé</span>
+                                        <span class="font-bold text-success" id="summaryAmount">5 500 000 XAF</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>Imputé sur factures</span>
+                                        <span id="summaryAllocated">4 400 000 XAF</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>Avance client</span>
+                                        <span id="summaryAdvance">1 100 000 XAF</span>
+                                    </div>
+                                </div>
+
+                                <!-- Factures Imputées -->
+                                <div style="margin-top: 24px;">
+                                    <h4 style="font-weight: 600; margin-bottom: 12px;">Factures imputées:</h4>
+                                    <div id="allocatedInvoicesList">
+                                        <!-- Loaded dynamically -->
+                                    </div>
+                                </div>
+
+                                <!-- Options -->
+                                <div style="margin-top: 24px; padding: 16px; background: #F9FAFB; border-radius: 8px;">
+                                    <div class="form-check">
+                                        <input type="checkbox" id="printReceipt" checked>
+                                        <label for="printReceipt">Imprimer le reçu après validation</label>
+                                    </div>
+                                    <div class="form-check" style="margin-top: 8px;">
+                                        <input type="checkbox" id="sendEmailReceipt">
+                                        <label for="sendEmailReceipt">Envoyer le reçu par email au client</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="card-footer" style="margin-top: 16px; padding: 16px 0; display: flex; justify-content: space-between;">
+                            <button class="btn btn-secondary" onclick="goToStep(2)">
+                                <i class="fa-solid fa-arrow-left"></i>
+                                Précédent
+                            </button>
+                            <button class="btn btn-success" onclick="confirmEncaissement()">
+                                <i class="fa-solid fa-check"></i>
+                                Valider l'Encaissement
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/encaissement-create.js"></script>
+</body>
+</html>

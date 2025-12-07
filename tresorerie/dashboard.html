@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Trésorerie - MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/tresorerie-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        * { font-family: "Poppins", sans-serif; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+
+        .position-globale {
+            background: linear-gradient(135deg, #263c89 0%, #1a2a5e 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .position-globale .position-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .position-globale .position-title {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .position-globale .position-company {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .position-globale .position-main {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .position-globale .position-amount {
+            font-size: 42px;
+            font-weight: 700;
+        }
+        .position-globale .position-change {
+            font-size: 14px;
+            color: #10B981;
+        }
+        .position-breakdown {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .position-item {
+            text-align: center;
+            padding: 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+        .position-item-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        .position-item-value {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .position-item-percent {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .flux-box {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .flux-box h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #263c89;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .flux-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+        .flux-row.total {
+            font-weight: 700;
+            font-size: 15px;
+            border-top: 1px solid #CBD5E1;
+            padding-top: 12px;
+            margin-top: 8px;
+        }
+        .flux-row .amount.positive { color: #10B981; }
+        .flux-row .amount.negative { color: #EF4444; }
+
+        .kpi-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 13px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .kpi-item:last-child { border-bottom: none; }
+        .kpi-value { font-weight: 600; }
+        .kpi-trend { font-size: 12px; margin-left: 8px; }
+        .kpi-trend.up { color: #10B981; }
+        .kpi-trend.down { color: #EF4444; }
+
+        .alert-section {
+            margin-bottom: 16px;
+        }
+        .alert-section-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .alert-section-title.critical { color: #DC2626; }
+        .alert-section-title.warning { color: #D97706; }
+        .alert-section-title.info { color: #2563EB; }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .alert-item.critical { background: #FEE2E2; }
+        .alert-item.warning { background: #FEF3C7; }
+        .alert-item.info { background: #DBEAFE; }
+        .alert-item .alert-action {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+        }
+        .alert-item.critical .alert-action { background: #DC2626; color: white; }
+        .alert-item.warning .alert-action { background: #D97706; color: white; }
+        .alert-item.info .alert-action { background: #2563EB; color: white; }
+
+        .forecast-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .forecast-table th {
+            background: #F3F4F6;
+            padding: 10px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #6B7280;
+            text-align: left;
+        }
+        .forecast-table td {
+            padding: 10px;
+            font-size: 13px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .forecast-table .status-ok { color: #10B981; }
+        .forecast-table .status-warning { color: #F59E0B; }
+        .forecast-table .status-critical { color: #EF4444; }
+
+        .update-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F1F5F9;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: #64748B;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            <div class="flex-1 flex items-center justify-between px-6">
+                <div class="breadcrumb">
+                    <a href="./dashboard.html">Trésorerie</a>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span>Tableau de Bord</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">6</span>
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean KAMGA</span>
+                        <span class="text-xs text-[#6B7280]">Directeur Financier</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">Module Trésorerie</div>
+                    <a href="./dashboard.html" class="sidebar-link active" data-page="dashboard"><i class="fa-solid fa-chart-pie mr-3"></i><span>Dashboard</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Journaux</div>
+                    <a href="./journals-list.html" class="sidebar-link" data-page="journals-list"><i class="fa-solid fa-book mr-3"></i><span>Liste Journaux</span></a>
+                    <a href="./journal-create.html" class="sidebar-link" data-page="journal-create"><i class="fa-solid fa-plus-circle mr-3"></i><span>Nouveau Journal</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Encaissements</div>
+                    <a href="./encaissement-create.html" class="sidebar-link" data-page="encaissement-create"><i class="fa-solid fa-arrow-down mr-3"></i><span>Nouvel Encaissement</span></a>
+                    <a href="./encaissement-imputation.html" class="sidebar-link" data-page="encaissement-imputation"><i class="fa-solid fa-list-check mr-3"></i><span>Imputation</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Décaissements</div>
+                    <a href="./decaissement-create.html" class="sidebar-link" data-page="decaissement-create"><i class="fa-solid fa-arrow-up mr-3"></i><span>Nouveau Décaissement</span></a>
+                    <a href="./validation-double-signature.html" class="sidebar-link" data-page="validation-double-signature"><i class="fa-solid fa-signature mr-3"></i><span>Double Signature</span><span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">5</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Banque</div>
+                    <a href="./remise-transporteur.html" class="sidebar-link" data-page="remise-transporteur"><i class="fa-solid fa-truck-fast mr-3"></i><span>Remise Transporteur</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">Système</div>
+                    <a href="../index.html" class="sidebar-link" data-page="home"><i class="fa-solid fa-home mr-3"></i><span>Accueil</span></a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="tresorerie-container" style="max-width: none; padding: 24px;">
+
+                    <!-- Update Bar -->
+                    <div class="update-bar">
+                        <span>
+                            <i class="fa-solid fa-clock mr-2"></i>
+                            MAJ: <span id="lastUpdate">29/01/2024 14:45:30</span> (Actualisation auto: 30s)
+                        </span>
+                        <button class="btn btn-secondary btn-sm" onclick="refreshDashboard()">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            Actualiser
+                        </button>
+                    </div>
+
+                    <!-- Position Globale -->
+                    <div class="position-globale">
+                        <div class="position-header">
+                            <div class="position-title">
+                                <i class="fa-solid fa-coins"></i>
+                                POSITION GLOBALE
+                            </div>
+                            <div class="position-company">Groupe IOLA</div>
+                        </div>
+                        <div class="position-main">
+                            <div class="position-amount" id="totalDisponible">127.5M XAF</div>
+                            <div class="position-change">
+                                <i class="fa-solid fa-arrow-up"></i> +2.3% vs hier
+                            </div>
+                        </div>
+                        <div class="position-breakdown">
+                            <div class="position-item">
+                                <div class="position-item-label">DISPONIBLE</div>
+                                <div class="position-item-value">127.5M XAF</div>
+                                <div class="position-item-percent">100%</div>
+                            </div>
+                            <div class="position-item">
+                                <div class="position-item-label">BANQUES</div>
+                                <div class="position-item-value">120.2M XAF</div>
+                                <div class="position-item-percent">94.3%</div>
+                            </div>
+                            <div class="position-item">
+                                <div class="position-item-label">CAISSES</div>
+                                <div class="position-item-value">6.8M XAF</div>
+                                <div class="position-item-percent">5.3%</div>
+                            </div>
+                            <div class="position-item">
+                                <div class="position-item-label">MOBILE MONEY</div>
+                                <div class="position-item-value">456K XAF</div>
+                                <div class="position-item-percent">0.4%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evolution Chart with 7 days -->
+                    <div class="section-card mb-6">
+                        <div class="section-card-header">
+                            <h3><i class="fa-solid fa-chart-line"></i> Évolution 7 derniers jours</h3>
+                        </div>
+                        <div class="section-card-body">
+                            <div style="height: 200px;">
+                                <canvas id="evolutionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flux du Jour + Indicateurs -->
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <!-- Flux du Jour -->
+                        <div class="flux-box">
+                            <h4><i class="fa-solid fa-chart-bar"></i> FLUX DU JOUR</h4>
+                            <div class="flux-row">
+                                <span>ENTRÉES</span>
+                                <span class="amount positive">+12 450 000 XAF</span>
+                            </div>
+                            <div class="flux-row" style="padding-left: 16px; color: #6B7280;">
+                                <span>• Clients</span>
+                                <span>8.5M</span>
+                            </div>
+                            <div class="flux-row" style="padding-left: 16px; color: #6B7280;">
+                                <span>• Avances</span>
+                                <span>2.0M</span>
+                            </div>
+                            <div class="flux-row" style="padding-left: 16px; color: #6B7280;">
+                                <span>• Autres</span>
+                                <span>1.95M</span>
+                            </div>
+                            <div class="flux-row" style="margin-top: 12px;">
+                                <span>SORTIES</span>
+                                <span class="amount negative">-8 230 000 XAF</span>
+                            </div>
+                            <div class="flux-row" style="padding-left: 16px; color: #6B7280;">
+                                <span>• Fournisseurs</span>
+                                <span>5.2M</span>
+                            </div>
+                            <div class="flux-row" style="padding-left: 16px; color: #6B7280;">
+                                <span>• Salaires</span>
+                                <span>2.5M</span>
+                            </div>
+                            <div class="flux-row" style="padding-left: 16px; color: #6B7280;">
+                                <span>• Taxes</span>
+                                <span>0.53M</span>
+                            </div>
+                            <div class="flux-row total">
+                                <span>NET</span>
+                                <span class="amount positive">+4 220 000 XAF ✅</span>
+                            </div>
+                        </div>
+
+                        <!-- Indicateurs Clés -->
+                        <div class="flux-box">
+                            <h4><i class="fa-solid fa-chart-pie"></i> INDICATEURS CLÉS</h4>
+                            <div class="kpi-item">
+                                <span>DSO (Clients)</span>
+                                <span>
+                                    <span class="kpi-value">35 jours</span>
+                                    <span class="kpi-trend down">↘</span>
+                                </span>
+                            </div>
+                            <div class="kpi-item">
+                                <span>DPO (Fournisseurs)</span>
+                                <span>
+                                    <span class="kpi-value">42 jours</span>
+                                    <span class="kpi-trend up">↗</span>
+                                </span>
+                            </div>
+                            <div class="kpi-item">
+                                <span>Cash Cycle</span>
+                                <span>
+                                    <span class="kpi-value">-7 jours</span>
+                                    <span class="kpi-trend" style="color: #10B981;">✅</span>
+                                </span>
+                            </div>
+                            <div class="kpi-item">
+                                <span>Taux encaissement</span>
+                                <span>
+                                    <span class="kpi-value">78%</span>
+                                    <span class="kpi-trend" style="color: #F59E0B;">🟡</span>
+                                </span>
+                            </div>
+                            <div class="kpi-item">
+                                <span>BFR</span>
+                                <span class="kpi-value">-15.2M XAF</span>
+                            </div>
+                            <div class="kpi-item">
+                                <span>Liquidité immédiate</span>
+                                <span class="kpi-value">1.8</span>
+                            </div>
+                            <div class="kpi-item">
+                                <span>Couverture charges</span>
+                                <span class="kpi-value">45 jours</span>
+                            </div>
+                            <div style="text-align: right; margin-top: 12px;">
+                                <a href="#" class="text-sm text-[#263c89] font-semibold">Voir détails →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alertes et Actions -->
+                    <div class="section-card mb-6">
+                        <div class="section-card-header">
+                            <h3><i class="fa-solid fa-exclamation-triangle" style="color: #EF4444;"></i> ALERTES ET ACTIONS REQUISES</h3>
+                            <a href="#" class="text-sm text-[#263c89]">Tout voir →</a>
+                        </div>
+                        <div class="section-card-body">
+                            <!-- Critiques -->
+                            <div class="alert-section">
+                                <div class="alert-section-title critical">
+                                    <span style="width: 10px; height: 10px; background: #DC2626; border-radius: 50%;"></span>
+                                    CRITIQUE (1)
+                                </div>
+                                <div class="alert-item critical">
+                                    <span>• CSH-002 Yaoundé sous seuil critique (1.2M < 2M)</span>
+                                    <button class="alert-action">Alimenter</button>
+                                </div>
+                            </div>
+
+                            <!-- Attention -->
+                            <div class="alert-section">
+                                <div class="alert-section-title warning">
+                                    <span style="width: 10px; height: 10px; background: #D97706; border-radius: 50%;"></span>
+                                    ATTENTION (3)
+                                </div>
+                                <div class="alert-item warning">
+                                    <span>• 5 paiements en attente double signature > 24h</span>
+                                    <button class="alert-action" onclick="location.href='./validation-double-signature.html'">Valider →</button>
+                                </div>
+                                <div class="alert-item warning">
+                                    <span>• Échéance fournisseur 3.5M demain (SUPPLIER TECH)</span>
+                                    <button class="alert-action">Préparer</button>
+                                </div>
+                                <div class="alert-item warning">
+                                    <span>• Rapprochement BNK-002 en retard (5 jours)</span>
+                                    <button class="alert-action">Effectuer</button>
+                                </div>
+                            </div>
+
+                            <!-- Info -->
+                            <div class="alert-section">
+                                <div class="alert-section-title info">
+                                    <span style="width: 10px; height: 10px; background: #2563EB; border-radius: 50%;"></span>
+                                    INFO (2)
+                                </div>
+                                <div class="alert-item info">
+                                    <span>• Virement inter-sociétés programmé 15:00 (2M)</span>
+                                    <span style="color: #10B981; font-weight: 500;">✓</span>
+                                </div>
+                                <div class="alert-item info">
+                                    <span>• Clôture caisse CSH-001 prévue 18:00</span>
+                                    <span>⏰</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prévisions 7 jours -->
+                    <div class="section-card mb-6">
+                        <div class="section-card-header">
+                            <h3><i class="fa-solid fa-calendar-days"></i> PRÉVISIONS 7 PROCHAINS JOURS</h3>
+                        </div>
+                        <div class="section-card-body" style="padding: 0;">
+                            <table class="forecast-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th class="text-right">Entrées prévues</th>
+                                        <th class="text-right">Sorties prévues</th>
+                                        <th class="text-right">Solde prévisionnel</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>30/01</td>
+                                        <td class="text-right text-green-600">15.2M XAF</td>
+                                        <td class="text-right text-red-500">8.5M XAF</td>
+                                        <td class="text-right status-ok font-semibold">134.2M XAF ✅</td>
+                                    </tr>
+                                    <tr>
+                                        <td>31/01</td>
+                                        <td class="text-right text-green-600">8.7M XAF</td>
+                                        <td class="text-right text-red-500">12.3M XAF</td>
+                                        <td class="text-right status-ok font-semibold">130.6M XAF ✅</td>
+                                    </tr>
+                                    <tr>
+                                        <td>01/02</td>
+                                        <td class="text-right text-green-600">22.5M XAF</td>
+                                        <td class="text-right text-red-500">5.2M XAF</td>
+                                        <td class="text-right status-ok font-semibold">147.9M XAF ✅</td>
+                                    </tr>
+                                    <tr style="background: #FEF3C7;">
+                                        <td><strong>02/02</strong></td>
+                                        <td class="text-right text-green-600">3.2M XAF</td>
+                                        <td class="text-right text-red-500">45.0M XAF</td>
+                                        <td class="text-right status-warning font-semibold">106.1M XAF 🟡</td>
+                                    </tr>
+                                    <tr>
+                                        <td>03/02</td>
+                                        <td class="text-right text-green-600">5.8M XAF</td>
+                                        <td class="text-right text-red-500">8.2M XAF</td>
+                                        <td class="text-right status-warning font-semibold">103.7M XAF 🟡</td>
+                                    </tr>
+                                    <tr>
+                                        <td>04/02</td>
+                                        <td class="text-right text-green-600">12.3M XAF</td>
+                                        <td class="text-right text-red-500">3.5M XAF</td>
+                                        <td class="text-right status-ok font-semibold">112.5M XAF ✅</td>
+                                    </tr>
+                                    <tr>
+                                        <td>05/02</td>
+                                        <td class="text-right text-green-600">18.9M XAF</td>
+                                        <td class="text-right text-red-500">15.2M XAF</td>
+                                        <td class="text-right status-ok font-semibold">116.2M XAF ✅</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="p-4 bg-yellow-50 text-sm">
+                                <i class="fa-solid fa-exclamation-triangle text-yellow-600 mr-2"></i>
+                                <strong>Point bas prévu:</strong> 02/02 après paiement salaires (106.1M)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions Footer -->
+                    <div class="flex justify-between items-center p-4 bg-white rounded-lg border border-gray-200">
+                        <div class="flex gap-3">
+                            <button class="btn btn-secondary">
+                                <i class="fa-solid fa-chart-bar"></i>
+                                Rapports
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fa-solid fa-cog"></i>
+                                Paramètres
+                            </button>
+                        </div>
+                        <div class="flex gap-3">
+                            <button class="btn btn-secondary" onclick="exportDashboard()">
+                                <i class="fa-solid fa-file-excel"></i>
+                                Export Excel
+                            </button>
+                            <button class="btn btn-secondary" onclick="window.print()">
+                                <i class="fa-solid fa-print"></i>
+                                Imprimer
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/dashboard.js"></script>
+</body>
+</html>

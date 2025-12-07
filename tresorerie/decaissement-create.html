@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvel Ordre de Décaissement - Trésorerie | MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/tresorerie-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { font-family: "Poppins", sans-serif; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+
+        .document-header {
+            background: linear-gradient(135deg, #263c89 0%, #1a2a5e 100%);
+            color: white;
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .document-header .doc-number {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .document-header .doc-label {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .document-header .doc-date {
+            text-align: right;
+        }
+        .document-header .doc-date-value {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .supplier-search-box {
+            position: relative;
+        }
+        .supplier-search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+        .supplier-search-results.active { display: block; }
+        .supplier-result-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .supplier-result-item:hover { background: #F3F4F6; }
+        .supplier-result-item:last-child { border-bottom: none; }
+
+        .supplier-situation-box {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .supplier-situation-box h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #263c89;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .situation-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .situation-item {
+            text-align: center;
+        }
+        .situation-item-label {
+            font-size: 11px;
+            color: #6B7280;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .situation-item-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+        .situation-item-value.danger { color: #EF4444; }
+        .situation-item-value.success { color: #10B981; }
+
+        .attestation-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .attestation-badge.valid {
+            background: #ECFDF5;
+            color: #059669;
+        }
+        .attestation-badge.expired {
+            background: #FEF2F2;
+            color: #DC2626;
+        }
+
+        .invoices-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .invoices-table th {
+            background: #F3F4F6;
+            padding: 12px;
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #6B7280;
+            font-weight: 600;
+            border-bottom: 2px solid #E5E7EB;
+        }
+        .invoices-table th:first-child {
+            width: 40px;
+            text-align: center;
+        }
+        .invoices-table td {
+            padding: 12px;
+            border-bottom: 1px solid #E5E7EB;
+            font-size: 13px;
+        }
+        .invoices-table td:first-child {
+            text-align: center;
+        }
+        .invoices-table tr:hover {
+            background: #F9FAFB;
+        }
+        .invoices-table .invoice-code {
+            font-weight: 600;
+            color: #263c89;
+        }
+        .invoices-table .bcf-ref {
+            font-size: 11px;
+            color: #6B7280;
+        }
+        .invoices-table .status-echu {
+            color: #EF4444;
+            font-size: 11px;
+        }
+        .invoices-table .amount-input {
+            width: 120px;
+            padding: 6px 10px;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            text-align: right;
+            font-size: 13px;
+        }
+        .invoices-table .amount-input:focus {
+            outline: none;
+            border-color: #263c89;
+        }
+
+        .payment-summary-box {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .payment-summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        .payment-summary-row.separator {
+            border-top: 1px dashed #CBD5E1;
+            margin-top: 8px;
+            padding-top: 16px;
+        }
+        .payment-summary-row.total {
+            font-weight: 700;
+            font-size: 16px;
+            color: #263c89;
+            border-top: 2px solid #263c89;
+            margin-top: 8px;
+            padding-top: 12px;
+        }
+        .payment-summary-row .deduction {
+            color: #EF4444;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-top: 1px solid #E5E7EB;
+            margin-top: 24px;
+        }
+        .action-buttons .left-actions {
+            display: flex;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            <div class="flex-1 flex items-center justify-between px-6">
+                <div class="breadcrumb">
+                    <a href="./dashboard.html">Trésorerie</a>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span>Nouvel Ordre de Décaissement</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean KAMGA</span>
+                        <span class="text-xs text-[#6B7280]">Comptable Fournisseur</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">Module Trésorerie</div>
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard"><i class="fa-solid fa-chart-pie mr-3"></i><span>Dashboard</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Journaux</div>
+                    <a href="./journals-list.html" class="sidebar-link" data-page="journals-list"><i class="fa-solid fa-book mr-3"></i><span>Liste Journaux</span></a>
+                    <a href="./journal-create.html" class="sidebar-link" data-page="journal-create"><i class="fa-solid fa-plus-circle mr-3"></i><span>Nouveau Journal</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Encaissements</div>
+                    <a href="./encaissement-create.html" class="sidebar-link" data-page="encaissement-create"><i class="fa-solid fa-arrow-down mr-3"></i><span>Nouvel Encaissement</span></a>
+                    <a href="./encaissement-imputation.html" class="sidebar-link" data-page="encaissement-imputation"><i class="fa-solid fa-list-check mr-3"></i><span>Imputation</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Décaissements</div>
+                    <a href="./decaissement-create.html" class="sidebar-link active" data-page="decaissement-create"><i class="fa-solid fa-arrow-up mr-3"></i><span>Nouveau Décaissement</span></a>
+                    <a href="./validation-double-signature.html" class="sidebar-link" data-page="validation-double-signature"><i class="fa-solid fa-signature mr-3"></i><span>Double Signature</span><span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">2</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Banque</div>
+                    <a href="./remise-transporteur.html" class="sidebar-link" data-page="remise-transporteur"><i class="fa-solid fa-truck-fast mr-3"></i><span>Remise Transporteur</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">Système</div>
+                    <a href="../index.html" class="sidebar-link" data-page="home"><i class="fa-solid fa-home mr-3"></i><span>Accueil</span></a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="tresorerie-container" style="max-width: 1100px; margin: 0 auto; padding: 24px;">
+
+                    <!-- Document Header -->
+                    <div class="document-header">
+                        <div>
+                            <div class="doc-label">Ordre de Décaissement</div>
+                            <div class="doc-number" id="documentNumber">DEC-2024-00089</div>
+                            <div class="text-sm opacity-80">(Aperçu)</div>
+                        </div>
+                        <div class="doc-date">
+                            <div class="doc-label">Date</div>
+                            <div class="doc-date-value" id="documentDate">29/01/2024</div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Fournisseur Bénéficiaire -->
+                    <div class="section-card">
+                        <div class="section-card-header">
+                            <h3><i class="fa-solid fa-truck-field"></i> FOURNISSEUR BÉNÉFICIAIRE</h3>
+                        </div>
+                        <div class="section-card-body">
+                            <!-- Supplier Search -->
+                            <div class="form-group">
+                                <label class="form-label required">Fournisseur</label>
+                                <div class="supplier-search-box">
+                                    <div class="relative">
+                                        <input type="text" class="form-input" id="supplierSearch"
+                                               placeholder="Rechercher par nom, code ou NUI..."
+                                               oninput="searchSuppliers(this.value)"
+                                               onfocus="showSupplierResults()">
+                                        <i class="fa-solid fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                    </div>
+                                    <div class="supplier-search-results" id="supplierSearchResults"></div>
+                                </div>
+                            </div>
+
+                            <!-- Selected Supplier Info -->
+                            <div id="selectedSupplierSection" style="display: none;">
+                                <div class="alert-box alert-info mb-4">
+                                    <i class="fa-solid fa-building text-xl"></i>
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-3">
+                                            <strong id="supplierName" class="text-lg">SUPPLIER TECH SARL</strong>
+                                            <span class="attestation-badge valid" id="attestationBadge">
+                                                <i class="fa-solid fa-check-circle"></i>
+                                                ANR Valide
+                                            </span>
+                                        </div>
+                                        <div class="text-sm mt-1">
+                                            <span id="supplierCode">SUP-2024-00045</span> |
+                                            NUI: <span id="supplierNUI">P098765432109W</span>
+                                        </div>
+                                        <div class="text-sm">
+                                            Contact: <span id="supplierContact">M. NJOYA Paul</span> |
+                                            <i class="fa-solid fa-phone text-xs"></i> <span id="supplierPhone">677 890 123</span> |
+                                            <i class="fa-solid fa-envelope text-xs"></i> <span id="supplierEmail">contact@suppliertech.cm</span>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-icon" onclick="clearSupplier()" title="Changer">
+                                        <i class="fa-solid fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Supplier Situation Box -->
+                                <div class="supplier-situation-box">
+                                    <h4><i class="fa-solid fa-chart-bar"></i> SITUATION FOURNISSEUR</h4>
+                                    <div class="situation-grid">
+                                        <div class="situation-item">
+                                            <div class="situation-item-label">Encours total</div>
+                                            <div class="situation-item-value" id="supplierEncours">8 750 000 XAF</div>
+                                        </div>
+                                        <div class="situation-item">
+                                            <div class="situation-item-label">Dont échu</div>
+                                            <div class="situation-item-value danger" id="supplierEchu">2 100 000 XAF</div>
+                                        </div>
+                                        <div class="situation-item">
+                                            <div class="situation-item-label">À échoir < 30j</div>
+                                            <div class="situation-item-value" id="supplierAEchoir">3 500 000 XAF</div>
+                                        </div>
+                                        <div class="situation-item">
+                                            <div class="situation-item-label">Attestation ANR</div>
+                                            <div class="situation-item-value success" id="supplierANR">Valide 31/12/2024</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Factures à Payer -->
+                    <div class="section-card" id="invoicesSection" style="display: none;">
+                        <div class="section-card-header">
+                            <h3><i class="fa-solid fa-file-invoice-dollar"></i> FACTURES À PAYER</h3>
+                            <div class="flex items-center gap-3">
+                                <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                    <input type="checkbox" id="autoSelectAll" onchange="toggleAutoSelect()" class="w-4 h-4 accent-[#263c89]">
+                                    <span>Sélection auto</span>
+                                </label>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="refreshInvoices()">
+                                    <i class="fa-solid fa-sync"></i> MAJ
+                                </button>
+                            </div>
+                        </div>
+                        <div class="section-card-body" style="padding: 0;">
+                            <table class="invoices-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="selectAllInvoices" onchange="toggleSelectAllInvoices()"></th>
+                                        <th>N° Facture</th>
+                                        <th>Date</th>
+                                        <th>Échéance</th>
+                                        <th class="text-right">Montant</th>
+                                        <th class="text-right">Payé</th>
+                                        <th class="text-right">Reste</th>
+                                        <th class="text-right">À payer</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invoicesTableBody">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Section: Détails du Paiement -->
+                    <div class="section-card" id="paymentSection" style="display: none;">
+                        <div class="section-card-header">
+                            <h3><i class="fa-solid fa-credit-card"></i> DÉTAILS DU PAIEMENT</h3>
+                        </div>
+                        <div class="section-card-body">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="form-group">
+                                    <label class="form-label required">Journal source</label>
+                                    <select id="sourceJournal" class="form-select" onchange="updateJournalBalance()">
+                                        <option value="">Sélectionner un journal</option>
+                                        <option value="BNK-001" data-balance="85234567">BNK-001 - BICEC Principal</option>
+                                        <option value="BNK-002" data-balance="42500000">BNK-002 - SGBC Opérations</option>
+                                        <option value="CSH-001" data-balance="1500000">CSH-001 - Caisse Principale</option>
+                                    </select>
+                                    <span class="form-help">Solde disponible: <span id="journalBalance" class="font-semibold">-</span></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required">Mode de paiement</label>
+                                    <select id="paymentMethod" class="form-select">
+                                        <option value="">Sélectionner</option>
+                                        <option value="WIRE_TRANSFER">Virement bancaire</option>
+                                        <option value="CHECK">Chèque</option>
+                                        <option value="CASH">Espèces</option>
+                                        <option value="MOBILE_MONEY">Mobile Money</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-6 mt-4">
+                                <div class="form-group">
+                                    <label class="form-label required">Date paiement</label>
+                                    <input type="date" id="paymentDate" class="form-input" value="2024-01-29">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Date exécution</label>
+                                    <input type="date" id="executionDate" class="form-input" value="2024-01-30">
+                                    <span class="form-help">Date effective du débit</span>
+                                </div>
+                            </div>
+
+                            <!-- Payment Summary -->
+                            <div class="payment-summary-box mt-6">
+                                <div class="payment-summary-row">
+                                    <span>Total factures sélectionnées</span>
+                                    <span id="totalInvoices">0 XAF</span>
+                                </div>
+                                <div class="payment-summary-row">
+                                    <span>Escompte obtenu</span>
+                                    <span id="discountAmount">0 XAF</span>
+                                </div>
+                                <div class="payment-summary-row">
+                                    <span>Retenue à la source (1.1%)</span>
+                                    <span class="deduction" id="withholdingTax">-0 XAF</span>
+                                </div>
+                                <div class="payment-summary-row total">
+                                    <span>NET À PAYER</span>
+                                    <span id="netToPay">0 XAF</span>
+                                </div>
+                            </div>
+
+                            <!-- Double Signature Warning -->
+                            <div class="alert-box alert-warning mt-4" id="doubleSignatureAlert" style="display: none;">
+                                <i class="fa-solid fa-signature text-xl"></i>
+                                <div>
+                                    <strong>Double Signature Requise</strong><br>
+                                    Ce montant (> 5 000 000 XAF) nécessite une validation par un second signataire avant exécution.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="action-buttons">
+                        <div class="left-actions">
+                            <button type="button" class="btn btn-secondary" onclick="cancelDecaissement()">
+                                <i class="fa-solid fa-times"></i>
+                                Annuler
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="saveDraft()" id="btnSaveDraft" disabled>
+                                <i class="fa-solid fa-save"></i>
+                                Enregistrer brouillon
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="submitForValidation()" id="btnSubmit" disabled>
+                            <i class="fa-solid fa-paper-plane"></i>
+                            Soumettre validation
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/decaissement-create.js"></script>
+</body>
+</html>

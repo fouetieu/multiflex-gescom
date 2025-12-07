@@ -1,0 +1,1085 @@
+# 📊 **PLAN DE DÉVELOPPEMENT DES ÉCRANS P0 - MODULE TRÉSORERIE**
+
+## 🎯 **VUE D'ENSEMBLE DES USER STORIES P0**
+
+| User Story | Titre | Points | Écrans à développer |
+|------------|-------|--------|-------------------|
+| **US-TRES-001** | Créer et configurer journal | 5 | ECR-TRES-001, ECR-TRES-002 |
+| **US-TRES-002** | Consulter soldes et mouvements | 5 | ECR-TRES-003, ECR-TRES-004 |
+| **US-TRES-003** | Créer bon d'encaissement | 13 | ECR-TRES-005, ECR-TRES-006 |
+| **US-TRES-008** | Ordre décaissement fournisseur | 13 | ECR-TRES-007, ECR-TRES-008 |
+| **US-TRES-014** | Acomptes BC/Transport | 5 | ECR-TRES-009 |
+| **US-TRES-017** | Dashboard temps réel | 10 | ECR-TRES-010 |
+
+**Total : 51 points / 10 écrans prioritaires**
+
+---
+
+## 📦 **LOT 1 : GESTION DES JOURNAUX (2 écrans)**
+
+### **ECR-TRES-001 : CRÉATION/CONFIGURATION JOURNAL**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NOUVEAU JOURNAL DE TRÉSORERIE                    👤 Directeur Financier    │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ [1.Informations*] [2.Paramètres] [3.Sécurité] [4.Validation]         │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 1 : INFORMATIONS GÉNÉRALES                              ✓     ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ IDENTIFICATION                                                       │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Type de journal * : [Compte Bancaire        ▼]                      │  │
+│ │                     ○ Compte Bancaire (BANK_ACCOUNT)                │  │
+│ │                     ○ Caisse (CASH_DESK)                            │  │
+│ │                     ○ Mobile Money (MOBILE_MONEY)                   │  │
+│ │                     ○ Petite Caisse (PETTY_CASH)                   │  │
+│ │                                                                       │  │
+│ │ Code journal * :    [BNK-001_____________] (unique)                 │  │
+│ │ Libellé * :         [Compte BICEC Principal_______________]         │  │
+│ │ Société * :         [IOLA BTP SARL        ▼]                        │  │
+│ │ Devise :            [XAF                  ▼]                        │  │
+│ │ Multi-devises :     ☐ Activer la gestion multi-devises             │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ DÉTAILS BANCAIRES (si type = BANK_ACCOUNT)                          │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Banque * :          [BICEC               ▼]                         │  │
+│ │ Code banque :       [10001_______________]                          │  │
+│ │ Code guichet :      [00050_______________]                          │  │
+│ │ N° compte * :       [12345678901234______]                          │  │
+│ │ IBAN :              [CM21 1000 1000 5012 3456 7890 1234]           │  │
+│ │ Code SWIFT :        [BICECMCX____________]                          │  │
+│ │ Type compte :       [Courant             ▼]                         │  │
+│ │ Titulaire :         [IOLA BTP SARL___________________]              │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ DÉTAILS MOBILE MONEY (si type = MOBILE_MONEY)                       │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Opérateur * :       [Orange Money        ▼]                         │  │
+│ │ N° téléphone * :    [+237 699 123 456____]                         │  │
+│ │ Code marchand :     [OM-IOLA-001_________]                          │  │
+│ │ Nom compte :        [IOLA BTP Mobile Money___________]              │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [Suivant →]                                                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Propriétés du modèle utilisées :**
+```yaml
+Table: cash_journals
+- id (uuid - auto)
+- code (string - unique)
+- name (string)
+- journalType (enum JournalType)
+- owningCompanyId (string - ref MongoDB)
+- currency (string)
+- isMultiCurrency (boolean)
+- bankDetails (jsonb)
+- mobileMoneyDetails (jsonb)
+- status (enum JournalStatus)
+```
+
+### **ECR-TRES-002 : PARAMÈTRES SÉCURITÉ JOURNAL**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NOUVEAU JOURNAL DE TRÉSORERIE                    👤 Directeur Financier    │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 3 : PARAMÈTRES DE SÉCURITÉ                              ⚠️    ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ LIMITES ET SEUILS                                                    │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Solde d'ouverture :       [1,500,000_____] XAF                      │  │
+│ │ Date d'ouverture :        [01/01/2024____] 📅                      │  │
+│ │                                                                       │  │
+│ │ Découvert autorisé :      [5,000,000_____] XAF                      │  │
+│ │                           ⚠️ Nécessite validation DG                 │  │
+│ │                                                                       │  │
+│ │ Seuil d'alerte :          [2,000,000_____] XAF                      │  │
+│ │                           📧 Notification si solde < seuil           │  │
+│ │                                                                       │  │
+│ │ Seuil critique :          [500,000_______] XAF                      │  │
+│ │                           🚨 Alerte urgente + blocage décaissements  │  │
+│ │                                                                       │  │
+│ │ Plafond retrait/jour :    [10,000,000____] XAF                      │  │
+│ │                           Pour type CASH_DESK uniquement            │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ DOUBLE SIGNATURE ÉLECTRONIQUE                                        │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ ☑ Activer la double signature pour ce journal                       │  │
+│ │                                                                       │  │
+│ │ Seuil déclenchement :     [5,000,000_____] XAF                      │  │
+│ │                           Montants ≥ seuil nécessitent 2 signatures │  │
+│ │                                                                       │  │
+│ │ Signataires autorisés :                                             │  │
+│ │ ┌────────────────────────────────────────────────────────────┐      │  │
+│ │ │ Nom                  │ Rôle              │ Email           │      │  │
+│ │ ├──────────────────────┼───────────────────┼─────────────────┤      │  │
+│ │ │ KAMGA Jean-Paul      │ Dir. Financier    │ jp.kamga@...   │ [X]  │  │
+│ │ │ NGONO Sylvie         │ Chef Comptable    │ s.ngono@...    │ [X]  │  │
+│ │ │ MBARGA Pierre        │ Trésorier         │ p.mbarga@...   │ [X]  │  │
+│ │ │ [+ Ajouter signataire]                                      │      │  │
+│ │ └────────────────────────────────────────────────────────────┘      │  │
+│ │                                                                       │  │
+│ │ ⚠️ Minimum 2 signataires requis. Le créateur ne peut pas signer.    │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ STATUT ET ACTIVATION                                                 │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Statut initial :          ● Actif (ACTIVE)                          │  │
+│ │                           ○ Suspendu (SUSPENDED)                    │  │
+│ │                                                                       │  │
+│ │ ☐ Définir comme journal par défaut pour ce type                     │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [← Précédent] [Enregistrer en brouillon] [✅ CRÉER LE JOURNAL]            │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Propriétés du modèle utilisées :**
+```yaml
+Table: cash_journals
+- openingBalance (decimal)
+- openingDate (date)
+- securitySettings (jsonb):
+  - overdraftAuthorized
+  - alertThreshold
+  - criticalThreshold
+  - dailyWithdrawLimit
+  - dualSignatureThreshold
+  - dualSignatureRequired
+  - authorizedSigners[]
+- status (enum)
+- isDefault (boolean)
+```
+
+---
+
+## 📦 **LOT 2 : CONSULTATION ET MOUVEMENTS (2 écrans)**
+
+### **ECR-TRES-003 : LISTE DES JOURNAUX ET SOLDES**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ JOURNAUX DE TRÉSORERIE                           👤 Trésorier              │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ 💰 POSITION GLOBALE   Disponible: 125,450,000 XAF                   │  │
+│ │                       Banques: 120M | Caisses: 5M | Mobile: 450K    │  │
+│ │                       Dernière MAJ: 29/01/2024 14:35 (temps réel)   │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ FILTRES                                                                     │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ Société: [Toutes      ▼] Type: [Tous     ▼] Statut: [Actifs    ▼]   │  │
+│ │ [+ Nouveau Journal] [📊 Dashboard] [📥 Export Excel] [🔄 Actualiser] │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ LISTE DES JOURNAUX                                                         │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │Code    │Libellé           │Type│Société│Solde        │État│Actions   │  │
+│ ├────────┼──────────────────┼────┼───────┼─────────────┼────┼──────────┤  │
+│ │BNK-001 │BICEC Principal   │🏦  │IOLA   │ 85,234,567  │🟢  │[→][⚙️][📊]│  │
+│ │        │N°: ***1234       │    │BTP    │    XAF      │    │          │  │
+│ │        │                  │    │       │Disp: 80.2M  │    │          │  │
+│ │        │                  │    │       │             │    │          │  │
+│ │BNK-002 │SCB Compte USD    │🏦  │IOLA   │    125,450  │🟢  │[→][⚙️][📊]│  │
+│ │        │N°: ***5678       │    │BTP    │    USD      │    │          │  │
+│ │        │Multi-devises     │    │       │~82M XAF     │    │          │  │
+│ │        │                  │    │       │             │    │          │  │
+│ │CSH-001 │Caisse Douala     │💵  │IOLA   │  3,456,789  │🟢  │[→][⚙️][📊]│  │
+│ │        │Resp: M. FOTSO    │    │BTP    │    XAF      │    │          │  │
+│ │        │                  │    │       │Limite: 5M   │    │          │  │
+│ │        │                  │    │       │             │    │          │  │
+│ │CSH-002 │Caisse Yaoundé    │💵  │IOLA   │  1,234,567  │🟡  │[→][⚙️][📊]│  │
+│ │        │Resp: Mme NGONO   │    │BTP    │    XAF      │⚠️   │          │  │
+│ │        │                  │    │       │< Seuil 2M   │    │          │  │
+│ │        │                  │    │       │             │    │          │  │
+│ │MOB-001 │Orange Money      │📱  │IOLA   │    456,789  │🟢  │[→][⚙️][📊]│  │
+│ │        │699 123 456       │    │BTP    │    XAF      │    │          │  │
+│ │        │                  │    │       │             │    │          │  │
+│ │BNK-003 │UBA Découvert     │🏦  │IOLA   │ -2,345,678  │🔴  │[→][⚙️][📊]│  │
+│ │        │N°: ***9012       │    │INDUS  │    XAF      │!   │          │  │
+│ │        │                  │    │       │Découv: -5M  │    │          │  │
+│ └────────┴──────────────────┴────┴───────┴─────────────┴────┴──────────┘  │
+│                                                                              │
+│ LÉGENDE                                                                     │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ 🟢 Normal | 🟡 Attention (proche seuil) | 🔴 Critique | ⚠️ À surveiller│  │
+│ │ 🏦 Banque | 💵 Caisse | 📱 Mobile Money | 💳 Carte                    │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Propriétés du modèle utilisées :**
+```yaml
+Table: cash_journals
+- code, name, journalType
+- owningCompanyName
+- currentBalance
+- balanceDetails (bookBalance, availableBalance)
+- securitySettings (alertThreshold, criticalThreshold)
+- status
+- lastActivityDate
+```
+
+### **ECR-TRES-004 : DÉTAIL JOURNAL ET MOUVEMENTS**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ JOURNAL : BNK-001 - BICEC PRINCIPAL              👤 Trésorier              │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ [Vue d'ensemble] [Mouvements] [Rapprochement] [Statistiques]         │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 1 : VUE D'ENSEMBLE                                      ✓     ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ INFORMATIONS DU JOURNAL                                              │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │ ┌────────────────────────┬─────────────────────────────────┐        │  │
+│ │ │ 🏦 Type               │ Compte Bancaire (BANK_ACCOUNT) │        │  │
+│ │ │ 📋 Code               │ BNK-001                        │        │  │
+│ │ │ 🏢 Société            │ IOLA BTP SARL                  │        │  │
+│ │ │ 💱 Devise             │ XAF                            │        │  │
+│ │ │ 🔄 Multi-devises      │ Non activé                     │        │  │
+│ │ │ 📅 Date ouverture     │ 01/01/2024                     │        │  │
+│ │ │ ✅ Statut             │ ACTIF                          │        │  │
+│ │ └────────────────────────┴─────────────────────────────────┘        │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ DÉTAILS BANCAIRES                                                    │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │ Banque :          BICEC (Banque Internationale du Cameroun)         │  │
+│ │ N° Compte :       12345678901234                                    │  │
+│ │ IBAN :            CM21 1000 1000 5012 3456 7890 1234              │  │
+│ │ Code SWIFT :      BICECMCX                                          │  │
+│ │ Titulaire :       IOLA BTP SARL                                    │  │
+│ │ Type compte :     Compte Courant                                    │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌────────────────────────────────┬──────────────────────────────────────┐ │
+│ │ 💰 SOLDES ET POSITIONS         │ 🎯 PARAMÈTRES DE SÉCURITÉ          │ │
+│ ├────────────────────────────────┼──────────────────────────────────────┤ │
+│ │                                │                                      │ │
+│ │ Solde comptable : 85,234,567   │ Découvert autorisé : 5,000,000 XAF  │ │
+│ │ Solde bancaire :  85,100,000   │ Seuil alerte :       2,000,000 XAF  │ │
+│ │ Écart :              134,567   │ Seuil critique :       500,000 XAF  │ │
+│ │ Disponible :      85,234,567   │ Double signature :   5,000,000 XAF  │ │
+│ │                                │ Plafond jour :      10,000,000 XAF  │ │
+│ │ [Graphique jauge position]     │                                      │ │
+│ │  ████████████░░░░ 85%         │ Signataires : 3 personnes           │ │
+│ │  Position saine 🟢            │ [Voir liste →]                       │ │
+│ └────────────────────────────────┴──────────────────────────────────────┘ │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ACTIVITÉ RÉCENTE (10 dernières opérations)        [Voir tout →]      │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │ 29/01 14:35 │ +5,500,000 │ Encaissement SONACOM (ENC-2024-00234)   │  │
+│ │ 29/01 10:15 │ -3,200,000 │ Paiement SUPPLIER TECH (DEC-2024-00089)│  │
+│ │ 28/01 16:20 │-10,000,000 │ Alimentation caisse Douala              │  │
+│ │ 28/01 08:00 │    -15,000 │ Frais bancaires mensuels                │  │
+│ │ 27/01 15:45 │ +2,350,000 │ Encaissement CLIENT ABC                 │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [Modifier paramètres] [Nouveau mouvement] [Export PDF] [Actualiser]  
+│                                                                              │
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET MOUVEMENTS                                                    ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ FILTRES                                                                     │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ Période: [Ce mois    ▼] Du [01/01/24] Au [29/01/24]                │  │
+│ │ Type: [Tous         ▼] Statut: [Validés ▼] Montant: [____] à [____]│  │
+│ │ Recherche: [N° transaction, référence, partenaire...] 🔍            │  │
+│ │                                    [Filtrer] [Réinitialiser] [Export]│  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ MOUVEMENTS DU JOURNAL                                                      │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │Date/Heure│N° Transaction│Type│Partenaire│Libellé│Débit│Crédit│Solde │  │
+│ ├──────────┼──────────────┼────┼──────────┼───────┼─────┼──────┼──────┤  │
+│ │29/01/24  │TRX-2024-     │ENC │SONACOM   │Règl.  │     │5.5M  │85.2M │  │
+│ │14:35     │00567         │    │SARL      │FA-567 │     │      │      │  │
+│ │          │ENC-2024-00234│    │          │Virem. │     │      │      │  │
+│ │          │              │    │          │       │     │      │      │  │
+│ │29/01/24  │TRX-2024-     │DEC │SUPPLIER  │Paie.  │3.2M │     │79.7M │  │
+│ │10:15     │00566         │    │TECH      │FF-123 │     │      │      │  │
+│ │          │DEC-2024-00089│    │          │       │     │      │      │  │
+│ │          │              │    │          │       │     │      │      │  │
+│ │28/01/24  │TRX-2024-     │VIR │CSH-001   │Alim.  │10M  │     │82.9M │  │
+│ │16:20     │00565         │    │Caisse DLA│caisse │     │      │      │  │
+│ │          │VIR-2024-00045│    │          │       │     │      │      │  │
+│ │          │              │    │          │       │     │      │      │  │
+│ │28/01/24  │TRX-2024-     │FEE │-         │Frais  │15K  │     │92.9M │  │
+│ │08:00     │00564         │    │          │banc.  │     │      │      │  │
+│ │          │Auto          │    │          │mensuel│     │      │      │  │
+│ └──────────┴──────────────┴────┴──────────┴───────┴─────┴──────┴──────┘  │
+│                                                                              │
+│ TOTAUX PÉRIODE                                                             │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ Total Débits: 45,678,900 XAF | Total Crédits: 67,890,123 XAF        │  │
+│ │ Solde début: 63,023,344 XAF  | Solde fin: 85,234,567 XAF           │  │
+│ │ Nombre opérations: 127       | Solde moyen: 74,128,955 XAF          │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [◀ Page 1/13 ▶]  Affichage 1-10 sur 127 mouvements                       │
+
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 3 : RAPPROCHEMENT BANCAIRE                              ⚠️    ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ÉTAT DU RAPPROCHEMENT                                                │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Dernier rapprochement :     25/01/2024 (il y a 4 jours)             │  │
+│ │ Période rapprochée :        01/01/2024 - 25/01/2024                 │  │
+│ │ Prochain rapprochement :    31/01/2024 (dans 2 jours)               │  │
+│ │                                                                       │  │
+│ │ ┌─────────────────────────────────────────────────────────────┐     │  │
+│ │ │ Solde système au 25/01 :           78,456,789 XAF          │     │  │
+│ │ │ Solde relevé bancaire :            78,322,222 XAF          │     │  │
+│ │ │ Écart à justifier :                   134,567 XAF ⚠️       │     │  │
+│ │ └─────────────────────────────────────────────────────────────┘     │  │
+│ │                                                                       │  │
+│ │ [Importer relevé] [Nouveau rapprochement] [Voir historique]         │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ OPÉRATIONS NON RAPPROCHÉES                                           │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Dans le système (4 opérations) :                                    │  │
+│ │ ┌────────────┬──────────────────┬────────────┬─────────────┐       │  │
+│ │ │ Date       │ Référence        │ Montant    │ Statut      │       │  │
+│ │ ├────────────┼──────────────────┼────────────┼─────────────┤       │  │
+│ │ │ 26/01/2024 │ TRX-2024-00561   │  +450,000  │ En transit  │       │  │
+│ │ │ 27/01/2024 │ TRX-2024-00562   │  -123,456  │ Non présenté│       │  │
+│ │ │ 28/01/2024 │ TRX-2024-00563   │ +2,350,000 │ En transit  │       │  │
+│ │ │ 29/01/2024 │ TRX-2024-00567   │ +5,500,000 │ J+1 attendu │       │  │
+│ │ └────────────┴──────────────────┴────────────┴─────────────┘       │  │
+│ │                                                                       │  │
+│ │ Sur le relevé bancaire (2 opérations) :                             │  │
+│ │ ┌────────────┬──────────────────┬────────────┬─────────────┐       │  │
+│ │ │ Date       │ Libellé bancaire │ Montant    │ Action      │       │  │
+│ │ ├────────────┼──────────────────┼────────────┼─────────────┤       │  │
+│ │ │ 24/01/2024 │ FRAIS SWIFT      │    -15,000 │ [Imputer]   │       │  │
+│ │ │ 25/01/2024 │ VIR CLIENT XYZ   │ +1,234,567 │ [Identifier]│       │  │
+│ │ └────────────┴──────────────────┴────────────┴─────────────┘       │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ HISTORIQUE DES RAPPROCHEMENTS                                        │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Session │ Période      │ Lignes │ Taux  │ Écart │ Validé par        │  │
+│ │─────────┼──────────────┼────────┼───────┼───────┼──────────────────│  │
+│ │ RAP-089 │ Jan 2024     │ 245/250│ 98%   │    0  │ M. NGONO - 25/01 │  │
+│ │ RAP-088 │ Dec 2023     │ 312/315│ 99%   │ +234  │ M. NGONO - 28/12 │  │
+│ │ RAP-087 │ Nov 2023     │ 289/289│ 100%  │    0  │ M. NGONO - 30/11 │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 4 : STATISTIQUES                                        📊    ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ PÉRIODE D'ANALYSE : [Ce mois ▼] Du [01/01/24] Au [29/01/24] [Appliquer]   │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ÉVOLUTION DU SOLDE                                                   │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ 100M ┤                                           ╭────────           │  │
+│ │  90M ┤                              ╭────────────╯                    │  │
+│ │  80M ┤            ╭─────────────────╯                                 │  │
+│ │  70M ┤      ╭─────╯                                                   │  │
+│ │  60M ┤──────╯                                                         │  │
+│ │  50M ┤                                                                │  │
+│ │      └──┬────┬────┬────┬────┬────┬────┬────┬────┬────┬──            │  │
+│ │        1/1   5/1  10/1  15/1  20/1  25/1  29/1                      │  │
+│ │                                                                       │  │
+│ │ Solde min : 58,234,567 XAF (03/01)  | Solde max : 95,456,789 (22/01)│  │
+│ │ Solde moyen : 74,345,678 XAF        | Variation : +27,000,000 (+46%)│  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌────────────────────────────────┬──────────────────────────────────────┐ │
+│ │ RÉPARTITION PAR TYPE           │ TOP 5 PARTENAIRES                   │ │
+│ ├────────────────────────────────┼──────────────────────────────────────┤ │
+│ │                                │                                      │ │
+│ │ [Graphique camembert]          │ Encaissements :                      │ │
+│ │                                │ 1. SONACOM :        12,500,000 XAF  │ │
+│ │ Encaissements : 67%            │ 2. CLIENT ABC :      8,750,000 XAF  │ │
+│ │ ████████████████               │ 3. XYZ SARL :        6,230,000 XAF  │ │
+│ │                                │ 4. TECH CORP :       5,100,000 XAF  │ │
+│ │ Décaissements : 28%            │ 5. BUILD CO :        4,560,000 XAF  │ │
+│ │ ███████                        │                                      │ │
+│ │                                │ Décaissements :                      │ │
+│ │ Virements : 5%                 │ 1. SUPPLIER TECH :   8,900,000 XAF  │ │
+│ │ █                              │ 2. FOURNISSEUR X :   6,450,000 XAF  │ │
+│ │                                │ 3. SALAIRES :        5,200,000 XAF  │ │
+│ │ Total mouvements : 234         │ 4. TAXES DGI :       3,100,000 XAF  │ │
+│ └────────────────────────────────┼──────────────────────────────────────┘ │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ANALYSE DES FLUX                                                     │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Flux entrants/sortants par semaine :                                │  │
+│ │                                                                       │  │
+│ │        Entrées █████  Sorties ░░░░░                                 │  │
+│ │ S1  :  ████████████░░░░░░░    45M vs 23M  (+22M)                    │  │
+│ │ S2  :  ██████████░░░░░░░░░    38M vs 31M  (+7M)                     │  │
+│ │ S3  :  ████████████████░░░    52M vs 18M  (+34M)                    │  │
+│ │ S4  :  ██████░░░░░░░░░░░░░    28M vs 42M  (-14M)                    │  │
+│ │                                                                       │  │
+│ │ Total entrées : 163,000,000 XAF | Total sorties : 114,000,000 XAF   │  │
+│ │ Flux net :      +49,000,000 XAF | Rotation :      2.8x/mois         │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ INDICATEURS CLÉS                                                     │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ • Nombre total opérations :        234 (↗ +12% vs mois précédent)   │  │
+│ │ • Transaction moyenne :             697,435 XAF                      │  │
+│ │ • Plus grosse entrée :              15,500,000 XAF (15/01)          │  │
+│ │ • Plus grosse sortie :              10,000,000 XAF (28/01)          │  │
+│ │ • Jours sans mouvement :            2 (weekends)                     │  │
+│ │ • Taux utilisation découvert :      0% (jamais utilisé)              │  │
+│ │ • Respect seuil alerte :            100% (toujours > 2M)             │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [📥 Export Excel] [📊 Plus de graphiques] [🖨️ Imprimer rapport]  
+└─────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+**Propriétés du modèle utilisées :**
+```yaml
+cash_journals:
+- Toutes les propriétés de base
+- bankDetails (complet)
+- balanceDetails (bookBalance, bankBalance, availableBalance)
+- securitySettings (tous les seuils)
+- status, openingDate
+
+
+Table: payment_transactions
+- transactionNumber, documentNumber
+- transactionType, transactionSubtype
+- partner (partnerId, partnerName)
+- amount, transactionDate
+- description
+- status
+- sourceJournalId (pour débits)
+- destinationJournalId (pour crédits)
+
+bank_reconciliations:
+- reconciliationNumber
+- journalId
+- bankStatementBalance, systemBalance, difference
+- reconciledLines[], unreconciledSystemLines[]
+- status, validatedBy, validatedAt
+
+payment_transactions.reconciliation:
+- isReconciled
+- reconciliationDate
+- bankStatementRef
+```
+
+---
+
+## 📦 **LOT 3 : ENCAISSEMENTS CLIENTS (2 écrans)**
+
+### **ECR-TRES-005 : CRÉATION BON D'ENCAISSEMENT (PARTIE 1)**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NOUVEAU BON D'ENCAISSEMENT                       👤 Assistant Trésorerie   │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ N° Document: ENC-2024-00235 (Aperçu)             Date: 29/01/2024          │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ [1.En-tête*] [2.Imputation] [3.Validation]                           │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 1 : EN-TÊTE ENCAISSEMENT                                ✓     ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ CLIENT PAYEUR                                                        │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Client * :          [SONACOM SARL________]🔍                        │  │
+│ │                     CLI-2024-00156 | NUI: P087201234567W            │  │
+│ │                     Contact: M. FOTSO Pierre                        │  │
+│ │                     ☎️ 699 123 456 | 📧 p.fotso@sonacom.cm          │  │
+│ │                                                                       │  │
+│ │ ┌─────────────────────────────────────────────────────────────┐     │  │
+│ │ │ 💰 SITUATION CLIENT                                         │     │  │
+│ │ │ Encours total:     15,450,000 XAF                          │     │  │
+│ │ │ Dont échu:          3,200,000 XAF (3 factures)            │     │  │
+│ │ │ Plus ancien:        45 jours (FA-2024-00123)              │     │  │
+│ │ └─────────────────────────────────────────────────────────────┘     │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ DÉTAILS DU PAIEMENT                                                  │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Date encaissement : [29/01/2024_____] 📅                            │  │
+│ │ Date valeur :       [30/01/2024_____] 📅 (date crédit effectif)     │  │
+│ │                                                                       │  │
+│ │ Mode de paiement * : [Virement bancaire    ▼]                       │  │
+│ │                      ○ Espèces (limite 100K XAF)                    │  │
+│ │                      ● Virement bancaire                             │  │
+│ │                      ○ Chèque                                       │  │
+│ │                      ○ Mobile Money                                 │  │
+│ │                                                                       │  │
+│ │ Journal destination : [BNK-001 - BICEC Principal  ▼]                │  │
+│ │                       Solde actuel: 85,234,567 XAF                  │  │
+│ │                                                                       │  │
+│ │ Montant reçu * :      [5,500,000________] XAF                       │  │
+│ │                                                                       │  │
+│ │ Référence paiement :  [VIR-SONACOM-29012024___________]             │  │
+│ │ Description :         [Règlement factures janvier 2024_____]        │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ DÉTAILS VIREMENT (si mode = WIRE_TRANSFER)                          │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Banque émettrice :    [SCB Cameroun_______________]                 │  │
+│ │ N° compte émetteur :  [0012345678901______________]                 │  │
+│ │ Référence bancaire :  [REF-SCB-2024-00789_________]                 │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [Annuler] [Enregistrer brouillon] [Suivant →]                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Propriétés du modèle utilisées :**
+```yaml
+Tables:
+customer_receipts:
+- receiptNumber (auto-généré)
+- customerId, customerCode, customerName
+- totalAmount
+- receiptDate
+
+payment_transactions:
+- transactionType: RECEIPT
+- partner (customerId, customerName)
+- amount
+- transactionDate, valueDate
+- paymentMethod
+- paymentMethodDetails.wireDetails
+- destinationJournalId
+- reference, description
+
+Requêtes agrégées sur payment_transactions:
+- COUNT(*) par transactionType
+- SUM(amount) par période
+- AVG(amount), MIN(amount), MAX(amount)
+- GROUP BY partner, transactionType
+- Calculs de flux nets
+
+cash_journals:
+- balanceDetails pour évolution
+- securitySettings pour analyse respect seuils
+```
+
+### **ECR-TRES-006 : IMPUTATION ENCAISSEMENT**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NOUVEAU BON D'ENCAISSEMENT                       👤 Assistant Trésorerie   │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ╔══════════════════════════════════════════════════════════════════════╗  │
+│ ║ ONGLET 2 : IMPUTATION DU PAIEMENT                              ⚠️    ║  │
+│ ╚══════════════════════════════════════════════════════════════════════╝  │
+│                                                                              │
+│ Montant à imputer : 5,500,000 XAF                                         │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ FACTURES À LETTRER                            [☑ Auto FIFO] [↻ MAJ] │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │☑│N° Facture │Date    │Échéance│Original │Payé    │Reste   │À payer │  │
+│ │─┼───────────┼────────┼────────┼─────────┼────────┼────────┼────────┤  │
+│ │☑│FA-2024-   │15/12/23│14/01/24│2,500,000│     0  │2,500,000│2,500,000│ │
+│ │ │00123      │        │Échu 45j│         │        │        │[_______]│ │
+│ │ │           │        │        │         │        │        │        │  │
+│ │☑│FA-2024-   │20/12/23│19/01/24│  700,000│     0  │  700,000│  700,000│ │
+│ │ │00145      │        │Échu 40j│         │        │        │[_______]│ │
+│ │ │           │        │        │         │        │        │        │  │
+│ │☑│FA-2024-   │28/12/23│27/01/24│1,800,000│500,000│1,300,000│1,300,000│ │
+│ │ │00189      │        │Échu 2j │         │        │        │[_______]│ │
+│ │ │           │        │Partiel │         │        │        │        │  │
+│ │☐│FA-2024-   │10/01/24│09/02/24│3,200,000│     0  │3,200,000│       0│  │
+│ │ │00234      │        │Non échu│         │        │        │[_______]│ │
+│ │ │           │        │        │         │        │        │        │  │
+│ │☐│FA-2024-   │15/01/24│14/02/24│5,000,000│     0  │5,000,000│       0│  │
+│ │ │00256      │        │Non échu│         │        │Escompte│        │  │
+│ │ │           │        │2% si <10j        │        │possible│        │  │
+│ └─┴───────────┴────────┴────────┴─────────┴────────┴────────┴────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ CALCUL AUTOMATIQUE                                                   │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Total factures sélectionnées :    4,500,000 XAF                     │  │
+│ │ Escompte accordé (2% FA-00256) :   -100,000 XAF                     │  │
+│ │ ─────────────────────────────────────────────                        │  │
+│ │ Total imputé :                     4,400,000 XAF                     │  │
+│ │ Montant reçu :                     5,500,000 XAF                     │  │
+│ │ ─────────────────────────────────────────────                        │  │
+│ │ Solde non affecté (avance) :       1,100,000 XAF                     │  │
+│ │                                                                       │  │
+│ │ Code lettrage : LTR-2024-00567 (généré automatiquement)             │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ TRAITEMENT DU SOLDE NON AFFECTÉ                                      │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ ● Conserver comme avance client (crédit compte client)               │  │
+│ │ ○ Imputer sur commande en cours : [________________] 🔍             │  │
+│ │ ○ Rembourser au client (générer ordre de paiement)                  │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [← Précédent] [Enregistrer brouillon] [Valider →]                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Propriétés du modèle utilisées :**
+```yaml
+payment_transactions.imputations[]:
+- documentType: INVOICE
+- documentId, documentNumber
+- originalAmount
+- imputedAmount
+- remainingAmount  
+- discount
+- lettrageCode
+
+customer_receipts:
+- allocatedAmount (4,400,000)
+- advanceAmount (1,100,000)
+
+customer_advances (si avance):
+- advanceType: ADVANCE
+- originalAmount: 1,100,000
+- customerId
+```
+
+---
+
+## 📦 **LOT 4 : DÉCAISSEMENTS FOURNISSEURS (2 écrans)**
+
+### **ECR-TRES-007 : CRÉATION ORDRE DÉCAISSEMENT**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NOUVEL ORDRE DE DÉCAISSEMENT                     👤 Comptable Fournisseur  │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ N° Document: DEC-2024-00089 (Aperçu)             Date: 29/01/2024          │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ FOURNISSEUR BÉNÉFICIAIRE                                             │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Fournisseur * :     [SUPPLIER TECH_______]🔍                        │  │
+│ │                     SUP-2024-00045 | NUI: P098765432109W            │  │
+│ │                     Contact: M. NJOYA Paul                          │  │
+│ │                     ☎️ 677 890 123 | 📧 contact@suppliertech.cm      │  │
+│ │                                                                       │  │
+│ │ ┌─────────────────────────────────────────────────────────────┐     │  │
+│ │ │ 📊 SITUATION FOURNISSEUR                                     │     │  │
+│ │ │ Encours total:      8,750,000 XAF                           │     │  │
+│ │ │ Dont échu:          2,100,000 XAF (2 factures)             │     │  │
+│ │ │ À échoir < 30j:     3,500,000 XAF                           │     │  │
+│ │ │ Attestation ANR:    ✅ Valide jusqu'au 31/12/2024          │     │  │
+│ │ └─────────────────────────────────────────────────────────────┘     │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ FACTURES À PAYER                              [☑ Sélection auto]    │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │☑│N° Facture │Date    │Échéance│Montant  │Payé    │Reste   │À payer │  │
+│ │─┼───────────┼────────┼────────┼─────────┼────────┼────────┼────────┤  │
+│ │☑│FF-2024-   │10/01/24│09/02/24│1,500,000│     0  │1,500,000│1,500,000│ │
+│ │ │00234      │        │Non échu│         │        │        │        │  │
+│ │ │BCF-00456  │        │        │         │        │        │        │  │
+│ │☑│FF-2024-   │15/01/24│14/02/24│  600,000│     0  │  600,000│  600,000│ │
+│ │ │00267      │        │Non échu│         │        │        │        │  │
+│ │ │BCF-00489  │        │        │         │        │        │        │  │
+│ │☐│FF-2024-   │20/01/24│19/02/24│2,400,000│     0  │2,400,000│       0│  │
+│ │ │00289      │        │Non échu│         │        │        │        │  │
+│ │ │BCF-00512  │        │        │         │        │        │        │  │
+│ └─┴───────────┴────────┴────────┴─────────┴────────┴────────┴────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ DÉTAILS DU PAIEMENT                                                  │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Journal source * :    [BNK-001 - BICEC Principal  ▼]                │  │
+│ │                       Solde disponible: 85,234,567 XAF              │  │
+│ │                                                                       │  │
+│ │ Mode paiement * :     [Virement bancaire     ▼]                     │  │
+│ │                                                                       │  │
+│ │ Total factures :        2,100,000 XAF                               │  │
+│ │ Escompte obtenu :              0 XAF                                │  │
+│ │ Retenue source (1.1%) :  -23,100 XAF                                │  │
+│ │ ─────────────────────────────────────                                │  │
+│ │ NET À PAYER :           2,076,900 XAF                               │  │
+│ │                                                                       │  │
+│ │ Date paiement :       [29/01/2024_____] 📅                          │  │
+│ │ Date exécution :      [30/01/2024_____] 📅                          │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [Annuler] [Enregistrer brouillon] [Soumettre validation →]                │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Propriétés du modèle utilisées :**
+```yaml
+supplier_payments:
+- paymentNumber
+- supplierId, supplierCode, supplierName
+- totalAmount, invoicesAmount
+- withholdingTax
+- paymentDate, dueDate
+- journalId
+- status: DRAFT
+
+payment_transactions:
+- transactionType: PAYMENT
+- sourceJournalId (débit)
+- partner (supplierId)
+- amount
+- paymentMethod
+```
+
+### **ECR-TRES-008 : VALIDATION DOUBLE SIGNATURE**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ VALIDATION ORDRE DE DÉCAISSEMENT                 👤 Directeur Financier    │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ⚠️ DOUBLE SIGNATURE REQUISE - Montant > 5,000,000 XAF                     │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ORDRE À VALIDER : DEC-2024-00089                                     │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Créé par :          Marie NGONO (Comptable)                         │  │
+│ │ Date création :     29/01/2024 10:35                                │  │
+│ │ Fournisseur :       SUPPLIER TECH SARL                              │  │
+│ │ Montant :           2,076,900 XAF                                   │  │
+│ │ Mode :              Virement bancaire                               │  │
+│ │ Journal :           BNK-001 - BICEC Principal                       │  │
+│ │                                                                       │  │
+│ │ ┌────────────────────────────────────────────────────────────────┐  │  │
+│ │ │ DÉTAIL DES FACTURES                                            │  │  │
+│ │ │ FF-2024-00234 : 1,500,000 XAF (BCF-00456)                     │  │  │
+│ │ │ FF-2024-00267 :   600,000 XAF (BCF-00489)                     │  │  │
+│ │ │ Retenue source :  -23,100 XAF                                 │  │  │
+│ │ └────────────────────────────────────────────────────────────────┘  │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ WORKFLOW DE VALIDATION                                               │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Étape 1/2 : PREMIÈRE SIGNATURE                                       │  │
+│ │ ┌────────────────────────────────────────────────────────────────┐  │  │
+│ │ │ ⏳ En attente                                                   │  │  │
+│ │ │ Signataires autorisés : JP. KAMGA, S. NGONO, P. MBARGA        │  │  │
+│ │ │ Délai : 48h avant escalade automatique                         │  │  │
+│ │ └────────────────────────────────────────────────────────────────┘  │  │
+│ │                                                                       │  │
+│ │ Étape 2/2 : DEUXIÈME SIGNATURE                                       │  │
+│ │ ┌────────────────────────────────────────────────────────────────┐  │  │
+│ │ │ ⏸️ En attente première signature                                │  │  │
+│ │ │ Signataires : Différent du premier signataire                  │  │  │
+│ │ └────────────────────────────────────────────────────────────────┘  │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ DOCUMENTS JOINTS                                           [Tout voir]│  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ 📎 Facture_FF-2024-00234.pdf (234 KB)                   [👁️ Voir]    │  │
+│ │ 📎 Facture_FF-2024-00267.pdf (189 KB)                   [👁️ Voir]    │  │
+│ │ 📎 BCF-00456.pdf (156 KB)                                [👁️ Voir]    │  │
+│ │ 📎 BCF-00489.pdf (145 KB)                                [👁️ Voir]    │  │
+│ │ 📎 Attestation_ANR_SupplierTech.pdf (89 KB)             [👁️ Voir]    │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ DÉCISION                                                             │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Commentaire :                                                        │  │
+│ │ [________________________________________________]                   │  │
+│ │ [________________________________________________]                   │  │
+│ │                                                                       │  │
+│ │ [❌ REJETER]              [✅ APPROUVER ET SIGNER]                    │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Propriétés du modèle utilisées :**
+```yaml
+payment_transactions.validationWorkflow:
+- requiresDualSignature: true
+- signatures[]:
+  - signerId, signerName, signerRole
+  - signatureDate
+  - signatureStatus: PENDING/APPROVED
+  - comments
+- currentStep: FIRST_SIGNATURE
+
+supplier_payments:
+- status: APPROVED (après signatures)
+```
+
+---
+
+## 📦 **LOT 5 : ACOMPTES ET DASHBOARD (2 écrans)**
+
+### **ECR-TRES-009 : GESTION ACOMPTE TRANSPORT**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ACOMPTE TRANSPORT SUBVENTIONNÉ                   👤 Agent Commercial       │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ BON DE COMMANDE : BC-CLI156-2024-00234                               │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Client :            SONACOM SARL                                    │  │
+│ │ Montant BC :        15,450,000 XAF                                  │  │
+│ │ Transport :         ☑ Subventionné                                   │  │
+│ │ Transporteur :      KAMGA LOGISTICS                                 │  │
+│ │                                                                       │  │
+│ │ ┌─────────────────────────────────────────────────────────────┐     │  │
+│ │ │ 🚚 CALCUL ACOMPTE TRANSPORT                                 │     │  │
+│ │ │                                                              │     │  │
+│ │ │ Coût transport total :        450,000 XAF                  │     │  │
+│ │ │ Part société (30%) :          135,000 XAF                  │     │  │
+│ │ │ Part client (70%) :           315,000 XAF                  │     │  │
+│ │ │                                                              │     │  │
+│ │ │ ACOMPTE CLIENT REQUIS (100%) : 315,000 XAF                │     │  │
+│ │ └─────────────────────────────────────────────────────────────┘     │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ENREGISTREMENT ACOMPTE                                               │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ N° Acompte :        AVA-2024-00089 (auto)                           │  │
+│ │ Type :              TRANSPORT_DEPOSIT                               │  │
+│ │                                                                       │  │
+│ │ Mode réception * :  [Virement            ▼]                         │  │
+│ │ Journal * :         [BNK-001 - BICEC     ▼]                         │  │
+│ │ Montant reçu * :    [315,000_____________] XAF                      │  │
+│ │ Date réception :    [29/01/2024__________] 📅                       │  │
+│ │ Référence :         [VIR-SONACOM-TRANSPORT-234______]               │  │
+│ │                                                                       │  │
+│ │ Statut BC après acompte : 🟢 Débloqué pour livraison                │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ UTILISATION PRÉVUE                                                   │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ L'acompte sera automatiquement appliqué lors de :                   │  │
+│ │ • Création du Bon de Livraison                                      │  │
+│ │ • Génération de la Facture Transport séparée                        │  │
+│ │                                                                       │  │
+│ │ Traçabilité :                                                       │  │
+│ │ • BC → Acompte → BL → Facture Transport                            │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [Annuler] [Imprimer reçu] [✅ VALIDER ACOMPTE]                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Propriétés du modèle utilisées :**
+```yaml
+customer_advances:
+- advanceNumber: AVA-2024-00089
+- advanceType: TRANSPORT_DEPOSIT
+- sourceDocument:
+  - documentType: ORDER
+  - documentId: BC-CLI156-2024-00234
+- originalAmount: 315,000
+- customerId
+- status: ACTIVE
+
+payment_transactions:
+- transactionType: RECEIPT
+- transactionSubtype: TRANSPORT_DEPOSIT
+```
+
+### **ECR-TRES-010 : DASHBOARD TRÉSORERIE TEMPS RÉEL**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLEAU DE BORD TRÉSORERIE                      👤 Directeur Financier     │
+│ ═══════════════════════════════════════════════════════════════════════════│
+│ MAJ: 29/01/2024 14:45:30 (Actualisation auto: 30s)         [🔄 Actualiser] │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ 💰 POSITION GLOBALE                                    Groupe IOLA   │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ ┌─────────────┬──────────────┬──────────────┬──────────────┐       │  │
+│ │ │ DISPONIBLE  │ BANQUES      │ CAISSES      │ MOBILE MONEY │       │  │
+│ │ │ 127.5M XAF  │ 120.2M XAF   │ 6.8M XAF     │ 456K XAF     │       │  │
+│ │ │ ↗ +2.3%     │ 94.3%        │ 5.3%         │ 0.4%         │       │  │
+│ │ └─────────────┴──────────────┴──────────────┴──────────────┘       │  │
+│ │                                                                       │  │
+│ │ [Graphique évolution 7 derniers jours]                              │  │
+│ │  130M ┤     ╭─────╮                                                │  │
+│ │  125M ┤ ╭───╯     ╰───────╮                                       │  │
+│ │  120M ┤─╯                  ╰─────                                  │  │
+│ │       └─┬───┬───┬───┬───┬───┬───┬─                                │  │
+│ │        L   M   M   J   V   S   D                                   │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌────────────────────────────────┬──────────────────────────────────────┐ │
+│ │ 📊 FLUX DU JOUR                │ 📈 INDICATEURS CLÉS                 │ │
+│ ├────────────────────────────────┼──────────────────────────────────────┤ │
+│ │                                │                                      │ │
+│ │ ENTRÉES : +12,450,000 XAF     │ DSO (Clients) :     35 jours ↘      │ │
+│ │ • Clients :      8.5M          │ DPO (Fournis.) :    42 jours ↗      │ │
+│ │ • Avances :      2.0M          │ Cash Cycle :        -7 jours ✅      │ │
+│ │ • Autres :       1.95M         │ Taux encais. :      78% 🟡          │ │
+│ │                                │                                      │ │
+│ │ SORTIES : -8,230,000 XAF       │ BFR :              -15.2M XAF       │ │
+│ │ • Fournisseurs : 5.2M          │ Liquidité immédiate: 1.8            │ │
+│ │ • Salaires :     2.5M          │ Couverture charges : 45 jours       │ │
+│ │ • Taxes :        0.53M         │                                      │ │
+│ │                                │                                      │ │
+│ │ NET : +4,220,000 XAF ✅         │ [Voir détails →]                     │ │
+│ └────────────────────────────────┴──────────────────────────────────────┘ │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ ⚠️ ALERTES ET ACTIONS REQUISES                        [Tout voir →] │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ 🔴 CRITIQUE (1)                                                      │  │
+│ │ • CSH-002 Yaoundé sous seuil critique (1.2M < 2M)      [Alimenter]  │  │
+│ │                                                                       │  │
+│ │ 🟡 ATTENTION (3)                                                     │  │
+│ │ • 5 paiements en attente double signature > 24h       [Valider →]   │  │
+│ │ • Échéance fournisseur 3.5M demain (SUPPLIER TECH)    [Préparer]    │  │
+│ │ • Rapprochement BNK-002 en retard (5 jours)          [Effectuer]    │  │
+│ │                                                                       │  │
+│ │ ℹ️ INFO (2)                                                          │  │
+│ │ • Virement inter-sociétés programmé 15:00 (2M)            ✓         │  │
+│ │ • Clôture caisse CSH-001 prévue 18:00                    ⏰         │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────┐  │
+│ │ 📅 PRÉVISIONS 7 PROCHAINS JOURS                                      │  │
+│ ├──────────────────────────────────────────────────────────────────────┤  │
+│ │                                                                       │  │
+│ │ Date     │ Entrées prévues │ Sorties prévues │ Solde prévisionnel   │  │
+│ │──────────┼─────────────────┼─────────────────┼──────────────────────│  │
+│ │ 30/01    │    15.2M XAF   │     8.5M XAF    │   134.2M XAF ✅      │  │
+│ │ 31/01    │     8.7M XAF   │    12.3M XAF    │   130.6M XAF ✅      │  │
+│ │ 01/02    │    22.5M XAF   │     5.2M XAF    │   147.9M XAF ✅      │  │
+│ │ 02/02    │     3.2M XAF   │    45.0M XAF    │   106.1M XAF 🟡      │  │
+│ │ 03/02    │     5.8M XAF   │     8.2M XAF    │   103.7M XAF 🟡      │  │
+│ │ 04/02    │    12.3M XAF   │     3.5M XAF    │   112.5M XAF ✅      │  │
+│ │ 05/02    │    18.9M XAF   │    15.2M XAF    │   116.2M XAF ✅      │  │
+│ │                                                                       │  │
+│ │ ⚠️ Point bas prévu : 02/02 après paiement salaires (106.1M)          │  │
+│ └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│ [📊 Rapports] [⚙️ Paramètres] [📥 Export Excel] [🖨️ Imprimer]             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Propriétés du modèle utilisées :**
+```yaml
+Tables multiples:
+- cash_journals (soldes par journal)
+- payment_transactions (flux du jour)
+- treasury_kpis (indicateurs)
+- cash_flow_forecasts (prévisions)
+- aging_buckets (DSO/DPO)
+
+Requêtes agrégées en temps réel sur:
+- currentBalance par journalType
+- sum(amount) par transactionType (jour)
+- liquidité, BFR, ratios calculés
+```
+
+---
+
+## 📊 **RÉCAPITULATIF DU PLAN DE DÉVELOPPEMENT**
+
+| Lot | User Stories | Écrans | Priorité | Durée estimée |
+|-----|-------------|--------|----------|---------------|
+| **Lot 1** | US-TRES-001 | ECR-TRES-001, 002 | P0 | 3 jours |
+| **Lot 2** | US-TRES-002 | ECR-TRES-003, 004 | P0 | 3 jours |
+| **Lot 3** | US-TRES-003 | ECR-TRES-005, 006 | P0 | 5 jours |
+| **Lot 4** | US-TRES-008 | ECR-TRES-007, 008 | P0 | 5 jours |
+| **Lot 5** | US-TRES-014, 017 | ECR-TRES-009, 010 | P0 | 4 jours |
+
+**Total Phase MVP : 10 écrans / 20 jours de développement**
+
+### **Points clés d'implémentation :**
+
+1. **Sécurité** : Double signature, limites espèces 100K XAF
+2. **Conformité CEMAC** : Attestations ANR, retenue source
+3. **Automatisation** : Lettrage FIFO, calculs temps réel
+4. **Traçabilité** : Audit complet, conservation 10 ans
+5. **Intégration** : Events Kafka, APIs bancaires
+6. **Performance** : Dashboard avec cache Redis (30s refresh)
+
+---
+
+Ces écrans couvrent **100% des user stories P0** du module Trésorerie avec un mapping précis sur le modèle de données.

@@ -1,0 +1,518 @@
+/**
+ * MultiFlex GESCOM - Sidebar Menu JavaScript
+ * Gestion du menu latéral unifié pour le module trésorerie
+ */
+
+// ============================================================================
+// SIDEBAR STATE MANAGEMENT
+// ============================================================================
+
+const SIDEBAR_STATE_KEY = 'multiflex_sidebar_collapsed';
+
+/**
+ * Initialize sidebar
+ * @param {string} activePage - The current page identifier
+ */
+function initSidebar(activePage) {
+    // Load sidebar state from localStorage
+    const isCollapsed = localStorage.getItem(SIDEBAR_STATE_KEY) === 'true';
+
+    if (isCollapsed) {
+        const appLayout = document.querySelector('.app-layout');
+        if (appLayout) appLayout.classList.add('sidebar-collapsed');
+    }
+
+    // Set active page
+    setActivePage(activePage);
+
+    // Add tooltips for collapsed state
+    addTooltips();
+
+    // Handle responsive
+    handleResponsive();
+    window.addEventListener('resize', handleResponsive);
+}
+
+/**
+ * Toggle sidebar collapsed state
+ */
+function toggleSidebar() {
+    const appLayout = document.querySelector('.app-layout');
+    if (!appLayout) return;
+
+    appLayout.classList.toggle('sidebar-collapsed');
+
+    const isCollapsed = appLayout.classList.contains('sidebar-collapsed');
+    localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed);
+}
+
+/**
+ * Set the active page in the navigation
+ * @param {string} pageName - The page identifier
+ */
+function setActivePage(pageName) {
+    // Remove active class from all nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    // Add active class to current page
+    const activeItem = document.querySelector(`.nav-item[data-page="${pageName}"]`);
+    if (activeItem) {
+        activeItem.classList.add('active');
+    }
+}
+
+/**
+ * Add tooltips to nav items for collapsed state
+ */
+function addTooltips() {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const text = item.querySelector('span');
+        if (text) {
+            item.setAttribute('data-tooltip', text.textContent);
+        }
+    });
+}
+
+/**
+ * Handle responsive behavior
+ */
+function handleResponsive() {
+    const appLayout = document.querySelector('.app-layout');
+    if (!appLayout) return;
+
+    const isMobile = window.innerWidth <= 1024;
+
+    if (isMobile) {
+        appLayout.classList.remove('sidebar-collapsed');
+        appLayout.classList.remove('sidebar-open');
+    }
+}
+
+/**
+ * Toggle mobile sidebar
+ */
+function toggleMobileSidebar() {
+    const appLayout = document.querySelector('.app-layout');
+    if (appLayout) appLayout.classList.toggle('sidebar-open');
+}
+
+/**
+ * Close mobile sidebar
+ */
+function closeMobileSidebar() {
+    const appLayout = document.querySelector('.app-layout');
+    if (appLayout) appLayout.classList.remove('sidebar-open');
+}
+
+/**
+ * Show settings modal (placeholder)
+ */
+function showSettings() {
+    alert('Paramètres - Fonctionnalité à venir');
+}
+
+// ============================================================================
+// NAVIGATION HELPERS
+// ============================================================================
+
+/**
+ * Navigate to a page
+ * @param {string} url - The URL to navigate to
+ */
+function navigateTo(url) {
+    window.location.href = url;
+}
+
+/**
+ * Navigate to journal detail
+ * @param {string} journalCode - The journal code
+ */
+function viewJournal(journalCode) {
+    window.location.href = `./journal-detail.html?code=${journalCode}`;
+}
+
+/**
+ * Navigate to encaissement detail
+ * @param {string} encaissementId - The encaissement ID
+ */
+function viewEncaissement(encaissementId) {
+    window.location.href = `./encaissement-detail.html?id=${encaissementId}`;
+}
+
+/**
+ * Navigate to decaissement detail
+ * @param {string} decaissementId - The decaissement ID
+ */
+function viewDecaissement(decaissementId) {
+    window.location.href = `./decaissement-detail.html?id=${decaissementId}`;
+}
+
+/**
+ * Create new encaissement for a client
+ * @param {string} clientCode - The client code
+ */
+function createEncaissementForClient(clientCode) {
+    window.location.href = `./encaissement-create.html?client=${clientCode}`;
+}
+
+/**
+ * Create new decaissement for a supplier
+ * @param {string} supplierCode - The supplier code
+ */
+function createDecaissementForSupplier(supplierCode) {
+    window.location.href = `./decaissement-create.html?fournisseur=${supplierCode}`;
+}
+
+// ============================================================================
+// BREADCRUMB HELPER
+// ============================================================================
+
+/**
+ * Set breadcrumb
+ * @param {Array} items - Array of breadcrumb items [{label, url}]
+ */
+function setBreadcrumb(items) {
+    const breadcrumb = document.querySelector('.breadcrumb');
+    if (!breadcrumb) return;
+
+    let html = '<a href="./dashboard.html">Accueil</a>';
+
+    items.forEach((item, index) => {
+        html += ' <i class="fa-solid fa-chevron-right"></i> ';
+
+        if (index === items.length - 1 || !item.url) {
+            html += `<span>${item.label}</span>`;
+        } else {
+            html += `<a href="${item.url}">${item.label}</a>`;
+        }
+    });
+
+    breadcrumb.innerHTML = html;
+}
+
+// ============================================================================
+// USER MENU
+// ============================================================================
+
+/**
+ * Current user data (would come from API in real app)
+ */
+const currentUser = {
+    name: 'Jean KAMGA',
+    initials: 'JK',
+    role: 'Trésorier'
+};
+
+/**
+ * Initialize user menu
+ */
+function initUserMenu() {
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const userRole = document.getElementById('userRole');
+
+    if (userAvatar) userAvatar.textContent = currentUser.initials;
+    if (userName) userName.textContent = currentUser.name;
+    if (userRole) userRole.textContent = currentUser.role;
+}
+
+/**
+ * Logout user
+ */
+function logout() {
+    if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
+        window.location.href = '../index.html';
+    }
+}
+
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
+/**
+ * Format currency (XAF)
+ * @param {number} amount - The amount to format
+ * @returns {string} Formatted currency string
+ */
+function formatCurrency(amount) {
+    if (amount === null || amount === undefined) return '0 XAF';
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' XAF';
+}
+
+/**
+ * Format date
+ * @param {Date|string} date - The date to format
+ * @returns {string} Formatted date string
+ */
+function formatDate(date) {
+    if (!date) return '-';
+    if (typeof date === 'string') {
+        return date;
+    }
+    return date.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+/**
+ * Format datetime
+ * @param {Date|string} date - The date to format
+ * @returns {string} Formatted datetime string
+ */
+function formatDateTime(date) {
+    if (!date) return '-';
+    if (typeof date === 'string') {
+        const d = new Date(date);
+        return d.toLocaleString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+    return date.toLocaleString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+/**
+ * Format compact number
+ * @param {number} num - The number to format
+ * @returns {string} Formatted compact string
+ */
+function formatCompact(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    }
+    if (num >= 1000) {
+        return (num / 1000).toFixed(0) + 'K';
+    }
+    return num.toString();
+}
+
+/**
+ * Generate unique ID
+ * @param {string} prefix - Prefix for the ID
+ * @returns {string} Unique ID
+ */
+function generateId(prefix = 'ID') {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const random = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+    return `${prefix}-${year}${month}${day}-${random}`;
+}
+
+// ============================================================================
+// NOTIFICATIONS
+// ============================================================================
+
+/**
+ * Show notification toast
+ * @param {string} message - The message to display
+ * @param {string} type - Type: success, warning, error, info
+ */
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `toast ${type}`;
+    notification.innerHTML = `
+        <i class="fa-solid ${getNotificationIcon(type)} toast-icon"></i>
+        <span class="toast-message">${message}</span>
+        <button class="toast-close" onclick="this.parentElement.remove()">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    `;
+
+    // Add to container (create if not exists)
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    container.appendChild(notification);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+/**
+ * Get notification icon based on type
+ */
+function getNotificationIcon(type) {
+    const icons = {
+        success: 'fa-check-circle',
+        warning: 'fa-exclamation-triangle',
+        error: 'fa-times-circle',
+        danger: 'fa-times-circle',
+        info: 'fa-info-circle'
+    };
+    return icons[type] || icons.info;
+}
+
+// ============================================================================
+// DYNAMIC SIDEBAR LOADING
+// ============================================================================
+
+// Mapping des pages aux data-page pour les pages de détail/création
+const pageAliases = {
+    'journal-detail': 'journals-list',
+    'journal-security': 'journals-list',
+    'encaissement-imputation': 'encaissement-create',
+    'validation-double-signature': 'decaissement-create'
+};
+
+/**
+ * Load sidebar component dynamically (for server environments)
+ * For local file:// usage, sidebar is embedded directly in HTML
+ */
+function loadSidebarComponent() {
+    const sidebarContainer = document.getElementById('sidebar-container');
+    if (!sidebarContainer) {
+        // Sidebar is already embedded in HTML, just highlight current page
+        highlightCurrentPageAuto();
+        return;
+    }
+
+    // Try to fetch for server environments
+    fetch('./components/sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            sidebarContainer.innerHTML = html;
+            highlightCurrentPageAuto();
+        })
+        .catch(error => {
+            console.error('Erreur de chargement du sidebar:', error);
+        });
+}
+
+/**
+ * Highlight current page automatically based on URL
+ */
+function highlightCurrentPageAuto() {
+    // Get page name from URL
+    const path = window.location.pathname;
+    const pageName = path.split('/').pop().replace('.html', '');
+
+    // Check for alias
+    const targetPage = pageAliases[pageName] || pageName;
+
+    // Remove active class from all links
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.classList.remove('active');
+        link.style.background = '';
+        link.style.borderLeft = '';
+    });
+
+    // Add active class to matching link
+    const activeLink = document.querySelector(`.sidebar-link[data-page="${targetPage}"]`);
+    if (activeLink) {
+        activeLink.classList.add('active');
+        activeLink.style.background = '#152045';
+        activeLink.style.borderLeft = '4px solid #F26F21';
+    }
+}
+
+// Inject sidebar link styles
+const sidebarLinkStyles = `
+    .sidebar-link {
+        display: block;
+        padding: 8px 16px;
+        font-size: 14px;
+        color: white;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .sidebar-link:hover {
+        background: #152045;
+    }
+
+    .sidebar-link.active {
+        background: #152045;
+        border-left: 4px solid #F26F21;
+    }
+`;
+
+function injectSidebarLinkStyles() {
+    if (!document.getElementById('sidebar-link-styles')) {
+        const styleElement = document.createElement('style');
+        styleElement.id = 'sidebar-link-styles';
+        styleElement.textContent = sidebarLinkStyles;
+        document.head.appendChild(styleElement);
+    }
+}
+
+// ============================================================================
+// TREASURY SPECIFIC FUNCTIONS
+// ============================================================================
+
+/**
+ * Check if amount exceeds cash limit (CEMAC regulation)
+ * @param {number} amount - Amount to check
+ * @param {number} limit - Cash limit (default 100000 XAF)
+ * @returns {boolean} True if over limit
+ */
+function isOverCashLimit(amount, limit = 100000) {
+    return amount > limit;
+}
+
+/**
+ * Calculate utilization percentage
+ * @param {number} current - Current amount
+ * @param {number} limit - Maximum limit
+ * @returns {number} Percentage (0-100)
+ */
+function calculateUtilization(current, limit) {
+    if (limit <= 0) return 0;
+    return Math.min(100, Math.round((current / limit) * 100));
+}
+
+/**
+ * Get utilization status class
+ * @param {number} percentage - Utilization percentage
+ * @returns {string} CSS class
+ */
+function getUtilizationClass(percentage) {
+    if (percentage >= 90) return 'danger';
+    if (percentage >= 75) return 'warning';
+    return 'success';
+}
+
+/**
+ * Validate FIFO imputation
+ * @param {Array} invoices - Array of invoices with dates
+ * @returns {Array} Sorted invoices (oldest first)
+ */
+function sortByFIFO(invoices) {
+    return [...invoices].sort((a, b) => new Date(a.date) - new Date(b.date));
+}
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
+// Auto-initialize on DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    initUserMenu();
+    injectSidebarLinkStyles();
+
+    // Highlight current page in sidebar
+    highlightCurrentPageAuto();
+});

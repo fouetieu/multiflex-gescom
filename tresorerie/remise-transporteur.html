@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remise Transporteur - Trésorerie | MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/tresorerie-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { font-family: "Poppins", sans-serif; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+
+        .transporter-card {
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .transporter-card:hover { border-color: #263c89; }
+        .transporter-card.selected {
+            border-color: #263c89;
+            background: rgba(38, 60, 137, 0.05);
+        }
+        .transporter-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin: 0 auto 12px;
+        }
+
+        .remise-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .remise-status.en-cours { background: #FEF3C7; color: #92400E; }
+        .remise-status.pris-en-charge { background: #DBEAFE; color: #1E40AF; }
+        .remise-status.depose { background: #E0E7FF; color: #4338CA; }
+        .remise-status.confirme { background: #D1FAE5; color: #065F46; }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Remise Transporteur</h1>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean KAMGA</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">Module Trésorerie</div>
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard"><i class="fa-solid fa-chart-pie mr-3"></i><span>Dashboard</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Journaux</div>
+                    <a href="./journals-list.html" class="sidebar-link" data-page="journals-list"><i class="fa-solid fa-book mr-3"></i><span>Liste Journaux</span></a>
+                    <a href="./journal-create.html" class="sidebar-link" data-page="journal-create"><i class="fa-solid fa-plus-circle mr-3"></i><span>Nouveau Journal</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Encaissements</div>
+                    <a href="./encaissement-create.html" class="sidebar-link" data-page="encaissement-create"><i class="fa-solid fa-arrow-down mr-3"></i><span>Nouvel Encaissement</span></a>
+                    <a href="./encaissement-imputation.html" class="sidebar-link" data-page="encaissement-imputation"><i class="fa-solid fa-list-check mr-3"></i><span>Imputation</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Décaissements</div>
+                    <a href="./decaissement-create.html" class="sidebar-link" data-page="decaissement-create"><i class="fa-solid fa-arrow-up mr-3"></i><span>Nouveau Décaissement</span></a>
+                    <a href="./validation-double-signature.html" class="sidebar-link" data-page="validation-double-signature"><i class="fa-solid fa-signature mr-3"></i><span>Double Signature</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Banque</div>
+                    <a href="./remise-transporteur.html" class="sidebar-link" data-page="remise-transporteur"><i class="fa-solid fa-truck-fast mr-3"></i><span>Remise Transporteur</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">Système</div>
+                    <a href="../index.html" class="sidebar-link" data-page="home"><i class="fa-solid fa-home mr-3"></i><span>Accueil</span></a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="tresorerie-container" style="max-width: none; padding: 24px;">
+
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">
+                                    <i class="fa-solid fa-truck-fast"></i>
+                                    Remise Transporteur de Fonds
+                                </h1>
+                                <p class="page-description">
+                                    Gérez les remises d'espèces aux transporteurs agréés
+                                </p>
+                            </div>
+                            <button class="btn btn-primary" onclick="showNewRemiseForm()">
+                                <i class="fa-solid fa-plus"></i>
+                                Nouvelle Remise
+                            </button>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div><div class="stat-label">Remises en Cours</div></div>
+                                    <div class="stat-icon warning"><i class="fa-solid fa-truck"></i></div>
+                                </div>
+                                <div class="stat-value" style="color: #F59E0B;">2</div>
+                                <div class="stat-change neutral">En transit</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div><div class="stat-label">Montant en Transit</div></div>
+                                    <div class="stat-icon info"><i class="fa-solid fa-coins"></i></div>
+                                </div>
+                                <div class="stat-value">850K XAF</div>
+                                <div class="stat-change neutral">2 remises</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div><div class="stat-label">Confirmées ce Mois</div></div>
+                                    <div class="stat-icon success"><i class="fa-solid fa-check-circle"></i></div>
+                                </div>
+                                <div class="stat-value" style="color: #10B981;">12</div>
+                                <div class="stat-change positive">8.5M XAF total</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div><div class="stat-label">Délai Moyen</div></div>
+                                    <div class="stat-icon primary"><i class="fa-solid fa-clock"></i></div>
+                                </div>
+                                <div class="stat-value">4h</div>
+                                <div class="stat-change positive">-30min vs mois dernier</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- New Remise Form (hidden by default) -->
+                    <div class="card mb-6" id="newRemiseForm" style="display: none;">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-plus-circle"></i>
+                                Nouvelle Remise
+                            </h3>
+                            <button class="btn-icon" onclick="hideNewRemiseForm()">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <!-- Transporter Selection -->
+                            <div class="form-group">
+                                <label class="form-label required">Transporteur Agréé</label>
+                                <div class="grid grid-cols-4 gap-4 mt-2">
+                                    <div class="transporter-card" onclick="selectTransporter('BRINKS', this)">
+                                        <i class="fa-solid fa-shield-halved text-4xl text-[#263c89] mb-2"></i>
+                                        <div class="font-semibold">BRINKS</div>
+                                        <div class="text-sm text-muted">Cameroun</div>
+                                    </div>
+                                    <div class="transporter-card" onclick="selectTransporter('PROSEGUR', this)">
+                                        <i class="fa-solid fa-truck-field text-4xl text-[#263c89] mb-2"></i>
+                                        <div class="font-semibold">PROSEGUR</div>
+                                        <div class="text-sm text-muted">Security</div>
+                                    </div>
+                                    <div class="transporter-card" onclick="selectTransporter('LOOMIS', this)">
+                                        <i class="fa-solid fa-vault text-4xl text-[#263c89] mb-2"></i>
+                                        <div class="font-semibold">LOOMIS</div>
+                                        <div class="text-sm text-muted">International</div>
+                                    </div>
+                                    <div class="transporter-card" onclick="selectTransporter('G4S', this)">
+                                        <i class="fa-solid fa-lock text-4xl text-[#263c89] mb-2"></i>
+                                        <div class="font-semibold">G4S</div>
+                                        <div class="text-sm text-muted">Cameroun</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label required">Journal Source</label>
+                                    <select id="sourceJournal" class="form-select">
+                                        <option value="">Sélectionner</option>
+                                        <option value="CC-001">Caisse Principale Douala (85 000 XAF)</option>
+                                        <option value="CA-002">Caisse Agence Bonabéri (45 000 XAF)</option>
+                                        <option value="CC-003">Caisse POS Akwa (95 000 XAF)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required">Montant à Remettre</label>
+                                    <div class="input-group">
+                                        <input type="number" id="remiseAmount" class="form-input" placeholder="0">
+                                        <span class="input-group-text">XAF</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label required">Compte Bancaire Destination</label>
+                                    <select id="destBank" class="form-select">
+                                        <option value="">Sélectionner</option>
+                                        <option value="BNK-001">Afriland First Bank - Principal</option>
+                                        <option value="BNK-002">SGBC - Opérations</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Observations</label>
+                                    <input type="text" id="remiseNotes" class="form-input" placeholder="Notes optionnelles">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="flex justify-end gap-3">
+                                <button class="btn btn-secondary" onclick="hideNewRemiseForm()">Annuler</button>
+                                <button class="btn btn-primary" onclick="createRemise()">
+                                    <i class="fa-solid fa-file-export"></i>
+                                    Générer Bordereau
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Remises in Progress -->
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-truck"></i>
+                                Remises en Cours
+                            </h3>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Bordereau</th>
+                                        <th>Date</th>
+                                        <th>Transporteur</th>
+                                        <th>Source</th>
+                                        <th class="text-right">Montant</th>
+                                        <th class="text-center">Statut</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-mono font-semibold text-[#263c89]">BOR-2024-00045</td>
+                                        <td>15/01/2024 14:30</td>
+                                        <td>BRINKS Cameroun</td>
+                                        <td>Caisse Principale Douala</td>
+                                        <td class="text-right font-semibold">500 000 XAF</td>
+                                        <td class="text-center">
+                                            <span class="remise-status pris-en-charge">
+                                                <i class="fa-solid fa-truck"></i>
+                                                Pris en charge
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-success btn-sm" onclick="confirmDeposit('BOR-2024-00045')">
+                                                <i class="fa-solid fa-check"></i>
+                                                Confirmer Dépôt
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-semibold text-[#263c89]">BOR-2024-00044</td>
+                                        <td>15/01/2024 10:00</td>
+                                        <td>PROSEGUR</td>
+                                        <td>Caisse POS Akwa</td>
+                                        <td class="text-right font-semibold">350 000 XAF</td>
+                                        <td class="text-center">
+                                            <span class="remise-status en-cours">
+                                                <i class="fa-solid fa-clock"></i>
+                                                En cours
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-secondary btn-sm" onclick="updateStatus('BOR-2024-00044')">
+                                                <i class="fa-solid fa-edit"></i>
+                                                Mettre à jour
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Recent Completed -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-history"></i>
+                                Remises Récentes Confirmées
+                            </h3>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Bordereau</th>
+                                        <th>Date Remise</th>
+                                        <th>Date Dépôt</th>
+                                        <th>Transporteur</th>
+                                        <th class="text-right">Montant</th>
+                                        <th class="text-center">Statut</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-mono">BOR-2024-00043</td>
+                                        <td>14/01/2024 15:00</td>
+                                        <td>14/01/2024 18:30</td>
+                                        <td>BRINKS Cameroun</td>
+                                        <td class="text-right font-semibold">750 000 XAF</td>
+                                        <td class="text-center">
+                                            <span class="remise-status confirme">
+                                                <i class="fa-solid fa-check-circle"></i>
+                                                Confirmé
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono">BOR-2024-00042</td>
+                                        <td>13/01/2024 11:00</td>
+                                        <td>13/01/2024 15:00</td>
+                                        <td>G4S Cameroun</td>
+                                        <td class="text-right font-semibold">420 000 XAF</td>
+                                        <td class="text-center">
+                                            <span class="remise-status confirme">
+                                                <i class="fa-solid fa-check-circle"></i>
+                                                Confirmé
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Deposit Modal -->
+    <div class="modal-overlay" id="confirmDepositModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmer le Dépôt</h3>
+                <button class="modal-close" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-box alert-info mb-4">
+                    <i class="fa-solid fa-info-circle"></i>
+                    <div>
+                        <strong>Bordereau:</strong> <span id="modalBordereau">-</span><br>
+                        <strong>Montant:</strong> <span id="modalAmount">-</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">Référence Bancaire</label>
+                    <input type="text" id="bankReference" class="form-input" placeholder="Numéro de référence banque">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirmation Banque (PDF/Image)</label>
+                    <input type="file" id="bankConfirmation" class="form-input" accept=".pdf,.jpg,.png">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">Annuler</button>
+                <button class="btn btn-success" onclick="submitConfirmation()">
+                    <i class="fa-solid fa-check"></i>
+                    Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/remise-transporteur.js"></script>
+</body>
+</html>

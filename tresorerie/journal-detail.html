@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail Journal - Trésorerie | MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/tresorerie-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        * { font-family: "Poppins", sans-serif; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+
+        /* Journal Header Banner */
+        .journal-header-banner {
+            background: linear-gradient(135deg, #263c89 0%, #1e3070 100%);
+            border-radius: 12px;
+            padding: 20px 24px;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .journal-header-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .journal-type-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .journal-title-block h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .journal-title-block .journal-meta {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .journal-title-block .journal-meta span {
+            margin-right: 12px;
+        }
+
+        .journal-header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .journal-header-actions .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .journal-header-actions .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Tabs */
+        .tabs-bar {
+            display: flex;
+            gap: 4px;
+            background: #F3F4F6;
+            padding: 4px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: #6B7280;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-button:hover {
+            background: #E5E7EB;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #263c89;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .tab-button .badge-tab {
+            background: #F59E0B;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Info Sections */
+        .info-section {
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #E5E7EB;
+            margin-bottom: 16px;
+        }
+
+        .info-section-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid #E5E7EB;
+            font-weight: 600;
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-section-body {
+            padding: 20px;
+        }
+
+        .info-grid-2col {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6B7280;
+            font-size: 13px;
+        }
+
+        .info-row-value {
+            font-weight: 500;
+            color: #1F2937;
+        }
+
+        /* Solde Box */
+        .solde-box {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .solde-box.warning {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+        }
+
+        .solde-box.danger {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+        }
+
+        .solde-box-label {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .solde-box-amount {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .solde-box-sub {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        /* Position Gauge */
+        .position-gauge {
+            margin-top: 16px;
+        }
+
+        .gauge-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            background: white;
+            border-radius: 6px;
+            transition: width 0.3s;
+        }
+
+        .gauge-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-top: 6px;
+            opacity: 0.8;
+        }
+
+        /* Recent Activity */
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #F3F4F6;
+            gap: 16px;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-date {
+            font-size: 12px;
+            color: #6B7280;
+            min-width: 80px;
+        }
+
+        .activity-amount {
+            font-weight: 600;
+            min-width: 100px;
+            text-align: right;
+        }
+
+        .activity-amount.positive { color: #10B981; }
+        .activity-amount.negative { color: #EF4444; }
+
+        .activity-desc {
+            flex: 1;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        /* Rapprochement */
+        .rapprochement-status {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .rapprochement-card {
+            background: #F9FAFB;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .rapprochement-card-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 4px;
+        }
+
+        .rapprochement-card-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .rapprochement-ecart {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .rapprochement-ecart .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #DC2626;
+        }
+
+        .unreconciled-table {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .unreconciled-table-header {
+            background: #F9FAFB;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #374151;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        /* Movements Table */
+        .movement-row {
+            display: grid;
+            grid-template-columns: 100px 130px 60px 120px 1fr 100px 100px 100px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #F3F4F6;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .movement-row:hover {
+            background: #F9FAFB;
+        }
+
+        .movement-header {
+            background: #F9FAFB;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .movement-type {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .movement-type.enc { background: #D1FAE5; color: #065F46; }
+        .movement-type.dec { background: #FEE2E2; color: #991B1B; }
+        .movement-type.vir { background: #DBEAFE; color: #1E40AF; }
+        .movement-type.fee { background: #F3F4F6; color: #374151; }
+
+        /* Totaux Période */
+        .totaux-periode {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            background: #F9FAFB;
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 16px;
+        }
+
+        .totaux-item {
+            text-align: center;
+        }
+
+        .totaux-item-label {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .totaux-item-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .totaux-item-value.debit { color: #EF4444; }
+        .totaux-item-value.credit { color: #10B981; }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            <div class="flex-1 flex items-center justify-between px-6">
+                <div class="breadcrumb">
+                    <a href="./dashboard.html">Trésorerie</a>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <a href="./journals-list.html">Journaux</a>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span id="journalCodeBreadcrumb">BNK-001</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">3</span>
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean KAMGA</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Module Trésorerie
+                    </div>
+
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Journaux
+                    </div>
+
+                    <a href="./journals-list.html" class="sidebar-link active" data-page="journals-list">
+                        <i class="fa-solid fa-book mr-3"></i>
+                        <span>Liste Journaux</span>
+                    </a>
+
+                    <a href="./journal-create.html" class="sidebar-link" data-page="journal-create">
+                        <i class="fa-solid fa-plus-circle mr-3"></i>
+                        <span>Nouveau Journal</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Encaissements
+                    </div>
+
+                    <a href="./encaissement-create.html" class="sidebar-link" data-page="encaissement-create">
+                        <i class="fa-solid fa-arrow-down mr-3"></i>
+                        <span>Nouvel Encaissement</span>
+                    </a>
+
+                    <a href="./encaissement-imputation.html" class="sidebar-link" data-page="encaissement-imputation">
+                        <i class="fa-solid fa-list-check mr-3"></i>
+                        <span>Imputation</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Décaissements
+                    </div>
+
+                    <a href="./decaissement-create.html" class="sidebar-link" data-page="decaissement-create">
+                        <i class="fa-solid fa-arrow-up mr-3"></i>
+                        <span>Nouveau Décaissement</span>
+                    </a>
+
+                    <a href="./validation-double-signature.html" class="sidebar-link" data-page="validation-double-signature">
+                        <i class="fa-solid fa-signature mr-3"></i>
+                        <span>Double Signature</span>
+                        <span class="ml-2 bg-[#F26F21] text-white text-xs px-2 py-0.5 rounded-full">2</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
+                        Banque
+                    </div>
+
+                    <a href="./remise-transporteur.html" class="sidebar-link" data-page="remise-transporteur">
+                        <i class="fa-solid fa-truck-fast mr-3"></i>
+                        <span>Remise Transporteur</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../index.html" class="sidebar-link" data-page="home">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Accueil</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="tresorerie-container" style="max-width: none; padding: 24px;">
+
+                    <!-- Journal Header Banner -->
+                    <div class="journal-header-banner">
+                        <div class="journal-header-info">
+                            <div class="journal-type-icon" id="journalTypeIcon">🏦</div>
+                            <div class="journal-title-block">
+                                <h1 id="journalTitle">BICEC PRINCIPAL</h1>
+                                <div class="journal-meta">
+                                    <span><i class="fa-solid fa-hashtag"></i> <span id="journalCode">BNK-001</span></span>
+                                    <span><i class="fa-solid fa-building"></i> <span id="journalCompany">IOLA BTP SARL</span></span>
+                                    <span><i class="fa-solid fa-check-circle"></i> <span id="journalStatus">ACTIF</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="journal-header-actions">
+                            <button class="btn" onclick="modifyParams()">
+                                <i class="fa-solid fa-cog"></i>
+                                Modifier paramètres
+                            </button>
+                            <button class="btn" onclick="newMovement()">
+                                <i class="fa-solid fa-plus"></i>
+                                Nouveau mouvement
+                            </button>
+                            <button class="btn" onclick="exportPDF()">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                Export PDF
+                            </button>
+                            <button class="btn" onclick="refreshData()">
+                                <i class="fa-solid fa-sync"></i>
+                                Actualiser
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="tabs-bar">
+                        <button class="tab-button active" onclick="showTab('overview', this)">
+                            <i class="fa-solid fa-home"></i>
+                            Vue d'ensemble
+                        </button>
+                        <button class="tab-button" onclick="showTab('movements', this)">
+                            <i class="fa-solid fa-list"></i>
+                            Mouvements
+                        </button>
+                        <button class="tab-button" onclick="showTab('reconciliation', this)">
+                            <i class="fa-solid fa-balance-scale"></i>
+                            Rapprochement
+                            <span class="badge-tab">⚠️</span>
+                        </button>
+                        <button class="tab-button" onclick="showTab('statistics', this)">
+                            <i class="fa-solid fa-chart-line"></i>
+                            Statistiques
+                        </button>
+                    </div>
+
+                    <!-- Tab: Vue d'ensemble -->
+                    <div class="tab-content active" id="tab-overview">
+                        <!-- Info du Journal -->
+                        <div class="info-section">
+                            <div class="info-section-header">
+                                <i class="fa-solid fa-info-circle"></i>
+                                INFORMATIONS DU JOURNAL
+                            </div>
+                            <div class="info-section-body">
+                                <div class="info-grid-2col">
+                                    <div>
+                                        <div class="info-row">
+                                            <span class="info-row-label"><i class="fa-solid fa-building-columns"></i> Type</span>
+                                            <span class="info-row-value" id="infoType">Compte Bancaire (BANK_ACCOUNT)</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-row-label"><i class="fa-solid fa-hashtag"></i> Code</span>
+                                            <span class="info-row-value font-mono" id="infoCode">BNK-001</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-row-label"><i class="fa-solid fa-building"></i> Société</span>
+                                            <span class="info-row-value" id="infoCompany">IOLA BTP SARL</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="info-row">
+                                            <span class="info-row-label"><i class="fa-solid fa-coins"></i> Devise</span>
+                                            <span class="info-row-value" id="infoCurrency">XAF</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-row-label"><i class="fa-solid fa-sync"></i> Multi-devises</span>
+                                            <span class="info-row-value" id="infoMultiCurrency">Non activé</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-row-label"><i class="fa-solid fa-calendar"></i> Date ouverture</span>
+                                            <span class="info-row-value" id="infoOpenDate">01/01/2024</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Détails Bancaires -->
+                        <div class="info-section" id="bankDetailsSection">
+                            <div class="info-section-header">
+                                <i class="fa-solid fa-university"></i>
+                                DÉTAILS BANCAIRES
+                            </div>
+                            <div class="info-section-body">
+                                <div class="info-grid-2col">
+                                    <div>
+                                        <div class="info-row">
+                                            <span class="info-row-label">Banque</span>
+                                            <span class="info-row-value" id="bankName">BICEC (Banque Internationale du Cameroun)</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-row-label">N° Compte</span>
+                                            <span class="info-row-value font-mono" id="accountNumber">12345678901234</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-row-label">IBAN</span>
+                                            <span class="info-row-value font-mono" id="iban">CM21 1000 1000 5012 3456 7890 1234</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="info-row">
+                                            <span class="info-row-label">Code SWIFT</span>
+                                            <span class="info-row-value font-mono" id="swift">BICECMCX</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-row-label">Titulaire</span>
+                                            <span class="info-row-value" id="accountHolder">IOLA BTP SARL</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-row-label">Type compte</span>
+                                            <span class="info-row-value" id="accountType">Compte Courant</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Soldes et Sécurité -->
+                        <div class="info-grid-2col">
+                            <!-- Soldes et Positions -->
+                            <div class="info-section">
+                                <div class="info-section-header">
+                                    <i class="fa-solid fa-wallet"></i>
+                                    SOLDES ET POSITIONS
+                                </div>
+                                <div class="info-section-body">
+                                    <div class="info-row">
+                                        <span class="info-row-label">Solde comptable</span>
+                                        <span class="info-row-value" id="bookBalance">85 234 567 XAF</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-row-label">Solde bancaire</span>
+                                        <span class="info-row-value" id="bankBalance">85 100 000 XAF</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-row-label">Écart</span>
+                                        <span class="info-row-value" style="color: #F59E0B;" id="balanceGap">134 567 XAF</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-row-label">Disponible</span>
+                                        <span class="info-row-value font-semibold" id="availableBalance">85 234 567 XAF</span>
+                                    </div>
+
+                                    <div class="solde-box mt-4">
+                                        <div class="solde-box-label">Position actuelle</div>
+                                        <div class="solde-box-amount" id="currentPosition">85%</div>
+                                        <div class="position-gauge">
+                                            <div class="gauge-bar">
+                                                <div class="gauge-fill" id="positionGauge" style="width: 85%"></div>
+                                            </div>
+                                            <div class="gauge-label">
+                                                <span>0</span>
+                                                <span>Position saine 🟢</span>
+                                                <span>100M</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Paramètres de Sécurité -->
+                            <div class="info-section">
+                                <div class="info-section-header">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    PARAMÈTRES DE SÉCURITÉ
+                                </div>
+                                <div class="info-section-body">
+                                    <div class="info-row">
+                                        <span class="info-row-label">Découvert autorisé</span>
+                                        <span class="info-row-value" id="overdraftLimit">5 000 000 XAF</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-row-label">Seuil alerte</span>
+                                        <span class="info-row-value" id="alertThreshold">2 000 000 XAF</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-row-label">Seuil critique</span>
+                                        <span class="info-row-value" id="criticalThreshold">500 000 XAF</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-row-label">Double signature</span>
+                                        <span class="info-row-value" id="dualSignatureThreshold">5 000 000 XAF</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-row-label">Plafond jour</span>
+                                        <span class="info-row-value" id="dailyLimit">10 000 000 XAF</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-row-label">Signataires</span>
+                                        <span class="info-row-value">
+                                            <span id="signatoriesCount">3 personnes</span>
+                                            <a href="#" onclick="viewSignatories()" class="text-[#263c89] ml-2">Voir liste →</a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Activité Récente -->
+                        <div class="info-section">
+                            <div class="info-section-header" style="display: flex; justify-content: space-between;">
+                                <span><i class="fa-solid fa-clock"></i> ACTIVITÉ RÉCENTE (10 dernières opérations)</span>
+                                <a href="#" onclick="showTab('movements', document.querySelector('.tab-button:nth-child(2)'))" class="text-[#263c89]">Voir tout →</a>
+                            </div>
+                            <div class="info-section-body" id="recentActivity">
+                                <div class="activity-item">
+                                    <span class="activity-date">29/01 14:35</span>
+                                    <span class="activity-amount positive">+5 500 000</span>
+                                    <span class="activity-desc">Encaissement SONACOM (ENC-2024-00234)</span>
+                                </div>
+                                <div class="activity-item">
+                                    <span class="activity-date">29/01 10:15</span>
+                                    <span class="activity-amount negative">-3 200 000</span>
+                                    <span class="activity-desc">Paiement SUPPLIER TECH (DEC-2024-00089)</span>
+                                </div>
+                                <div class="activity-item">
+                                    <span class="activity-date">28/01 16:20</span>
+                                    <span class="activity-amount negative">-10 000 000</span>
+                                    <span class="activity-desc">Alimentation caisse Douala</span>
+                                </div>
+                                <div class="activity-item">
+                                    <span class="activity-date">28/01 08:00</span>
+                                    <span class="activity-amount negative">-15 000</span>
+                                    <span class="activity-desc">Frais bancaires mensuels</span>
+                                </div>
+                                <div class="activity-item">
+                                    <span class="activity-date">27/01 15:45</span>
+                                    <span class="activity-amount positive">+2 350 000</span>
+                                    <span class="activity-desc">Encaissement CLIENT ABC</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Mouvements -->
+                    <div class="tab-content" id="tab-movements">
+                        <!-- Filters -->
+                        <div class="info-section">
+                            <div class="info-section-header">FILTRES</div>
+                            <div class="info-section-body">
+                                <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: end;">
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">Période</label>
+                                        <select class="form-select" id="periodFilter">
+                                            <option value="month">Ce mois</option>
+                                            <option value="week">Cette semaine</option>
+                                            <option value="quarter">Ce trimestre</option>
+                                            <option value="custom">Personnalisée</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">Du</label>
+                                        <input type="date" class="form-input" id="dateFrom" value="2024-01-01">
+                                    </div>
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">Au</label>
+                                        <input type="date" class="form-input" id="dateTo" value="2024-01-29">
+                                    </div>
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">Type</label>
+                                        <select class="form-select" id="typeFilter">
+                                            <option value="">Tous</option>
+                                            <option value="ENC">Encaissements</option>
+                                            <option value="DEC">Décaissements</option>
+                                            <option value="VIR">Virements</option>
+                                            <option value="FEE">Frais</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">Statut</label>
+                                        <select class="form-select" id="statusFilter">
+                                            <option value="validated">Validés</option>
+                                            <option value="">Tous</option>
+                                            <option value="pending">En attente</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin: 0; flex: 1;">
+                                        <label class="form-label">Recherche</label>
+                                        <input type="text" class="form-input" placeholder="N° transaction, référence, partenaire..." id="searchMovements">
+                                    </div>
+                                    <button class="btn btn-primary" onclick="filterMovements()">
+                                        <i class="fa-solid fa-filter"></i> Filtrer
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="resetFilters()">
+                                        <i class="fa-solid fa-undo"></i> Réinitialiser
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="exportMovements()">
+                                        <i class="fa-solid fa-download"></i> Export
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Movements Table -->
+                        <div class="info-section">
+                            <div class="info-section-header">MOUVEMENTS DU JOURNAL</div>
+                            <div style="overflow-x: auto;">
+                                <div class="movement-row movement-header">
+                                    <div>Date/Heure</div>
+                                    <div>N° Transaction</div>
+                                    <div>Type</div>
+                                    <div>Partenaire</div>
+                                    <div>Libellé</div>
+                                    <div style="text-align: right;">Débit</div>
+                                    <div style="text-align: right;">Crédit</div>
+                                    <div style="text-align: right;">Solde</div>
+                                </div>
+                                <div id="movementsBody">
+                                    <div class="movement-row">
+                                        <div>29/01/24 14:35</div>
+                                        <div class="font-mono">TRX-2024-00567<br><span class="text-gray-500 text-xs">ENC-2024-00234</span></div>
+                                        <div><span class="movement-type enc">ENC</span></div>
+                                        <div>SONACOM SARL</div>
+                                        <div>Règl. FA-567<br><span class="text-gray-500 text-xs">Virem.</span></div>
+                                        <div style="text-align: right;"></div>
+                                        <div style="text-align: right; color: #10B981; font-weight: 600;">5.5M</div>
+                                        <div style="text-align: right; font-weight: 600;">85.2M</div>
+                                    </div>
+                                    <div class="movement-row">
+                                        <div>29/01/24 10:15</div>
+                                        <div class="font-mono">TRX-2024-00566<br><span class="text-gray-500 text-xs">DEC-2024-00089</span></div>
+                                        <div><span class="movement-type dec">DEC</span></div>
+                                        <div>SUPPLIER TECH</div>
+                                        <div>Paie. FF-123</div>
+                                        <div style="text-align: right; color: #EF4444; font-weight: 600;">3.2M</div>
+                                        <div style="text-align: right;"></div>
+                                        <div style="text-align: right; font-weight: 600;">79.7M</div>
+                                    </div>
+                                    <div class="movement-row">
+                                        <div>28/01/24 16:20</div>
+                                        <div class="font-mono">TRX-2024-00565<br><span class="text-gray-500 text-xs">VIR-2024-00045</span></div>
+                                        <div><span class="movement-type vir">VIR</span></div>
+                                        <div>CSH-001 Caisse DLA</div>
+                                        <div>Alim. caisse</div>
+                                        <div style="text-align: right; color: #EF4444; font-weight: 600;">10M</div>
+                                        <div style="text-align: right;"></div>
+                                        <div style="text-align: right; font-weight: 600;">82.9M</div>
+                                    </div>
+                                    <div class="movement-row">
+                                        <div>28/01/24 08:00</div>
+                                        <div class="font-mono">TRX-2024-00564<br><span class="text-gray-500 text-xs">Auto</span></div>
+                                        <div><span class="movement-type fee">FEE</span></div>
+                                        <div>-</div>
+                                        <div>Frais banc. mensuel</div>
+                                        <div style="text-align: right; color: #EF4444; font-weight: 600;">15K</div>
+                                        <div style="text-align: right;"></div>
+                                        <div style="text-align: right; font-weight: 600;">92.9M</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Totaux Période -->
+                        <div class="totaux-periode">
+                            <div class="totaux-item">
+                                <div class="totaux-item-label">Total Débits</div>
+                                <div class="totaux-item-value debit" id="totalDebits">45 678 900 XAF</div>
+                            </div>
+                            <div class="totaux-item">
+                                <div class="totaux-item-label">Total Crédits</div>
+                                <div class="totaux-item-value credit" id="totalCredits">67 890 123 XAF</div>
+                            </div>
+                            <div class="totaux-item">
+                                <div class="totaux-item-label">Nombre opérations</div>
+                                <div class="totaux-item-value" id="totalOperations">127</div>
+                            </div>
+                        </div>
+
+                        <div class="totaux-periode mt-3">
+                            <div class="totaux-item">
+                                <div class="totaux-item-label">Solde début</div>
+                                <div class="totaux-item-value" id="startBalance">63 023 344 XAF</div>
+                            </div>
+                            <div class="totaux-item">
+                                <div class="totaux-item-label">Solde fin</div>
+                                <div class="totaux-item-value" id="endBalance">85 234 567 XAF</div>
+                            </div>
+                            <div class="totaux-item">
+                                <div class="totaux-item-label">Solde moyen</div>
+                                <div class="totaux-item-value" id="avgBalance">74 128 955 XAF</div>
+                            </div>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="pagination mt-4">
+                            <div class="pagination-info">Affichage 1-10 sur 127 mouvements</div>
+                            <div class="pagination-controls">
+                                <button class="btn-pagination" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                                <button class="btn-pagination active">1</button>
+                                <button class="btn-pagination">2</button>
+                                <button class="btn-pagination">3</button>
+                                <button class="btn-pagination">...</button>
+                                <button class="btn-pagination">13</button>
+                                <button class="btn-pagination"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Rapprochement -->
+                    <div class="tab-content" id="tab-reconciliation">
+                        <!-- État du Rapprochement -->
+                        <div class="info-section">
+                            <div class="info-section-header">
+                                <i class="fa-solid fa-balance-scale"></i>
+                                ÉTAT DU RAPPROCHEMENT
+                            </div>
+                            <div class="info-section-body">
+                                <div class="rapprochement-status">
+                                    <div class="rapprochement-card">
+                                        <div class="rapprochement-card-label">Dernier rapprochement</div>
+                                        <div class="rapprochement-card-value">25/01/2024 <span class="text-gray-500 text-sm">(il y a 4 jours)</span></div>
+                                    </div>
+                                    <div class="rapprochement-card">
+                                        <div class="rapprochement-card-label">Période rapprochée</div>
+                                        <div class="rapprochement-card-value">01/01/2024 - 25/01/2024</div>
+                                    </div>
+                                    <div class="rapprochement-card">
+                                        <div class="rapprochement-card-label">Prochain rapprochement</div>
+                                        <div class="rapprochement-card-value">31/01/2024 <span class="text-gray-500 text-sm">(dans 2 jours)</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="rapprochement-ecart">
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center;">
+                                        <div>
+                                            <div class="text-gray-500 text-sm">Solde système au 25/01</div>
+                                            <div class="text-xl font-semibold">78 456 789 XAF</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-gray-500 text-sm">Solde relevé bancaire</div>
+                                            <div class="text-xl font-semibold">78 322 222 XAF</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-gray-500 text-sm">Écart à justifier</div>
+                                            <div class="value">134 567 XAF ⚠️</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; gap: 12px;">
+                                    <button class="btn btn-primary" onclick="importStatement()">
+                                        <i class="fa-solid fa-upload"></i>
+                                        Importer relevé
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="newReconciliation()">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Nouveau rapprochement
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="viewHistory()">
+                                        <i class="fa-solid fa-history"></i>
+                                        Voir historique
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Opérations Non Rapprochées -->
+                        <div class="info-grid-2col">
+                            <div class="info-section">
+                                <div class="info-section-header">
+                                    Dans le système (4 opérations)
+                                </div>
+                                <div class="info-section-body" style="padding: 0;">
+                                    <table class="data-table" style="margin: 0;">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Référence</th>
+                                                <th>Montant</th>
+                                                <th>Statut</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>26/01/2024</td>
+                                                <td class="font-mono">TRX-2024-00561</td>
+                                                <td class="text-success font-semibold">+450 000</td>
+                                                <td><span class="badge badge-warning">En transit</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>27/01/2024</td>
+                                                <td class="font-mono">TRX-2024-00562</td>
+                                                <td class="text-danger font-semibold">-123 456</td>
+                                                <td><span class="badge badge-secondary">Non présenté</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>28/01/2024</td>
+                                                <td class="font-mono">TRX-2024-00563</td>
+                                                <td class="text-success font-semibold">+2 350 000</td>
+                                                <td><span class="badge badge-warning">En transit</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>29/01/2024</td>
+                                                <td class="font-mono">TRX-2024-00567</td>
+                                                <td class="text-success font-semibold">+5 500 000</td>
+                                                <td><span class="badge badge-info">J+1 attendu</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="info-section">
+                                <div class="info-section-header">
+                                    Sur le relevé bancaire (2 opérations)
+                                </div>
+                                <div class="info-section-body" style="padding: 0;">
+                                    <table class="data-table" style="margin: 0;">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Libellé bancaire</th>
+                                                <th>Montant</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>24/01/2024</td>
+                                                <td>FRAIS SWIFT</td>
+                                                <td class="text-danger font-semibold">-15 000</td>
+                                                <td><button class="btn btn-sm btn-primary" onclick="imputeOp('1')">Imputer</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>25/01/2024</td>
+                                                <td>VIR CLIENT XYZ</td>
+                                                <td class="text-success font-semibold">+1 234 567</td>
+                                                <td><button class="btn btn-sm btn-secondary" onclick="identifyOp('2')">Identifier</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Statistiques -->
+                    <div class="tab-content" id="tab-statistics">
+                        <div class="info-grid-2col">
+                            <div class="info-section">
+                                <div class="info-section-header">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                    Évolution du Solde (30 derniers jours)
+                                </div>
+                                <div class="info-section-body">
+                                    <div style="height: 300px;">
+                                        <canvas id="balanceChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="info-section">
+                                <div class="info-section-header">
+                                    <i class="fa-solid fa-chart-pie"></i>
+                                    Répartition par Type d'Opération
+                                </div>
+                                <div class="info-section-body">
+                                    <div style="height: 300px;">
+                                        <canvas id="typeChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <div class="info-section-header">
+                                <i class="fa-solid fa-chart-bar"></i>
+                                Flux Mensuels (Entrées/Sorties)
+                            </div>
+                            <div class="info-section-body">
+                                <div style="height: 300px;">
+                                    <canvas id="flowChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/journal-detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,816 @@
+# 🏦 **MODÈLE DE DONNÉES COMPLET - MODULE TRÉSORERIE ET ENCAISSEMENTS ERP MULTIFLEX**```yaml
+# ============================================================================
+# MODÈLE DE DONNÉES COMPLET - MODULE TRÉSORERIE ET ENCAISSEMENTS
+# ERP MULTIFLEX - Version 1.0
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# SCHÉMA PRINCIPAL : treasury (PostgreSQL)
+# Description: Gestion complète de la trésorerie et des flux financiers
+# ----------------------------------------------------------------------------
+
+# ============================================================================
+# SECTION A : JOURNAUX DE TRÉSORERIE
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# TABLE: cash_journals
+# Description: Journaux de trésorerie (caisses, banques, mobile money)
+# User Stories: US-TRES-001, US-TRES-002
+# ----------------------------------------------------------------------------
+cash_journals:
+  # === IDENTIFIANTS ===
+  id: "uuid"                                          # Identifiant unique du journal
+  code: "string"                                      # Code unique (ex: BNK-001, CSH-YDE-001)
+  name: "string"                                      # Libellé descriptif
+  
+  # === TYPE ET CONFIGURATION ===
+  journalType: "JournalType"                         # Enum: BANK_ACCOUNT, CASH_DESK, MOBILE_MONEY, PETTY_CASH, VIRTUAL
+  owningCompanyId: "string"                          # Référence société propriétaire (MongoDB)
+  owningCompanyName: "string"                        # Nom société (dénormalisé pour performance)
+  
+  # === DÉTAILS BANCAIRES (si BANK_ACCOUNT) ===
+  bankDetails:
+    bankName: "string"                               # Nom de la banque (ex: BICEC, SCB)
+    bankCode: "string"                               # Code banque
+    branchCode: "string"                             # Code guichet
+    accountNumber: "string"                          # Numéro de compte
+    iban: "string"                                   # IBAN si applicable
+    swiftCode: "string"                              # Code SWIFT/BIC
+    accountType: "AccountType"                       # CURRENT, SAVINGS, LOAN
+    accountHolder: "string"                          # Titulaire du compte
+  
+  # === DÉTAILS MOBILE MONEY (si MOBILE_MONEY) ===
+  mobileMoneyDetails:
+    operator: "MobileOperator"                       # ORANGE_MONEY, MTN_MOMO, EXPRESS_UNION
+    phoneNumber: "string"                            # Numéro de téléphone
+    merchantCode: "string"                           # Code marchand
+    accountName: "string"                            # Nom du compte
+  
+  # === DEVISE ET SOLDES ===
+  currency: "string"                                 # Code devise (XAF par défaut)
+  isMultiCurrency: "boolean"                        # Support multi-devises
+  currentBalance: "decimal"                         # Solde comptable actuel
+  
+  balanceDetails:
+    bookBalance: "decimal"                          # Solde comptable (système)
+    bankBalance: "decimal"                          # Solde bancaire (relevé)
+    availableBalance: "decimal"                     # Solde disponible
+    lastReconciliationDate: "datetime"              # Dernière réconciliation
+    unreconciledAmount: "decimal"                   # Montant non rapproché
+  
+  # === PARAMÈTRES DE SÉCURITÉ ===
+  securitySettings:
+    overdraftAuthorized: "decimal"                  # Découvert autorisé
+    alertThreshold: "decimal"                       # Seuil d'alerte
+    criticalThreshold: "decimal"                    # Seuil critique
+    dailyWithdrawLimit: "decimal"                   # Plafond retrait journalier
+    dualSignatureThreshold: "decimal"               # Seuil double signature
+    dualSignatureRequired: "boolean"                # Double signature activée
+    authorizedSigners: ["userId"]                   # Liste signataires autorisés
+  
+  # === STATUT ET MÉTADONNÉES ===
+  status: "JournalStatus"                           # ACTIVE, SUSPENDED, CLOSED
+  isDefault: "boolean"                              # Journal par défaut pour type
+  openingBalance: "decimal"                         # Solde d'ouverture
+  openingDate: "date"                               # Date d'ouverture
+  closingDate: "date"                               # Date de clôture (si applicable)
+  
+  # === AUDIT ===
+  createdAt: "datetime"
+  createdBy: "userId"
+  updatedAt: "datetime"
+  updatedBy: "userId"
+  lastActivityDate: "datetime"                      # Dernière transaction
+
+# ----------------------------------------------------------------------------
+# TABLE: payment_transactions
+# Description: Tous les mouvements de trésorerie
+# User Stories: US-TRES-003, US-TRES-008, US-TRES-011
+# ----------------------------------------------------------------------------
+payment_transactions:
+  # === IDENTIFIANTS ===
+  id: "uuid"                                        # Identifiant unique transaction
+  transactionNumber: "string"                       # N° unique (ex: TRX-2024-00001)
+  documentNumber: "string"                          # N° document source (ENC-*, DEC-*, VIR-*)
+  
+  # === TYPE ET CLASSIFICATION ===
+  transactionType: "TransactionType"                # RECEIPT, PAYMENT, TRANSFER, ADJUSTMENT, FEE
+  transactionSubtype: "TransactionSubtype"          # CLIENT_RECEIPT, SUPPLIER_PAYMENT, etc.
+  
+  # === JOURNAUX CONCERNÉS ===
+  sourceJournalId: "uuid"                          # Journal débité (pour transfers/payments)
+  sourceJournalCode: "string"                      # Code journal source
+  destinationJournalId: "uuid"                     # Journal crédité
+  destinationJournalCode: "string"                 # Code journal destination
+  
+  # === PARTENAIRE (si applicable) ===
+  partner:
+    partnerId: "string"                            # ID MongoDB du partenaire
+    partnerCode: "string"                          # Code client/fournisseur
+    partnerName: "string"                          # Nom partenaire
+    partnerType: "PartnerType"                     # CLIENT, SUPPLIER, EMPLOYEE
+  
+  # === MONTANTS ET DEVISE ===
+  amount: "decimal"                                # Montant principal
+  currency: "string"                               # Devise transaction
+  exchangeRate: "decimal"                          # Taux de change si différent devise journal
+  amountInJournalCurrency: "decimal"               # Montant converti en devise journal
+  
+  # === MODE DE PAIEMENT ===
+  paymentMethod: "PaymentMethod"                   # CASH, WIRE_TRANSFER, CHECK, MOBILE_MONEY, CREDIT_CARD
+  
+  paymentMethodDetails:
+    # Pour CASH
+    cashDetails:
+      billsBreakdown: "json"                       # Détail coupures {"10000": 5, "5000": 10}
+      
+    # Pour WIRE_TRANSFER
+    wireDetails:
+      bankName: "string"
+      accountNumber: "string"
+      referenceNumber: "string"
+      
+    # Pour CHECK
+    checkDetails:
+      checkNumber: "string"
+      checkDate: "date"
+      bankName: "string"
+      drawerName: "string"
+      checkStatus: "CheckStatus"                   # DEPOSITED, CLEARED, BOUNCED, CANCELLED
+      
+    # Pour MOBILE_MONEY
+    mobileDetails:
+      operator: "MobileOperator"
+      phoneNumber: "string"
+      transactionRef: "string"
+      confirmationCode: "string"
+  
+  # === DATES ===
+  transactionDate: "date"                          # Date de transaction
+  valueDate: "date"                                # Date valeur (effective)
+  accountingDate: "date"                           # Date comptable
+  
+  # === IMPUTATIONS (Lettrage) ===
+  imputations: [
+    {
+      documentType: "DocumentType"                 # INVOICE, BILL, ADVANCE
+      documentId: "uuid"                          # ID document (facture, avoir, etc.)
+      documentNumber: "string"                     # N° document
+      originalAmount: "decimal"                    # Montant original document
+      imputedAmount: "decimal"                     # Montant imputé
+      remainingAmount: "decimal"                   # Solde restant
+      discount: "decimal"                          # Escompte appliqué
+      lettrageCode: "string"                       # Code lettrage unique
+    }
+  ]
+  
+  # === RAPPROCHEMENT BANCAIRE ===
+  reconciliation:
+    isReconciled: "boolean"                        # Rapproché ou non
+    reconciliationDate: "date"                     # Date rapprochement
+    bankStatementRef: "string"                     # Référence relevé bancaire
+    bankStatementDate: "date"                      # Date relevé
+    reconciledBy: "userId"                         # User qui a rapproché
+  
+  # === VALIDATION ET WORKFLOW ===
+  status: "TransactionStatus"                      # DRAFT, PENDING, VALIDATED, CANCELLED, REJECTED
+  
+  validationWorkflow:
+    requiresDualSignature: "boolean"               # Nécessite double signature
+    signatures: [
+      {
+        signerId: "userId"
+        signerName: "string"
+        signerRole: "string"
+        signatureDate: "datetime"
+        signatureStatus: "SignatureStatus"         # PENDING, APPROVED, REJECTED
+        comments: "string"
+      }
+    ]
+    currentStep: "string"                          # INITIATION, FIRST_SIGNATURE, SECOND_SIGNATURE, COMPLETED
+  
+  # === RÉFÉRENCES ET NOTES ===
+  reference: "string"                              # Référence externe
+  description: "string"                            # Description/libellé
+  notes: "text"                                    # Notes internes
+  
+  # === DOCUMENTS ATTACHÉS ===
+  attachments: [
+    {
+      documentName: "string"
+      documentType: "string"                       # PDF, IMAGE, etc.
+      documentUrl: "string"
+      uploadedAt: "datetime"
+      uploadedBy: "userId"
+    }
+  ]
+  
+  # === COMPTABILISATION ===
+  accounting:
+    isPosted: "boolean"                            # Comptabilisé ou non
+    postingDate: "datetime"                        # Date comptabilisation
+    journalEntryId: "uuid"                         # ID écriture comptable
+    accountingPeriod: "string"                     # Période comptable
+  
+  # === AUDIT ===
+  createdAt: "datetime"
+  createdBy: "userId"
+  validatedAt: "datetime"
+  validatedBy: "userId"
+  cancelledAt: "datetime"
+  cancelledBy: "userId"
+  cancellationReason: "string"
+
+# ----------------------------------------------------------------------------
+# TABLE: customer_receipts
+# Description: Bons d'encaissement clients
+# User Stories: US-TRES-003, US-TRES-004, US-TRES-007
+# ----------------------------------------------------------------------------
+customer_receipts:
+  # === IDENTIFIANTS ===
+  id: "uuid"
+  receiptNumber: "string"                          # Format: ENC-YYYY-XXXXX
+  
+  # === CLIENT ===
+  customerId: "string"                             # ID MongoDB client
+  customerCode: "string"
+  customerName: "string"
+  
+  # === TRANSACTION ===
+  transactionId: "uuid"                            # Lien vers payment_transactions
+  journalId: "uuid"                                # Journal de destination
+  
+  # === MONTANTS ===
+  totalAmount: "decimal"                           # Montant total reçu
+  allocatedAmount: "decimal"                       # Montant affecté aux factures
+  advanceAmount: "decimal"                         # Montant en avance/acompte
+  
+  # === STATUT ===
+  status: "ReceiptStatus"                          # DRAFT, VALIDATED, CANCELLED
+  
+  # === MÉTADONNÉES ===
+  receiptDate: "date"
+  createdAt: "datetime"
+  createdBy: "userId"
+
+# ----------------------------------------------------------------------------
+# TABLE: supplier_payments
+# Description: Ordres de décaissement fournisseurs
+# User Stories: US-TRES-008, US-TRES-009, US-TRES-010
+# ----------------------------------------------------------------------------
+supplier_payments:
+  # === IDENTIFIANTS ===
+  id: "uuid"
+  paymentNumber: "string"                          # Format: DEC-YYYY-XXXXX
+  
+  # === FOURNISSEUR ===
+  supplierId: "string"                             # ID MongoDB fournisseur
+  supplierCode: "string"
+  supplierName: "string"
+  
+  # === TRANSACTION ===
+  transactionId: "uuid"                            # Lien vers payment_transactions
+  journalId: "uuid"                                # Journal source
+  
+  # === MONTANTS ===
+  totalAmount: "decimal"                           # Montant total à payer
+  invoicesAmount: "decimal"                        # Montant factures
+  advanceAmount: "decimal"                         # Avance fournisseur
+  withholdingTax: "decimal"                        # Retenue à la source
+  
+  # === BATCH (si lot de paiement) ===
+  batchId: "uuid"                                  # ID lot de paiement
+  batchNumber: "string"                            # N° lot
+  
+  # === STATUT ET DATES ===
+  status: "PaymentStatus"                          # DRAFT, APPROVED, EXECUTED, CANCELLED
+  paymentDate: "date"
+  dueDate: "date"
+  
+  # === MÉTADONNÉES ===
+  createdAt: "datetime"
+  createdBy: "userId"
+
+# ----------------------------------------------------------------------------
+# TABLE: payment_batches
+# Description: Lots de paiement fournisseurs
+# User Story: US-TRES-010
+# ----------------------------------------------------------------------------
+payment_batches:
+  # === IDENTIFIANTS ===
+  id: "uuid"
+  batchNumber: "string"                            # Format: LOT-YYYY-XXXXX
+  batchName: "string"                              # Nom descriptif
+  
+  # === CONFIGURATION ===
+  journalId: "uuid"                                # Journal source
+  paymentMethod: "PaymentMethod"                   # Mode paiement du lot
+  executionDate: "date"                            # Date d'exécution prévue
+  
+  # === PAIEMENTS DU LOT ===
+  payments: [
+    {
+      paymentId: "uuid"                            # ID supplier_payment
+      supplierId: "string"
+      supplierName: "string"
+      amount: "decimal"
+      status: "string"
+    }
+  ]
+  
+  # === TOTAUX ===
+  totalAmount: "decimal"                           # Montant total du lot
+  paymentsCount: "integer"                         # Nombre de paiements
+  
+  # === STATUT ===
+  status: "BatchStatus"                            # DRAFT, APPROVED, PROCESSING, COMPLETED, FAILED
+  
+  # === EXPORT BANCAIRE ===
+  bankExport:
+    fileName: "string"                             # Nom fichier généré
+    fileFormat: "string"                           # SEPA, AFB320, etc.
+    exportDate: "datetime"
+    exportedBy: "userId"
+    bankResponse: "json"                           # Réponse banque si API
+  
+  # === MÉTADONNÉES ===
+  createdAt: "datetime"
+  createdBy: "userId"
+  approvedAt: "datetime"
+  approvedBy: "userId"
+  executedAt: "datetime"
+  executedBy: "userId"
+
+# ----------------------------------------------------------------------------
+# TABLE: bank_reconciliations
+# Description: Sessions de rapprochement bancaire
+# User Story: US-TRES-012
+# ----------------------------------------------------------------------------
+bank_reconciliations:
+  # === IDENTIFIANTS ===
+  id: "uuid"
+  reconciliationNumber: "string"                   # Format: RAP-YYYY-XXXXX
+  
+  # === JOURNAL ET PÉRIODE ===
+  journalId: "uuid"                                # Journal bancaire concerné
+  journalCode: "string"
+  startDate: "date"                                # Début période
+  endDate: "date"                                  # Fin période
+  
+  # === SOLDES ===
+  bankStatementBalance: "decimal"                  # Solde relevé bancaire
+  systemBalance: "decimal"                         # Solde système
+  difference: "decimal"                            # Écart
+  
+  # === LIGNES RAPPROCHÉES ===
+  reconciledLines: [
+    {
+      transactionId: "uuid"                        # Transaction système
+      statementLineRef: "string"                   # Ligne relevé
+      amount: "decimal"
+      matchingType: "MatchingType"                 # AUTO, MANUAL, SUGGESTED
+      matchingScore: "decimal"                     # Score correspondance (0-100)
+    }
+  ]
+  
+  # === LIGNES NON RAPPROCHÉES ===
+  unreconciledSystemLines: ["uuid"]                # Transactions système non rapprochées
+  unreconciledBankLines: ["json"]                  # Lignes relevé non rapprochées
+  
+  # === STATUT ===
+  status: "ReconciliationStatus"                   # DRAFT, COMPLETED, VALIDATED
+  
+  # === IMPORT RELEVÉ ===
+  bankStatement:
+    fileName: "string"
+    importDate: "datetime"
+    importFormat: "string"                         # CSV, OFX, MT940, CAMT053
+    statementDate: "date"
+    statementNumber: "string"
+    linesCount: "integer"
+    totalDebit: "decimal"
+    totalCredit: "decimal"
+  
+  # === MÉTADONNÉES ===
+  createdAt: "datetime"
+  createdBy: "userId"
+  validatedAt: "datetime"
+  validatedBy: "userId"
+
+# ----------------------------------------------------------------------------
+# TABLE: customer_advances
+# Description: Avances et acomptes clients
+# User Stories: US-TRES-013, US-TRES-014
+# ----------------------------------------------------------------------------
+customer_advances:
+  # === IDENTIFIANTS ===
+  id: "uuid"
+  advanceNumber: "string"                          # Format: AVA-YYYY-XXXXX
+  
+  # === CLIENT ===
+  customerId: "string"                             # ID MongoDB
+  customerCode: "string"
+  customerName: "string"
+  
+  # === TYPE ET ORIGINE ===
+  advanceType: "AdvanceType"                       # ADVANCE, DEPOSIT, TRANSPORT_DEPOSIT
+  
+  sourceDocument:
+    documentType: "string"                         # ORDER, TRANSPORT
+    documentId: "string"                           # ID BC ou BL
+    documentNumber: "string"                       # N° document
+  
+  # === MONTANTS ===
+  originalAmount: "decimal"                        # Montant initial
+  usedAmount: "decimal"                            # Montant utilisé
+  remainingAmount: "decimal"                       # Solde disponible
+  
+  # === UTILISATION ===
+  usage: [
+    {
+      usageDate: "date"
+      documentType: "string"                       # INVOICE, CREDIT_NOTE
+      documentId: "uuid"
+      documentNumber: "string"
+      amount: "decimal"
+    }
+  ]
+  
+  # === STATUT ===
+  status: "AdvanceStatus"                          # ACTIVE, FULLY_USED, REFUNDED, EXPIRED
+  
+  # === DATES ===
+  receiptDate: "date"                              # Date réception
+  expiryDate: "date"                               # Date expiration (optionnel)
+  
+  # === MÉTADONNÉES ===
+  createdAt: "datetime"
+  createdBy: "userId"
+
+# ----------------------------------------------------------------------------
+# TABLE: aging_buckets
+# Description: Balance âgée clients/fournisseurs
+# User Stories: US-TRES-005, US-TRES-009
+# ----------------------------------------------------------------------------
+aging_buckets:
+  # === IDENTIFIANTS ===
+  id: "uuid"
+  partnerId: "string"                              # ID client/fournisseur
+  partnerType: "PartnerType"                       # CLIENT, SUPPLIER
+  
+  # === PÉRIODES (Buckets) ===
+  current: "decimal"                               # Non échu
+  days_1_30: "decimal"                             # 1-30 jours
+  days_31_60: "decimal"                            # 31-60 jours
+  days_61_90: "decimal"                            # 61-90 jours
+  days_91_120: "decimal"                           # 91-120 jours
+  over_120: "decimal"                              # Plus de 120 jours
+  
+  # === TOTAUX ===
+  totalDue: "decimal"                              # Total dû
+  overdueAmount: "decimal"                         # Montant échu
+  
+  # === DÉTAILS ===
+  oldestInvoiceDate: "date"                        # Plus ancienne facture
+  averageDaysToPay: "decimal"                      # DSO/DPO moyen
+  
+  # === MÉTADONNÉES ===
+  calculatedAt: "datetime"                         # Date calcul
+  nextRecalculation: "datetime"                    # Prochain calcul
+
+# ----------------------------------------------------------------------------
+# TABLE: payment_reminders
+# Description: Relances clients automatiques
+# User Story: US-TRES-006
+# ----------------------------------------------------------------------------
+payment_reminders:
+  # === IDENTIFIANTS ===
+  id: "uuid"
+  reminderNumber: "string"                         # Format: REL-YYYY-XXXXX
+  
+  # === CLIENT ===
+  customerId: "string"
+  customerCode: "string"
+  customerName: "string"
+  
+  # === NIVEAU RELANCE ===
+  reminderLevel: "integer"                         # 1, 2, 3...
+  reminderType: "ReminderType"                     # PREVENTIVE, LEVEL1, LEVEL2, LEVEL3, LEGAL
+  
+  # === FACTURES CONCERNÉES ===
+  invoices: [
+    {
+      invoiceId: "uuid"
+      invoiceNumber: "string"
+      invoiceDate: "date"
+      dueDate: "date"
+      originalAmount: "decimal"
+      outstandingAmount: "decimal"
+      daysOverdue: "integer"
+    }
+  ]
+  
+  # === MONTANTS ===
+  totalOutstanding: "decimal"                      # Total impayé
+  oldestOverdue: "integer"                         # Jours retard max
+  
+  # === COMMUNICATION ===
+  communication:
+    channel: "CommunicationChannel"                # EMAIL, SMS, LETTER, WHATSAPP
+    recipientEmail: "string"
+    recipientPhone: "string"
+    templateUsed: "string"                         # Template message
+    sentAt: "datetime"
+    deliveryStatus: "DeliveryStatus"               # SENT, DELIVERED, FAILED, BOUNCED
+  
+  # === ACTIONS ET SUIVI ===
+  nextAction:
+    actionType: "string"                           # NEXT_REMINDER, BLOCK_ACCOUNT, LEGAL_ACTION
+    scheduledDate: "date"
+  
+  customerResponse:
+    responseDate: "datetime"
+    responseType: "string"                         # PROMISE_TO_PAY, DISPUTE, NO_RESPONSE
+    promiseDate: "date"
+    notes: "text"
+  
+  # === STATUT ===
+  status: "ReminderStatus"                         # SCHEDULED, SENT, RESPONDED, ESCALATED, CLOSED
+  
+  # === MÉTADONNÉES ===
+  createdAt: "datetime"
+  createdBy: "userId"
+
+# ----------------------------------------------------------------------------
+# TABLE: cash_flow_forecasts
+# Description: Prévisions de trésorerie
+# User Story: US-TRES-016
+# ----------------------------------------------------------------------------
+cash_flow_forecasts:
+  # === IDENTIFIANTS ===
+  id: "uuid"
+  forecastDate: "date"                             # Date de la prévision
+  
+  # === PÉRIODE ===
+  periodType: "PeriodType"                         # DAILY, WEEKLY, MONTHLY
+  periodStart: "date"
+  periodEnd: "date"
+  
+  # === ENTRÉES PRÉVUES ===
+  expectedInflows:
+    customerReceipts: "decimal"                    # Encaissements clients
+    otherReceipts: "decimal"                       # Autres entrées
+    totalInflows: "decimal"                        # Total entrées
+    
+    details: [
+      {
+        source: "string"                           # CLIENT, LOAN, SUBSIDY, OTHER
+        partnerId: "string"
+        partnerName: "string"
+        amount: "decimal"
+        probability: "decimal"                     # Probabilité réalisation (%)
+        dueDate: "date"
+        notes: "string"
+      }
+    ]
+  
+  # === SORTIES PRÉVUES ===
+  expectedOutflows:
+    supplierPayments: "decimal"                    # Paiements fournisseurs
+    salaries: "decimal"                            # Salaires
+    taxes: "decimal"                               # Impôts et taxes
+    otherPayments: "decimal"                       # Autres sorties
+    totalOutflows: "decimal"                       # Total sorties
+    
+    details: [
+      {
+        destination: "string"                      # SUPPLIER, EMPLOYEE, TAX, OTHER
+        partnerId: "string"
+        partnerName: "string"
+        amount: "decimal"
+        dueDate: "date"
+        isMandatory: "boolean"                     # Paiement obligatoire
+        notes: "string"
+      }
+    ]
+  
+  # === SOLDES PRÉVISIONNELS ===
+  openingBalance: "decimal"                        # Solde début période
+  netCashFlow: "decimal"                           # Flux net (entrées - sorties)
+  closingBalance: "decimal"                        # Solde fin période
+  minimumBalance: "decimal"                        # Solde minimum prévu
+  
+  # === ANALYSE ===
+  alerts: [
+    {
+      alertType: "string"                          # NEGATIVE_BALANCE, BELOW_THRESHOLD
+      alertDate: "date"
+      expectedBalance: "decimal"
+      threshold: "decimal"
+      severity: "string"                           # LOW, MEDIUM, HIGH, CRITICAL
+    }
+  ]
+  
+  # === MÉTADONNÉES ===
+  createdAt: "datetime"
+  createdBy: "userId"
+  lastUpdated: "datetime"
+
+# ----------------------------------------------------------------------------
+# TABLE: treasury_kpis
+# Description: Indicateurs de performance trésorerie
+# User Stories: US-TRES-017, US-TRES-018, US-TRES-019
+# ----------------------------------------------------------------------------
+treasury_kpis:
+  # === IDENTIFIANTS ===
+  id: "uuid"
+  kpiDate: "date"                                  # Date calcul
+  periodType: "string"                             # DAILY, WEEKLY, MONTHLY, YEARLY
+  
+  # === INDICATEURS LIQUIDITÉ ===
+  liquidity:
+    totalCash: "decimal"                           # Trésorerie totale
+    availableCash: "decimal"                       # Trésorerie disponible
+    currentRatio: "decimal"                        # Ratio liquidité générale
+    quickRatio: "decimal"                          # Ratio liquidité immédiate
+    cashRatio: "decimal"                           # Ratio liquidité réduite
+  
+  # === INDICATEURS ACTIVITÉ ===
+  activity:
+    dso: "decimal"                                 # Days Sales Outstanding
+    dpo: "decimal"                                 # Days Payable Outstanding
+    cashConversionCycle: "decimal"                 # Cycle conversion cash
+    workingCapital: "decimal"                      # BFR
+  
+  # === INDICATEURS ENCAISSEMENTS ===
+  collections:
+    totalCollected: "decimal"                      # Total encaissé période
+    collectionRate: "decimal"                      # Taux encaissement (%)
+    averageCollectionTime: "decimal"               # Délai moyen encaissement
+    overdueRate: "decimal"                         # Taux impayés (%)
+    badDebtRate: "decimal"                         # Taux créances irrécouvrables
+  
+  # === INDICATEURS DÉCAISSEMENTS ===
+  payments:
+    totalPaid: "decimal"                           # Total payé période
+    onTimePaymentRate: "decimal"                   # Taux paiement à temps (%)
+    earlyPaymentDiscounts: "decimal"               # Escomptes obtenus
+    latePaymentPenalties: "decimal"                # Pénalités retard
+  
+  # === MÉTADONNÉES ===
+  calculatedAt: "datetime"
+  nextCalculation: "datetime"
+
+# ============================================================================
+# ÉNUMÉRATIONS
+# ============================================================================
+
+# Types de journaux
+JournalType:
+  - BANK_ACCOUNT                                   # Compte bancaire
+  - CASH_DESK                                      # Caisse physique
+  - MOBILE_MONEY                                   # Orange Money, MTN MoMo
+  - PETTY_CASH                                     # Petite caisse
+  - VIRTUAL                                        # Compte virtuel/attente
+
+# Types de transactions
+TransactionType:
+  - RECEIPT                                         # Encaissement
+  - PAYMENT                                         # Décaissement
+  - TRANSFER                                        # Virement interne
+  - ADJUSTMENT                                      # Ajustement
+  - FEE                                            # Frais bancaires
+
+# Sous-types de transactions
+TransactionSubtype:
+  - CLIENT_RECEIPT                                 # Encaissement client
+  - SUPPLIER_PAYMENT                               # Paiement fournisseur
+  - SALARY_PAYMENT                                 # Paiement salaire
+  - TAX_PAYMENT                                    # Paiement taxes
+  - BANK_TO_BANK                                   # Virement entre banques
+  - BANK_TO_CASH                                   # Retrait espèces
+  - CASH_TO_BANK                                   # Versement espèces
+  - MOBILE_TO_BANK                                 # Mobile money vers banque
+  - COMMISSION_PAYMENT                             # Paiement commission
+  - TRANSPORT_DEPOSIT                              # Acompte transport
+
+# Modes de paiement
+PaymentMethod:
+  - CASH                                            # Espèces (limite 100K XAF)
+  - WIRE_TRANSFER                                  # Virement bancaire
+  - CHECK                                          # Chèque
+  - MOBILE_MONEY                                   # Orange/MTN/Express Union
+  - CREDIT_CARD                                    # Carte crédit (rare)
+  - PROMISSORY_NOTE                                # Billet à ordre
+  - LETTER_OF_CREDIT                               # Lettre de crédit
+
+# Statuts
+TransactionStatus:
+  - DRAFT                                           # Brouillon
+  - PENDING                                        # En attente validation
+  - VALIDATED                                      # Validé
+  - EXECUTED                                       # Exécuté
+  - CANCELLED                                      # Annulé
+  - REJECTED                                       # Rejeté
+
+JournalStatus:
+  - ACTIVE                                         # Actif
+  - SUSPENDED                                     # Suspendu temporairement
+  - CLOSED                                        # Clôturé définitivement
+
+CheckStatus:
+  - DEPOSITED                                      # Déposé
+  - CLEARED                                        # Encaissé
+  - BOUNCED                                        # Rejeté
+  - CANCELLED                                      # Annulé
+  - ON_HOLD                                        # En attente
+
+# ============================================================================
+# COLLECTIONS MONGODB ASSOCIÉES
+# ============================================================================
+
+# Collection: treasury_settings
+treasury_settings:
+  companyId: "ObjectId"
+  settings:
+    defaultCashJournal: "journalId"
+    defaultBankJournal: "journalId"
+    cashLimit: 100000                              # Limite espèces CEMAC
+    reminderLevels: [
+      {
+        level: 1
+        daysAfterDue: 7
+        template: "FRIENDLY"
+        channels: ["EMAIL"]
+      },
+      {
+        level: 2
+        daysAfterDue: 30
+        template: "FIRM"
+        channels: ["EMAIL", "SMS"]
+      },
+      {
+        level: 3
+        daysAfterDue: 60
+        template: "FINAL"
+        channels: ["EMAIL", "LETTER"]
+      }
+    ]
+    bankFormats:                                    # Formats export bancaire
+      - SEPA_XML
+      - AFB320
+      - MT940
+      - CAMT053
+
+# ============================================================================
+# ÉVÉNEMENTS KAFKA
+# ============================================================================
+treasury_events:
+  - treasury.journal.created
+  - treasury.journal.suspended
+  - treasury.journal.threshold.alert
+  - treasury.receipt.created
+  - treasury.receipt.validated
+  - treasury.payment.created
+  - treasury.payment.approved
+  - treasury.payment.executed
+  - treasury.transfer.completed
+  - treasury.reconciliation.completed
+  - treasury.reminder.sent
+  - treasury.advance.created
+  - treasury.advance.applied
+  - treasury.forecast.alert
+
+# ============================================================================
+# RÈGLES DE GESTION MÉTIER
+# ============================================================================
+business_rules:
+  - RG-TRES-001: "Limite espèces 100,000 XAF (réglementation CEMAC)"
+  - RG-TRES-002: "Double signature obligatoire selon seuils définis"
+  - RG-TRES-003: "Lettrage FIFO automatique par défaut"
+  - RG-TRES-004: "Attestation non-redevance obligatoire paiements > 100K"
+  - RG-TRES-005: "Rapprochement mensuel obligatoire comptes bancaires"
+  - RG-TRES-006: "Relances automatiques selon échéancier défini"
+  - RG-TRES-007: "Acompte transport 100% avant chargement"
+  - RG-TRES-008: "Conservation pièces justificatives 10 ans"
+  - RG-TRES-009: "Calcul DSO/DPO quotidien"
+  - RG-TRES-010: "Blocage paiement si fournisseur non conforme"
+```
+
+---
+
+**Ce modèle de données couvre l'ensemble des 20 user stories du module Trésorerie et Encaissements avec :**
+
+1. **Gestion complète des journaux** (caisses, banques, mobile money)
+2. **Tous les flux financiers** (encaissements, décaissements, virements)
+3. **Lettrage et rapprochement** automatisés
+4. **Gestion des avances et acomptes** (incluant transport subventionné)
+5. **Relances automatiques** multi-niveaux
+6. **Tableaux de bord et KPIs** temps réel
+7. **Prévisions de trésorerie** avec alertes
+8. **Double signature électronique** selon seuils
+9. **Support multi-devises** et multi-sociétés
+10. **Conformité CEMAC** (limite espèces, attestations fiscales)
+
+Le modèle est **prêt pour l'implémentation** avec toutes les tables PostgreSQL, collections MongoDB, énumérations et événements Kafka nécessaires.
