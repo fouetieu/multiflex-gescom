@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter des Articles - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/catalogue-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        
+        .wizard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .wizard-header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .method-card {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .method-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(38, 60, 137, 0.15);
+        }
+        
+        .method-card.active {
+            border-color: var(--primary-color);
+            background: #EEF2FF;
+        }
+        
+        .method-card.active::after {
+            content: '✓';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .method-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gray-100);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+        }
+        
+        .method-card.active .method-icon {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .step-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .step-content.hidden {
+            display: none;
+        }
+        
+        .articles-browser {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            height: 600px;
+        }
+        
+        .articles-sidebar {
+            border-right: 2px solid var(--gray-200);
+            padding-right: 20px;
+            overflow-y: auto;
+        }
+        
+        .articles-main {
+            overflow-y: auto;
+        }
+        
+        .family-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .family-item:hover {
+            background: var(--gray-50);
+        }
+        
+        .family-item.active {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .article-card {
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .article-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .article-card.selected {
+            border-color: var(--primary-color);
+            background: #EEF2FF;
+        }
+        
+        .article-card.already-in-list {
+            background: var(--gray-50);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .price-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            align-items: end;
+            background: var(--gray-50);
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+        
+        .selected-articles-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .selected-article-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .pricing-mode-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--gray-200);
+        }
+        
+        .pricing-tab {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray-600);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .pricing-tab:hover {
+            color: var(--primary-color);
+        }
+        
+        .pricing-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .import-drop-zone {
+            border: 3px dashed var(--gray-300);
+            border-radius: 12px;
+            padding: 60px 40px;
+            text-align: center;
+            background: var(--gray-50);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .import-drop-zone:hover {
+            border-color: var(--primary-color);
+            background: #EEF2FF;
+        }
+        
+        .import-drop-zone.drag-over {
+            border-color: var(--primary-color);
+            background: #DBEAFE;
+        }
+        
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .summary-table th {
+            background: var(--gray-100);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 2px solid var(--gray-300);
+        }
+        
+        .summary-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .copy-source-card {
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .copy-source-card:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .copy-source-card.selected {
+            border-color: var(--primary-color);
+            background: #EEF2FF;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Ajouter des Articles à la Liste de Prix</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="cursor-pointer">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg"></i>
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Pierre NGONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Catalogue Produits
+                    </div>
+                    
+                    <a href="./categories-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-folder-tree mr-3"></i>
+                        <span>Catégories</span>
+                    </a>
+                    <a href="./products-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box mr-3"></i>
+                        <span>Articles</span>
+                    </a>
+                    <a href="./variants-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-boxes-stacked mr-3"></i>
+                        <span>Conditionnements</span>
+                    </a>
+                    <a href="./pricelists-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-tags mr-3"></i>
+                        <span>Listes de Prix</span>
+                    </a>
+                    
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+                    <a href="../dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="wizard-container">
+                    <!-- Header -->
+                    <div class="wizard-header">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h1 style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 8px;">
+                                    <i class="fa-solid fa-plus-circle"></i>
+                                    Ajouter des Articles
+                                </h1>
+                                <div style="font-size: 14px; color: var(--gray-600);">
+                                    Liste de prix : <strong id="pricelist-name">TARIF-QUINC-2026 - Quincaillerie 2026</strong>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary" onclick="cancelAndGoBack()">
+                                <i class="fa-solid fa-times"></i>
+                                Annuler
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Choose Method -->
+                    <div id="step-method" class="step-content">
+                        <h2 style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin-bottom: 24px;">
+                            Choisissez votre méthode d'ajout
+                        </h2>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                            <!-- Method 1: Browse -->
+                            <div class="method-card" onclick="selectMethod('browse')">
+                                <div class="method-icon">
+                                    <i class="fa-solid fa-search"></i>
+                                </div>
+                                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                    Parcourir le Catalogue
+                                </h3>
+                                <p style="color: var(--gray-600); font-size: 14px; margin-bottom: 12px;">
+                                    Naviguez par familles et sélectionnez les articles individuellement
+                                </p>
+                                <ul style="font-size: 13px; color: var(--gray-600); list-style: none; padding: 0;">
+                                    <li style="margin-bottom: 6px;">
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Sélection visuelle
+                                    </li>
+                                    <li style="margin-bottom: 6px;">
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Filtres par famille
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Recherche rapide
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Method 2: Family -->
+                            <div class="method-card" onclick="selectMethod('family')">
+                                <div class="method-icon">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </div>
+                                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                    Par Famille Complète
+                                </h3>
+                                <p style="color: var(--gray-600); font-size: 14px; margin-bottom: 12px;">
+                                    Ajoutez tous les articles d'une ou plusieurs familles en une fois
+                                </p>
+                                <ul style="font-size: 13px; color: var(--gray-600); list-style: none; padding: 0;">
+                                    <li style="margin-bottom: 6px;">
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Ajout en masse
+                                    </li>
+                                    <li style="margin-bottom: 6px;">
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Gain de temps
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Tarification globale
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Method 3: Import -->
+                            <div class="method-card" onclick="selectMethod('import')">
+                                <div class="method-icon">
+                                    <i class="fa-solid fa-file-excel"></i>
+                                </div>
+                                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                    Import Excel
+                                </h3>
+                                <p style="color: var(--gray-600); font-size: 14px; margin-bottom: 12px;">
+                                    Importez une liste d'articles avec leurs prix depuis un fichier Excel
+                                </p>
+                                <ul style="font-size: 13px; color: var(--gray-600); list-style: none; padding: 0;">
+                                    <li style="margin-bottom: 6px;">
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Template disponible
+                                    </li>
+                                    <li style="margin-bottom: 6px;">
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Validation automatique
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Plusieurs centaines d'articles
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Method 4: Copy -->
+                            <div class="method-card" onclick="selectMethod('copy')">
+                                <div class="method-icon">
+                                    <i class="fa-solid fa-copy"></i>
+                                </div>
+                                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                    Copier d'une Liste
+                                </h3>
+                                <p style="color: var(--gray-600); font-size: 14px; margin-bottom: 12px;">
+                                    Copiez les articles d'une liste de prix existante
+                                </p>
+                                <ul style="font-size: 13px; color: var(--gray-600); list-style: none; padding: 0;">
+                                    <li style="margin-bottom: 6px;">
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Réutilisation rapide
+                                    </li>
+                                    <li style="margin-bottom: 6px;">
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Prix inclus
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-check" style="color: #10B981; margin-right: 8px;"></i>
+                                        Ajustement possible
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Browse Articles -->
+                    <div id="step-browse" class="step-content hidden">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h2 style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin: 0;">
+                                <i class="fa-solid fa-search"></i>
+                                Parcourir et Sélectionner les Articles
+                            </h2>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="backToMethod()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Changer de méthode
+                                </button>
+                                <button class="btn btn-primary" onclick="proceedToPricing()" disabled id="btn-proceed-browse">
+                                    Continuer <span id="selected-count-browse">(0)</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--gray-50); padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                            <input type="text" class="search-input" placeholder="🔍 Rechercher un article par code, nom, famille..."
+                                   id="browse-search" onkeyup="filterBrowseArticles()" style="width: 100%;">
+                        </div>
+
+                        <div class="articles-browser">
+                            <div class="articles-sidebar">
+                                <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--gray-700);">
+                                    FAMILLES
+                                </h3>
+                                <div id="families-list">
+                                    <!-- Généré dynamiquement -->
+                                </div>
+                            </div>
+                            
+                            <div class="articles-main" id="articles-grid">
+                                <!-- Généré dynamiquement -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Select Families -->
+                    <div id="step-family" class="step-content hidden">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h2 style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin: 0;">
+                                <i class="fa-solid fa-layer-group"></i>
+                                Sélectionner les Familles
+                            </h2>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="backToMethod()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Changer de méthode
+                                </button>
+                                <button class="btn btn-primary" onclick="proceedToPricing()" disabled id="btn-proceed-family">
+                                    Continuer <span id="selected-count-family">(0 articles)</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="info-box" style="margin-bottom: 24px;">
+                            <i class="fa-solid fa-info-circle"></i>
+                            Tous les articles de chaque famille sélectionnée seront ajoutés à la liste de prix.
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px;" id="families-grid">
+                            <!-- Généré dynamiquement -->
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Import Excel -->
+                    <div id="step-import" class="step-content hidden">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h2 style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin: 0;">
+                                <i class="fa-solid fa-file-excel"></i>
+                                Importer depuis Excel
+                            </h2>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="backToMethod()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Changer de méthode
+                                </button>
+                                <button class="btn btn-secondary" onclick="downloadTemplate()">
+                                    <i class="fa-solid fa-download"></i>
+                                    Télécharger le Template
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="info-box" style="margin-bottom: 24px;">
+                            <i class="fa-solid fa-info-circle"></i>
+                            <strong>Format attendu :</strong> Code Article | Nom | Prix Vente HT | Marge % | Statut (ACTIVE/INACTIVE)
+                        </div>
+
+                        <div class="import-drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+                            <input type="file" id="file-input" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleFileSelect(event)">
+                            <i class="fa-solid fa-cloud-upload" style="font-size: 64px; color: var(--primary-color); margin-bottom: 16px;"></i>
+                            <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                Glissez-déposez votre fichier Excel ici
+                            </div>
+                            <div style="font-size: 14px; color: var(--gray-600); margin-bottom: 16px;">
+                                ou cliquez pour sélectionner un fichier
+                            </div>
+                            <div style="font-size: 12px; color: var(--gray-500);">
+                                Formats acceptés : .xlsx, .xls, .csv (max 10 MB)
+                            </div>
+                        </div>
+
+                        <div id="import-results" style="margin-top: 24px; display: none;">
+                            <!-- Résultats de l'import -->
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Copy from List -->
+                    <div id="step-copy" class="step-content hidden">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h2 style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin: 0;">
+                                <i class="fa-solid fa-copy"></i>
+                                Copier depuis une Liste Existante
+                            </h2>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="backToMethod()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Changer de méthode
+                                </button>
+                                <button class="btn btn-primary" onclick="proceedToPricing()" disabled id="btn-proceed-copy">
+                                    Continuer <span id="selected-count-copy">(0 articles)</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="info-box" style="margin-bottom: 24px;">
+                            <i class="fa-solid fa-info-circle"></i>
+                            Les articles seront copiés avec leurs prix. Vous pourrez les ajuster à l'étape suivante.
+                        </div>
+
+                        <div style="margin-bottom: 16px;">
+                            <input type="text" class="search-input" placeholder="🔍 Rechercher une liste de prix..."
+                                   id="copy-search" onkeyup="filterCopyLists()" style="width: 100%;">
+                        </div>
+
+                        <div id="copy-lists-container">
+                            <!-- Généré dynamiquement -->
+                        </div>
+                    </div>
+
+                    <!-- Step 6: Configure Pricing -->
+                    <div id="step-pricing" class="step-content hidden">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h2 style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin: 0;">
+                                <i class="fa-solid fa-dollar-sign"></i>
+                                Configuration des Prix
+                            </h2>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="backToPreviousStep()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Retour
+                                </button>
+                                <button class="btn btn-success" onclick="validateAndAdd()">
+                                    <i class="fa-solid fa-check"></i>
+                                    Valider et Ajouter les Articles
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Pricing Mode Tabs -->
+                        <div class="pricing-mode-tabs">
+                            <button class="pricing-tab active" data-mode="individual" onclick="switchPricingMode('individual')">
+                                <i class="fa-solid fa-edit"></i>
+                                Prix Individuels
+                            </button>
+                            <button class="pricing-tab" data-mode="global" onclick="switchPricingMode('global')">
+                                <i class="fa-solid fa-sliders"></i>
+                                Tarification Globale
+                            </button>
+                            <button class="pricing-tab" data-mode="formula" onclick="switchPricingMode('formula')">
+                                <i class="fa-solid fa-calculator"></i>
+                                Formule de Calcul
+                            </button>
+                        </div>
+
+                        <!-- Individual Pricing -->
+                        <div id="pricing-individual" class="pricing-mode-content">
+                            <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 14px; color: var(--gray-600);">
+                                    <strong id="pricing-articles-count">0</strong> article(s) à configurer
+                                </div>
+                                <div>
+                                    <button class="btn btn-secondary btn-sm" onclick="applyMarginToAll()">
+                                        <i class="fa-solid fa-percent"></i>
+                                        Appliquer une marge à tous
+                                    </button>
+                                </div>
+                            </div>
+
+                            <table class="summary-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px;">#</th>
+                                        <th>Article</th>
+                                        <th style="width: 120px;">PA (XAF)</th>
+                                        <th style="width: 150px;">PV HT (XAF)</th>
+                                        <th style="width: 150px;">Marge</th>
+                                        <th style="width: 100px;">Statut</th>
+                                        <th style="width: 60px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pricing-individual-tbody">
+                                    <!-- Généré dynamiquement -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Global Pricing -->
+                        <div id="pricing-global" class="pricing-mode-content hidden">
+                            <div class="info-box" style="margin-bottom: 24px;">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Appliquez une marge globale à tous les articles sélectionnés
+                            </div>
+
+                            <div style="max-width: 600px; margin: 0 auto;">
+                                <div class="form-group">
+                                    <label class="form-label required">Marge Globale (%)</label>
+                                    <input type="number" step="0.1" class="form-input" id="global-margin" 
+                                           placeholder="Ex: 50" oninput="applyGlobalMargin()">
+                                    <small class="form-help">Cette marge sera appliquée à tous les articles</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Arrondir les prix à</label>
+                                    <select class="form-input" id="global-rounding" onchange="applyGlobalMargin()">
+                                        <option value="none">Pas d'arrondi</option>
+                                        <option value="10">10 XAF</option>
+                                        <option value="50">50 XAF</option>
+                                        <option value="100" selected>100 XAF</option>
+                                        <option value="500">500 XAF</option>
+                                        <option value="1000">1000 XAF</option>
+                                    </select>
+                                </div>
+
+                                <div class="preview-box" id="global-preview" style="display: none;">
+                                    <div style="font-weight: 600; margin-bottom: 12px;">
+                                        <i class="fa-solid fa-eye"></i>
+                                        APERÇU
+                                    </div>
+                                    <div id="global-preview-content">
+                                        <!-- Aperçu des prix -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Formula Pricing -->
+                        <div id="pricing-formula" class="pricing-mode-content hidden">
+                            <div class="info-box" style="margin-bottom: 24px;">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Définissez des formules de calcul basées sur la famille ou la catégorie
+                            </div>
+
+                            <div style="max-width: 800px; margin: 0 auto;">
+                                <div style="background: var(--gray-50); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                                    <div style="font-weight: 600; margin-bottom: 12px;">Règles de Tarification</div>
+                                    
+                                    <div id="formula-rules">
+                                        <div style="display: flex; gap: 12px; align-items: end; margin-bottom: 12px;">
+                                            <div class="form-group" style="flex: 1; margin: 0;">
+                                                <label class="form-label">Si Famille =</label>
+                                                <select class="form-input">
+                                                    <option value="">-- Toutes --</option>
+                                                    <option value="CIMENT">Ciment</option>
+                                                    <option value="FER">Fer</option>
+                                                    <option value="PEINTURE">Peinture</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group" style="flex: 1; margin: 0;">
+                                                <label class="form-label">Alors Marge =</label>
+                                                <input type="number" step="0.1" class="form-input" placeholder="Ex: 80">
+                                            </div>
+                                            <button class="btn btn-secondary">
+                                                <i class="fa-solid fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn btn-primary" onclick="applyFormulaRules()">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                        Appliquer les Règles
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Panel (visible in pricing step) -->
+                    <div id="summary-panel" class="selected-articles-panel" style="display: none;">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">
+                            <i class="fa-solid fa-check-circle" style="color: #10B981;"></i>
+                            Articles Sélectionnés (<span id="summary-count">0</span>)
+                        </h3>
+                        <div id="summary-items">
+                            <!-- Articles sélectionnés -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/pricelists-add-items.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompte Transport Subventionné - Trésorerie | MultiFlex GESCOM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/tresorerie-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { font-family: "Poppins", sans-serif; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+
+        .calcul-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .calcul-box .calcul-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #0369a1;
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+        .calcul-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        .calcul-row.total {
+            border-top: 2px dashed #0ea5e9;
+            margin-top: 8px;
+            padding-top: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            color: #0369a1;
+        }
+        .calcul-row .label { color: #64748b; }
+        .calcul-row .value { font-weight: 600; color: #1e293b; }
+
+        .info-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .info-box .info-title {
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+        .info-row .label { color: #64748b; }
+        .info-row .value { font-weight: 500; color: #1e293b; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .status-badge.success { background: #dcfce7; color: #166534; }
+        .status-badge.warning { background: #fef3c7; color: #92400e; }
+        .status-badge.info { background: #dbeafe; color: #1e40af; }
+
+        .tracabilite-box {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .tracabilite-box .title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .tracabilite-flow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-size: 13px;
+        }
+        .tracabilite-flow .step {
+            background: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 500;
+            border: 1px solid #fcd34d;
+        }
+        .tracabilite-flow .arrow { color: #f59e0b; }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Acompte Transport Subventionné</h1>
+                <div class="flex items-center gap-4">
+                    <span class="status-badge info">
+                        <i class="fa-solid fa-user-tie"></i>
+                        Agent Commercial
+                    </span>
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Jean KAMGA</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">Module Trésorerie</div>
+                    <a href="./dashboard.html" class="sidebar-link" data-page="dashboard"><i class="fa-solid fa-chart-pie mr-3"></i><span>Dashboard</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Journaux</div>
+                    <a href="./journals-list.html" class="sidebar-link" data-page="journals-list"><i class="fa-solid fa-book mr-3"></i><span>Liste Journaux</span></a>
+                    <a href="./journal-create.html" class="sidebar-link" data-page="journal-create"><i class="fa-solid fa-plus-circle mr-3"></i><span>Nouveau Journal</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Encaissements</div>
+                    <a href="./encaissement-create.html" class="sidebar-link" data-page="encaissement-create"><i class="fa-solid fa-arrow-down mr-3"></i><span>Nouvel Encaissement</span></a>
+                    <a href="./encaissement-imputation.html" class="sidebar-link" data-page="encaissement-imputation"><i class="fa-solid fa-list-check mr-3"></i><span>Imputation</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Décaissements</div>
+                    <a href="./decaissement-create.html" class="sidebar-link" data-page="decaissement-create"><i class="fa-solid fa-arrow-up mr-3"></i><span>Nouveau Décaissement</span></a>
+                    <a href="./validation-double-signature.html" class="sidebar-link" data-page="validation-double-signature"><i class="fa-solid fa-signature mr-3"></i><span>Double Signature</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">Acomptes</div>
+                    <a href="./acompte-transport.html" class="sidebar-link active" data-page="acompte-transport"><i class="fa-solid fa-truck-ramp-box mr-3"></i><span>Acompte Transport</span></a>
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">Système</div>
+                    <a href="../index.html" class="sidebar-link" data-page="home"><i class="fa-solid fa-home mr-3"></i><span>Accueil</span></a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="tresorerie-container" style="max-width: 900px; padding: 24px; margin: 0 auto;">
+
+                    <!-- Page Header -->
+                    <div class="page-header mb-6">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">
+                                    <i class="fa-solid fa-truck-ramp-box"></i>
+                                    Acompte Transport Subventionné
+                                </h1>
+                                <p class="page-description">
+                                    Enregistrement des acomptes transport pour les bons de commande avec transport subventionné
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bon de Commande Info -->
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-file-invoice"></i>
+                                Bon de Commande
+                            </h3>
+                            <span class="status-badge warning">
+                                <i class="fa-solid fa-clock"></i>
+                                En attente acompte
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-box mb-4">
+                                <div class="info-title">BON DE COMMANDE : BC-CLI156-2024-00234</div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div class="info-row">
+                                            <span class="label">Client :</span>
+                                            <span class="value">SONACOM SARL</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="label">Montant BC :</span>
+                                            <span class="value">15 450 000 XAF</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="label">Transport :</span>
+                                            <span class="value">
+                                                <span class="status-badge success" style="padding: 2px 8px; font-size: 11px;">
+                                                    <i class="fa-solid fa-check"></i> Subventionné
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="info-row">
+                                            <span class="label">Transporteur :</span>
+                                            <span class="value">KAMGA LOGISTICS</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="label">Date BC :</span>
+                                            <span class="value">28/01/2024</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="label">Commercial :</span>
+                                            <span class="value">M. FOTSO Pierre</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Calcul Acompte Transport -->
+                            <div class="calcul-box">
+                                <div class="calcul-title">
+                                    <i class="fa-solid fa-truck fa-lg"></i>
+                                    CALCUL ACOMPTE TRANSPORT
+                                </div>
+                                <div class="calcul-row">
+                                    <span class="label">Coût transport total :</span>
+                                    <span class="value">450 000 XAF</span>
+                                </div>
+                                <div class="calcul-row">
+                                    <span class="label">Part société (30%) :</span>
+                                    <span class="value">135 000 XAF</span>
+                                </div>
+                                <div class="calcul-row">
+                                    <span class="label">Part client (70%) :</span>
+                                    <span class="value">315 000 XAF</span>
+                                </div>
+                                <div class="calcul-row total">
+                                    <span class="label">ACOMPTE CLIENT REQUIS (100%) :</span>
+                                    <span class="value" style="color: #0369a1; font-size: 18px;">315 000 XAF</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enregistrement Acompte -->
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-money-bill-transfer"></i>
+                                Enregistrement Acompte
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">N° Acompte</label>
+                                    <input type="text" class="form-input" value="AVA-2024-00089" readonly style="background: #f1f5f9; font-weight: 600; color: #263c89;">
+                                    <small class="form-hint">Généré automatiquement</small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Type</label>
+                                    <input type="text" class="form-input" value="TRANSPORT_DEPOSIT" readonly style="background: #f1f5f9;">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label required">Mode de réception</label>
+                                    <select id="paymentMode" class="form-select">
+                                        <option value="">Sélectionner</option>
+                                        <option value="WIRE_TRANSFER">Virement bancaire</option>
+                                        <option value="CASH">Espèces</option>
+                                        <option value="CHECK">Chèque</option>
+                                        <option value="MOBILE_MONEY">Mobile Money</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required">Journal</label>
+                                    <select id="journal" class="form-select">
+                                        <option value="">Sélectionner</option>
+                                        <option value="BNK-001">BNK-001 - BICEC Principal</option>
+                                        <option value="BNK-002">BNK-002 - SCB Compte USD</option>
+                                        <option value="CSH-001">CSH-001 - Caisse Douala</option>
+                                        <option value="MOB-001">MOB-001 - Orange Money</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label required">Montant reçu</label>
+                                    <div class="input-group">
+                                        <input type="number" id="amountReceived" class="form-input" value="315000" placeholder="0">
+                                        <span class="input-group-text">XAF</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required">Date de réception</label>
+                                    <input type="date" id="receiptDate" class="form-input" value="2024-01-29">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Référence paiement</label>
+                                <input type="text" id="paymentRef" class="form-input" placeholder="Ex: VIR-SONACOM-TRANSPORT-234">
+                            </div>
+
+                            <!-- Statut après acompte -->
+                            <div class="alert-box alert-success mt-4">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <div>
+                                    <strong>Statut BC après acompte :</strong>
+                                    <span class="status-badge success ml-2">
+                                        <i class="fa-solid fa-unlock"></i>
+                                        Débloqué pour livraison
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Utilisation prévue -->
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-route"></i>
+                                Utilisation prévue
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-sm text-gray-600 mb-3">L'acompte sera automatiquement appliqué lors de :</p>
+                            <ul class="list-disc list-inside text-sm text-gray-700 space-y-2 mb-4">
+                                <li>Création du Bon de Livraison</li>
+                                <li>Génération de la Facture Transport séparée</li>
+                            </ul>
+
+                            <div class="tracabilite-box">
+                                <div class="title">
+                                    <i class="fa-solid fa-link"></i>
+                                    Traçabilité :
+                                </div>
+                                <div class="tracabilite-flow">
+                                    <span class="step">BC</span>
+                                    <i class="fa-solid fa-arrow-right arrow"></i>
+                                    <span class="step" style="background: #dcfce7; border-color: #22c55e;">Acompte</span>
+                                    <i class="fa-solid fa-arrow-right arrow"></i>
+                                    <span class="step">BL</span>
+                                    <i class="fa-solid fa-arrow-right arrow"></i>
+                                    <span class="step">Facture Transport</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="flex justify-between items-center">
+                                <button class="btn btn-secondary" onclick="window.history.back()">
+                                    <i class="fa-solid fa-times"></i>
+                                    Annuler
+                                </button>
+                                <div class="flex gap-3">
+                                    <button class="btn btn-secondary" onclick="printReceipt()">
+                                        <i class="fa-solid fa-print"></i>
+                                        Imprimer reçu
+                                    </button>
+                                    <button class="btn btn-success" onclick="validateAcompte()">
+                                        <i class="fa-solid fa-check"></i>
+                                        Valider Acompte
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal modal-sm">
+            <div class="modal-body text-center py-8">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-check text-3xl text-green-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Acompte validé !</h3>
+                <p class="text-gray-600 mb-4">L'acompte AVA-2024-00089 a été enregistré avec succès.</p>
+                <p class="text-sm text-gray-500 mb-6">Le bon de commande BC-CLI156-2024-00234 est maintenant débloqué pour livraison.</p>
+                <div class="flex gap-3 justify-center">
+                    <button class="btn btn-secondary" onclick="closeSuccessModal()">Fermer</button>
+                    <button class="btn btn-primary" onclick="window.location.href='./encaissement-create.html'">
+                        <i class="fa-solid fa-plus"></i>
+                        Nouvel acompte
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/acompte-transport.js"></script>
+</body>
+</html>

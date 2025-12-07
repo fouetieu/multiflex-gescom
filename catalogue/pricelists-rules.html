@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Règles de Tarification - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/catalogue-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        
+        .rules-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .article-header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .article-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .tabs-header {
+            display: flex;
+            border-bottom: 2px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+        
+        .tab-button {
+            padding: 16px 24px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--gray-600);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-button:hover {
+            color: var(--primary-color);
+            background: white;
+        }
+        
+        .tab-button.active {
+            color: var(--primary-color);
+            background: white;
+            border-bottom-color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 32px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tiers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .tiers-table th {
+            background: var(--gray-100);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--gray-700);
+            border-bottom: 2px solid var(--gray-300);
+        }
+        
+        .tiers-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 14px;
+        }
+        
+        .tiers-table tr:hover {
+            background: var(--gray-50);
+        }
+        
+        .preview-box {
+            background: #EEF2FF;
+            border-left: 4px solid #3730A3;
+            padding: 16px;
+            border-radius: 6px;
+            margin-top: 16px;
+        }
+        
+        .preview-title {
+            font-weight: 600;
+            color: #3730A3;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .simulation-card {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .simulation-result {
+            background: var(--gray-50);
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .result-row:last-child {
+            border-bottom: none;
+            padding-top: 12px;
+            margin-top: 8px;
+            border-top: 2px solid var(--gray-300);
+        }
+        
+        .result-label {
+            color: var(--gray-600);
+        }
+        
+        .result-value {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+        
+        .result-highlight {
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+        
+        .bonus-badge {
+            background: #FEF3C7;
+            color: #92400E;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .suggestion-box {
+            background: #DBEAFE;
+            border-left: 4px solid #3B82F6;
+            padding: 16px;
+            border-radius: 6px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Règles de Tarification Avancées</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="cursor-pointer">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg"></i>
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Pierre NGONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Catalogue Produits
+                    </div>
+                    
+                    <a href="./categories-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-folder-tree mr-3"></i>
+                        <span>Catégories</span>
+                    </a>
+                    <a href="./products-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box mr-3"></i>
+                        <span>Articles</span>
+                    </a>
+                    <a href="./variants-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-boxes-stacked mr-3"></i>
+                        <span>Conditionnements</span>
+                    </a>
+                    <a href="./pricelists-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-tags mr-3"></i>
+                        <span>Listes de Prix</span>
+                    </a>
+                    
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+                    <a href="../dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="rules-container">
+                    <!-- Breadcrumb -->
+                    <div style="margin-bottom: 16px; font-size: 14px; color: var(--gray-600);">
+                        <a href="./pricelists-list.html" style="color: var(--primary-color);">Listes de Prix</a>
+                        <span> > </span>
+                        <a href="#" onclick="goBackToList()" style="color: var(--primary-color);" id="pricelist-breadcrumb">TARIF-QUINC-2026</a>
+                        <span> > </span>
+                        <span>Règles</span>
+                    </div>
+                    
+                    <!-- Article Header -->
+                    <div class="article-header">
+                        <div style="margin-bottom: 12px;">
+                            <span style="font-size: 13px; color: var(--gray-600);">Liste: </span>
+                            <span style="font-weight: 600;" id="pricelist-name">TARIF-QUINC-2026 - Quincaillerie 2026</span>
+                        </div>
+                        
+                        <div class="article-info">
+                            <div>
+                                <div style="font-size: 18px; font-weight: 700; color: var(--primary-color); margin-bottom: 4px;" id="article-code">
+                                    CIM-CPJ425 - Ciment CPJ 42.5 - Sac 50kg
+                                </div>
+                                <div style="display: flex; gap: 24px; font-size: 14px;">
+                                    <span>
+                                        <strong>Prix d'Achat:</strong> 
+                                        <span id="purchase-price">186 XAF</span>
+                                    </span>
+                                    <span style="border-left: 2px solid var(--gray-300); padding-left: 24px;">
+                                        <strong>Prix Base Liste:</strong> 
+                                        <span id="base-price">372 XAF</span>
+                                    </span>
+                                    <span style="border-left: 2px solid var(--gray-300); padding-left: 24px;">
+                                        <strong>Marge:</strong> 
+                                        <span id="margin" style="color: #10B981; font-weight: 600;">100%</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 12px; margin-top: 16px;">
+                            <button class="btn btn-primary" onclick="saveAllRules()">
+                                <i class="fa-solid fa-save"></i>
+                                Enregistrer Tout
+                            </button>
+                            <button class="btn btn-secondary" onclick="resetRules()">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                Réinitialiser
+                            </button>
+                            <button class="btn btn-secondary" onclick="goBackToList()">
+                                <i class="fa-solid fa-arrow-left"></i>
+                                Retour
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="tabs-container">
+                        <div class="tabs-header">
+                            <button class="tab-button active" data-tab="tiers" onclick="switchTab('tiers')">
+                                <i class="fa-solid fa-layer-group"></i>
+                                Paliers Quantitatifs
+                            </button>
+                            <button class="tab-button" data-tab="bonus" onclick="switchTab('bonus')">
+                                <i class="fa-solid fa-gift"></i>
+                                Règles de Bonus
+                            </button>
+                            <button class="tab-button" data-tab="simulation" onclick="switchTab('simulation')">
+                                <i class="fa-solid fa-calculator"></i>
+                                Simulation
+                            </button>
+                        </div>
+
+                        <!-- TAB 1: Paliers Quantitatifs -->
+                        <div class="tab-content active" id="tab-tiers">
+                            <div class="info-box" style="margin-bottom: 24px;">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Les paliers permettent d'appliquer un prix dégressif selon la quantité commandée. 
+                                Le système évalue les paliers du plus grand au plus petit.
+                            </div>
+                            
+                            <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px; cursor: pointer; font-weight: 600;">
+                                <input type="checkbox" id="enable-tiers" checked onchange="toggleTiers()">
+                                Activer les paliers de prix pour cet article
+                            </label>
+                            
+                            <div id="tiers-content">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                    <button class="btn btn-primary" onclick="openTierModal('add')">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Ajouter un Palier
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="autoGenerateTiers()">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                        Générer Paliers Auto
+                                    </button>
+                                </div>
+                                
+                                <table class="tiers-table" id="tiers-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 50px;">#</th>
+                                            <th style="width: 120px;">Qté Min</th>
+                                            <th>Prix Unit. HT</th>
+                                            <th style="width: 100px;">Remise %</th>
+                                            <th style="width: 120px;">Remise Mont.</th>
+                                            <th style="width: 120px;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tiers-tbody">
+                                        <!-- Lignes dynamiques -->
+                                    </tbody>
+                                </table>
+                                
+                                <div id="tiers-empty" style="text-align: center; padding: 40px; color: var(--gray-500); display: none;">
+                                    <i class="fa-solid fa-layer-group" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                                    <p>Aucun palier configuré</p>
+                                    <button class="btn btn-secondary" onclick="openTierModal('add')" style="margin-top: 12px;">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Ajouter le premier palier
+                                    </button>
+                                </div>
+                                
+                                <div class="preview-box" id="tiers-preview" style="display: none;">
+                                    <div class="preview-title">
+                                        <i class="fa-solid fa-chart-line"></i>
+                                        APERÇU TARIFICATION
+                                    </div>
+                                    <table style="width: 100%; font-size: 14px;">
+                                        <thead>
+                                            <tr style="border-bottom: 2px solid #3730A3;">
+                                                <th style="padding: 8px; text-align: left;">Quantité</th>
+                                                <th style="padding: 8px; text-align: right;">Prix Unitaire</th>
+                                                <th style="padding: 8px; text-align: right;">Prix Total</th>
+                                                <th style="padding: 8px; text-align: right;">Économie</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tiers-preview-body">
+                                            <!-- Lignes dynamiques -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: Règles de Bonus -->
+                        <div class="tab-content" id="tab-bonus">
+                            <div class="info-box" style="margin-bottom: 24px;">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Les règles de bonus permettent d'offrir gratuitement des articles lorsqu'une quantité minimale est achetée 
+                                (ex: 10 achetés = 1 offert).
+                            </div>
+                            
+                            <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px; cursor: pointer; font-weight: 600;">
+                                <input type="checkbox" id="enable-bonus" onchange="toggleBonus()">
+                                Activer les règles de bonus pour cet article
+                            </label>
+                            
+                            <div id="bonus-content" style="display: none;">
+                                <div style="margin-bottom: 16px;">
+                                    <button class="btn btn-primary" onclick="openBonusModal('add')">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Ajouter une Règle de Bonus
+                                    </button>
+                                </div>
+                                
+                                <table class="tiers-table" id="bonus-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 50px;">#</th>
+                                            <th style="width: 120px;">Qté Achetée</th>
+                                            <th>Article Offert</th>
+                                            <th style="width: 100px;">Qté Offerte</th>
+                                            <th>Label</th>
+                                            <th style="width: 120px;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bonus-tbody">
+                                        <!-- Lignes dynamiques -->
+                                    </tbody>
+                                </table>
+                                
+                                <div id="bonus-empty" style="text-align: center; padding: 40px; color: var(--gray-500);">
+                                    <i class="fa-solid fa-gift" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                                    <p>Aucune règle de bonus configurée</p>
+                                    <button class="btn btn-secondary" onclick="openBonusModal('add')" style="margin-top: 12px;">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Ajouter la première règle
+                                    </button>
+                                </div>
+                                
+                                <div class="preview-box" id="bonus-examples" style="display: none; margin-top: 20px;">
+                                    <div class="preview-title">
+                                        <i class="fa-solid fa-lightbulb"></i>
+                                        EXEMPLES D'APPLICATION
+                                    </div>
+                                    <div id="bonus-examples-content">
+                                        <!-- Exemples dynamiques -->
+                                    </div>
+                                </div>
+                                
+                                <div style="background: var(--gray-50); padding: 20px; border-radius: 8px; margin-top: 20px;">
+                                    <div style="font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-gears"></i>
+                                        RÈGLES DE CUMUL
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                            <input type="radio" name="bonus-cumul" value="all" checked>
+                                            Cumuler toutes les règles applicables (défaut)
+                                        </label>
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                            <input type="radio" name="bonus-cumul" value="best">
+                                            Appliquer uniquement la meilleure règle
+                                        </label>
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                            <input type="radio" name="bonus-cumul" value="first">
+                                            Appliquer uniquement la première règle déclenchée
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: Simulation -->
+                        <div class="tab-content" id="tab-simulation">
+                            <div class="info-box" style="margin-bottom: 24px;">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Testez l'application des paliers et bonus avec différentes quantités
+                            </div>
+                            
+                            <div class="simulation-card">
+                                <div style="font-weight: 600; font-size: 16px; margin-bottom: 16px;">
+                                    <i class="fa-solid fa-calculator"></i>
+                                    SIMULATEUR DE COMMANDE
+                                </div>
+                                
+                                <div style="display: flex; gap: 12px; align-items: end;">
+                                    <div class="form-group" style="flex: 1;">
+                                        <label class="form-label">Quantité commandée</label>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <input type="number" class="form-input" id="sim-quantity" value="75" min="1" style="flex: 1;">
+                                            <span style="color: var(--gray-600);">unités</span>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="runSimulation()">
+                                        <i class="fa-solid fa-play"></i>
+                                        Calculer
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="simulation-results" style="display: none;">
+                                <div class="simulation-card">
+                                    <div style="font-weight: 600; font-size: 16px; margin-bottom: 16px; color: var(--primary-color);">
+                                        <i class="fa-solid fa-chart-line"></i>
+                                        RÉSULTAT DE LA SIMULATION
+                                    </div>
+                                    
+                                    <div style="font-size: 14px; color: var(--gray-600); margin-bottom: 12px;">
+                                        Article: <strong id="sim-article">CIM-CPJ425 - Ciment CPJ 42.5 - Sac 50kg</strong>
+                                    </div>
+                                    
+                                    <div class="simulation-result">
+                                        <div style="font-weight: 600; margin-bottom: 12px; color: var(--primary-color);">
+                                            💰 TARIFICATION APPLIQUÉE
+                                        </div>
+                                        <div id="sim-pricing-details">
+                                            <!-- Détails dynamiques -->
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="simulation-result" id="sim-bonus-section" style="margin-top: 16px; display: none;">
+                                        <div style="font-weight: 600; margin-bottom: 12px; color: #F59E0B;">
+                                            🎁 BONUS APPLIQUÉS
+                                        </div>
+                                        <div id="sim-bonus-details">
+                                            <!-- Détails dynamiques -->
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="simulation-result" style="margin-top: 16px;">
+                                        <div style="font-weight: 600; margin-bottom: 12px; color: #10B981;">
+                                            📦 RÉCAPITULATIF DE LIVRAISON
+                                        </div>
+                                        <div id="sim-summary">
+                                            <!-- Résumé dynamique -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="suggestion-box" id="sim-suggestions">
+                                    <div style="font-weight: 600; margin-bottom: 12px;">
+                                        <i class="fa-solid fa-lightbulb"></i>
+                                        SUGGESTIONS D'OPTIMISATION
+                                    </div>
+                                    <div id="sim-suggestions-content">
+                                        <!-- Suggestions dynamiques -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tier -->
+    <div class="modal-overlay" id="tier-modal" style="display: none;">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="tier-modal-title">Ajouter un Palier</h2>
+                <button class="modal-close" onclick="closeTierModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="tier-form">
+                    <input type="hidden" id="tier-edit-index">
+                    
+                    <div style="background: var(--gray-50); padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+                        <div style="font-size: 13px; color: var(--gray-600);">Article: <strong id="tier-article">CIM-CPJ425</strong></div>
+                        <div style="font-size: 13px; color: var(--gray-600);">Prix de Base: <strong id="tier-base-price">372 XAF</strong></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Quantité Minimale</label>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="form-input" id="tier-min-qty" required min="1" style="flex: 1;">
+                            <span style="color: var(--gray-600);">unités</span>
+                        </div>
+                        <small class="form-help">
+                            <i class="fa-solid fa-info-circle"></i>
+                            Saisissez la quantité à partir de laquelle ce palier s'applique
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Méthode de Calcul</label>
+                        <div style="display: flex; gap: 12px;">
+                            <label style="flex: 1; cursor: pointer;">
+                                <input type="radio" name="tier-method" value="fixed" checked onchange="updateTierMethod()">
+                                Prix Fixe
+                            </label>
+                            <label style="flex: 1; cursor: pointer;">
+                                <input type="radio" name="tier-method" value="percent" onchange="updateTierMethod()">
+                                Remise en %
+                            </label>
+                            <label style="flex: 1; cursor: pointer;">
+                                <input type="radio" name="tier-method" value="amount" onchange="updateTierMethod()">
+                                Remise en Montant
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Prix Unitaire HT pour ce Palier</label>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" step="0.01" class="form-input" id="tier-price" required style="flex: 1;" oninput="calculateTierPreview()">
+                            <span style="color: var(--gray-600);">XAF</span>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-box" id="tier-calc-preview">
+                        <div class="preview-title">
+                            <i class="fa-solid fa-calculator"></i>
+                            CALCULS AUTOMATIQUES
+                        </div>
+                        <div id="tier-calc-content">
+                            <!-- Calculs dynamiques -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeTierModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveTier()">
+                    <i class="fa-solid fa-save"></i>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Bonus -->
+    <div class="modal-overlay" id="bonus-modal" style="display: none;">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="bonus-modal-title">Ajouter une Règle de Bonus</h2>
+                <button class="modal-close" onclick="closeBonusModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="bonus-form">
+                    <input type="hidden" id="bonus-edit-index">
+                    
+                    <div style="background: var(--gray-50); padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+                        <div style="font-size: 13px; color: var(--gray-600);">
+                            Article Principal: <strong id="bonus-article">CIM-CPJ425 - Ciment CPJ 42.5</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Quantité Minimale à Acheter</label>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="form-input" id="bonus-min-qty" required min="1" style="flex: 1;" oninput="calculateBonusPreview()">
+                            <span style="color: var(--gray-600);">unités</span>
+                        </div>
+                        <small class="form-help">
+                            <i class="fa-solid fa-info-circle"></i>
+                            Quantité de l'article principal à commander pour déclencher le bonus
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Article à Offrir</label>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="bonus-article-type" value="same" checked onchange="toggleBonusArticleSelection()">
+                                Même article (CIM-CPJ425)
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="bonus-article-type" value="other" onchange="toggleBonusArticleSelection()">
+                                Autre article
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="bonus-other-article" style="display: none;">
+                        <label class="form-label">Rechercher l'article à offrir</label>
+                        <input type="text" class="form-input" id="bonus-article-search" placeholder="🔍 Code ou nom de l'article...">
+                        <small class="form-help">Ex: SAC-PLAS - Sac Plastique</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Quantité Offerte</label>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="form-input" id="bonus-qty" required min="1" value="1" style="flex: 1;" oninput="calculateBonusPreview()">
+                            <span style="color: var(--gray-600);">unités</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Label Promotionnel</label>
+                        <input type="text" class="form-input" id="bonus-label" required maxlength="100" 
+                               placeholder="Ex: Promo: 50 achetés = 2 offerts !">
+                        <small class="form-help">
+                            <i class="fa-solid fa-info-circle"></i>
+                            Ce texte apparaîtra sur les devis, commandes et factures
+                        </small>
+                    </div>
+                    
+                    <div class="preview-box" id="bonus-calc-preview">
+                        <div class="preview-title">
+                            <i class="fa-solid fa-calculator"></i>
+                            APERÇU DE LA RÈGLE
+                        </div>
+                        <div id="bonus-calc-content">
+                            <!-- Calculs dynamiques -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBonusModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveBonus()">
+                    <i class="fa-solid fa-save"></i>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/pricelists-rules.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+

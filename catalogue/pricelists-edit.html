@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Éditer Liste de Prix - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/catalogue-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        
+        .edit-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .header-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .status-badge.active {
+            background: #D1FAE5;
+            color: #059669;
+        }
+        
+        .status-badge.draft {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+        
+        .status-badge.archived {
+            background: #E5E7EB;
+            color: #6B7280;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .tabs-header {
+            display: flex;
+            border-bottom: 2px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+        
+        .tab-button {
+            padding: 16px 24px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--gray-600);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+        
+        .tab-button:hover {
+            color: var(--primary-color);
+            background: white;
+        }
+        
+        .tab-button.active {
+            color: var(--primary-color);
+            background: white;
+            border-bottom-color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .tab-badge {
+            background: var(--gray-300);
+            color: var(--gray-700);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .tab-button.active .tab-badge {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 32px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .info-section {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .info-section-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--gray-900);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .info-row {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            flex: 0 0 200px;
+            color: var(--gray-600);
+            font-size: 14px;
+        }
+        
+        .info-value {
+            flex: 1;
+            color: var(--gray-900);
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .edit-icon-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .edit-icon-btn:hover {
+            background: #1e3a8a;
+            transform: scale(1.05);
+        }
+        
+        .stat-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 24px;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -32px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 18px;
+            width: 2px;
+            height: calc(100% - 6px);
+            background: var(--gray-300);
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        .timeline-content {
+            background: var(--gray-50);
+            padding: 12px 16px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .timeline-date {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-bottom: 4px;
+        }
+        
+        .timeline-action {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+        
+        .timeline-user {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+        
+        .articles-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .articles-table th {
+            background: var(--gray-100);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--gray-700);
+            border-bottom: 2px solid var(--gray-300);
+        }
+        
+        .articles-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 14px;
+        }
+        
+        .articles-table tr:hover {
+            background: var(--gray-50);
+        }
+        
+        .article-name {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+        
+        .article-code {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+        
+        .price-badge {
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .tiers-badge {
+            background: #FEF3C7;
+            color: #92400E;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-left: 6px;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Éditer Liste de Prix</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="cursor-pointer">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg"></i>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Pierre NGONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Catalogue Produits
+                    </div>
+                    
+                    <a href="./categories-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-folder-tree mr-3"></i>
+                        <span>Catégories</span>
+                    </a>
+
+                    <a href="./products-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box mr-3"></i>
+                        <span>Articles</span>
+                    </a>
+
+                    <a href="./variants-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-boxes-stacked mr-3"></i>
+                        <span>Conditionnements</span>
+                    </a>
+
+                    <a href="./pricelists-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-tags mr-3"></i>
+                        <span>Listes de Prix</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="edit-container">
+                    <!-- Header Card -->
+                    <div class="header-card">
+                        <div class="header-title">
+                            <h1>
+                                <span id="pricelist-code">TARIF-QUINC-2026</span> - 
+                                <span id="pricelist-name">Quincaillerie 2026</span>
+                            </h1>
+                            <span class="status-badge active" id="status-badge">
+                                <i class="fa-solid fa-check-circle"></i>
+                                ACTIVE
+                            </span>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary btn-sm" onclick="saveChanges()">
+                                <i class="fa-solid fa-save"></i>
+                                Enregistrer
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="refreshData()">
+                                <i class="fa-solid fa-rotate"></i>
+                                Actualiser
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="duplicatePricelist()">
+                                <i class="fa-solid fa-copy"></i>
+                                Dupliquer
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="importItems()">
+                                <i class="fa-solid fa-file-import"></i>
+                                Import
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="exportItems()">
+                                <i class="fa-solid fa-file-export"></i>
+                                Export
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="goBack()">
+                                <i class="fa-solid fa-arrow-left"></i>
+                                Retour
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="tabs-container">
+                        <div class="tabs-header">
+                            <button class="tab-button active" data-tab="properties" onclick="switchTab('properties')">
+                                <i class="fa-solid fa-file-lines"></i>
+                                Propriétés
+                            </button>
+                            <button class="tab-button" data-tab="articles" onclick="switchTab('articles')">
+                                <i class="fa-solid fa-box"></i>
+                                Articles
+                                <span class="tab-badge" id="articles-count">372</span>
+                            </button>
+                            <button class="tab-button" data-tab="statistics" onclick="switchTab('statistics')">
+                                <i class="fa-solid fa-chart-bar"></i>
+                                Statistiques
+                            </button>
+                            <button class="tab-button" data-tab="history" onclick="switchTab('history')">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                Historique
+                            </button>
+                        </div>
+
+                        <!-- TAB 1: Propriétés -->
+                        <div class="tab-content active" id="tab-properties">
+                            <div class="info-section">
+                                <div class="info-section-title">
+                                    <span><i class="fa-solid fa-info-circle"></i> Informations Générales</span>
+                                    <button class="edit-icon-btn" onclick="editSection('general')">
+                                        <i class="fa-solid fa-edit"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <div class="info-label">Code:</div>
+                                    <div class="info-value" id="prop-code">TARIF-QUINC-2026</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Nom:</div>
+                                    <div class="info-value" id="prop-name">Quincaillerie 2026</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Description:</div>
+                                    <div class="info-value" id="prop-description">Liste de prix dédiée aux revendeurs de quincaillerie pour l'année 2026</div>
+                                </div>
+                            </div>
+
+                            <div class="info-section">
+                                <div class="info-section-title">
+                                    <span><i class="fa-solid fa-bullseye"></i> Type & Priorité</span>
+                                    <button class="edit-icon-btn" onclick="editSection('type')">
+                                        <i class="fa-solid fa-edit"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <div class="info-label">Type:</div>
+                                    <div class="info-value">
+                                        <span style="background: #10B981; color: white; padding: 4px 12px; border-radius: 12px; font-size: 13px;">
+                                            🛒 VENTE
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Priorité:</div>
+                                    <div class="info-value" id="prop-priority">10 (Standard)</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Devise:</div>
+                                    <div class="info-value" id="prop-currency">XAF - Franc CFA</div>
+                                </div>
+                            </div>
+
+                            <div class="info-section">
+                                <div class="info-section-title">
+                                    <span><i class="fa-solid fa-calendar-days"></i> Validité</span>
+                                    <button class="edit-icon-btn" onclick="editSection('validity')">
+                                        <i class="fa-solid fa-edit"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <div class="info-label">Début:</div>
+                                    <div class="info-value" id="prop-start-date">01/01/2026</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Fin:</div>
+                                    <div class="info-value" id="prop-end-date">31/12/2026</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Statut:</div>
+                                    <div class="info-value">
+                                        <span style="color: #10B981;">
+                                            ✅ Valide (encore 68 jours)
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="info-section">
+                                <div class="info-section-title">
+                                    <span><i class="fa-solid fa-users"></i> Ciblage</span>
+                                    <button class="edit-icon-btn" onclick="editSection('targeting')">
+                                        <i class="fa-solid fa-edit"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <div class="info-label">Types:</div>
+                                    <div class="info-value">
+                                        <span style="display: flex; align-items: center; gap: 4px;">
+                                            • PARTNER_QUINCAILLERIE
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Partenaires:</div>
+                                    <div class="info-value">Aucun partenaire spécifique</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Couverture:</div>
+                                    <div class="info-value">
+                                        <span style="color: var(--primary-color); font-weight: 600;">
+                                            📊 47 partenaires éligibles
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="info-section">
+                                <div class="info-section-title">
+                                    <span><i class="fa-solid fa-circle-info"></i> Statut & Audit</span>
+                                    <button class="edit-icon-btn" onclick="editSection('status')">
+                                        <i class="fa-solid fa-edit"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <div class="info-label">Statut:</div>
+                                    <div class="info-value">
+                                        <span style="color: #10B981; font-weight: 600;">
+                                            🟢 ACTIVE
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Créé le:</div>
+                                    <div class="info-value">12/09/2025 à 14:32 par Paul EMANE</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Modifié le:</div>
+                                    <div class="info-value">15/10/2025 à 09:15 par Pierre NGONO</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 24px; padding-top: 24px; border-top: 2px solid var(--gray-200);">
+                                <button class="btn btn-danger" onclick="archivePricelist()">
+                                    <i class="fa-solid fa-box-archive"></i>
+                                    Archiver la Liste
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: Articles -->
+                        <div class="tab-content" id="tab-articles">
+                            <div style="margin-bottom: 24px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                    <h2 style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin: 0;">
+                                        <i class="fa-solid fa-box"></i>
+                                        Articles de la Liste (372)
+                                    </h2>
+                                    <div style="display: flex; gap: 8px;">
+                                        <button class="btn btn-secondary btn-sm" onclick="openAddArticleModal()">
+                                            <i class="fa-solid fa-plus"></i>
+                                            Ajouter Article
+                                        </button>
+                                        <button class="btn btn-secondary btn-sm" onclick="addByFamily()">
+                                            <i class="fa-solid fa-layer-group"></i>
+                                            Ajouter par Famille
+                                        </button>
+                                        <button class="btn btn-secondary btn-sm" onclick="copyFrom()">
+                                            <i class="fa-solid fa-copy"></i>
+                                            Copier depuis...
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                                    <input type="text" class="search-input" placeholder="🔍 Rechercher article..." 
+                                           style="flex: 1;" id="article-search" onkeyup="filterArticles()">
+                                    <select class="filter-select" id="article-family-filter" onchange="filterArticles()">
+                                        <option value="">Toutes familles</option>
+                                        <option value="CIMENT">Ciment</option>
+                                        <option value="FER">Fer</option>
+                                        <option value="PEINTURE">Peinture</option>
+                                    </select>
+                                    <select class="filter-select" id="article-status-filter" onchange="filterArticles()">
+                                        <option value="">Tous statuts</option>
+                                        <option value="ACTIVE">Actifs</option>
+                                        <option value="INACTIVE">Inactifs</option>
+                                    </select>
+                                </div>
+                                
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-list"></i>
+                                        Tous (372)
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-layer-group"></i>
+                                        Avec Paliers (48)
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-gift"></i>
+                                        Avec Bonus (12)
+                                    </button>
+                                </div>
+                            </div>
+
+                            <table class="articles-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px;">
+                                            <input type="checkbox" onclick="toggleSelectAllArticles()">
+                                        </th>
+                                        <th>Article</th>
+                                        <th style="width: 140px;">Prix Base HT</th>
+                                        <th style="width: 100px; text-align: center;">Marge %</th>
+                                        <th style="width: 100px; text-align: center;">Paliers</th>
+                                        <th style="width: 80px; text-align: center;">Statut</th>
+                                        <th style="width: 100px; text-align: center;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="articles-table-body">
+                                    <!-- Données chargées dynamiquement -->
+                                </tbody>
+                            </table>
+                            
+                            <div style="margin-top: 24px; padding: 20px; background: var(--gray-100); border-radius: 8px;">
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px;">
+                                    <div>
+                                        <div style="font-size: 13px; color: var(--gray-600);">Articles:</div>
+                                        <div style="font-size: 20px; font-weight: 600;">372</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 13px; color: var(--gray-600);">Actifs:</div>
+                                        <div style="font-size: 20px; font-weight: 600;">365</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 13px; color: var(--gray-600);">Avec Paliers:</div>
+                                        <div style="font-size: 20px; font-weight: 600;">48</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 13px; color: var(--gray-600);">Avec Bonus:</div>
+                                        <div style="font-size: 20px; font-weight: 600;">12</div>
+                                    </div>
+                                </div>
+                                <div style="padding-top: 16px; border-top: 2px solid var(--gray-300);">
+                                    <div style="font-size: 13px; color: var(--gray-600); margin-bottom: 4px;">Marge Moyenne:</div>
+                                    <div style="font-size: 24px; font-weight: 700; color: var(--primary-color);">95.3%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: Statistiques -->
+                        <div class="tab-content" id="tab-statistics">
+                            <h2 style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin-bottom: 24px;">
+                                <i class="fa-solid fa-chart-bar"></i>
+                                Statistiques d'Utilisation
+                            </h2>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px;">
+                                <div class="stat-card">
+                                    <div class="stat-label">Commandes</div>
+                                    <div class="stat-value">127</div>
+                                    <div style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">Ce mois</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">CA Généré</div>
+                                    <div class="stat-value" style="font-size: 22px;">8.7M</div>
+                                    <div style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">XAF</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">Remise Moyenne</div>
+                                    <div class="stat-value">7.2%</div>
+                                    <div style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">Paliers appliqués</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">Top Article</div>
+                                    <div style="font-size: 16px; font-weight: 600; color: var(--gray-900); margin-top: 8px;">CIM-CPJ425</div>
+                                    <div style="font-size: 12px; color: var(--gray-500); margin-top: 4px;">1,250 unités</div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <div class="info-section-title">
+                                    <span><i class="fa-solid fa-chart-pie"></i> Couverture Catalogue</span>
+                                </div>
+                                
+                                <div style="margin: 20px 0;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                        <span style="font-size: 14px; color: var(--gray-700);">Articles dans la liste</span>
+                                        <span style="font-weight: 600;">372 / 1,245 (29.9%)</span>
+                                    </div>
+                                    <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                        <div style="height: 100%; width: 29.9%; background: var(--primary-color);"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <div class="info-section-title">
+                                    <span><i class="fa-solid fa-layer-group"></i> Répartition par Famille</span>
+                                </div>
+                                
+                                <table class="articles-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Famille</th>
+                                            <th style="width: 120px; text-align: center;">Nb Articles</th>
+                                            <th style="width: 150px;">Répartition</th>
+                                            <th style="width: 120px; text-align: right;">CA Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Ciment</td>
+                                            <td style="text-align: center;">45</td>
+                                            <td>
+                                                <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                                    <div style="height: 100%; width: 35%; background: #10B981;"></div>
+                                                </div>
+                                            </td>
+                                            <td style="text-align: right; font-weight: 600;">3.2M XAF</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fer</td>
+                                            <td style="text-align: center;">78</td>
+                                            <td>
+                                                <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                                    <div style="height: 100%; width: 28%; background: #3B82F6;"></div>
+                                                </div>
+                                            </td>
+                                            <td style="text-align: right; font-weight: 600;">2.8M XAF</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Peinture</td>
+                                            <td style="text-align: center;">124</td>
+                                            <td>
+                                                <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                                    <div style="height: 100%; width: 20%; background: #F59E0B;"></div>
+                                                </div>
+                                            </td>
+                                            <td style="text-align: right; font-weight: 600;">1.9M XAF</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- TAB 4: Historique -->
+                        <div class="tab-content" id="tab-history">
+                            <h2 style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin-bottom: 24px;">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                Historique des Modifications
+                            </h2>
+                            
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-content">
+                                        <div class="timeline-date">15/10/2025 à 09:15</div>
+                                        <div class="timeline-action">Modification de 15 prix</div>
+                                        <div class="timeline-user">Par Pierre NGONO</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-item">
+                                    <div class="timeline-content">
+                                        <div class="timeline-date">10/10/2025 à 14:22</div>
+                                        <div class="timeline-action">Ajout de 8 nouveaux articles</div>
+                                        <div class="timeline-user">Par Marie AKONO</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-item">
+                                    <div class="timeline-content">
+                                        <div class="timeline-date">05/10/2025 à 11:30</div>
+                                        <div class="timeline-action">Configuration de paliers pour article CIM-CPJ425</div>
+                                        <div class="timeline-user">Par Pierre NGONO</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-item">
+                                    <div class="timeline-content">
+                                        <div class="timeline-date">01/10/2025 à 16:45</div>
+                                        <div class="timeline-action">Modification de la date de fin: 31/12/2026</div>
+                                        <div class="timeline-user">Par Paul EMANE</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-item">
+                                    <div class="timeline-content">
+                                        <div class="timeline-date">12/09/2025 à 14:32</div>
+                                        <div class="timeline-action">Création de la liste de prix</div>
+                                        <div class="timeline-user">Par Paul EMANE</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Section (réutilisable) -->
+    <div class="modal-overlay" id="edit-modal" style="display: none;">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="edit-modal-title">Modifier</h2>
+                <button class="modal-close" onclick="closeEditModal()">×</button>
+            </div>
+            <div class="modal-body" id="edit-modal-body">
+                <!-- Contenu dynamique -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveEditModal()">
+                    <i class="fa-solid fa-save"></i>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ajouter Article -->
+    <div class="modal-overlay" id="add-article-modal" style="display: none;">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Ajouter un Article</h2>
+                <button class="modal-close" onclick="closeAddArticleModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-article-form">
+                    <div class="form-group">
+                        <label class="form-label required">Sélectionner l'article</label>
+                        <input type="text" class="form-input" id="article-search-add" 
+                               placeholder="🔍 Rechercher par code, nom, famille..."
+                               onkeyup="searchArticlesModal()" autocomplete="off">
+                        
+                        <div id="article-search-results-add" style="display: none; max-height: 300px; overflow-y: auto; border: 1px solid var(--gray-300); border-radius: 6px; margin-top: 8px;">
+                            <!-- Résultats de recherche -->
+                        </div>
+                    </div>
+
+                    <div id="selected-article-info-add" style="display: none; border: 2px solid var(--primary-color); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                        <div style="font-weight: 600; margin-bottom: 4px;">
+                            <i class="fa-solid fa-check-circle" style="color: #10B981;"></i>
+                            Article sélectionné:
+                        </div>
+                        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 6px; padding: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 4px;" id="selected-article-code-add"></div>
+                                    <div style="display: flex; gap: 16px; font-size: 13px; color: var(--gray-600);">
+                                        <span>PA Actuel: <strong id="selected-article-pa-add"></strong></span>
+                                        <span>|</span>
+                                        <span>PV Suggéré (x2): <strong id="selected-article-pv-suggest-add"></strong></span>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="clearArticleSelectionModal()">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label required">Prix de Vente HT</label>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <input type="number" step="0.01" class="form-input" id="selling-price-add" required 
+                                       oninput="calculateMarginModal()" style="flex: 1;">
+                                <span style="color: var(--gray-600); white-space: nowrap;">XAF</span>
+                            </div>
+                            <small class="form-help" id="pa-info-add">ℹ️ Prix d'achat: -</small>
+                        </div>
+
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label">Marge XAF</label>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <input type="number" step="0.01" class="form-input" id="margin-amount-add" 
+                                       oninput="calculatePriceFromMarginModal()" style="flex: 1;">
+                                <span style="color: var(--gray-600); white-space: nowrap;">XAF</span>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="autoCalculateModal()" title="Calculer automatiquement">
+                                    <i class="fa-solid fa-calculator"></i> Calc
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="configure-tiers-add">
+                            ☐ Configurer des paliers de prix
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="configure-bonus-add">
+                            ☐ Configurer des règles de bonus
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Statut</label>
+                        <div style="display: flex; gap: 16px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="article-status-add" value="ACTIVE" checked>
+                                ● Actif
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="article-status-add" value="INACTIVE">
+                                ○ Inactif
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddArticleModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveArticleModal()">
+                    <i class="fa-solid fa-plus"></i>
+                    Ajouter à la Liste
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/pricelists-edit.js"></script>
+</body>
+</html>
+

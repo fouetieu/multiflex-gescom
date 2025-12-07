@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Conditionnements - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/catalogue-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Gestion des Conditionnements</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="cursor-pointer">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg"></i>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Administrateur</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Catalogue Produits
+                    </div>
+                    
+                    <a href="./categories-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-folder-tree mr-3"></i>
+                        <span>Catégories</span>
+                    </a>
+
+                    <a href="./products-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box mr-3"></i>
+                        <span>Articles</span>
+                    </a>
+
+                    <a href="./variants-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-boxes-stacked mr-3"></i>
+                        <span>Conditionnements</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="catalogue-container" style="max-width: none; padding: 24px;">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">
+                                    <i class="fa-solid fa-boxes-stacked"></i>
+                                    Gestion des Conditionnements / Variantes
+                                </h1>
+                                <p class="page-description">
+                                    Gérer les conditionnements (SKU) de vos articles avec stock, prix et unités
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="location.href='../dashboard.html'">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Retour
+                                </button>
+                                <button class="btn btn-primary" onclick="location.href='./variants-create.html'">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Nouveau Conditionnement
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Stats Cards -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Total Conditionnements</div>
+                                <div class="stat-value" id="stat-total">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Actifs</div>
+                                <div class="stat-value" id="stat-active">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Vendables</div>
+                                <div class="stat-value" id="stat-saleable">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Stockables</div>
+                                <div class="stat-value" id="stat-stockable">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters Bar -->
+                    <div class="filters-bar">
+                        <div class="filters-row">
+                            <div class="filter-group" style="flex: 2;">
+                                <input 
+                                    type="text" 
+                                    class="search-input" 
+                                    id="search-input"
+                                    placeholder="Rechercher par code SKU, désignation..."
+                                    onkeyup="applyFilters()"
+                                >
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-product" onchange="applyFilters()">
+                                    <option value="">Tous les articles</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-status" onchange="applyFilters()">
+                                    <option value="">Tous les statuts</option>
+                                    <option value="ACTIVE">Actif</option>
+                                    <option value="INACTIVE">Inactif</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 10px;">
+                                    <input type="checkbox" id="filter-saleable" onchange="applyFilters()"> Vendable
+                                </label>
+                            </div>
+                            <div class="filter-group">
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 10px;">
+                                    <input type="checkbox" id="filter-stockable" onchange="applyFilters()"> Stockable
+                                </label>
+                            </div>
+                            <div class="filter-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                    Réinitialiser
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="exportData()">
+                                    <i class="fa-solid fa-download"></i>
+                                    Exporter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Table -->
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="sortable" data-sort="sku" onclick="sortTable('sku')">Code SKU</th>
+                                    <th class="sortable" data-sort="designation" onclick="sortTable('designation')">Désignation</th>
+                                    <th>Article Parent</th>
+                                    <th>Unité Stock</th>
+                                    <th class="text-center">Flags</th>
+                                    <th class="sortable" data-sort="status" onclick="sortTable('status')">Statut</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Données chargées dynamiquement -->
+                            </tbody>
+                        </table>
+
+                        <!-- Empty State -->
+                        <div id="empty-state" class="empty-state hidden">
+                            <div class="empty-state-icon">
+                                <i class="fa-solid fa-boxes-stacked"></i>
+                            </div>
+                            <h3 class="empty-state-title">Aucun conditionnement trouvé</h3>
+                            <p class="empty-state-description">
+                                Créez des conditionnements pour vos articles
+                            </p>
+                            <button class="btn btn-primary mt-4" onclick="location.href='./variants-create.html'">
+                                <i class="fa-solid fa-plus"></i>
+                                Nouveau Conditionnement
+                            </button>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="pagination" id="pagination">
+                            <div class="pagination-info" id="pagination-info">
+                                Affichage de 0 à 0 sur 0 conditionnements
+                            </div>
+                            <div class="pagination-controls" id="pagination-controls">
+                                <!-- Généré dynamiquement -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Create/Edit -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Nouveau Conditionnement</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="variant-form">
+                    <input type="hidden" id="variant-id">
+                    
+                    <h3 style="color: var(--primary-color); margin-bottom: 16px; font-size: 16px;">Informations de Base</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Article Parent</label>
+                        <select class="form-input" id="variant-product" required>
+                            <option value="">-- Sélectionner un article --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Code SKU</label>
+                        <input type="text" class="form-input" id="variant-sku" required>
+                        <small class="form-help">Ex: MI300-05KG, CB300-01KG</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Désignation</label>
+                        <input type="text" class="form-input" id="variant-designation" required>
+                        <small class="form-help">Ex: Peinture MI 300 - Pot de 5kg</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Code-barres (EAN13, Code128...)</label>
+                        <input type="text" class="form-input" id="variant-barcode">
+                    </div>
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+                    
+                    <h3 style="color: var(--primary-color); margin-bottom: 16px; font-size: 16px;">Propriétés Physiques</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                        <div class="form-group">
+                            <label class="form-label">Poids Net (kg)</label>
+                            <input type="number" step="0.01" class="form-input" id="variant-net-weight">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Poids Brut (kg)</label>
+                            <input type="number" step="0.01" class="form-input" id="variant-gross-weight">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Volume (m³)</label>
+                            <input type="number" step="0.001" class="form-input" id="variant-volume">
+                        </div>
+                    </div>
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+                    
+                    <h3 style="color: var(--primary-color); margin-bottom: 16px; font-size: 16px;">Unités de Gestion</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Unité de Stock</label>
+                        <select class="form-input" id="variant-stock-unit" required>
+                            <option value="UNITE">UNITE (POT, SAC, CARTON...)</option>
+                            <option value="KG">KG</option>
+                            <option value="LITRE">LITRE</option>
+                            <option value="M2">M2</option>
+                            <option value="M3">M3</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Unité d'Achat</label>
+                        <select class="form-input" id="variant-purchase-unit">
+                            <option value="">-- Même que l'unité de stock --</option>
+                            <option value="PALETTE">PALETTE</option>
+                            <option value="CARTON">CARTON</option>
+                            <option value="LOT">LOT</option>
+                        </select>
+                        <small class="form-help">Si différent de l'unité de stock</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Coefficient d'Achat</label>
+                        <input type="number" class="form-input" id="variant-purchase-coef" placeholder="Ex: 100">
+                        <small class="form-help">Ex: 1 PALETTE = 100 POT</small>
+                    </div>
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+                    
+                    <h3 style="color: var(--primary-color); margin-bottom: 16px; font-size: 16px;">Flags de Gestion</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="variant-saleable"> Vendable (isSaleable)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="variant-purchaseable"> Achetable (isPurchaseable)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="variant-stockable"> Stockable (isStockable)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="variant-producible"> Productible (isProducible)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="variant-default"> Variante par défaut
+                        </label>
+                    </div>
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+                    
+                    <h3 style="color: var(--primary-color); margin-bottom: 16px; font-size: 16px;">Paramètres de Stock</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                        <div class="form-group">
+                            <label class="form-label">Stock de Sécurité</label>
+                            <input type="number" class="form-input" id="variant-security-stock" placeholder="50">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Point de Commande</label>
+                            <input type="number" class="form-input" id="variant-reorder-point" placeholder="100">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Méthode de Valorisation</label>
+                        <select class="form-input" id="variant-valuation">
+                            <option value="PMP">PMP (Prix Moyen Pondéré)</option>
+                            <option value="FIFO">FIFO</option>
+                            <option value="LIFO">LIFO</option>
+                        </select>
+                    </div>
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Statut</label>
+                        <select class="form-input" id="variant-status">
+                            <option value="ACTIVE">Actif</option>
+                            <option value="INACTIVE">Inactif</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveVariant()">
+                    <i class="fa-solid fa-save"></i>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal View Details -->
+    <div class="modal-overlay" id="view-modal-overlay">
+        <div class="modal" style="max-width: 1100px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="view-modal-title">Détails du Conditionnement</h2>
+                <button class="modal-close" onclick="closeViewModal()">×</button>
+            </div>
+            <div class="modal-body" id="view-modal-body">
+                <!-- Contenu chargé dynamiquement -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeViewModal()">Fermer</button>
+                <button class="btn btn-primary" onclick="editFromView()">
+                    <i class="fa-solid fa-edit"></i>
+                    Modifier
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/variants-list.js"></script>
+</body>
+</html>
+

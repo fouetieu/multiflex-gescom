@@ -89,30 +89,126 @@
             display: block;
         }
 
-        /* Radio Card Style */
-        .type-option {
-            border: 2px solid #E5E7EB;
-            border-radius: 8px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
+        /* Enhanced Dropdown Select */
+        .enhanced-select-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .enhanced-select-trigger {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 12px;
+            padding: 12px 16px;
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .type-option:hover {
+
+        .enhanced-select-trigger:hover {
             border-color: #263c89;
+        }
+
+        .enhanced-select-trigger.open {
+            border-color: #263c89;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .enhanced-select-trigger.selected {
+            border-color: #263c89;
+            background: rgba(38, 60, 137, 0.02);
+        }
+
+        .enhanced-select-trigger .placeholder {
+            color: #9CA3AF;
+            flex: 1;
+        }
+
+        .enhanced-select-trigger .selected-value {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .enhanced-select-trigger .chevron {
+            color: #6B7280;
+            transition: transform 0.2s;
+        }
+
+        .enhanced-select-trigger.open .chevron {
+            transform: rotate(180deg);
+        }
+
+        .enhanced-select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #263c89;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: none;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .enhanced-select-dropdown.open {
+            display: block;
+        }
+
+        .enhanced-select-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .enhanced-select-option:last-child {
+            border-bottom: none;
+        }
+
+        .enhanced-select-option:hover {
             background: #F8FAFC;
         }
-        .type-option.selected {
-            border-color: #263c89;
-            background: rgba(38, 60, 137, 0.05);
+
+        .enhanced-select-option.selected {
+            background: rgba(38, 60, 137, 0.08);
         }
-        .type-option input[type="radio"] {
+
+        .enhanced-select-option .option-radio {
             width: 18px;
             height: 18px;
-            accent-color: #263c89;
+            border: 2px solid #D1D5DB;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
+
+        .enhanced-select-option.selected .option-radio {
+            border-color: #263c89;
+            background: #263c89;
+        }
+
+        .enhanced-select-option.selected .option-radio::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+        }
+
         .type-icon {
             width: 40px;
             height: 40px;
@@ -121,11 +217,27 @@
             align-items: center;
             justify-content: center;
             font-size: 1.25rem;
+            flex-shrink: 0;
         }
         .type-icon.bank { background: #DBEAFE; color: #2563EB; }
         .type-icon.cash { background: #D1FAE5; color: #059669; }
         .type-icon.mobile { background: #FEF3C7; color: #D97706; }
         .type-icon.petty { background: #E0E7FF; color: #4F46E5; }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-content .option-title {
+            font-weight: 500;
+            color: #1F2937;
+        }
+
+        .option-content .option-code {
+            font-size: 12px;
+            color: #6B7280;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body class="h-full text-gray-800">
@@ -136,17 +248,10 @@
                 <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
             </div>
             <div class="flex-1 flex items-center justify-between px-6">
-                <div class="breadcrumb">
-                    <a href="./dashboard.html">Trésorerie</a>
-                    <i class="fa-solid fa-chevron-right"></i>
-                    <a href="./journals-list.html">Journaux</a>
-                    <i class="fa-solid fa-chevron-right"></i>
-                    <span>Nouveau Journal</span>
-                </div>
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Nouveau Journal de Trésorerie</h1>
                 <div class="flex items-center gap-4">
-                    <div class="text-sm text-gray-500">
-                        <i class="fa-solid fa-user-tie mr-2"></i>
-                        Directeur Financier
+                    <div class="relative">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg cursor-pointer"></i>
                     </div>
                     <div class="flex items-center cursor-pointer">
                         <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
@@ -215,12 +320,12 @@
                     </a>
 
                     <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-4 mb-2">
-                        Banque
+                        Acomptes
                     </div>
 
-                    <a href="./remise-transporteur.html" class="sidebar-link" data-page="remise-transporteur">
-                        <i class="fa-solid fa-truck-fast mr-3"></i>
-                        <span>Remise Transporteur</span>
+                    <a href="./acompte-transport.html" class="sidebar-link" data-page="acompte-transport">
+                        <i class="fa-solid fa-truck-ramp-box mr-3"></i>
+                        <span>Acompte Transport</span>
                     </a>
 
                     <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
@@ -236,7 +341,7 @@
 
             <!-- Main Content Area -->
             <div class="flex-1 overflow-auto bg-[#F8F9FA]">
-                <div class="tresorerie-container" style="max-width: 900px; margin: 0 auto; padding: 24px;">
+                <div class="tresorerie-container" style="max-width: none; padding: 24px;">
 
                     <!-- Page Header -->
                     <div class="page-header mb-6">
@@ -287,42 +392,60 @@
                                         Identification
                                     </div>
 
-                                    <!-- Type de Journal -->
+                                    <!-- Type de Journal - Liste déroulante enrichie -->
                                     <div class="form-group mb-4">
                                         <label class="form-label required">Type de journal</label>
-                                        <div class="grid grid-cols-2 gap-3 mt-2">
-                                            <label class="type-option" onclick="selectType('BANK_ACCOUNT', this)">
-                                                <input type="radio" name="journalType" value="BANK_ACCOUNT">
-                                                <div class="type-icon bank"><i class="fa-solid fa-building-columns"></i></div>
-                                                <div>
-                                                    <div class="font-medium">Compte Bancaire</div>
-                                                    <div class="text-xs text-gray-500">BANK_ACCOUNT</div>
+                                        <input type="hidden" id="journalType" name="journalType" value="">
+
+                                        <div class="enhanced-select-container" id="journalTypeSelect">
+                                            <!-- Trigger -->
+                                            <div class="enhanced-select-trigger" onclick="toggleJournalTypeDropdown()">
+                                                <span class="placeholder" id="journalTypePlaceholder">Sélectionner un type de journal...</span>
+                                                <div class="selected-value" id="journalTypeSelected" style="display: none;">
+                                                    <div class="type-icon" id="selectedTypeIcon"></div>
+                                                    <div class="option-content">
+                                                        <div class="option-title" id="selectedTypeTitle"></div>
+                                                        <div class="option-code" id="selectedTypeCode"></div>
+                                                    </div>
                                                 </div>
-                                            </label>
-                                            <label class="type-option" onclick="selectType('CASH_DESK', this)">
-                                                <input type="radio" name="journalType" value="CASH_DESK">
-                                                <div class="type-icon cash"><i class="fa-solid fa-cash-register"></i></div>
-                                                <div>
-                                                    <div class="font-medium">Caisse</div>
-                                                    <div class="text-xs text-gray-500">CASH_DESK</div>
+                                                <i class="fa-solid fa-chevron-down chevron"></i>
+                                            </div>
+
+                                            <!-- Dropdown Options -->
+                                            <div class="enhanced-select-dropdown" id="journalTypeDropdown">
+                                                <div class="enhanced-select-option" data-value="BANK_ACCOUNT" onclick="selectJournalType('BANK_ACCOUNT', 'Compte Bancaire', 'bank', 'fa-building-columns')">
+                                                    <div class="option-radio"></div>
+                                                    <div class="type-icon bank"><i class="fa-solid fa-building-columns"></i></div>
+                                                    <div class="option-content">
+                                                        <div class="option-title">Compte Bancaire</div>
+                                                        <div class="option-code">BANK_ACCOUNT</div>
+                                                    </div>
                                                 </div>
-                                            </label>
-                                            <label class="type-option" onclick="selectType('MOBILE_MONEY', this)">
-                                                <input type="radio" name="journalType" value="MOBILE_MONEY">
-                                                <div class="type-icon mobile"><i class="fa-solid fa-mobile-screen-button"></i></div>
-                                                <div>
-                                                    <div class="font-medium">Mobile Money</div>
-                                                    <div class="text-xs text-gray-500">MOBILE_MONEY</div>
+                                                <div class="enhanced-select-option" data-value="CASH_DESK" onclick="selectJournalType('CASH_DESK', 'Caisse', 'cash', 'fa-cash-register')">
+                                                    <div class="option-radio"></div>
+                                                    <div class="type-icon cash"><i class="fa-solid fa-cash-register"></i></div>
+                                                    <div class="option-content">
+                                                        <div class="option-title">Caisse</div>
+                                                        <div class="option-code">CASH_DESK</div>
+                                                    </div>
                                                 </div>
-                                            </label>
-                                            <label class="type-option" onclick="selectType('PETTY_CASH', this)">
-                                                <input type="radio" name="journalType" value="PETTY_CASH">
-                                                <div class="type-icon petty"><i class="fa-solid fa-coins"></i></div>
-                                                <div>
-                                                    <div class="font-medium">Petite Caisse</div>
-                                                    <div class="text-xs text-gray-500">PETTY_CASH</div>
+                                                <div class="enhanced-select-option" data-value="MOBILE_MONEY" onclick="selectJournalType('MOBILE_MONEY', 'Mobile Money', 'mobile', 'fa-mobile-screen-button')">
+                                                    <div class="option-radio"></div>
+                                                    <div class="type-icon mobile"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                                                    <div class="option-content">
+                                                        <div class="option-title">Mobile Money</div>
+                                                        <div class="option-code">MOBILE_MONEY</div>
+                                                    </div>
                                                 </div>
-                                            </label>
+                                                <div class="enhanced-select-option" data-value="PETTY_CASH" onclick="selectJournalType('PETTY_CASH', 'Petite Caisse', 'petty', 'fa-coins')">
+                                                    <div class="option-radio"></div>
+                                                    <div class="type-icon petty"><i class="fa-solid fa-coins"></i></div>
+                                                    <div class="option-content">
+                                                        <div class="option-title">Petite Caisse</div>
+                                                        <div class="option-code">PETTY_CASH</div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 

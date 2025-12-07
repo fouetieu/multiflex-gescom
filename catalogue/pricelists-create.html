@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer une Liste de Prix - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/catalogue-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .form-section {
+            margin-bottom: 32px;
+        }
+        
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-description {
+            color: var(--gray-600);
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .partner-types-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .partner-type-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .partner-type-item:hover {
+            border-color: var(--primary-color);
+            background: var(--gray-50);
+        }
+        
+        .partner-type-item input[type="checkbox"]:checked + label {
+            border-color: var(--primary-color);
+            background: #EEF2FF;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .radio-option:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .radio-option input[type="radio"]:checked ~ div {
+            color: var(--primary-color);
+        }
+        
+        .radio-option input[type="radio"]:checked ~ * {
+            border-color: var(--primary-color);
+        }
+        
+        .selected-partners {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .partner-chip {
+            background: var(--primary-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .partner-chip button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-box-blue {
+            background: #EEF2FF;
+            border-left: 4px solid #3730A3;
+            padding: 16px;
+            border-radius: 6px;
+            margin-top: 16px;
+        }
+        
+        .info-box-blue i {
+            color: #3730A3;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Créer une Liste de Prix</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="cursor-pointer">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg"></i>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Pierre NGONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Catalogue Produits
+                    </div>
+                    
+                    <a href="./categories-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-folder-tree mr-3"></i>
+                        <span>Catégories</span>
+                    </a>
+
+                    <a href="./products-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box mr-3"></i>
+                        <span>Articles</span>
+                    </a>
+
+                    <a href="./variants-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-boxes-stacked mr-3"></i>
+                        <span>Conditionnements</span>
+                    </a>
+
+                    <a href="./pricelists-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-tags mr-3"></i>
+                        <span>Listes de Prix</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="form-container">
+                    <!-- Page Header -->
+                    <div style="margin-bottom: 24px;">
+                        <h1 style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 8px;">
+                            <i class="fa-solid fa-sparkles"></i>
+                            Créer une Nouvelle Liste de Prix
+                        </h1>
+                        <p style="color: var(--gray-600); font-size: 14px;">
+                            Définissez les paramètres de la liste de prix. Vous pourrez ajouter les articles ensuite.
+                        </p>
+                    </div>
+
+                    <form id="pricelist-form">
+                        <!-- Section 1: Informations Générales -->
+                        <div class="form-card">
+                            <div class="form-section">
+                                <div class="section-title">
+                                    <i class="fa-solid fa-info-circle"></i>
+                                    Informations Générales
+                                </div>
+                                <div class="section-description">
+                                    Identifiants et description de la liste de prix
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required">Code de la liste</label>
+                                    <div style="display: flex; gap: 12px; align-items: center;">
+                                        <input type="text" class="form-input" id="code" required 
+                                               placeholder="TARIF-" style="flex: 1; text-transform: uppercase;">
+                                        <button type="button" class="btn btn-secondary" onclick="generateCode()">
+                                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                            Auto
+                                        </button>
+                                    </div>
+                                    <small class="form-help">
+                                        <i class="fa-solid fa-lightbulb"></i>
+                                        Code unique, majuscules, tirets autorisés. Ex: TARIF-QUINC-2026
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label required">Nom de la liste</label>
+                                    <input type="text" class="form-input" id="name" required 
+                                           placeholder="Ex: Quincaillerie 2026">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Description (optionnel)</label>
+                                    <textarea class="form-input" id="description" rows="3" 
+                                              placeholder="Liste de prix dédiée aux revendeurs de quincaillerie pour l'année 2026. Inclut remises sur volume."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 2: Type & Priorité -->
+                        <div class="form-card">
+                            <div class="form-section">
+                                <div class="section-title">
+                                    <i class="fa-solid fa-bullseye"></i>
+                                    Type & Priorité
+                                </div>
+                                <div class="section-description">
+                                    Configuration du type de liste et de sa priorité d'application
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label required">Type de liste</label>
+                                        <div class="radio-group">
+                                            <label class="radio-option">
+                                                <input type="radio" name="type" value="SALE" checked>
+                                                <div>
+                                                    <div style="font-weight: 600; margin-bottom: 4px;">
+                                                        <i class="fa-solid fa-shopping-cart"></i>
+                                                        Vente (SALE)
+                                                    </div>
+                                                    <div style="font-size: 12px; color: var(--gray-600);">
+                                                        Pour vendre aux clients
+                                                    </div>
+                                                </div>
+                                            </label>
+                                            <label class="radio-option">
+                                                <input type="radio" name="type" value="PURCHASE">
+                                                <div>
+                                                    <div style="font-weight: 600; margin-bottom: 4px;">
+                                                        <i class="fa-solid fa-shopping-bag"></i>
+                                                        Achat (PURCHASE)
+                                                    </div>
+                                                    <div style="font-size: 12px; color: var(--gray-600);">
+                                                        Pour acheter auprès des fournisseurs
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="form-group">
+                                            <label class="form-label required">Priorité d'application</label>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <input type="number" class="form-input" id="priority" value="10" 
+                                                       min="1" max="999" style="flex: 0 0 120px;" required>
+                                                <button type="button" class="btn btn-secondary btn-sm" onclick="decrementPriority()">
+                                                    <i class="fa-solid fa-minus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-secondary btn-sm" onclick="incrementPriority()">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </button>
+                                            </div>
+                                            <small class="form-help">
+                                                <i class="fa-solid fa-info-circle"></i>
+                                                Plus bas = prioritaire (ex: 5 avant 10)
+                                            </small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label required">Devise</label>
+                                            <select class="form-input" id="currency" required>
+                                                <option value="XAF">XAF - Franc CFA</option>
+                                                <option value="EUR">EUR - Euro</option>
+                                                <option value="USD">USD - Dollar US</option>
+                                                <option value="GBP">GBP - Livre Sterling</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Période de Validité -->
+                        <div class="form-card">
+                            <div class="form-section">
+                                <div class="section-title">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                    Période de Validité
+                                </div>
+                                <div class="section-description">
+                                    Dates de début et de fin d'application de la liste
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label required">Date de début</label>
+                                        <input type="date" class="form-input" id="start-date" required>
+                                        <small class="form-help">Date à partir de laquelle la liste est applicable</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Date de fin</label>
+                                        <input type="date" class="form-input" id="end-date">
+                                        <label style="display: flex; align-items: center; gap: 8px; margin-top: 8px; cursor: pointer;">
+                                            <input type="checkbox" id="no-end-date" onchange="toggleEndDate()">
+                                            Pas de date de fin (permanente)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Ciblage des Partenaires -->
+                        <div class="form-card">
+                            <div class="form-section">
+                                <div class="section-title">
+                                    <i class="fa-solid fa-users"></i>
+                                    Ciblage des Partenaires
+                                </div>
+                                <div class="section-description">
+                                    Définissez à quels partenaires cette liste s'applique
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Types de partenaires</label>
+                                    <div class="partner-types-grid">
+                                        <label class="partner-type-item">
+                                            <input type="checkbox" name="partner-types" value="PARTNER_QUINCAILLERIE">
+                                            <div>
+                                                <div style="font-weight: 600; font-size: 14px;">Quincailleries</div>
+                                                <div style="font-size: 12px; color: var(--gray-600);">PARTNER_QUINCAILLERIE</div>
+                                            </div>
+                                        </label>
+                                        
+                                        <label class="partner-type-item">
+                                            <input type="checkbox" name="partner-types" value="PARTNER_TECHNICIAN">
+                                            <div>
+                                                <div style="font-weight: 600; font-size: 14px;">Techniciens</div>
+                                                <div style="font-size: 12px; color: var(--gray-600);">PARTNER_TECHNICIAN</div>
+                                            </div>
+                                        </label>
+                                        
+                                        <label class="partner-type-item">
+                                            <input type="checkbox" name="partner-types" value="PARTNER_PATRON">
+                                            <div>
+                                                <div style="font-weight: 600; font-size: 14px;">Patrons</div>
+                                                <div style="font-size: 12px; color: var(--gray-600);">PARTNER_PATRON</div>
+                                            </div>
+                                        </label>
+                                        
+                                        <label class="partner-type-item">
+                                            <input type="checkbox" name="partner-types" value="PARTNER_WHOLESALER">
+                                            <div>
+                                                <div style="font-weight: 600; font-size: 14px;">Grossistes</div>
+                                                <div style="font-size: 12px; color: var(--gray-600);">PARTNER_WHOLESALER</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">OU Partenaires spécifiques (optionnel)</label>
+                                    <input type="text" class="form-input" id="partner-search" 
+                                           placeholder="🔍 Rechercher un partenaire..." 
+                                           onkeyup="searchPartners()">
+                                    <div id="partner-search-results" style="display: none; max-height: 200px; overflow-y: auto; border: 1px solid var(--gray-300); border-radius: 6px; margin-top: 8px;">
+                                        <!-- Résultats de recherche -->
+                                    </div>
+                                    
+                                    <div id="selected-partners" class="selected-partners">
+                                        <!-- Chips des partenaires sélectionnés -->
+                                    </div>
+                                    
+                                    <small class="form-help">
+                                        <i class="fa-solid fa-info-circle"></i>
+                                        Laisser vide pour appliquer uniquement aux types cochés ci-dessus
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 5: Statut Initial -->
+                        <div class="form-card">
+                            <div class="form-section">
+                                <div class="section-title">
+                                    <i class="fa-solid fa-flag"></i>
+                                    Statut Initial
+                                </div>
+                                <div class="section-description">
+                                    Définissez l'état initial de la liste
+                                </div>
+                                
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="status" value="DRAFT" checked>
+                                        <div>
+                                            <div style="font-weight: 600; margin-bottom: 4px;">
+                                                <i class="fa-solid fa-file-pen"></i>
+                                                Brouillon (DRAFT)
+                                            </div>
+                                            <div style="font-size: 12px; color: var(--gray-600);">
+                                                La liste ne sera pas appliquée. Utilisez ce statut pour préparer la liste.
+                                            </div>
+                                        </div>
+                                    </label>
+                                    
+                                    <label class="radio-option">
+                                        <input type="radio" name="status" value="ACTIVE">
+                                        <div>
+                                            <div style="font-weight: 600; margin-bottom: 4px;">
+                                                <i class="fa-solid fa-check-circle"></i>
+                                                Active (ACTIVE)
+                                            </div>
+                                            <div style="font-size: 12px; color: var(--gray-600);">
+                                                La liste sera immédiatement opérationnelle et appliquée.
+                                            </div>
+                                        </div>
+                                    </label>
+                                    
+                                    <label class="radio-option">
+                                        <input type="radio" name="status" value="ARCHIVED">
+                                        <div>
+                                            <div style="font-weight: 600; margin-bottom: 4px;">
+                                                <i class="fa-solid fa-box-archive"></i>
+                                                Archivée (ARCHIVED)
+                                            </div>
+                                            <div style="font-size: 12px; color: var(--gray-600);">
+                                                La liste sera visible mais inactive. Utilisez pour les anciennes listes.
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 2px solid var(--gray-200);">
+                            <button type="button" class="btn btn-secondary" onclick="cancelForm()">
+                                <i class="fa-solid fa-times"></i>
+                                Annuler
+                            </button>
+                            
+                            <div style="display: flex; gap: 12px;">
+                                <button type="button" class="btn btn-secondary" onclick="saveDraft()">
+                                    <i class="fa-solid fa-file-pen"></i>
+                                    Enregistrer comme brouillon
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-save"></i>
+                                    Enregistrer et Ajouter Articles
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/pricelists-create.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+

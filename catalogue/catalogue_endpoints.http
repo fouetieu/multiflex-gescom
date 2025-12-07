@@ -1,0 +1,939 @@
+### Product Categories ###
+@productCategoriesUrl = {{multiflexServerUrl}}/catalog/categories
+
+### Filter product categories
+POST {{productCategoriesUrl}}/filters
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "page": 0,
+  "size": 1500,
+  "sort": [
+    {
+      "field": "code",
+      "direction": "desc"
+    }
+  ],
+  "filters": {
+  }
+}
+
+### Product Category Create
+POST {{productCategoriesUrl}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Categorie de procede pour les tests Andre 004",
+  "code": "CAT-PROCEDE-ANDRE-TEST-004",
+  "description": "Category created by Andre for testing purposes",
+  "categoriesTags": [
+    "tag1", "tag2"
+  ]
+}
+
+### Update Product Category
+@productCategoryId = 68ffb509fe7bc02843b7af97
+PUT {{productCategoriesUrl}}/{{productCategoryId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productCategoryId": "{{productCategoryId}}",
+  "name": "CAT-KEVIN-TEST-EDITED-SECOND",
+  "code": "CAT-PROCEDE-ANDRE-TEST-004",
+  "description": "Category created by Kevin for testing purposes - edited"
+}
+
+### Get product category by ID
+GET {{productCategoriesUrl}}/{{productCategoryId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Delete product category by ID
+DELETE {{productCategoriesUrl}}/{{productCategoryId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Change product category's Status
+PATCH {{productCategoriesUrl}}/{{productCategoryId}}/status?status=INACTIVE
+Authorization: Bearer {{token}}
+Accept: application/json
+
+############################################################################################################
+
+### Product Unit of Measure (UOM) ###
+@productUomUrl = {{multiflexServerUrl}}/catalog/uoms
+POST {{productUomUrl}}/filters
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "page": 0,
+  "size": 15,
+  "sort": [
+    {
+      "field": "code",
+      "direction": "desc"
+    }
+  ],
+  "filters": {
+    "name": {
+      "$regex": "Pot",
+      "$options": "i"
+    }
+  }
+}
+
+### Create a UOM
+POST {{productUomUrl}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Seau de 20 L4",
+  "code": "KEV_ABC",
+  "description": "Seau3",
+  "type": "WEIGHT"
+}
+
+###
+@uomId = 68ffc987f911357e439c0915
+PUT {{productUomUrl}}/{{uomId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Pot de 1057kg",
+  "description": "Pot de 1057kg"
+}
+
+###
+GET {{productUomUrl}}/{{uomId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+###
+DELETE {{productUomUrl}}/{{uomId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### UOM Get All
+GET {{productUomUrl}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### UOM Get by TYPE
+@uomType = WEIGHT
+GET {{productUomUrl}}/{{uomType}}/types
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Change UOM's Status
+PATCH {{productUomUrl}}/{{uomId}}/status?status=INACTIVE
+Authorization: Bearer {{token}}
+Accept: application/json
+
+##############################################################################################
+
+### PRODUCT Base
+@productBaseUrl = {{multiflexServerUrl}}/catalog/bases
+@baseProductId = 68ffcd04f911357e439c0917
+POST {{productBaseUrl}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "FAMILLE-ANDRE-PROCEDE-004",
+  "designation": "LA FAMILLE DE PRODUIT PROCEDE ANDRE TEST 004",
+  "description": "description of the product",
+  "superCategory": "MATERIAL",
+  "productCategory": { "code": "CAT-PROCEDE-ANDRE-TEST-004" },
+  "productType": "PRODUIT_FINI"
+}
+
+### Create a new base product from an existing one
+POST {{productBaseUrl}}/{{baseProductId}}/copy
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### Update Product Base
+PUT {{productBaseUrl}}/{{baseProductId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "FAMILLE-ANDRE-PROCEDE-004",
+  "designation": "LA FAMILLE DE PRODUIT ANDRE TEST 003-EDITED",
+  "description": "description of the product 2",
+  "superCategory": "PAINT",
+  "productCategory": { "code": "CAT-PROCEDE-ANDRE-TEST-004" },
+  "productType": "MULTIFLEX"
+}
+
+### Get BASE Product by ID
+GET {{productBaseUrl}}/{{baseProductId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### Delete BASE Product by ID
+DELETE {{productBaseUrl}}/{{baseProductId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### Product Base Filters
+# always use filters with classType: PRODUCT
+#to filter by category, use "category.code": { "$regex": "PAINT", "$options": "i" }
+#to fiilterby designation, use "designation": { "$regex": "NAME", "$options": "i" }
+#to filter by code, use "code": {"code" : "12345" }
+POST {{productBaseUrl}}/filters
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "page": 0,
+  "size": 150,
+  "sort": [
+    {
+      "field": "designation",
+      "direction": "asc"
+    }
+  ],
+  "filters": {
+    "classType": "PRODUCT"
+  }
+}
+
+### Change Base product's Status
+PATCH {{productBaseUrl}}/{{baseProductId}}/status?status=ACTIVE
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+#########################################################################################################
+
+### Product Variant
+@productVariantUrl = {{multiflexServerUrl}}/catalog/variants
+@productVariantId = 690180bddd5cc14e610e194f
+#FAMILLE-ANDRE-PROCEDE-004
+#FAMILLE-ANDRE-TEST-003
+#FAMILLE-ANDRE-TEST-003-VARIANT-PAINT
+### Variant - Create a product variant
+POST {{productVariantUrl}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "baseProduct": {
+    "id": "{{baseProductId}}"
+  },
+  "code": "VARIANT_ANDRE_PROCEDE_KEVO",
+  "designation": "VARIANT Andre Test Variant Procede 004-1",
+  "detailedDescription": "une bonne description de ce second test de variant en procede 004-3",
+  "uom": {
+    "code": "KEV_AB"
+  },
+  "conditioning": "Service par mètre carré",
+  "productSpecs": {
+    "type": "PAINT",
+    "yieldSurface": "17",
+    "yieldSurfaceUom": "m2",
+    "duration": 3,
+    "durationUom": "jour",
+    "durationAfter": 3,
+    "layersCount": 3,
+    "defaultSecurityQuantity": "13",
+    "productAdvice": "FINITION 004 - 2"
+  },
+  "technicalSpecification": "Add any technical specification here",
+  "barcodes": [
+    {
+      "type": "type",
+      "value": "value",
+      "primary": true
+    }
+  ],
+  "unit": {
+    "stockUnit": {
+      "code": "KEV_AB"
+    },
+    "purchaseUnit": {
+      "code": "KEV_AB"
+    },
+    "purchaseUnitCoefficient": 2.5
+  },
+  "purchasePrice": 350,
+  "sellable": true,
+  "purchasable": true,
+  "stockable": true,
+  "producible": true,
+  "defaultVariant": false,
+  "variantProperties": {
+    "volume": 5.2,
+    "grossWeight": 23.5,
+    "netWeight": 28,
+    "containerType": "SAC"
+  },
+  "inventoryParam": {
+    "valuationMethod": "PMP",
+    "securityStock": 25,
+    "reorderPoint": 50,
+    "defaultLocation": {
+      "code": "Location1"
+    },
+    "standardBatchSize": 5
+  },
+  "procurement": {
+    "defaultSupplier": {
+      "id": "68b52374e0ef3067ee1bedda"
+    },
+    "leadTimeDays": 20
+  },
+  "productionData": {
+    "productionUnit": {
+      "unit": {
+        "code": "KEV_AB"
+      },
+      "coefficient": 2.5,
+      "standardBatchSize": 20
+    },
+    "billOfMaterials": [
+      {
+        "componentVariant": {
+          "code": "PROC-REV-COUCHE-INTER"
+        },
+        "componentProduct": {
+          "id": "PROC-REVETEMENT"
+        },
+        "quantity": 20.5
+      }
+    ],
+    "routingPhases": [
+      {
+        "phaseNumber": 1,
+        "description": "Description of the operation",
+        "unitTime": 5,
+        "setupTime": 10,
+        "workstation": {
+          "code": "workstationCode"
+        }
+      }
+    ]
+  }
+}
+
+### Variant - Update a product variant
+PUT {{productVariantUrl}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "baseProduct": {
+    "id": "68be63e29fbac92df973ccba"
+  },
+  "code": "VARIANT-ANDRE-PROCEDE-004-1",
+  "designation": "VARIANT Andre Test Variant Procede 004-1",
+  "detailedDescription": "une bonne description de ce second test de variant en procede 004-3",
+  "uom": {
+    "code": "M2"
+  },
+  "conditioning": "Service par mètre carré",
+  "productSpecs": {
+    "type": "PROCEDE",
+    "yieldSurface": "17",
+    "yieldSurfaceUom": "m2",
+    "duration": 3,
+    "durationUom": "jour",
+    "durationAfter": 3,
+    "layersCount": 3,
+    "defaultSecurityQuantity": "13",
+    "productAdvice": "FINITION 004 - 2"
+  },
+  "technicalSpecification": "Add nay technical specification here",
+  "barcodes": [
+    {
+      "type": "type",
+      "value": "value",
+      "primary": true
+    }
+  ],
+  "unit": {
+    "stockUnit": {
+      "code": "M2"
+    },
+    "purchaseUnit": {
+      "code": "M2"
+    }
+  },
+  "purchaseUnitCoefficient": 2.5,
+  "purchasePrice": 350,
+  "sellable": true,
+  "purchasable": true,
+  "stockable": true,
+  "producible": true,
+  "defaultVariant": false,
+  "variantProperties": {
+    "volume": 5.2,
+    "grossWeight": 23.5,
+    "netWeight": 28,
+    "containerType": "SAC"
+  },
+  "inventoryParam": {
+    "valuationMethod": "PMP",
+    "securityStock": 25,
+    "reorderPoint": 50,
+    "defaultLocation": {
+      "code": "Location1"
+    }
+  },
+  "procurement": {
+    "defaultSupplier": {
+      "code": "supplier1"
+    },
+    "leadTimeDays": 20
+  },
+  "productionData": {
+    "productionUnit": {
+      "unit": {
+        "code": "ML"
+      },
+      "coefficient": 2.5,
+      "standardBatchSize": 20
+    },
+    "billOfMaterials": [
+      {
+        "componentVariant": {
+          "code": "variantCode"
+        },
+        "quantity": 20.5
+      }
+    ],
+    "routingPhases": [
+      {
+        "phaseNumber": 1,
+        "description": "Description of the operation",
+        "unitTime": 5,
+        "setupTime": 10,
+        "workstation": {
+          "code": "workstationCode"
+        }
+      }
+    ]
+  }
+}
+
+### Variant: GET by ID
+GET {{productVariantUrl}}/{{productVariantId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Variant: GET default variant or suggest an active one
+GET {{productVariantUrl}}/base/{{baseProductId}}/default
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Variant: DELETE by ID
+DELETE {{productVariantUrl}}/68bc2b862cd8a54fefdc31fa
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Variant: ByBase ProductId
+GET {{productVariantUrl}}/base/{{baseProductId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Variant: Filters
+# always use filters with classType: VARIANT
+POST {{productVariantUrl}}/filters
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+
+{
+  "page": 0,
+  "size": 700,
+  "sort": [
+    {
+      "field": "code",
+      "direction": "asc"
+    }
+  ],
+  "filters": {
+    "classType": "VARIANT"
+  }
+}
+
+### Changed product variant status
+PATCH {{productVariantUrl}}/{{productVariantId}}/status?status=ACTIVE
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### Set Variant as default
+PATCH {{productVariantUrl}}/{{productVariantId}}/default
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+####################################################################################################
+### Price List
+@priceListUrl = {{multiflexServerUrl}}/catalog/pricelists
+@priceListId = 69018a3ec8876d6043f4061d
+### FILTERS
+POST {{priceListUrl}}/filters?withStatistics=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "page": 0,
+  "size": 100000,
+  "sort": [
+    {
+      "field": "priceListName",
+      "direction": "desc"
+    }
+  ],
+  "filters": {
+  }
+}
+
+### Create Price List - PROCEDE (TASK)
+
+#PriceListAttributeTarget is enum of PATRON, TECHNICIAN, LABORER, TECHNICIAN_N1, TECHNICIAN_N2, TECHNICIAN_N3,
+#Currency is enum of "XAF, XOF, EUR, USD"
+#PriceListType is enum of PROCEDE_QUOTATION, PRODUCT_QUOTATION, SALES, PURCHASE, WHOLESALE...
+#for LABORER, fixPrice is used, instead , you can use productMargin with maxLaborerMargin and minLaborerMargin
+# use priceListType = "PROCEDE_QUOTATION" for procde or task
+
+POST {{priceListUrl}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productVariant": {
+    "id": "{{productVariantId}}"
+  },
+  "code": "priceListCode",
+  "description": "Description of the price list",
+  "priceListName": "Prix du Produit du procede 0003 de ANDRE",
+  "currency": "XAF",
+  "priceListType": "SALES",
+  "validFrom": "2025-10-22",
+  "validTo": "2026-02-22",
+  "targetPartnerTypes": ["TECHNICIAN"],
+  "targetPartners": [
+    {
+      "id": "68bc9991978e1475c33278c6"
+    }
+  ],
+  "isDefault": true,
+  "priority": 1
+}
+
+### Update a Price List
+PUT {{priceListUrl}}/{{priceListId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productVariant": {
+    "id": "{{productVariantId}}"
+  },
+  "code": "priceListCode",
+  "description": "New Description of the price list",
+  "priceListName": "Prix du Produit du procede 0003 de ANDRE",
+  "currency": "XAF",
+  "priceListType": "SALES",
+  "validFrom": "2025-10-24",
+  "validTo": "2026-03-30",
+  "targetPartnerTypes": ["TECHNICIAN"],
+  "targetPartners": [
+    {
+      "id": "68bc9991978e1475c33278c6"
+    }
+  ],
+  "isDefault": true,
+  "priority": 1
+}
+
+### Find Price List By ID
+GET {{priceListUrl}}/{{priceListId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### Find Price List By Variant
+GET {{priceListUrl}}/variants/{{productVariantId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### Delete Price List By ID
+DELETE {{priceListUrl}}/{{priceListId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### Copy Price List By ID
+POST {{priceListUrl}}/{{priceListId}}/copy
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### Changed price list status
+PATCH {{priceListUrl}}/{{priceListId}}/status?status=ACTIVE
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### Set Price list as default
+PATCH {{priceListUrl}}/{{priceListId}}/default
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### Activate a list of Price List
+POST {{priceListUrl}}/bulk/activate
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+["{{priceListId}}", "690222938408d05a3c57a9fc"]
+
+### Archive a list of Price List
+POST {{priceListUrl}}/bulk/archive
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+["690222938408d05a3c57a9fc"]
+
+### Delete a list of Price List
+DELETE {{priceListUrl}}/bulk
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+["690222938408d05a3c57a9fc"]
+
+### Generate code for a price list
+GET {{priceListUrl}}/generate-code?priceListType=SALES
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### Check if a price list has an assigned active productVariant
+GET {{priceListUrl}}/{{priceListId}}/has-active-variant
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### The following used in a specific screen to update parts of the price list
+### Update general info (code when active variant assigned; otherwise name/description)
+PATCH {{priceListUrl}}/{{priceListId}}/general-info
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "TARIF-SALES-2026",
+  "name": "Tarif Produits 2025",
+  "description": "Tarif officiel produits exercice 2025"
+}
+
+### Update validity (start/end dates)
+PATCH {{priceListUrl}}/{{priceListId}}/validity
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "startDate": "2025-01-01",
+  "endDate": "2025-12-31"
+}
+
+### Update targets (partners and/or partner types)
+PATCH {{priceListUrl}}/{{priceListId}}/targets
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "targetPartners": ["68afad7f326eab41e2562a56", "68a233f893b4863f8b492e3a"],
+  "targetPartnerTypes": ["SITE_OWNER", "IOLA_EMPLOYEE"]
+}
+
+### Update type and priority (and optionally currency)
+PATCH {{priceListUrl}}/{{priceListId}}/type-and-priority
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "priceListType": "SALES",
+  "priority": 10,
+  "currency": "XOF"
+}
+
+##########################################################################################################
+
+### Price List Item
+@priceListItemUrl = {{multiflexServerUrl}}/catalog/pricelist-items
+@priceListItemId = 69023419a5b2357a722f83e6
+@variantId = {{productVariantId}}
+@bonusVariantId = {{productVariantId}}
+
+### List items (US-PRICE-029)
+GET {{priceListItemUrl}}?priceListId={{priceListId}}&withStatistics=false
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Search items by code/name/conditioning (US-PRICE-030)
+GET {{priceListItemUrl}}/search?priceListId={{priceListId}}&q=VARIANT_ANDRE_PROCEDE_KEVO
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Create item (US-PRICE-032)
+POST {{priceListItemUrl}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "priceList": { "id": "{{priceListId}}" },
+  "productVariant": { "id": "{{variantId}}" },
+  "salePriceHT": 12500.00,
+  "margin": 15.5,
+  "status": "ACTIVE",
+  "quantityTiers": [
+    { "minQuantity": 1, "unitPriceHT": 12500.00, "methodCalculPalier": "FIXED_PRICE" },
+    { "minQuantity": 10, "unitPriceHT": 11900.00, "methodCalculPalier": "FIXED_PRICE" }
+  ],
+  "bonusRule": {
+    "cumulationRule": "ALL_RULES",
+    "bonusItemRules": [
+      {
+        "minQuantity": 12,
+        "bonusQuantity": 1,
+        "ruleLabel": "12+1 offert",
+        "bonusItemVariant": { "id": "{{bonusVariantId}}" }
+      }
+    ]
+  }
+}
+
+### Get item by Id
+GET {{priceListItemUrl}}/{{priceListItemId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Copy items to targetPriceList from another price list (US-PRICE-034)
+# Start with targetPriceListId as the first path variable and then the sourcePriceListId
+POST {{priceListItemUrl}}/65544788999622edf78/copy-from/{{priceListId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Update item (US-PRICE-035)
+PUT {{priceListItemUrl}}/{{priceListItemId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "salePriceHT": 13000.00,
+  "margin": 18.0,
+  "quantityTiers": [
+    { "minQuantity": 1, "unitPriceHT": 13000.00, "methodCalculPalier": "REBATE_AMOUNT" },
+    { "minQuantity": 20, "unitPriceHT": 11800.00, "methodCalculPalier": "REBATE_AMOUNT" }
+  ],
+  "bonusRule": {
+    "cumulationRule": "ALL_RULES",
+    "bonusItemRules": [
+      {
+        "minQuantity": 24,
+        "bonusQuantity": 2,
+        "ruleLabel": "24+2 offerts",
+        "bonusItemVariant": { "id": "{{bonusVariantId}}" }
+      }
+    ]
+  }
+}
+
+### Set quantity tiers (replace all) (US-PRICE-037)
+PATCH {{priceListItemUrl}}/{{priceListItemId}}/quantity-tiers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+[
+  { "minQuantity": 1, "unitPriceHT": 12900.00, "methodCalculPalier": "FIXED_PRICE" },
+  { "minQuantity": 15, "unitPriceHT": 12100.00, "methodCalculPalier": "FIXED_PRICE" }
+]
+
+### Add one quantity tier (US-PRICE-037)
+POST {{priceListItemUrl}}/{{priceListItemId}}/quantity-tiers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "minQuantity": 30,
+  "unitPriceHT": 11500.00,
+  "methodCalculPalier": "REBATE_AMOUNT"
+}
+
+### Set bonus rules (replace all) (US-PRICE-038)
+PATCH {{priceListItemUrl}}/{{priceListItemId}}/bonus-rules
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "cumulationRule": "ALL_RULES",
+  "bonusItemRules": [
+    {
+      "minQuantity": 10,
+      "bonusQuantity": 1,
+      "ruleLabel": "10+1 offert",
+      "bonusItemVariant": { "id": "{{bonusVariantId}}" }
+    },
+    {
+      "minQuantity": 25,
+      "bonusQuantity": 3,
+      "ruleLabel": "25+3 offerts",
+      "bonusItemVariant": { "id": "{{bonusVariantId}}" }
+    }
+  ]
+}
+
+### Add one bonus rule (US-PRICE-038)
+POST {{priceListItemUrl}}/{{priceListItemId}}/bonus-rules
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "minQuantity": 50,
+  "bonusQuantity": 6,
+  "ruleLabel": "50+6 offerts",
+  "bonusItemVariant": { "id": "{{bonusVariantId}}" }
+}
+
+### Change item status (US-PRICE-039)
+PATCH {{priceListItemUrl}}/{{priceListItemId}}/status?status=ACTIVE
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Delete item (US-PRICE-040)
+DELETE {{priceListItemUrl}}/{{priceListItemId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Bulk: update margin by percent (US-PRICE-042)
+POST {{priceListItemUrl}}/bulk/margin-percent
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "ids": [
+    "{{priceListItemId}}"
+  ],
+  "percentDelta": 5.0
+}
+
+### Bulk: update margin by amount (US-PRICE-042)
+POST {{priceListItemUrl}}/bulk/margin-amount
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "ids": [
+    "{{priceListItemId}}"
+  ],
+  "amountDelta": 500.00
+}
+
+### Bulk: activate (US-PRICE-042)
+POST {{priceListItemUrl}}/bulk/activate
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+[
+  "{{priceListItemId}}"
+]
+
+### Bulk: deactivate (US-PRICE-042)
+POST {{priceListItemUrl}}/bulk/deactivate
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+[
+  "{{priceListItemId}}"
+]
+
+### Bulk: delete (US-PRICE-042)
+DELETE {{priceListItemUrl}}/bulk
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+[
+  "69024702b2691c0f57a6bf18"
+]
+
+### Dashboard (US-PRICE-045)
+GET {{priceListItemUrl}}/dashboard?priceListId={{priceListId}}&withStatistics=true
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Alerts (US-PRICE-046)
+GET {{priceListItemUrl}}/alerts?priceListId={{priceListId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Filters (withStatistics flag) (US-PRICE-045 support)
+POST {{priceListItemUrl}}/filters?withStatistics=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "page": 0,
+  "size": 20,
+  "sort": [{ "field": "createdAt", "direction": "DESC" }],
+  "filters": {
+    "priceListId": "{{priceListId}}",
+    "status": "ACTIVE"
+  }
+}
+
+### Duplicate priceListItem (US-PRICE-047)
+POST {{priceListItemUrl}}/{{priceListItemId}}/duplicate
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json

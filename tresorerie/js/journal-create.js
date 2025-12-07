@@ -128,29 +128,94 @@ function showStepContent() {
 }
 
 // ============================================================================
-// TYPE SELECTION
+// TYPE SELECTION - ENHANCED DROPDOWN
 // ============================================================================
 
-function selectType(type, element) {
-    selectedType = type;
+let isDropdownOpen = false;
 
-    // Update visual selection
-    document.querySelectorAll('.type-option').forEach(opt => {
+function toggleJournalTypeDropdown() {
+    const trigger = document.querySelector('.enhanced-select-trigger');
+    const dropdown = document.getElementById('journalTypeDropdown');
+
+    isDropdownOpen = !isDropdownOpen;
+
+    if (isDropdownOpen) {
+        trigger.classList.add('open');
+        dropdown.classList.add('open');
+    } else {
+        trigger.classList.remove('open');
+        dropdown.classList.remove('open');
+    }
+}
+
+function closeJournalTypeDropdown() {
+    const trigger = document.querySelector('.enhanced-select-trigger');
+    const dropdown = document.getElementById('journalTypeDropdown');
+
+    isDropdownOpen = false;
+    trigger.classList.remove('open');
+    dropdown.classList.remove('open');
+}
+
+function selectJournalType(value, title, iconClass, iconName) {
+    selectedType = value;
+
+    // Update hidden input
+    document.getElementById('journalType').value = value;
+
+    // Update trigger display
+    const trigger = document.querySelector('.enhanced-select-trigger');
+    const placeholder = document.getElementById('journalTypePlaceholder');
+    const selectedValueDiv = document.getElementById('journalTypeSelected');
+    const selectedIcon = document.getElementById('selectedTypeIcon');
+    const selectedTitle = document.getElementById('selectedTypeTitle');
+    const selectedCode = document.getElementById('selectedTypeCode');
+
+    placeholder.style.display = 'none';
+    selectedValueDiv.style.display = 'flex';
+
+    // Set icon
+    selectedIcon.className = `type-icon ${iconClass}`;
+    selectedIcon.innerHTML = `<i class="fa-solid ${iconName}"></i>`;
+
+    // Set text
+    selectedTitle.textContent = title;
+    selectedCode.textContent = value;
+
+    trigger.classList.add('selected');
+
+    // Update dropdown options selection
+    document.querySelectorAll('.enhanced-select-option').forEach(opt => {
         opt.classList.remove('selected');
+        if (opt.dataset.value === value) {
+            opt.classList.add('selected');
+        }
     });
-    element.classList.add('selected');
 
-    // Check the radio button
-    element.querySelector('input[type="radio"]').checked = true;
+    // Close dropdown
+    closeJournalTypeDropdown();
 
     // Show/hide relevant sections
     document.getElementById('bankDetailsSection').style.display =
-        type === 'BANK_ACCOUNT' ? 'block' : 'none';
+        value === 'BANK_ACCOUNT' ? 'block' : 'none';
     document.getElementById('mobileMoneySection').style.display =
-        type === 'MOBILE_MONEY' ? 'block' : 'none';
+        value === 'MOBILE_MONEY' ? 'block' : 'none';
 
     // Auto-generate code prefix
-    generateCodePrefix(type);
+    generateCodePrefix(value);
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const container = document.getElementById('journalTypeSelect');
+    if (container && !container.contains(event.target)) {
+        closeJournalTypeDropdown();
+    }
+});
+
+// Legacy function for backwards compatibility
+function selectType(type, element) {
+    selectJournalType(type, element.querySelector('.font-medium').textContent, '', '');
 }
 
 function generateCodePrefix(type) {

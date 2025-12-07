@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listes de Prix - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/catalogue-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        
+        .badge-type-sale {
+            background: #10B981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-type-purchase {
+            background: #3B82F6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        
+        .status-active { background: #10B981; }
+        .status-draft { background: #F59E0B; }
+        .status-expired { background: #EF4444; }
+        .status-archived { background: #6B7280; }
+        
+        .pricelist-meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-top: 6px;
+        }
+        
+        .pricelist-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .priority-badge {
+            background: var(--gray-100);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .quick-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-filter-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 2px solid var(--gray-300);
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .quick-filter-btn:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .quick-filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .quick-filter-count {
+            background: rgba(255,255,255,0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+            font-weight: 600;
+        }
+        
+        .quick-filter-btn.active .quick-filter-count {
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Listes de Prix</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="cursor-pointer">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg"></i>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Pierre NGONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Catalogue Produits
+                    </div>
+                    
+                    <a href="./categories-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-folder-tree mr-3"></i>
+                        <span>Catégories</span>
+                    </a>
+
+                    <a href="./products-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box mr-3"></i>
+                        <span>Articles</span>
+                    </a>
+
+                    <a href="./variants-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-boxes-stacked mr-3"></i>
+                        <span>Conditionnements</span>
+                    </a>
+
+                    <a href="./pricelists-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-tags mr-3"></i>
+                        <span>Listes de Prix</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="catalogue-container" style="max-width: none; padding: 24px;">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">
+                                    <i class="fa-solid fa-tags"></i>
+                                    Listes de Prix
+                                </h1>
+                                <p class="page-description">
+                                    Gérer les listes de prix (vente et achat) avec paliers et règles de tarification
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="importPricelists()">
+                                    <i class="fa-solid fa-file-import"></i>
+                                    Importer
+                                </button>
+                                <button class="btn btn-secondary" onclick="exportPricelists()">
+                                    <i class="fa-solid fa-file-export"></i>
+                                    Exporter
+                                </button>
+                                <button class="btn btn-primary" onclick="location.href='./pricelists-create.html'">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Nouvelle Liste de Prix
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Stats Cards -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Total Listes</div>
+                                <div class="stat-value" id="stat-total">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Vente</div>
+                                <div class="stat-value" id="stat-sale" style="color: #10B981;">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Achat</div>
+                                <div class="stat-value" id="stat-purchase" style="color: #3B82F6;">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Actives</div>
+                                <div class="stat-value" id="stat-active">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Filters -->
+                    <div class="quick-filters">
+                        <button class="quick-filter-btn active" data-filter="all" onclick="applyQuickFilter('all')">
+                            <i class="fa-solid fa-list"></i> Toutes
+                            <span class="quick-filter-count" id="count-all">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="sale" onclick="applyQuickFilter('sale')">
+                            <i class="fa-solid fa-shopping-cart"></i> Vente
+                            <span class="quick-filter-count" id="count-sale">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="purchase" onclick="applyQuickFilter('purchase')">
+                            <i class="fa-solid fa-shopping-bag"></i> Achat
+                            <span class="quick-filter-count" id="count-purchase">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="active" onclick="applyQuickFilter('active')">
+                            <i class="fa-solid fa-check-circle"></i> Actives
+                            <span class="quick-filter-count" id="count-active">0</span>
+                        </button>
+                        <button class="quick-filter-btn" data-filter="draft" onclick="applyQuickFilter('draft')">
+                            <i class="fa-solid fa-file-pen"></i> Brouillon
+                            <span class="quick-filter-count" id="count-draft">0</span>
+                        </button>
+                    </div>
+
+                    <!-- Filters Bar -->
+                    <div class="filters-bar">
+                        <div class="filters-row">
+                            <div class="filter-group" style="flex: 2;">
+                                <input 
+                                    type="text" 
+                                    class="search-input" 
+                                    id="search-input"
+                                    placeholder="🔍 Rechercher par code, nom..."
+                                    onkeyup="applyFilters()"
+                                >
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-type" onchange="applyFilters()">
+                                    <option value="">Type</option>
+                                    <option value="SALE">Vente</option>
+                                    <option value="PURCHASE">Achat</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-status" onchange="applyFilters()">
+                                    <option value="">Statut</option>
+                                    <option value="ACTIVE">Actif</option>
+                                    <option value="DRAFT">Brouillon</option>
+                                    <option value="ARCHIVED">Archivé</option>
+                                </select>
+                            </div>
+                            <div class="filter-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Table -->
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;">
+                                        <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                                    </th>
+                                    <th class="sortable" data-sort="code" onclick="sortTable('code')">Code</th>
+                                    <th class="sortable" data-sort="name" onclick="sortTable('name')">Nom</th>
+                                    <th class="text-center">Type</th>
+                                    <th class="text-center">Priorité</th>
+                                    <th>Validité</th>
+                                    <th class="text-center">Statut</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Données chargées dynamiquement -->
+                            </tbody>
+                        </table>
+
+                        <!-- Empty State -->
+                        <div id="empty-state" class="empty-state hidden">
+                            <div class="empty-state-icon">
+                                <i class="fa-solid fa-tags"></i>
+                            </div>
+                            <h3 class="empty-state-title">Aucune liste de prix trouvée</h3>
+                            <p class="empty-state-description">
+                                Créez votre première liste de prix pour commencer
+                            </p>
+                            <button class="btn btn-primary mt-4" onclick="location.href='./pricelists-create.html'">
+                                <i class="fa-solid fa-plus"></i>
+                                Nouvelle Liste de Prix
+                            </button>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="pagination" id="pagination">
+                            <div class="pagination-info" id="pagination-info">
+                                Affichage de 0 à 0 sur 0 listes
+                            </div>
+                            <div class="pagination-controls" id="pagination-controls">
+                                <!-- Généré dynamiquement -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete Confirmation -->
+    <div class="modal-overlay" id="delete-modal" style="display: none;">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirmer la suppression</h2>
+                <button class="modal-close" onclick="closeDeleteModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer cette liste de prix ?</p>
+                <p style="color: var(--gray-600); margin-top: 12px; font-size: 14px;">
+                    <strong id="delete-pricelist-name"></strong>
+                </p>
+                <div class="warning-box" style="margin-top: 16px;">
+                    <i class="fa-solid fa-exclamation-triangle"></i>
+                    Cette action est irréversible. Tous les articles et règles associés seront supprimés.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Annuler</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">
+                    <i class="fa-solid fa-trash"></i>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/pricelists-list.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+

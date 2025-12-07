@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles de la Liste de Prix - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/catalogue-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        
+        .items-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .header-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .articles-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .articles-table th {
+            background: var(--gray-100);
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--gray-700);
+            border-bottom: 2px solid var(--gray-300);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .articles-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 14px;
+            vertical-align: top;
+        }
+        
+        .articles-table tbody tr {
+            transition: all 0.2s;
+        }
+        
+        .articles-table tbody tr:hover {
+            background: var(--gray-50);
+        }
+        
+        .article-expandable {
+            cursor: pointer;
+        }
+        
+        .article-details {
+            display: none;
+            padding: 16px;
+            background: #F8F9FA;
+            border-left: 4px solid var(--primary-color);
+            margin: 8px 0;
+            border-radius: 6px;
+        }
+        
+        .article-details.expanded {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+            }
+        }
+        
+        .price-badge {
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-block;
+        }
+        
+        .margin-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            display: inline-block;
+        }
+        
+        .margin-positive {
+            background: #D1FAE5;
+            color: #059669;
+        }
+        
+        .margin-negative {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+        
+        .tier-indicator {
+            background: #FEF3C7;
+            color: #92400E;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .bonus-indicator {
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .quick-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-filter-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 2px solid var(--gray-300);
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .quick-filter-btn:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .quick-filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .bulk-actions-bar {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .bulk-actions-bar.active {
+            display: flex;
+        }
+        
+        .tier-list {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0;
+        }
+        
+        .tier-list li {
+            padding: 6px 0;
+            font-size: 13px;
+            color: var(--gray-700);
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            background: var(--gray-50);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-bottom: 4px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Articles de la Liste de Prix</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="cursor-pointer">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg"></i>
+                    </div>
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Pierre NGONO</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Catalogue Produits
+                    </div>
+                    
+                    <a href="./categories-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-folder-tree mr-3"></i>
+                        <span>Catégories</span>
+                    </a>
+                    <a href="./products-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box mr-3"></i>
+                        <span>Articles</span>
+                    </a>
+                    <a href="./variants-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-boxes-stacked mr-3"></i>
+                        <span>Conditionnements</span>
+                    </a>
+                    <a href="./pricelists-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-tags mr-3"></i>
+                        <span>Listes de Prix</span>
+                    </a>
+                    
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+                    <a href="../dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="items-container">
+                    <!-- Breadcrumb -->
+                    <div style="margin-bottom: 16px; font-size: 14px; color: var(--gray-600);">
+                        <a href="./pricelists-list.html" style="color: var(--primary-color);">Listes de Prix</a>
+                        <span> > </span>
+                        <a href="#" onclick="goBackToList()" style="color: var(--primary-color);" id="pricelist-breadcrumb">TARIF-QUINC-2026</a>
+                        <span> > </span>
+                        <span>Articles</span>
+                    </div>
+
+                    <!-- Header Card -->
+                    <div class="header-card">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                            <div>
+                                <h1 style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 8px;">
+                                    <span id="pricelist-code">TARIF-QUINC-2026</span> - 
+                                    <span id="pricelist-name">Quincaillerie 2026</span>
+                                </h1>
+                                <div style="font-size: 14px; color: var(--gray-600);">
+                                    <span id="pricelist-type">VENTE</span> • 
+                                    <span id="pricelist-currency">XAF</span> • 
+                                    Priorité <span id="pricelist-priority">10</span>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-secondary btn-sm" onclick="saveAllChanges()">
+                                    <i class="fa-solid fa-save"></i>
+                                    Enregistrer Tout
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="refreshData()">
+                                    <i class="fa-solid fa-rotate"></i>
+                                    Actualiser
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="importArticles()">
+                                    <i class="fa-solid fa-file-import"></i>
+                                    Import Excel
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="exportArticles()">
+                                    <i class="fa-solid fa-file-export"></i>
+                                    Export Excel
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="goBackToList()">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Retour
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Summary Stats -->
+                        <div class="summary-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">Total Articles</div>
+                                <div class="stat-value" id="stat-total">372</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Actifs</div>
+                                <div class="stat-value" id="stat-active">365</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Avec Paliers</div>
+                                <div class="stat-value" id="stat-tiers">48</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Avec Bonus</div>
+                                <div class="stat-value" id="stat-bonus">12</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Marge Moyenne</div>
+                                <div class="stat-value" id="stat-margin">95.3%</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Prix Moyen</div>
+                                <div class="stat-value" id="stat-avg-price">15,450</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions Bar -->
+                    <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h2 style="font-size: 18px; font-weight: 700; color: var(--primary-color); margin: 0;">
+                                <i class="fa-solid fa-box"></i>
+                                Gestion des Articles
+                            </h2>
+                            
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary" onclick="openAddArticleModal()">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Ajouter Article
+                                </button>
+                                <button class="btn btn-secondary" onclick="addByFamily()">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    Ajouter par Famille
+                                </button>
+                                <button class="btn btn-secondary" onclick="copyFromList()">
+                                    <i class="fa-solid fa-copy"></i>
+                                    Copier depuis...
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Search & Filters -->
+                        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                            <input type="text" class="search-input" placeholder="🔍 Rechercher par code, nom, famille..." 
+                                   style="flex: 2;" id="search-input" onkeyup="applyFilters()">
+                            <select class="filter-select" id="filter-family" onchange="applyFilters()">
+                                <option value="">Toutes les familles</option>
+                                <option value="CIMENT">Ciment</option>
+                                <option value="FER">Fer</option>
+                                <option value="PEINTURE">Peinture</option>
+                                <option value="CARRELAGE">Carrelage</option>
+                                <option value="TUYAU">Tuyauterie</option>
+                            </select>
+                            <select class="filter-select" id="filter-category" onchange="applyFilters()">
+                                <option value="">Toutes catégories</option>
+                                <option value="CONSTRUCTION">Construction</option>
+                                <option value="FINITION">Finition</option>
+                            </select>
+                            <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                Reset
+                            </button>
+                        </div>
+                        
+                        <!-- Quick Filters -->
+                        <div class="quick-filters">
+                            <button class="quick-filter-btn active" data-filter="all" onclick="applyQuickFilter('all')">
+                                <i class="fa-solid fa-list"></i>
+                                Tous (372)
+                            </button>
+                            <button class="quick-filter-btn" data-filter="tiers" onclick="applyQuickFilter('tiers')">
+                                <i class="fa-solid fa-layer-group"></i>
+                                Avec Paliers (48)
+                            </button>
+                            <button class="quick-filter-btn" data-filter="bonus" onclick="applyQuickFilter('bonus')">
+                                <i class="fa-solid fa-gift"></i>
+                                Avec Bonus (12)
+                            </button>
+                            <button class="quick-filter-btn" data-filter="active" onclick="applyQuickFilter('active')">
+                                <i class="fa-solid fa-check-circle"></i>
+                                Actifs (365)
+                            </button>
+                            <button class="quick-filter-btn" data-filter="inactive" onclick="applyQuickFilter('inactive')">
+                                <i class="fa-solid fa-times-circle"></i>
+                                Inactifs (7)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bulk Actions Bar -->
+                    <div class="bulk-actions-bar" id="bulk-actions-bar">
+                        <div>
+                            <strong id="selected-count">0</strong> article(s) sélectionné(s)
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-secondary btn-sm" onclick="bulkEditMargin()">
+                                <i class="fa-solid fa-percent"></i>
+                                Modifier Marge
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="bulkEditPrice()">
+                                <i class="fa-solid fa-dollar-sign"></i>
+                                Modifier Prix
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="bulkToggleStatus()">
+                                <i class="fa-solid fa-toggle-on"></i>
+                                Activer/Désactiver
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="bulkDelete()">
+                                <i class="fa-solid fa-trash"></i>
+                                Supprimer
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="clearSelection()">
+                                <i class="fa-solid fa-times"></i>
+                                Annuler
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Articles Table -->
+                    <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
+                        <div style="overflow-x: auto;">
+                            <table class="articles-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px;">
+                                            <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                                        </th>
+                                        <th style="width: 40px;"></th>
+                                        <th>Article</th>
+                                        <th style="width: 140px;">Prix Base HT</th>
+                                        <th style="width: 100px; text-align: center;">Marge %</th>
+                                        <th style="width: 120px; text-align: center;">Paliers</th>
+                                        <th style="width: 80px; text-align: center;">Statut</th>
+                                        <th style="width: 140px; text-align: center;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="articles-tbody">
+                                    <!-- Lignes dynamiques -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div id="empty-state" class="empty-state hidden">
+                            <div class="empty-state-icon">
+                                <i class="fa-solid fa-box-open"></i>
+                            </div>
+                            <h3 class="empty-state-title">Aucun article dans cette liste</h3>
+                            <p class="empty-state-description">
+                                Commencez par ajouter des articles à votre liste de prix
+                            </p>
+                            <button class="btn btn-primary mt-4" onclick="openAddArticleModal()">
+                                <i class="fa-solid fa-plus"></i>
+                                Ajouter un Article
+                            </button>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div class="pagination" id="pagination" style="padding: 16px;">
+                            <div class="pagination-info" id="pagination-info">
+                                Affichage de 1 à 50 sur 372 articles
+                            </div>
+                            <div class="pagination-controls" id="pagination-controls">
+                                <!-- Généré dynamiquement -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Add Article -->
+    <div class="modal-overlay" id="add-article-modal" style="display: none;">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Ajouter un Article</h2>
+                <button class="modal-close" onclick="closeAddArticleModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-article-form">
+                    <div class="form-group">
+                        <label class="form-label required">Sélectionner l'article</label>
+                        <input type="text" class="form-input" id="article-search" 
+                               placeholder="🔍 Rechercher par code, nom, famille..."
+                               onkeyup="searchArticles()" autocomplete="off">
+                        <small class="form-help">Tapez au moins 2 caractères pour rechercher</small>
+                        
+                        <div id="article-search-results" style="display: none; max-height: 300px; overflow-y: auto; border: 1px solid var(--gray-300); border-radius: 6px; margin-top: 8px;">
+                            <!-- Résultats de recherche -->
+                        </div>
+                    </div>
+
+                    <div id="selected-article-info" style="display: none; background: var(--gray-50); padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 4px;" id="selected-article-code"></div>
+                                <div style="color: var(--gray-600); margin-bottom: 8px;" id="selected-article-name"></div>
+                                <div style="font-size: 13px;">
+                                    <span style="color: var(--gray-600);">PA Actuel: </span>
+                                    <strong id="selected-article-pa"></strong>
+                                    <span style="margin: 0 8px;">|</span>
+                                    <span style="color: var(--gray-600);">PV Suggéré (x2): </span>
+                                    <strong id="selected-article-pv-suggest"></strong>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="clearArticleSelection()">
+                                <i class="fa-solid fa-times"></i> Changer
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Prix de Vente HT</label>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <input type="number" step="0.01" class="form-input" id="selling-price" required 
+                                   style="flex: 1;" oninput="calculateMargin()">
+                            <span style="color: var(--gray-600);">XAF</span>
+                        </div>
+                        <small class="form-help" id="pa-info">Prix d'achat: -</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Marge %</label>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <input type="number" step="0.1" class="form-input" id="margin-percent" 
+                                   style="flex: 1;" oninput="calculatePriceFromMargin()">
+                            <span style="color: var(--gray-600);">%</span>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="toggleMarginMode()">
+                                <i class="fa-solid fa-calculator"></i> Calc
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="configure-tiers">
+                            Configurer des paliers de prix
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="configure-bonus">
+                            Configurer des règles de bonus
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Statut</label>
+                        <div style="display: flex; gap: 16px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="article-status" value="ACTIVE" checked>
+                                Actif
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="article-status" value="INACTIVE">
+                                Inactif
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddArticleModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveArticle()">
+                    <i class="fa-solid fa-plus"></i>
+                    Ajouter à la Liste
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Price -->
+    <div class="modal-overlay" id="edit-price-modal" style="display: none;">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Modifier le Prix</h2>
+                <button class="modal-close" onclick="closeEditPriceModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="background: var(--gray-50); padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+                    <div style="font-weight: 600;" id="edit-article-name"></div>
+                    <div style="font-size: 13px; color: var(--gray-600); margin-top: 4px;">
+                        PA: <span id="edit-article-pa"></span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label required">Nouveau Prix de Vente HT</label>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <input type="number" step="0.01" class="form-input" id="edit-selling-price" required style="flex: 1;">
+                        <span style="color: var(--gray-600);">XAF</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nouvelle Marge %</label>
+                    <input type="number" step="0.1" class="form-input" id="edit-margin">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditPriceModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveEditPrice()">
+                    <i class="fa-solid fa-save"></i>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/pricelists-items.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+

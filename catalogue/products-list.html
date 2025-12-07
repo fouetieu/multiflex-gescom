@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Articles - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/catalogue-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Gestion des Articles / Produits</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="cursor-pointer">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg"></i>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Administrateur</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Catalogue Produits
+                    </div>
+                    
+                    <a href="./categories-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-folder-tree mr-3"></i>
+                        <span>Catégories</span>
+                    </a>
+
+                    <a href="./products-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-box mr-3"></i>
+                        <span>Articles</span>
+                    </a>
+
+                    <a href="./variants-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-boxes-stacked mr-3"></i>
+                        <span>Conditionnements</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="catalogue-container" style="max-width: none; padding: 24px;">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">
+                                    <i class="fa-solid fa-box"></i>
+                                    Gestion des Articles / Produits
+                                </h1>
+                                <p class="page-description">
+                                    Gérer les articles génériques de votre catalogue (chaque article regroupe plusieurs conditionnements)
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="location.href='../dashboard.html'">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Retour
+                                </button>
+                                <button class="btn btn-primary" onclick="openCreateModal()">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Nouvel Article
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Stats Cards -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Total Articles</div>
+                                <div class="stat-value" id="stat-total">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Articles Actifs</div>
+                                <div class="stat-value" id="stat-active">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Total Variantes</div>
+                                <div class="stat-value" id="stat-variants">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Catégories Utilisées</div>
+                                <div class="stat-value" id="stat-categories">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters Bar -->
+                    <div class="filters-bar">
+                        <div class="filters-row">
+                            <div class="filter-group" style="flex: 2;">
+                                <input 
+                                    type="text" 
+                                    class="search-input" 
+                                    id="search-input"
+                                    placeholder="Rechercher par code ou désignation..."
+                                    onkeyup="applyFilters()"
+                                >
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-category" onchange="applyFilters()">
+                                    <option value="">Toutes les catégories</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-type" onchange="applyFilters()">
+                                    <option value="">Tous les types</option>
+                                    <option value="MARCHANDISE">Marchandise</option>
+                                    <option value="PRODUIT_FINI">Produit Fini</option>
+                                    <option value="MATIERE_PREMIERE">Matière Première</option>
+                                    <option value="SERVICE">Service</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-status" onchange="applyFilters()">
+                                    <option value="">Tous les statuts</option>
+                                    <option value="ACTIVE">Actif</option>
+                                    <option value="INACTIVE">Inactif</option>
+                                </select>
+                            </div>
+                            <div class="filter-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="toggleView()">
+                                    <i class="fa-solid fa-th" id="view-icon"></i>
+                                    <span id="view-text">Grille</span>
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                    Réinitialiser
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="exportData()">
+                                    <i class="fa-solid fa-download"></i>
+                                    Exporter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table View -->
+                    <div class="table-container" id="table-view">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 60px;">Image</th>
+                                    <th class="sortable" data-sort="code" onclick="sortTable('code')">Code</th>
+                                    <th class="sortable" data-sort="designation" onclick="sortTable('designation')">Désignation</th>
+                                    <th>Catégorie</th>
+                                    <th>Type</th>
+                                    <th class="sortable text-center" data-sort="variantCount" onclick="sortTable('variantCount')">Variantes</th>
+                                    <th class="sortable" data-sort="status" onclick="sortTable('status')">Statut</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Données chargées dynamiquement -->
+                            </tbody>
+                        </table>
+
+                        <!-- Empty State -->
+                        <div id="empty-state" class="empty-state hidden">
+                            <div class="empty-state-icon">
+                                <i class="fa-solid fa-box"></i>
+                            </div>
+                            <h3 class="empty-state-title">Aucun article trouvé</h3>
+                            <p class="empty-state-description">
+                                Commencez par créer votre premier article
+                            </p>
+                            <button class="btn btn-primary mt-4" onclick="openCreateModal()">
+                                <i class="fa-solid fa-plus"></i>
+                                Nouvel Article
+                            </button>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="pagination" id="pagination">
+                            <div class="pagination-info" id="pagination-info">
+                                Affichage de 0 à 0 sur 0 articles
+                            </div>
+                            <div class="pagination-controls" id="pagination-controls">
+                                <!-- Généré dynamiquement -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid View (hidden by default) -->
+                    <div class="product-grid hidden" id="grid-view">
+                        <!-- Chargé dynamiquement -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Create/Edit -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Nouvel Article</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="background: #EEF2FF; border-left: 4px solid #3730A3; padding: 12px; margin-bottom: 20px; border-radius: 6px;">
+                    <i class="fa-solid fa-info-circle" style="color: #3730A3;"></i>
+                    Un article générique regroupe plusieurs conditionnements (ex: MI 300 en pot 5kg et pot 30kg)
+                </div>
+
+                <form id="product-form">
+                    <input type="hidden" id="product-id">
+                    
+                    <h3 style="color: var(--primary-color); margin-bottom: 16px; font-size: 16px;">Informations Générales</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Code Article</label>
+                        <input type="text" class="form-input" id="product-code" required>
+                        <small class="form-help">Ex: MI300, CB300</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Désignation</label>
+                        <input type="text" class="form-input" id="product-designation" required>
+                        <small class="form-help">Nom complet de l'article</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Catégorie</label>
+                        <select class="form-input" id="product-category" required>
+                            <option value="">-- Choisir une catégorie --</option>
+                        </select>
+                        <small class="form-help" id="category-path"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Type de Produit</label>
+                        <select class="form-input" id="product-type" required>
+                            <option value="MARCHANDISE">MARCHANDISE</option>
+                            <option value="PRODUIT_FINI">PRODUIT FINI</option>
+                            <option value="MATIERE_PREMIERE">MATIÈRE PREMIÈRE</option>
+                            <option value="SERVICE">SERVICE</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-input form-textarea" id="product-description"></textarea>
+                        <small class="form-help">Description détaillée (optionnel)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Image Principale (URL)</label>
+                        <input type="text" class="form-input" id="product-image" placeholder="https://...">
+                        <small class="form-help">URL de l'image du produit</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Statut</label>
+                        <select class="form-input" id="product-status">
+                            <option value="ACTIVE">Actif</option>
+                            <option value="INACTIVE">Inactif</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div style="background: #FEF3C7; border-left: 4px solid #92400E; padding: 12px; margin-top: 20px; border-radius: 6px;">
+                    <i class="fa-solid fa-exclamation-triangle" style="color: #92400E;"></i>
+                    Prochaine étape : Créer les conditionnements (variantes) de cet article
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveProduct()">
+                    <i class="fa-solid fa-save"></i>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal View Details -->
+    <div class="modal-overlay" id="view-modal-overlay">
+        <div class="modal" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="view-modal-title">Détails de l'Article</h2>
+                <button class="modal-close" onclick="closeViewModal()">×</button>
+            </div>
+            <div class="modal-body" id="view-modal-body">
+                <!-- Contenu chargé dynamiquement -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeViewModal()">Fermer</button>
+                <button class="btn btn-primary" onclick="editFromView()">
+                    <i class="fa-solid fa-edit"></i>
+                    Modifier
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/products-list.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

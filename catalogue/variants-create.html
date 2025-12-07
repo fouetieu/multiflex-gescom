@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un Conditionnement - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/catalogue-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        
+        /* Wizard Styles */
+        .wizard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            width: 100%;
+        }
+        
+        .wizard-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .wizard-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        
+        .wizard-subtitle {
+            color: var(--gray-600);
+            font-size: 14px;
+        }
+        
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 32px;
+            position: relative;
+        }
+        
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            right: 40px;
+            height: 2px;
+            background: var(--gray-200);
+            z-index: 0;
+        }
+        
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            height: 2px;
+            background: var(--primary-color);
+            z-index: 1;
+            transition: width 0.3s ease;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+        
+        .step[style*="display: none"] {
+            flex: 0 !important;
+            width: 0 !important;
+            overflow: hidden !important;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--gray-300);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--gray-500);
+            transition: all 0.3s;
+        }
+        
+        .step.active .step-circle {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .step.completed .step-circle {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+        
+        .step-label {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--gray-600);
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        /* Step Content */
+        .wizard-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-height: 500px;
+            position: relative;
+        }
+        
+        .step-content {
+            display: none;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        /* Navigation Buttons */
+        .wizard-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 2px solid var(--gray-200);
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: #EEF2FF;
+            border-left: 4px solid #3730A3;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+        
+        .info-box i {
+            color: #3730A3;
+            margin-right: 8px;
+        }
+        
+        .warning-box {
+            background: #FEF3C7;
+            border-left: 4px solid #92400E;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+        
+        .warning-box i {
+            color: #92400E;
+            margin-right: 8px;
+        }
+        
+        /* Summary */
+        .summary-section {
+            background: var(--gray-50);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .summary-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-label {
+            color: var(--gray-600);
+            font-size: 14px;
+        }
+        
+        .summary-value {
+            color: var(--gray-900);
+            font-weight: 500;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Créer un Conditionnement</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="cursor-pointer">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg"></i>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Administrateur</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Catalogue Produits
+                    </div>
+                    
+                    <a href="./categories-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-folder-tree mr-3"></i>
+                        <span>Catégories</span>
+                    </a>
+
+                    <a href="./products-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box mr-3"></i>
+                        <span>Articles</span>
+                    </a>
+
+                    <a href="./variants-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-boxes-stacked mr-3"></i>
+                        <span>Articles</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="wizard-container">
+                <!-- Wizard Header -->
+                <div class="wizard-header">
+                    <div class="wizard-title">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                        Nouveau Article
+                    </div>
+                    <div class="wizard-subtitle">
+                        Créez un nouvel article (SKU) pour une famille d'articles de votre catalogue
+                    </div>
+                    
+                    <!-- Progress Steps -->
+                    <div class="progress-steps">
+                        <div class="progress-line" id="progress-line" style="width: 0%;"></div>
+                        
+                        <div class="step active" data-step="1">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Infos<br>générales</div>
+                        </div>
+                        
+                        <div class="step" data-step="2">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Unités &<br>Conversions</div>
+                        </div>
+                        
+                        <div class="step" data-step="3">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Stock</div>
+                        </div>
+                        
+                        <div class="step" data-step="4">
+                            <div class="step-circle">4</div>
+                            <div class="step-label">Approvi-<br>sionnement</div>
+                        </div>
+                        
+                        <div class="step" data-step="5">
+                            <div class="step-circle">5</div>
+                            <div class="step-label">Prix</div>
+                        </div>
+                        
+                        <div class="step" data-step="6">
+                            <div class="step-circle">6</div>
+                            <div class="step-label">Production<br>(opt.)</div>
+                        </div>
+                        
+                        <div class="step" data-step="7">
+                            <div class="step-circle">7</div>
+                            <div class="step-label">Média</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wizard Content -->
+                <div class="wizard-content">
+                    <form id="variant-wizard-form">
+                        <!-- Step 1: Informations générales -->
+                        <div class="step-content active" id="step-1">
+                            <div class="step-title">Étape 1 : Informations Générales</div>
+                            
+                            <div class="info-box">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Définissez les informations de base de l'article
+                            </div>
+                            
+                            <div class="summary-section">
+                                <div class="summary-title">IDENTIFICATION *</div>
+                                
+                            <div class="form-group">
+                                <label class="form-label required">Famille d'articles</label>
+                                <select class="form-input" id="product-id" required>
+                                    <option value="">-- Sélectionner une famille --</option>
+                                </select>
+                                <small class="form-help">Famille d'articles à laquelle cet article sera rattaché</small>
+                            </div>
+
+                                <div class="form-group">
+                                    <label class="form-label required">Code du conditionnement</label>
+                                    <input type="text" class="form-input" id="sku" required>
+                                    <small class="form-help">ℹ️ Format recommandé : CODE_ARTICLE-POIDS (ex: IM2000-10KG)</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label required">Désignation</label>
+                                    <input type="text" class="form-input" id="designation" required>
+                                    <small class="form-help">Ex: IM 2000 MULTIPRIM 10kg</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Description détaillée (optionnel)</label>
+                                    <textarea class="form-input" id="detailed-description" rows="3" placeholder="Impression multipurpose pour travaux de peinture intérieure et extérieure..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-section">
+                                <div class="summary-title">SPÉCIFICATIONS TECHNIQUES (optionnel)</div>
+                                <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                    Spécifications de process pour les produits techniques
+                                </p>
+                                
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 16px;">
+                                    <input type="checkbox" id="has-technical-specs" onchange="toggleTechnicalSpecsSection()">
+                                    <strong>Ajouter des spécifications techniques de process</strong>
+                                </label>
+                                
+                                <div id="technical-specs-section" style="display: none;">
+                                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px;">
+                                        <div class="form-group">
+                                            <label class="form-label">Rendement surfacique</label>
+                                            <input type="number" step="0.1" class="form-input" id="surface-yield" placeholder="195">
+                                            <small class="form-help">Ex: 195 m² avec unité de mesure</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Unité</label>
+                                            <select class="form-input" id="surface-yield-unit">
+                                                <option value="m²/L">m²/L</option>
+                                                <option value="m²/KG">m²/KG</option>
+                                                <option value="m²/UNITE">m²/unité</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                                        <div class="form-group">
+                                            <label class="form-label">Durée de réalisation</label>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <input type="number" step="0.1" class="form-input" id="realization-time" placeholder="2" style="flex: 1;">
+                                                <span style="color: var(--gray-600);">heures/unité</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Durée de séchage</label>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <input type="number" step="0.1" class="form-input" id="drying-time" placeholder="4" style="flex: 1;">
+                                                <span style="color: var(--gray-600);">heures</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Nombre de couches recommandées</label>
+                                            <input type="number" class="form-input" id="recommended-coats" placeholder="2">
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Quantité de sécurité par défaut</label>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <input type="number" class="form-input" id="default-safety-quantity" placeholder="10" style="flex: 1;">
+                                                <span style="color: var(--gray-600);">unités</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Conseils produit (optionnel)</label>
+                                        <textarea class="form-input" id="product-advice" rows="3" placeholder="Appliquer en 2 couches croisées. Bien mélanger avant emploi. Ne pas appliquer par température < 5°C."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="summary-section">
+                                <div class="summary-title">PROPRIÉTÉS PHYSIQUES</div>
+                                <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                    Caractéristiques physiques du conditionnement (optionnel)
+                                </p>
+                                
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+                                    <div class="form-group">
+                                        <label class="form-label required">Conditionnement</label>
+                                        <select class="form-input" id="conditionnement-type" required>
+                                            <option value="">-- Sélectionner --</option>
+                                            <option value="POT">POT</option>
+                                            <option value="SAC">SAC</option>
+                                            <option value="SCEAU">SCEAU</option>
+                                            <option value="BIDON">BIDON</option>
+                                            <option value="PALETTE">PALETTE</option>
+                                        </select>
+                                        <small class="form-help">Type de conditionnement</small>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Poids Net (kg)</label>
+                                        <input type="number" step="0.01" class="form-input" id="net-weight" placeholder="5.00">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Poids Brut (kg)</label>
+                                        <input type="number" step="0.01" class="form-input" id="gross-weight" placeholder="5.50">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Volume (m³)</label>
+                                        <input type="number" step="0.001" class="form-input" id="volume" placeholder="0.005">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-section">
+                                <div class="summary-title">FLAGS DE GESTION *</div>
+                                <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                    Définissez les capacités du conditionnement
+                                </p>
+
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="is-saleable" checked> Vendable - Peut être vendu aux clients
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="is-purchaseable" checked> Achetable - Peut être acheté auprès des fournisseurs
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="is-stockable" checked> Stockable - Ce conditionnement est géré en stock
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="is-producible" onchange="updateProductionSection()"> Productible - Peut être produit en interne
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="is-default"> Définir comme variante par défaut
+                                    </label>
+                                </div>
+                                
+                                <div class="info-box" style="margin-top: 16px; margin-bottom: 0;">
+                                    <i class="fa-solid fa-lightbulb"></i>
+                                    ℹ️ Au moins un flag doit être coché
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Configuration des unités -->
+                        <div class="step-content" id="step-2">
+                            <div class="step-title">Étape 2 : Unités de Mesure & Conversions</div>
+                            
+                            <div class="info-box">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Définissez les unités pour gérer cette variante dans le système (stock, achats, ventes, production)
+                            </div>
+
+                            <div class="summary-section">
+                                <div class="summary-title">UNITÉS PRINCIPALES *</div>
+                                <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                    Unités de base pour gérer ce conditionnement
+                                </p>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required">Unité de stock</label>
+                                    <select class="form-input" id="stock-unit" required>
+                                        <option value="UNITE">UNITE (POT, SAC, CARTON...)</option>
+                                        <option value="KG">KG (Kilogramme)</option>
+                                        <option value="LITRE">LITRE</option>
+                                        <option value="M2">M² (Mètre carré)</option>
+                                        <option value="M3">M³ (Mètre cube)</option>
+                                    </select>
+                                    <small class="form-help">ℹ️ Unité dans laquelle le stock est géré</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required">Unité de vente par défaut</label>
+                                    <select class="form-input" id="sale-unit" required>
+                                        <option value="UNITE">UNITE (POT, SAC, CARTON...)</option>
+                                        <option value="KG">KG (Kilogramme)</option>
+                                        <option value="LITRE">LITRE</option>
+                                        <option value="M2">M² (Mètre carré)</option>
+                                        <option value="M3">M³ (Mètre cube)</option>
+                                    </select>
+                                    <small class="form-help">Unité utilisée par défaut lors de la vente</small>
+                                </div>
+
+                                <div class="info-box" style="margin-top: 12px; margin-bottom: 0;">
+                                    <i class="fa-solid fa-lightbulb"></i>
+                                    <span id="stock-unit-info">Stock géré en : UNITE (1 unité = 1 unité stock)</span>
+                                </div>
+                            </div>
+
+                            <div class="summary-section" id="purchase-section">
+                                <div class="summary-title">UNITÉ D'ACHAT (optionnel)</div>
+                                <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                    Unité dans laquelle vous achetez ce produit
+                                </p>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Unité d'achat</label>
+                                    <select class="form-input" id="purchase-unit">
+                                        <option value="">-- Même que l'unité de stock --</option>
+                                        <option value="PALETTE">PALETTE</option>
+                                        <option value="CARTON">CARTON</option>
+                                        <option value="LOT">LOT</option>
+                                        <option value="CONTENEUR">CONTENEUR</option>
+                                    </select>
+                                    <small class="form-help">Unité dans laquelle vous achetez (si différente du stock)</small>
+                                </div>
+
+                                <div class="form-group" id="purchase-coef-group" style="display: none;">
+                                    <label class="form-label required">Coefficient de conversion</label>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <input type="number" class="form-input" id="purchase-coefficient" placeholder="100" style="flex: 0 0 120px;">
+                                        <span id="unit-conversion-text" style="color: var(--gray-600); font-size: 14px;">
+                                            unités de stock = 1 unité d'achat
+                                        </span>
+                                    </div>
+                                    <small class="form-help">Ex: 100 POT = 1 PALETTE</small>
+                                </div>
+
+                                <div class="info-box" style="margin-top: 16px; margin-bottom: 0; display: none;" id="purchase-summary">
+                                    <i class="fa-solid fa-calculator"></i>
+                                    <span id="purchase-summary-text"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-section" id="production-unit-section">
+                                <div class="summary-title">UNITÉ DE PRODUCTION (si productible)</div>
+                                <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                    Unité utilisée dans la recette de fabrication (BOM)
+                                </p>
+                                
+                                <div id="production-unit-fields">
+                                    <div class="form-group">
+                                        <label class="form-label required">Unité de production</label>
+                                        <select class="form-input" id="production-unit-select">
+                                            <option value="">-- Sélectionner --</option>
+                                            <option value="KG">KG (Kilogramme)</option>
+                                            <option value="LITRE">LITRE</option>
+                                            <option value="M2">M² (Mètre carré)</option>
+                                            <option value="M3">M³ (Mètre cube)</option>
+                                            <option value="UNITE">UNITE</option>
+                                        </select>
+                                        <small class="form-help">ℹ️ Unité utilisée dans la recette de fabrication (BOM)</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="summary-section">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                    <div class="summary-title" style="margin: 0;">TABLE DE CONVERSIONS</div>
+                                    <button type="button" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;" onclick="openConversionModal()">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Ajouter conversion
+                                    </button>
+                                </div>
+                                <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                    Définissez les conversions entre différentes unités (optionnel)
+                                </p>
+                                
+                                <div id="conversions-list-container">
+                                    <div id="conversions-empty-state" style="text-align: center; padding: 24px; color: var(--gray-500); background: var(--gray-50); border-radius: 8px; border: 2px dashed var(--gray-300);">
+                                        <i class="fa-solid fa-exchange-alt" style="font-size: 32px; margin-bottom: 12px; opacity: 0.5;"></i>
+                                        <p style="margin: 0;">Aucune conversion configurée</p>
+                                        <small style="font-size: 12px;">Les conversions permettent de gérer des unités multiples (ex: 100 SAC = 1 PALETTE)</small>
+                                    </div>
+                                    
+                                    <table id="conversions-list-table" style="display: none; width: 100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr style="background: var(--gray-100); text-align: left;">
+                                                <th style="padding: 12px; border-bottom: 2px solid var(--gray-300);">De</th>
+                                                <th style="padding: 12px; border-bottom: 2px solid var(--gray-300);">Vers</th>
+                                                <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 120px;">Facteur</th>
+                                                <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 100px; text-align: center;">Par défaut</th>
+                                                <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 100px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="conversions-list-body">
+                                            <!-- Lignes ajoutées dynamiquement -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-section">
+                                <div class="summary-title">APERÇU DES CONVERSIONS</div>
+                                
+                                <div id="units-recap">
+                                    <div class="summary-row">
+                                        <span class="summary-label">Stock géré en:</span>
+                                        <span class="summary-value" id="recap-stock-unit">-</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span class="summary-label">Vente en:</span>
+                                        <span class="summary-value" id="recap-sale-unit">-</span>
+                                    </div>
+                                    <div class="summary-row" id="recap-purchase-row" style="display: none;">
+                                        <span class="summary-label">Achat en:</span>
+                                        <span class="summary-value" id="recap-purchase-unit">-</span>
+                                    </div>
+                                    <div class="summary-row" id="recap-production-row" style="display: none;">
+                                        <span class="summary-label">Production en:</span>
+                                        <span class="summary-value" id="recap-production-unit">-</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-box" style="margin-top: 16px; margin-bottom: 0;" id="example-text">
+                                    <i class="fa-solid fa-lightbulb"></i>
+                                    <div id="example-content">Configurez les unités pour voir un exemple de calcul</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Stock -->
+                        <div class="step-content" id="step-3">
+                            <div class="step-title">Étape 3 : Configuration du Stock</div>
+                            
+                            <div class="info-box" id="stock-disabled-info" style="display: none;">
+                                <i class="fa-solid fa-exclamation-circle"></i>
+                                Cette variante n'est pas stockable. Les paramètres de stock ne sont pas nécessaires.
+                            </div>
+
+                            <div id="stock-params-content">
+                                <div class="summary-section">
+                                    <div class="summary-title">VALORISATION</div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label required">Méthode de valorisation</label>
+                                        <select class="form-input" id="valuation-method" required>
+                                            <option value="PMP">PMP (Prix Moyen Pondéré)</option>
+                                            <option value="FIFO">FIFO (First In, First Out)</option>
+                                            <option value="LIFO">LIFO (Last In, First Out)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="info-box" style="margin-top: 12px; margin-bottom: 0;">
+                                        <i class="fa-solid fa-info-circle"></i>
+                                        <span id="valuation-info">Le stock sera valorisé au Prix Moyen Pondéré</span>
+                                    </div>
+                                </div>
+
+                                <div class="summary-section">
+                                    <div class="summary-title">PARAMÈTRES INVENTAIRE</div>
+                                    <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                        Seuils de gestion des stocks en <span id="alert-unit">UNITE</span>
+                                    </p>
+                                    
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                                        <div class="form-group">
+                                            <label class="form-label">Stock de sécurité *</label>
+                                            <input type="number" class="form-input" id="security-stock" placeholder="50">
+                                            <small class="form-help">ℹ️ Niveau minimum absolu à ne pas dépasser</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Point de commande *</label>
+                                            <input type="number" class="form-input" id="reorder-point" placeholder="200">
+                                            <small class="form-help">ℹ️ Seuil déclenchant une alerte de réappro</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Stock maximum (optionnel)</label>
+                                            <input type="number" class="form-input" id="maximum-stock" placeholder="1000">
+                                            <small class="form-help">ℹ️ Niveau à ne pas dépasser (capacité)</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="warning-box" id="threshold-warning" style="display: none; margin-top: 12px;">
+                                        <i class="fa-solid fa-exclamation-triangle"></i>
+                                        <strong>Recommandation :</strong> Point de commande ≥ Stock de sécurité
+                                    </div>
+                                </div>
+                                
+                                <div class="summary-section" id="production-lots-section" style="display: none;">
+                                    <div class="summary-title">LOTS DE PRODUCTION (si productible)</div>
+                                    <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                        Tailles de lots recommandées pour la production
+                                    </p>
+                                    
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                                        <div class="form-group">
+                                            <label class="form-label">Taille de lot standard</label>
+                                            <input type="number" class="form-input" id="standard-lot-size-step3" placeholder="200" oninput="updateLotEquivalent()">
+                                            <small class="form-help" id="lot-equiv-text">Équivalent : - KG</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Lot minimum (optionnel)</label>
+                                            <input type="number" class="form-input" id="minimum-lot-size" placeholder="50">
+                                            <small class="form-help">Quantité minimale par lot</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Lot maximum (optionnel)</label>
+                                            <input type="number" class="form-input" id="maximum-lot-size" placeholder="500">
+                                            <small class="form-help">Quantité maximale par lot</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="info-box" style="margin-top: 12px; margin-bottom: 0;">
+                                        <i class="fa-solid fa-lightbulb"></i>
+                                        ℹ️ Quantité recommandée par lot de production
+                                    </div>
+                                </div>
+
+                                <div class="summary-section">
+                                    <div class="summary-title">EMPLACEMENT PAR DÉFAUT</div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Emplacement de stockage</label>
+                                        <select class="form-input" id="default-location">
+                                            <option value="">-- Sélectionner un emplacement --</option>
+                                            <option value="EP-A1">ENTREPÔT PRINCIPAL - ALLÉE A1</option>
+                                            <option value="EP-A2">ENTREPÔT PRINCIPAL - ALLÉE A2</option>
+                                            <option value="EP-B1">ENTREPÔT PRINCIPAL - ALLÉE B1</option>
+                                            <option value="ES-Z1">ENTREPÔT SECONDAIRE - ZONE 1</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Approvisionnement -->
+                        <div class="step-content" id="step-4">
+                            <div class="step-title">Étape 4 : Configuration de l'Approvisionnement</div>
+                            
+                            <div class="info-box">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Configurez les règles de réapprovisionnement pour cette variante
+                            </div>
+
+                            <div id="appro-params-content">
+                                    <div class="summary-title">APPROVISIONNEMENT</div>
+                                    <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                        Configuration de la gestion du réapprovisionnement
+                                    </p>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label required">Méthode de réapprovisionnement</label>
+                                        <select class="form-input" id="replenishment-method" required>
+                                            <option value="MANUAL">Manuel</option>
+                                            <option value="REORDER_POINT" selected>Point de commande (automatique)</option>
+                                            <option value="MRP">MRP - Material Requirements Planning (futur)</option>
+                                            <option value="JIT">JIT - Just In Time (futur)</option>
+                                        </select>
+                                        <small class="form-help">Options : Manuel, Point de commande, MRP (futur), JIT (futur)</small>
+                                    </div>
+                                    
+                                    <div class="form-group" id="preferred-source-group" style="display: none;">
+                                        <label class="form-label">Source préférée (si productible ET achetable)</label>
+                                        <div style="display: flex; gap: 24px; margin-top: 8px;">
+                                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                                <input type="radio" name="preferred-source" value="MAKE" checked>
+                                                ⚪ Toujours produire (MAKE)
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                                <input type="radio" name="preferred-source" value="BUY">
+                                                ⚪ Toujours acheter (BUY)
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                                <input type="radio" name="preferred-source" value="BOTH">
+                                                ⚪ Selon contexte (BOTH)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group" id="manufacturing-lead-time-group" style="display: none;">
+                                        <label class="form-label">Délai de fabrication</label>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <input type="number" class="form-input" id="manufacturing-lead-time" placeholder="2" style="flex: 0 0 120px;">
+                                            <span style="color: var(--gray-600);">jours</span>
+                                        </div>
+                                        <small class="form-help">ℹ️ Calculé automatiquement depuis la gamme de production</small>
+                                    </div>
+                                    
+                                    <div class="form-group" id="supplier-section-inner">
+                                        <label class="form-label">Fournisseur par défaut (si achetable)</label>
+                                        <select class="form-input" id="default-supplier">
+                                            <option value="">-- Sélectionner un fournisseur --</option>
+                                            <option value="CAMI">CAMI PEINTURES</option>
+                                            <option value="TOTAL">TOTAL PEINTURES</option>
+                                            <option value="SIKA">SIKA CAMEROUN</option>
+                                            <option value="DANGOTE">DANGOTE CEMENT</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Fournisseurs alternatifs</label>
+                                        <div style="display: flex; gap: 8px; align-items: center;">
+                                            <select class="form-input" id="alternative-supplier-select" style="flex: 1;">
+                                                <option value="">-- Sélectionner --</option>
+                                                <option value="CAMI">CAMI PEINTURES</option>
+                                                <option value="TOTAL">TOTAL PEINTURES</option>
+                                                <option value="SIKA">SIKA CAMEROUN</option>
+                                                <option value="DANGOTE">DANGOTE CEMENT</option>
+                                            </select>
+                                            <button type="button" class="btn btn-secondary" style="padding: 8px 16px;" onclick="addAlternativeSupplier()">
+                                                <i class="fa-solid fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div id="alternative-suppliers-list" style="margin-top: 8px;">
+                                            <!-- Liste dynamique -->
+                                        </div>
+                                    </div>
+
+                                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantité minimum de commande</label>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <input type="number" class="form-input" id="minimum-order-quantity" placeholder="100" style="flex: 1;">
+                                                <span style="color: var(--gray-600);" id="min-order-unit">UNITE</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Délai d'approvisionnement</label>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <input type="number" class="form-input" id="lead-time-days" placeholder="7" style="flex: 1;">
+                                                <span style="color: var(--gray-600);">jours ouvrés</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="summary-section">
+                                    <div class="summary-title">RÈGLES D'ALERTE</div>
+                                    <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                        Configuration des alertes et notifications
+                                    </p>
+                                    
+                                    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                            <input type="checkbox" id="enable-low-stock-alert" checked>
+                                            Activer les alertes de stock bas
+                                        </label>
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                            <input type="checkbox" id="enable-reorder-alert" checked>
+                                            Activer les alertes de réapprovisionnement
+                                        </label>
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                            <input type="checkbox" id="enable-overstock-alert">
+                                            Activer les alertes de surstock
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Utilisateurs à notifier</label>
+                                        <div style="display: flex; gap: 8px; align-items: center;">
+                                            <input type="text" class="form-input" id="notified-user-input" placeholder="Nom de l'utilisateur" style="flex: 1;">
+                                            <button type="button" class="btn btn-secondary" style="padding: 8px 16px;" onclick="addNotifiedUser()">
+                                                <i class="fa-solid fa-plus"></i> Ajouter
+                                            </button>
+                                        </div>
+                                        <div id="notified-users-list" style="margin-top: 12px;">
+                                            <!-- Liste dynamique -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="summary-section">
+                                    <div class="summary-title">PRÉVISION DE DEMANDE</div>
+                                    <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                        Configuration de la prévision automatique (optionnel)
+                                    </p>
+                                    
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 16px;">
+                                        <input type="checkbox" id="auto-calculate-reorder">
+                                        Calculer automatiquement le point de commande
+                                    </label>
+                                    
+                                    <div id="forecast-params" style="display: none;">
+                                        <div class="form-group">
+                                            <label class="form-label">Demande moyenne journalière</label>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <input type="number" step="0.1" class="form-input" id="average-daily-demand" placeholder="10" style="flex: 0 0 150px;">
+                                                <span style="color: var(--gray-600);" id="demand-unit">UNITE/jour</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Méthode de prévision</label>
+                                            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+                                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                                    <input type="radio" name="forecast-method" value="MANUAL" checked>
+                                                    ⚪ Manuel
+                                                </label>
+                                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                                    <input type="radio" name="forecast-method" value="HISTORICAL">
+                                                    ⚪ Historique (moyenne mobile)
+                                                </label>
+                                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                                    <input type="radio" name="forecast-method" value="WEIGHTED">
+                                                    ⚪ Pondérée (plus de poids aux données récentes)
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="info-box" style="margin-top: 16px; margin-bottom: 0;">
+                                            <i class="fa-solid fa-info-circle"></i>
+                                            ℹ️ Si activé, le point de commande sera recalculé automatiquement<br>
+                                            <strong>Formule :</strong> (Demande × Délai) + Stock sécurité
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5: Prix -->
+                        <div class="step-content" id="step-5">
+                            <div class="step-title">Étape 5 : Configuration des Prix</div>
+                            
+                            <div class="info-box">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Configurez le prix d'achat et le coefficient de marge
+                            </div>
+                            
+                            <div class="summary-section">
+                                <div class="summary-title">TARIFICATION</div>
+                                <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                    Configuration simplifiée des prix
+                                </p>
+                                
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                                    <div class="form-group">
+                                        <label class="form-label">Prix d'achat (prixAchat)</label>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <input type="number" step="0.01" class="form-input" id="prix-achat" placeholder="5000" style="flex: 1;" oninput="calculatePrixVente()">
+                                            <span style="color: var(--gray-600);">FCFA</span>
+                                        </div>
+                                        <small class="form-help">Prix d'achat unitaire</small>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Coefficient</label>
+                                        <input type="number" step="0.01" class="form-input" id="coefficient" placeholder="1.5" oninput="calculatePrixVente()">
+                                        <small class="form-help">Coefficient multiplicateur</small>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Prix de vente HT (prixVenteHT)</label>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <input type="number" step="0.01" class="form-input" id="prix-vente-ht" placeholder="7500" style="flex: 1;">
+                                            <span style="color: var(--gray-600);">FCFA</span>
+                                        </div>
+                                        <small class="form-help">= prixAchat × coefficient (calculé automatiquement)</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-box" id="prix-calculation-preview" style="margin-top: 16px; display: none;">
+                                    <i class="fa-solid fa-calculator"></i>
+                                    <div id="prix-calculation-text"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 6: Production (optionnel) -->
+                        <div class="step-content" id="step-6">
+                            <div class="step-title">Étape 6 : Configuration Production (Optionnel)</div>
+                            
+                            <div class="info-box" id="production-disabled-info">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Cette variante n'est pas productible. Les données de production ne sont pas nécessaires.
+                            </div>
+
+                            <div id="production-params-content" style="display: none;">
+                                <!-- STATUT DE CONFIGURATION -->
+                                <div class="summary-section" id="production-status-section" style="background: white; border: 1px solid var(--gray-300);">
+                                    <div class="summary-title">STATUT DE CONFIGURATION</div>
+                                    <div style="padding: 12px 0;">
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                            <span id="status-producible" style="font-size: 16px;">✅</span>
+                                            <span>Productible activé (isProducible = true)</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                            <span id="status-units" style="font-size: 16px;">⬜</span>
+                                            <span id="status-units-text">Unités de production configurées</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                            <span id="status-bom" style="font-size: 16px;">⬜</span>
+                                            <span id="status-bom-text">Nomenclature (BOM) : 0 composants</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                                            <span id="status-routing" style="font-size: 16px;">⬜</span>
+                                            <span id="status-routing-text">Gamme (Routing) : 0 phases</span>
+                                        </div>
+                                        <div id="production-config-status" style="padding: 12px; border-radius: 6px; background: #FEF3C7; border-left: 4px solid #92400E;">
+                                            <i class="fa-solid fa-exclamation-triangle" style="color: #92400E;"></i>
+                                            <strong>Configuration incomplète</strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="info-box" style="margin-bottom: 24px;">
+                                    <i class="fa-solid fa-info-circle"></i>
+                                    <strong>Note :</strong> Les unités de production sont configurées à l'étape 2 (Unités & Conversions)
+                                </div>
+
+                                <!-- NOMENCLATURE (BOM) -->
+                                <div class="summary-section">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                        <div class="summary-title" style="margin: 0;">
+                                            NOMENCLATURE (BOM)
+                                            <span id="bom-unit-info" style="font-weight: normal; font-size: 13px; color: var(--gray-600);"></span>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;" onclick="openBOMModal('add')">
+                                            <i class="fa-solid fa-plus"></i>
+                                            Ajouter composant
+                                        </button>
+                                    </div>
+
+                                    <div id="bom-list-container">
+                                        <div id="bom-empty-state" style="text-align: center; padding: 40px; color: var(--gray-500); background: var(--gray-50); border-radius: 8px; border: 2px dashed var(--gray-300);">
+                                            <i class="fa-solid fa-box-open" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                                            <p style="margin-bottom: 16px;">Aucun composant configuré</p>
+                                            <button type="button" class="btn btn-secondary" onclick="openBOMModal('add')">
+                                                <i class="fa-solid fa-plus"></i>
+                                                Ajouter le premier composant
+                                            </button>
+                                        </div>
+                                        
+                                        <table id="bom-list-table" style="display: none; width: 100%; border-collapse: collapse;">
+                                            <thead>
+                                                <tr style="background: var(--gray-100); text-align: left;">
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 40px;">#</th>
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300);">Composant</th>
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300);">Désignation</th>
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 100px;">Quantité</th>
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 100px;">Coût unit.</th>
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 100px;">Total</th>
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 60px;"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="bom-list-body">
+                                                <!-- Lignes ajoutées dynamiquement -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div id="bom-total-container" style="display: none; margin-top: 16px; padding: 16px; background: var(--gray-100); border-radius: 6px; font-weight: 600;">
+                                        TOTAL MATIÈRES : <span id="bom-total-cost">0</span> FCFA
+                                        <span id="bom-total-unit" style="font-weight: normal;"></span>
+                                    </div>
+                                </div>
+
+                                <!-- GAMME DE FABRICATION (ROUTING) -->
+                                <div class="summary-section">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                        <div class="summary-title" style="margin: 0;">
+                                            GAMME DE FABRICATION (ROUTING)
+                                            <span id="routing-unit-info" style="font-weight: normal; font-size: 13px; color: var(--gray-600);"></span>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;" onclick="openRoutingModal('add')">
+                                            <i class="fa-solid fa-plus"></i>
+                                            Ajouter phase
+                                        </button>
+                                    </div>
+
+                                    <div id="routing-list-container">
+                                        <div id="routing-empty-state" style="text-align: center; padding: 40px; color: var(--gray-500); background: var(--gray-50); border-radius: 8px; border: 2px dashed var(--gray-300);">
+                                            <i class="fa-solid fa-cogs" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                                            <p style="margin-bottom: 16px;">Aucune phase opératoire configurée</p>
+                                            <button type="button" class="btn btn-secondary" onclick="openRoutingModal('add')">
+                                                <i class="fa-solid fa-plus"></i>
+                                                Ajouter la première phase
+                                            </button>
+                                        </div>
+                                        
+                                        <table id="routing-list-table" style="display: none; width: 100%; border-collapse: collapse;">
+                                            <thead>
+                                                <tr style="background: var(--gray-100); text-align: left;">
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 50px;">Ordre</th>
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300);">Phase</th>
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300);">Poste</th>
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 120px;">Temps</th>
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 100px;">Coût</th>
+                                                    <th style="padding: 12px; border-bottom: 2px solid var(--gray-300); width: 100px;"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="routing-list-body">
+                                                <!-- Lignes ajoutées dynamiquement -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div id="routing-total-container" style="display: none; margin-top: 16px; padding: 16px; background: var(--gray-100); border-radius: 6px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                            <span>Nombre de phases :</span>
+                                            <strong><span id="routing-phase-count">0</span></strong>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                            <span>Temps total (hors réglage) :</span>
+                                            <strong><span id="routing-total-time">0</span> min/unité</strong>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                            <span>Temps de réglage total :</span>
+                                            <strong><span id="routing-setup-time">0</span> min</strong>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; padding-top: 8px; border-top: 2px solid var(--gray-300);">
+                                            <span style="font-weight: 600;">Coût total (MO + Machine) :</span>
+                                            <strong style="color: var(--primary-color); font-size: 16px;"><span id="routing-total-cost">0</span> FCFA/unité</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RÉCAPITULATIF FINAL -->
+                            <div class="summary-section" style="margin-top: 24px;">
+                                <div class="summary-title">RÉCAPITULATIF COMPLET</div>
+                                <div id="final-summary">
+                                    <!-- Sera rempli dynamiquement -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 7: Média -->
+                        <div class="step-content" id="step-7">
+                            <div class="step-title">Étape 7 : Gestion des Médias</div>
+                            
+                            <div class="info-box">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Ajoutez des images, documents et fichiers pour ce conditionnement
+                            </div>
+                            
+                            <div class="summary-section">
+                                <div class="summary-title">IMAGES PRODUIT</div>
+                                <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                    Photos et visuels du produit
+                                </p>
+                                
+                                <div style="border: 2px dashed var(--gray-300); border-radius: 8px; padding: 32px; text-align: center; background: var(--gray-50); cursor: pointer;" onclick="document.getElementById('image-upload').click()">
+                                    <input type="file" id="image-upload" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event)">
+                                    <i class="fa-solid fa-cloud-upload" style="font-size: 48px; color: var(--gray-400); margin-bottom: 16px;"></i>
+                                    <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Glissez-déposez vos images ici</div>
+                                    <div style="font-size: 14px; color: var(--gray-500);">ou cliquez pour sélectionner des fichiers</div>
+                                    <div style="font-size: 12px; color: var(--gray-400); margin-top: 8px;">JPG, PNG, GIF (max 5 MB par fichier)</div>
+                                </div>
+                                
+                                <div id="images-preview-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 16px;">
+                                    <!-- Images preview will be displayed here -->
+                                </div>
+                            </div>
+                            
+                            <div class="summary-section">
+                                <div class="summary-title">DOCUMENTS</div>
+                                <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 16px;">
+                                    Fiches techniques, certificats, notices, etc.
+                                </p>
+                                
+                                <div class="form-group" style="margin-bottom: 16px;">
+                                    <label class="form-label">Type de document</label>
+                                    <select class="form-input" id="document-type-select">
+                                        <option value="">-- Sélectionner un type --</option>
+                                        <option value="FICHE_TECHNIQUE">Fiche technique</option>
+                                        <option value="CERTIFICAT">Certificat</option>
+                                        <option value="NOTICE">Notice d'utilisation</option>
+                                        <option value="FDS">Fiche de Données de Sécurité (FDS)</option>
+                                        <option value="CATALOGUE">Catalogue</option>
+                                        <option value="AUTRE">Autre</option>
+                                    </select>
+                                    <small class="form-help">Choisissez le type de document avant de télécharger</small>
+                                </div>
+                                
+                                <div style="border: 2px dashed var(--gray-300); border-radius: 8px; padding: 24px; text-align: center; background: var(--gray-50); cursor: pointer;" onclick="document.getElementById('document-upload').click()">
+                                    <input type="file" id="document-upload" accept=".pdf,.doc,.docx,.xls,.xlsx" multiple style="display: none;" onchange="handleDocumentUpload(event)">
+                                    <i class="fa-solid fa-file-upload" style="font-size: 32px; color: var(--gray-400); margin-bottom: 12px;"></i>
+                                    <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">Ajouter des documents</div>
+                                    <div style="font-size: 12px; color: var(--gray-400);">PDF, Word, Excel (max 10 MB par fichier)</div>
+                                </div>
+                                
+                                <div id="documents-list-container" style="margin-top: 16px;">
+                                    <!-- Documents list will be displayed here -->
+                                </div>
+                            </div>
+                            
+                            <div class="info-box" style="margin-top: 24px;">
+                                <i class="fa-solid fa-lightbulb"></i>
+                                <strong>Astuce :</strong> Vous pouvez ajouter des médias plus tard depuis la page de détails du conditionnement
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Navigation -->
+                    <div class="wizard-navigation">
+                        <div>
+                            <button type="button" class="btn btn-secondary" id="btn-prev" onclick="previousStep()" style="display: none;">
+                                <i class="fa-solid fa-arrow-left"></i>
+                                Précédent
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelWizard()">
+                                <i class="fa-solid fa-times"></i>
+                                Annuler
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="btn-next" onclick="nextStep()">
+                                Suivant
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                            <button type="button" class="btn btn-success" id="btn-finish" onclick="finishWizard()">
+                                <i class="fa-solid fa-check"></i>
+                                Créer l'article
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal BOM - Ajouter/Éditer Composant -->
+    <div class="modal-overlay" id="modal-bom" style="display: none;">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="bom-modal-title">Ajouter un Composant au BOM</h2>
+                <button class="modal-close" onclick="closeBOMModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="bom-form">
+                    <input type="hidden" id="bom-edit-index">
+                    
+                    <!-- SÉLECTION DU COMPOSANT -->
+                    <div class="form-group">
+                        <label class="form-label required">Sélection du composant</label>
+                        <input type="text" class="form-input" id="bom-search" placeholder="Rechercher un composant..." oninput="searchBOMComponents()" autocomplete="off">
+                        <small class="form-help">Tapez le code ou la désignation du composant</small>
+                        
+                        <div id="bom-search-results" style="display: none; max-height: 300px; overflow-y: auto; border: 1px solid var(--gray-300); border-radius: 6px; margin-top: 8px;">
+                            <!-- Résultats de recherche -->
+                        </div>
+                    </div>
+
+                    <div id="bom-selected-component" style="display: none; background: var(--gray-50); padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 4px;" id="bom-component-code"></div>
+                                <div style="color: var(--gray-600); margin-bottom: 8px;" id="bom-component-name"></div>
+                                <div style="font-size: 13px;">
+                                    <span style="color: var(--gray-600);">Stock: </span><strong id="bom-component-stock"></strong>
+                                    <span style="margin: 0 8px;">|</span>
+                                    <span style="color: var(--gray-600);">PMP: </span><strong id="bom-component-pmp"></strong>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" style="padding: 4px 12px; font-size: 12px;" onclick="clearBOMComponentSelection()">
+                                <i class="fa-solid fa-times"></i> Changer
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- QUANTITÉ -->
+                    <div class="form-group">
+                        <label class="form-label required">Quantité</label>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" step="0.01" class="form-input" id="bom-quantity" placeholder="0.00" style="flex: 0 0 150px;" oninput="calculateBOMPreview()" required>
+                            <span id="bom-component-unit" style="color: var(--gray-600);">-</span>
+                        </div>
+                        <small class="form-help">Quantité nécessaire pour <span id="bom-production-ref">1 unité de production</span></small>
+                    </div>
+
+                    <!-- APERÇU -->
+                    <div id="bom-preview" style="display: none; background: #EEF2FF; border-left: 4px solid #3730A3; padding: 16px; border-radius: 6px;">
+                        <div style="font-weight: 600; margin-bottom: 12px; color: #3730A3;">
+                            <i class="fa-solid fa-calculator"></i> APERÇU
+                        </div>
+                        <div id="bom-preview-content">
+                            <!-- Calculs affichés ici -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBOMModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveBOMComponent()" id="bom-save-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Ajouter au BOM
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Routing - Ajouter/Éditer Phase -->
+    <div class="modal-overlay" id="modal-routing" style="display: none;">
+        <div class="modal" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="routing-modal-title">Ajouter une Phase Opératoire</h2>
+                <button class="modal-close" onclick="closeRoutingModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="routing-form">
+                    <input type="hidden" id="routing-edit-index">
+                    
+                    <!-- ORDRE DE LA PHASE -->
+                    <div class="form-group">
+                        <label class="form-label required">Numéro de phase</label>
+                        <input type="number" class="form-input" id="routing-sequence" min="1" style="width: 120px;" required>
+                        <small class="form-help" id="routing-sequence-help">Phases actuelles : aucune</small>
+                    </div>
+
+                    <!-- DESCRIPTION -->
+                    <div class="form-group">
+                        <label class="form-label required">Désignation de l'opération</label>
+                        <input type="text" class="form-input" id="routing-operation-name" placeholder="Ex: Pesée et préparation des composants" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description détaillée (optionnel)</label>
+                        <textarea class="form-input" id="routing-operation-desc" rows="3" placeholder="Description complète de l'opération..."></textarea>
+                    </div>
+
+                    <!-- POSTE DE CHARGE -->
+                    <div class="form-group">
+                        <label class="form-label required">Poste de charge</label>
+                        <select class="form-input" id="routing-workstation" onchange="selectRoutingWorkstation()" required>
+                            <option value="">-- Sélectionner un poste --</option>
+                        </select>
+                        
+                        <div id="routing-workstation-details" style="display: none; background: var(--gray-50); padding: 12px; border-radius: 6px; margin-top: 8px; font-size: 13px;">
+                            <!-- Détails du poste sélectionné -->
+                        </div>
+                    </div>
+
+                    <!-- TEMPS D'OPÉRATION -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label required">Temps de réglage (minutes)</label>
+                            <input type="number" step="0.1" class="form-input" id="routing-setup-time" placeholder="0" oninput="calculateRoutingPreview()" required>
+                            <small class="form-help">Par lot de production</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label required">Temps unitaire (minutes)</label>
+                            <input type="number" step="0.01" class="form-input" id="routing-unit-time" placeholder="0.00" oninput="calculateRoutingPreview()" required>
+                            <small class="form-help">Par unité produite</small>
+                        </div>
+                    </div>
+
+                    <!-- CALCUL AUTOMATIQUE -->
+                    <div id="routing-preview" style="display: none; background: #EEF2FF; border-left: 4px solid #3730A3; padding: 16px; border-radius: 6px; margin-top: 16px;">
+                        <div style="font-weight: 600; margin-bottom: 12px; color: #3730A3;">
+                            <i class="fa-solid fa-calculator"></i> CALCUL AUTOMATIQUE
+                        </div>
+                        <div id="routing-preview-content">
+                            <!-- Calculs affichés ici -->
+                        </div>
+                    </div>
+
+                    <!-- IMPACT (mode édition) -->
+                    <div id="routing-impact" style="display: none; background: #FEF3C7; border-left: 4px solid #92400E; padding: 16px; border-radius: 6px; margin-top: 16px;">
+                        <div style="font-weight: 600; margin-bottom: 12px; color: #92400E;">
+                            <i class="fa-solid fa-chart-line"></i> IMPACT DE LA MODIFICATION
+                        </div>
+                        <div id="routing-impact-content">
+                            <!-- Impact affiché ici -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="warning-box" style="margin: 0; padding: 8px 12px; flex: 1; font-size: 12px;">
+                    <i class="fa-solid fa-info-circle"></i>
+                    Cette configuration impactera la planification de production
+                </div>
+                <button class="btn btn-secondary" onclick="closeRoutingModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveRoutingPhase()" id="routing-save-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Ajouter Phase
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Conversion - Ajouter/Éditer Conversion -->
+    <div class="modal-overlay" id="modal-conversion" style="display: none;">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="conversion-modal-title">Ajouter une Conversion</h2>
+                <button class="modal-close" onclick="closeConversionModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="conversion-form">
+                    <input type="hidden" id="conversion-edit-index">
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label required">De (unité source)</label>
+                            <select class="form-input" id="conversion-from-unit" required>
+                                <option value="">-- Sélectionner --</option>
+                                <option value="UNITE">UNITE (POT, SAC...)</option>
+                                <option value="KG">KG</option>
+                                <option value="LITRE">LITRE</option>
+                                <option value="PALETTE">PALETTE</option>
+                                <option value="CARTON">CARTON</option>
+                                <option value="M2">M²</option>
+                                <option value="M3">M³</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label required">Vers (unité cible)</label>
+                            <select class="form-input" id="conversion-to-unit" required>
+                                <option value="">-- Sélectionner --</option>
+                                <option value="UNITE">UNITE (POT, SAC...)</option>
+                                <option value="KG">KG</option>
+                                <option value="LITRE">LITRE</option>
+                                <option value="PALETTE">PALETTE</option>
+                                <option value="CARTON">CARTON</option>
+                                <option value="M2">M²</option>
+                                <option value="M3">M³</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Facteur de conversion</label>
+                        <input type="number" step="0.01" class="form-input" id="conversion-factor" placeholder="100" required oninput="updateConversionPreview()">
+                        <small class="form-help" id="conversion-help">Ex: 100 SAC = 1 PALETTE</small>
+                    </div>
+                    
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="conversion-is-default">
+                                        Définir comme conversion par défaut
+                                    </label>
+                    
+                    <div class="info-box" style="margin-top: 16px; display: none;" id="conversion-preview">
+                        <i class="fa-solid fa-calculator"></i>
+                        <div id="conversion-preview-text"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConversionModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveConversion()" id="conversion-save-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Ajouter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/variants-create.js"></script>
+</body>
+</html>
+

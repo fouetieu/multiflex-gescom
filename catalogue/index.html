@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Catalogue - MultiFlex GESCOM</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    <link rel="stylesheet" href="./styles/catalogue-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .module-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .module-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-color: #F26F21;
+        }
+        .module-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #263c89, #1e2f6b);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            margin: 0 auto 20px;
+        }
+        .module-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #263c89;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .module-desc {
+            color: #6B7280;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .module-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #E5E7EB;
+        }
+        .module-stat {
+            text-align: center;
+        }
+        .module-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #263c89;
+        }
+        .module-stat-label {
+            font-size: 11px;
+            color: #9CA3AF;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px;">
+        <div style="max-width: 1200px; width: 100%;">
+            <!-- Header -->
+            <div style="text-align: center; margin-bottom: 60px;">
+                <h1 style="font-size: 48px; font-weight: 800; color: white; margin-bottom: 16px;">
+                    📦 Module Catalogue Produits
+                </h1>
+                <p style="font-size: 20px; color: rgba(255,255,255,0.9);">
+                    Gestion complète de votre catalogue : catégories, articles et conditionnements
+                </p>
+            </div>
+
+            <!-- Module Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; margin-bottom: 40px;">
+                <!-- Catégories -->
+                <div class="module-card" onclick="location.href='./categories-list.html'">
+                    <div class="module-icon">
+                        <i class="fa-solid fa-folder-tree"></i>
+                    </div>
+                    <div class="module-title">Catégories</div>
+                    <div class="module-desc">
+                        Organisation hiérarchique de vos produits en arborescence
+                    </div>
+                    <div class="module-stats">
+                        <div class="module-stat">
+                            <div class="module-stat-value">13</div>
+                            <div class="module-stat-label">Catégories</div>
+                        </div>
+                        <div class="module-stat">
+                            <div class="module-stat-value">4</div>
+                            <div class="module-stat-label">Niveaux</div>
+                        </div>
+                        <div class="module-stat">
+                            <div class="module-stat-value">9</div>
+                            <div class="module-stat-label">Feuilles</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Articles -->
+                <div class="module-card" onclick="location.href='./products-list.html'">
+                    <div class="module-icon">
+                        <i class="fa-solid fa-box"></i>
+                    </div>
+                    <div class="module-title">Articles</div>
+                    <div class="module-desc">
+                        Produits génériques regroupant plusieurs conditionnements
+                    </div>
+                    <div class="module-stats">
+                        <div class="module-stat">
+                            <div class="module-stat-value">7</div>
+                            <div class="module-stat-label">Articles</div>
+                        </div>
+                        <div class="module-stat">
+                            <div class="module-stat-value">13</div>
+                            <div class="module-stat-label">Variantes</div>
+                        </div>
+                        <div class="module-stat">
+                            <div class="module-stat-value">6</div>
+                            <div class="module-stat-label">Actifs</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conditionnements -->
+                <div class="module-card" onclick="location.href='./variants-list.html'">
+                    <div class="module-icon">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <div class="module-title">Conditionnements</div>
+                    <div class="module-desc">
+                        SKU avec gestion du stock, prix et unités de mesure
+                    </div>
+                    <div class="module-stats">
+                        <div class="module-stat">
+                            <div class="module-stat-value">5</div>
+                            <div class="module-stat-label">SKU</div>
+                        </div>
+                        <div class="module-stat">
+                            <div class="module-stat-value">5</div>
+                            <div class="module-stat-label">Vendables</div>
+                        </div>
+                        <div class="module-stat">
+                            <div class="module-stat-value">5</div>
+                            <div class="module-stat-label">Stockables</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 12px; padding: 24px; text-align: center;">
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <button onclick="location.href='../dashboard.html'" style="padding: 12px 24px; background: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        <i class="fa-solid fa-home"></i> Dashboard
+                    </button>
+                    <button onclick="window.open('./README.md')" style="padding: 12px 24px; background: rgba(255,255,255,0.2); color: white; border: 2px solid white; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        <i class="fa-solid fa-book"></i> Documentation
+                    </button>
+                    <button onclick="alert('Module en développement - Mock data uniquement')" style="padding: 12px 24px; background: rgba(255,255,255,0.2); color: white; border: 2px solid white; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        <i class="fa-solid fa-info-circle"></i> À propos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.8); font-size: 14px;">
+                <p>MultiFlex GESCOM - Module Catalogue v1.0.0</p>
+                <p style="font-size: 12px; margin-top: 8px;">
+                    <i class="fa-solid fa-code"></i> Développé avec les mêmes patterns que le module Organisation
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

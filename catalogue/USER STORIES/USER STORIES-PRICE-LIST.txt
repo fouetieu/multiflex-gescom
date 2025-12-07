@@ -1,0 +1,955 @@
+USER STORIES - GESTION DES LISTES DE PRIX
+
+
+ÉCRAN 1 : PRICE-LIST - Liste des Listes de Prix
+US-PRICE-001 : Consulter la liste des tarifs
+En tant que Commercial Terrain
+Je veux consulter la liste de toutes les listes de prix
+Afin de connaître les tarifs disponibles pour mes clients
+Critères d'acceptation:
+* J'accède à une liste paginée de toutes les listes de prix
+* Je vois pour chaque liste: code, nom, type (vente/achat), priorité, validité, statut
+* Je vois le nombre d'articles dans chaque liste
+* Je vois à quels types de partenaires s'applique chaque liste
+* Les listes expirées sont clairement identifiées en rouge
+* Les listes en brouillon sont identifiées en jaune
+Priorité: P0 (Critique)
+Estimation: 3 points
+
+US-PRICE-002 : Rechercher une liste de prix
+En tant que Commercial Terrain
+Je veux rechercher rapidement une liste de prix par son code ou nom
+Afin de gagner du temps lors de la consultation
+Critères d'acceptation:
+* Je dispose d'un champ de recherche textuelle
+* La recherche s'effectue sur le code et le nom
+* Les résultats s'affichent en temps réel
+* Je peux filtrer par type (vente/achat)
+* Je peux filtrer par statut (active/brouillon/archivée)
+* Je peux réinitialiser tous les filtres en un clic
+Priorité: P0 (Critique)
+Estimation: 2 points
+
+US-PRICE-003 : Filtrer les listes par statut
+En tant que Assistant Commercial
+Je veux filtrer les listes de prix par statut
+Afin de me concentrer sur les listes actives ou en cours de préparation
+Critères d'acceptation:
+* Je dispose de filtres rapides cliquables: Toutes, Vente, Achat, Actives, Brouillon
+* Chaque filtre affiche le nombre de listes correspondantes
+* Un seul filtre rapide peut être actif à la fois
+* Le filtre actif est visuellement mis en évidence
+* Le compteur total est affiché en permanence
+Priorité: P1 (Important)
+Estimation: 2 points
+
+US-PRICE-004 : Accéder aux détails d'une liste
+En tant que Commercial Terrain
+Je veux cliquer sur une liste de prix pour voir ses détails
+Afin de consulter les articles et leurs tarifs
+Critères d'acceptation:
+* Je peux cliquer sur une ligne pour ouvrir la liste
+* Je suis redirigé vers l'écran PRICE-EDIT
+* L'onglet "Articles" est affiché par défaut si je veux voir les prix
+* L'onglet "Propriétés" est affiché si je veux voir les infos générales
+Priorité: P0 (Critique)
+Estimation: 1 point
+
+US-PRICE-005 : Créer une nouvelle liste de prix
+En tant que Responsable Commercial
+Je veux créer une nouvelle liste de prix depuis la liste principale
+Afin de démarrer la définition d'un nouveau tarif
+Critères d'acceptation:
+* Je dispose d'un bouton [+ Nouvelle Liste de Prix] visible en haut
+* Le clic m'amène vers l'écran PRICE-CREATE
+* Je peux annuler et revenir à la liste sans perdre ma position
+Priorité: P0 (Critique)
+Estimation: 1 point
+
+US-PRICE-006 : Exporter les listes de prix
+En tant que Contrôleur de Gestion
+Je veux exporter la liste des listes de prix en Excel
+Afin de faire des analyses hors système
+Critères d'acceptation:
+* Je dispose d'un bouton [?? Exporter]
+* L'export génère un fichier Excel
+* Le fichier contient: code, nom, type, priorité, dates validité, statut, nb articles
+* Les filtres actifs sont appliqués à l'export
+* Le nom du fichier inclut la date d'export
+Priorité: P2 (Souhaitable)
+Estimation: 3 points
+
+US-PRICE-007 : Actions groupées sur les listes
+En tant que Assistant Commercial
+Je veux sélectionner plusieurs listes et leur appliquer une action
+Afin de gagner du temps dans la gestion
+Critères d'acceptation:
+* Je peux cocher plusieurs lignes via les checkboxes
+* Une checkbox "Tout sélectionner" est disponible dans l'en-tête
+* Un menu [? Actions groupées] apparaît si au moins 1 liste sélectionnée
+* Actions disponibles: Activer, Archiver, Supprimer
+* Une confirmation est demandée avant action destructive
+* Un message de succès indique le nombre de listes traitées
+Priorité: P2 (Souhaitable)
+Estimation: 5 points
+
+US-PRICE-008 : Menu contextuel par liste
+En tant que Assistant Commercial
+Je veux accéder à un menu d'actions rapides pour chaque liste
+Afin de effectuer des actions sans ouvrir la liste
+Critères d'acceptation:
+* Chaque ligne dispose d'un bouton [?] à droite
+* Le menu contient: Modifier, Dupliquer, Archiver, Supprimer
+* "Modifier" ouvre l'écran PRICE-EDIT
+* "Dupliquer" ouvre un assistant de duplication
+* "Archiver" change le statut avec confirmation
+* "Supprimer" demande confirmation et vérifie que la liste n'est pas utilisée
+Priorité: P1 (Important)
+Estimation: 3 points
+
+US-PRICE-009 : Pagination des résultats
+En tant que Commercial Terrain
+Je veux naviguer entre les pages de résultats
+Afin de parcourir toutes les listes même si elles sont nombreuses
+Critères d'acceptation:
+* La pagination est affichée en bas du tableau
+* Je peux choisir le nombre d'éléments par page: 25, 50, 100
+* Je vois ma position: "Page X sur Y"
+* Les boutons ? ? permettent de naviguer
+* Les numéros de pages cliquables sont affichés (max 7 visible)
+* Ma sélection est préservée lors du changement de page
+Priorité: P1 (Important)
+Estimation: 2 points
+
+US-PRICE-010 : Indicateurs visuels de statut
+En tant que Assistant Commercial
+Je veux identifier rapidement le statut des listes via des codes couleur
+Afin de repérer immédiatement les listes actives, expirées ou en brouillon
+Critères d'acceptation:
+* Indicateur ?? vert pour les listes actives et valides
+* Indicateur ?? jaune pour les listes en brouillon
+* Indicateur ?? rouge pour les listes expirées
+* Indicateur ?? orange pour les listes expirant dans moins de 30 jours
+* Une infobulle au survol explique le statut
+Priorité: P1 (Important)
+Estimation: 2 points
+
+?? ÉCRAN 2 : PRICE-CREATE - Création d'une Liste de Prix
+US-PRICE-011 : Saisir les informations de base
+En tant que Responsable Commercial
+Je veux saisir les informations fondamentales d'une nouvelle liste
+Afin de créer son identité
+Critères d'acceptation:
+* Je saisis un code unique (obligatoire, majuscules, tirets autorisés)
+* Un bouton [?? Auto] génère un code automatique selon un pattern
+* Je saisis un nom descriptif (obligatoire)
+* Je saisis une description longue (optionnel)
+* Une validation temps réel m'indique si le code existe déjà
+* Les champs obligatoires sont marqués d'un astérisque
+Priorité: P0 (Critique)
+Estimation: 3 points
+
+US-PRICE-012 : Définir le type et la priorité
+En tant que Responsable Commercial
+Je veux définir si la liste est pour la vente ou l'achat et sa priorité
+Afin de contrôler comment elle sera appliquée
+Critères d'acceptation:
+* Je choisis entre "Vente (SALE)" et "Achat (PURCHASE)" via radio buttons
+* Je saisis une priorité numérique (défaut: 10)
+* Des boutons [?] [?] permettent d'ajuster la priorité
+* Une infobulle explique le mécanisme de priorité
+* Je sélectionne une devise dans une liste (défaut: XAF)
+Priorité: P0 (Critique)
+Estimation: 2 points
+
+US-PRICE-013 : Définir la période de validité
+En tant que Responsable Commercial
+Je veux définir les dates de début et fin de validité
+Afin de limiter l'application de la liste dans le temps
+Critères d'acceptation:
+* Je saisis une date de début via date picker (obligatoire, défaut: aujourd'hui)
+* Je saisis une date de fin via date picker (optionnel)
+* Une checkbox "Pas de date de fin" rend la liste permanente
+* La validation vérifie que date fin > date début
+* Un message d'erreur s'affiche si dates incohérentes
+Priorité: P0 (Critique)
+Estimation: 2 points
+
+US-PRICE-014 : Cibler les types de partenaires
+En tant que Responsable Commercial
+Je veux définir à quels types de partenaires s'applique la liste
+Afin de automatiser son application aux bons clients/fournisseurs
+Critères d'acceptation:
+* Je coche un ou plusieurs types de partenaires dans une liste
+* Les types affichent leur libellé complet (ex: PARTNER_QUINCAILLERIE - Quincailleries)
+* Je peux cocher plusieurs types (logique OU)
+* Au moins un type ou un partenaire spécifique doit être sélectionné
+Priorité: P0 (Critique)
+Estimation: 2 points
+
+US-PRICE-015 : Cibler des partenaires spécifiques
+En tant que Responsable Commercial
+Je veux ajouter des partenaires spécifiques en plus des types
+Afin de créer des tarifs personnalisés pour certains clients VIP
+Critères d'acceptation:
+* Je dispose d'un champ autocomplete pour rechercher un partenaire
+* La recherche s'effectue par code, nom, ou email
+* Les partenaires sélectionnés s'affichent sous forme de chips
+* Je peux supprimer un chip pour retirer un partenaire
+* Le ciblage fonctionne en OU avec les types cochés
+* Une infobulle explique la logique de cumul
+Priorité: P1 (Important)
+Estimation: 3 points
+
+US-PRICE-016 : Choisir le statut initial
+En tant que Responsable Commercial
+Je veux définir si la liste est active immédiatement ou reste en brouillon
+Afin de contrôler sa mise en production
+Critères d'acceptation:
+* Je choisis parmi: Brouillon, Active, Archivée via radio buttons
+* Chaque option affiche une description de son effet
+* Le défaut est "Brouillon" pour éviter activation accidentelle
+* Si je choisis "Active", un avertissement m'informe qu'elle sera appliquée immédiatement
+Priorité: P0 (Critique)
+Estimation: 1 point
+
+US-PRICE-017 : Valider et créer la liste
+En tant que Responsable Commercial
+Je veux valider le formulaire et créer la liste
+Afin de pouvoir ensuite ajouter les articles
+Critères d'acceptation:
+* Un bouton [?? Enregistrer et Ajouter Articles] est disponible
+* Tous les champs obligatoires sont validés côté client
+* Si erreurs, elles s'affichent près des champs concernés
+* Si succès, je suis redirigé vers PRICE-ITEMS avec la liste créée
+* Un message de succès confirme la création
+* L'ID de la liste créée est visible
+Priorité: P0 (Critique)
+Estimation: 3 points
+
+US-PRICE-018 : Annuler la création
+En tant que Responsable Commercial
+Je veux annuler la création et revenir à la liste
+Afin de abandonner si je change d'avis
+Critères d'acceptation:
+* Un bouton [? Annuler] est toujours visible
+* Si j'ai saisi des données, une confirmation est demandée
+* Le message indique: "Vous allez perdre les données saisies"
+* Si je confirme, retour à PRICE-LIST sans création
+* Si j'annule la confirmation, je reste sur le formulaire
+Priorité: P1 (Important)
+Estimation: 2 points
+
+US-PRICE-019 : Génération automatique du code
+En tant que Assistant Commercial
+Je veux générer automatiquement un code de liste
+Afin de respecter la nomenclature sans effort
+Critères d'acceptation:
+* Un bouton [?? Auto] est présent près du champ code
+* Le code généré suit le pattern: TARIF-[TYPE]-[ANNEE]
+* Ex pour vente 2026: "TARIF-VENTE-2026"
+* Un suffixe numérique est ajouté si le code existe déjà
+* Je peux modifier le code généré si besoin
+Priorité: P2 (Souhaitable)
+Estimation: 2 points
+
+US-PRICE-020 : Alerte chevauchement de listes
+En tant que Responsable Commercial
+Je veux être alerté si une liste active chevauche une liste existante
+Afin de éviter les conflits de tarification
+Critères d'acceptation:
+* Si je choisis statut "Active" et que dates chevauchent liste existante avec même ciblage
+* Une alerte s'affiche: "?? Liste TARIF-XXX active sur la même période et même ciblage"
+* Je peux choisir de continuer ou ajuster
+* L'alerte liste toutes les listes en conflit
+* Je peux cliquer sur une liste en conflit pour la consulter
+Priorité: P1 (Important)
+Estimation: 5 points
+
+?? ÉCRAN 3 : PRICE-EDIT - Modification Liste de Prix + Items
+US-PRICE-021 : Consulter les propriétés de la liste
+En tant que Commercial Terrain
+Je veux consulter toutes les propriétés d'une liste de prix
+Afin de comprendre son périmètre d'application
+Critères d'acceptation:
+* L'onglet "Propriétés" est accessible
+* Je vois toutes les infos en lecture seule: code, nom, description, type, priorité, devise
+* Je vois les dates de validité avec indicateur de statut (valide X jours restants)
+* Je vois le ciblage (types de partenaires + spécifiques)
+* Je vois le statut actuel avec badge coloré
+* Je vois les infos d'audit (créé par/le, modifié par/le)
+Priorité: P0 (Critique)
+Estimation: 2 points
+
+US-PRICE-022 : Modifier les propriétés par section
+En tant que Responsable Commercial
+Je veux modifier chaque section des propriétés indépendamment
+Afin de ajuster la liste sans tout réécrire
+Critères d'acceptation:
+* Chaque section dispose d'un bouton [?? Modifier]
+* Le clic active l'édition inline ou ouvre une modal
+* Je peux modifier: nom, description, priorité, dates, ciblage, statut
+* Je ne peux PAS modifier: code, type, devise (si articles existent)
+* Un bouton [?? Enregistrer] valide les modifications
+* Un bouton [? Annuler] annule les modifications
+Priorité: P0 (Critique)
+Estimation: 5 points
+
+US-PRICE-023 : Voir le compteur d'articles
+En tant que Commercial Terrain
+Je veux voir combien d'articles sont dans la liste
+Afin de évaluer son exhaustivité
+Critères d'acceptation:
+* L'onglet "Articles" affiche un badge avec le nombre total
+* Ex: "?? Articles (372)"
+* Le compteur se met à jour en temps réel lors d'ajouts/suppressions
+* Le compteur est visible même sans ouvrir l'onglet
+Priorité: P1 (Important)
+Estimation: 1 point
+
+US-PRICE-024 : Naviguer entre les onglets
+En tant que Assistant Commercial
+Je veux naviguer facilement entre les différents onglets
+Afin de accéder rapidement à l'information recherchée
+Critères d'acceptation:
+* 4 onglets sont disponibles: Propriétés, Articles, Statistiques, Historique
+* L'onglet actif est visuellement mis en évidence
+* Le changement d'onglet est instantané
+* L'onglet "Articles" affiche le compteur
+* L'URL change pour permettre le partage d'un onglet spécifique
+Priorité: P1 (Important)
+Estimation: 2 points
+
+US-PRICE-025 : Consulter les statistiques
+En tant que Contrôleur de Gestion
+Je veux consulter les statistiques d'utilisation de la liste
+Afin de évaluer sa pertinence
+Critères d'acceptation:
+* L'onglet "Statistiques" affiche des KPIs
+* Je vois: nombre de commandes utilisant cette liste
+* Je vois: CA total généré avec cette liste
+* Je vois: % du catalogue couvert par la liste
+* Je vois: graphique de répartition par famille de produits
+* Les données couvrent les 12 derniers mois
+Priorité: P2 (Souhaitable)
+Estimation: 8 points
+
+US-PRICE-026 : Consulter l'historique des modifications
+En tant que Responsable Commercial
+Je veux voir l'historique complet des modifications
+Afin de tracer les changements et comprendre l'évolution
+Critères d'acceptation:
+* L'onglet "Historique" affiche un journal chronologique inversé
+* Chaque entrée indique: date/heure, utilisateur, action, détail
+* Actions tracées: modification propriétés, ajout/suppression article, modification prix
+* Je peux filtrer par type d'action
+* Je peux filtrer par utilisateur
+* Je peux exporter l'historique en PDF
+Priorité: P2 (Souhaitable)
+Estimation: 5 points
+
+US-PRICE-027 : Archiver la liste
+En tant que Responsable Commercial
+Je veux archiver une liste de prix devenue obsolète
+Afin de la retirer de la circulation sans la supprimer
+Critères d'acceptation:
+* Un bouton [??? Archiver la Liste] est en bas de page
+* Une confirmation est demandée avec impact expliqué
+* Le message indique: "La liste ne sera plus appliquée aux nouvelles commandes"
+* Si archivage confirmé, statut passe à ARCHIVED
+* Un message de succès confirme l'archivage
+* Je peux réactiver une liste archivée depuis les propriétés
+Priorité: P1 (Important)
+Estimation: 3 points
+
+US-PRICE-028 : Actualiser les données
+En tant que Assistant Commercial
+Je veux actualiser les données affichées
+Afin de voir les dernières modifications (contexte multi-utilisateurs)
+Critères d'acceptation:
+* Un bouton [?? Actualiser] est disponible
+* Le clic recharge toutes les données depuis le serveur
+* Un indicateur de chargement est affiché
+* Les modifications non enregistrées sont perdues (avec avertissement)
+* La position de scroll est préservée
+Priorité: P2 (Souhaitable)
+Estimation: 2 points
+
+?? ÉCRAN 4 : PRICE-ITEMS - Gestion des Articles dans la Liste
+US-PRICE-029 : Consulter la liste des articles
+En tant que Commercial Terrain
+Je veux consulter tous les articles de la liste avec leurs prix
+Afin de connaître les tarifs applicables
+Critères d'acceptation:
+* Je vois un tableau paginé de tous les articles
+* Colonnes affichées: Article (code+nom+conditionnement), Prix Base HT, Marge %, Paliers, Statut
+* Je vois le prix d'achat en sous-info pour chaque article
+* Les indicateurs ?? et ?? signalent les paliers et bonus
+* Le tableau est responsive et scrollable
+Priorité: P0 (Critique)
+Estimation: 3 points
+
+US-PRICE-030 : Rechercher un article dans la liste
+En tant que Commercial Terrain
+Je veux rechercher rapidement un article par son code ou nom
+Afin de trouver son prix sans parcourir toute la liste
+Critères d'acceptation:
+* Un champ de recherche est disponible en haut
+* La recherche fonctionne sur: code article, nom, conditionnement
+* Les résultats se filtrent en temps réel
+* Je peux filtrer par famille de produits
+* Je peux filtrer par catégorie
+* Un bouton [Reset] réinitialise tous les filtres
+Priorité: P0 (Critique)
+Estimation: 3 points
+
+US-PRICE-031 : Filtrer les articles par critères
+En tant que Assistant Commercial
+Je veux filtrer les articles par différents critères
+Afin de me concentrer sur un sous-ensemble
+Critères d'acceptation:
+* Filtres rapides cliquables: Tous, Avec Paliers, Avec Bonus, Actifs, Inactifs
+* Chaque filtre affiche le compteur correspondant
+* Les filtres sont cumulables avec la recherche textuelle
+* Le nombre de résultats est toujours visible
+* Je peux exporter la sélection filtrée
+Priorité: P1 (Important)
+Estimation: 3 points
+
+US-PRICE-032 : Ajouter un article manuellement
+En tant que Assistant Commercial
+Je veux ajouter un article à la liste avec son prix
+Afin de enrichir progressivement la liste
+Critères d'acceptation:
+* Un bouton [+ Ajouter Article] ouvre une modal
+* Je recherche l'article via autocomplete (code, nom)
+* L'article sélectionné affiche son PA actuel et un PV suggéré
+* Je saisis le prix de vente HT (obligatoire)
+* La marge % se calcule automatiquement
+* OU je saisis la marge % et le prix se calcule
+* Un bouton [Calc] bascule entre les deux modes
+* Je choisis le statut: Actif/Inactif
+* Options: checkboxes "Configurer paliers" et "Configurer bonus"
+* La validation vérifie prix > 0
+* Si succès, l'article s'ajoute à la liste
+Priorité: P0 (Critique)
+Estimation: 5 points
+
+US-PRICE-033 : Ajouter des articles par famille
+En tant que Assistant Commercial
+Je veux ajouter en masse tous les articles d'une famille
+Afin de gagner du temps lors de la création d'une liste complète
+Critères d'acceptation:
+* Un bouton [+ Ajouter par Famille] ouvre un assistant
+* Je sélectionne une ou plusieurs familles
+* Je définis une règle de calcul de prix globale (coefficient ou % marge)
+* Un aperçu liste les articles qui seront ajoutés avec prix calculés
+* Je peux exclure certains articles de l'aperçu
+* La validation ajoute tous les articles en une fois
+* Un rapport indique: X articles ajoutés, Y déjà présents (ignorés)
+Priorité: P1 (Important)
+Estimation: 8 points
+
+US-PRICE-034 : Copier des articles depuis une autre liste
+En tant que Responsable Commercial
+Je veux copier des articles depuis une liste existante
+Afin de créer une variante sans tout ressaisir
+Critères d'acceptation:
+* Un bouton [+ Copier depuis...] ouvre un sélecteur
+* Je choisis la liste source
+* Je vois l'aperçu des articles qui seront copiés
+* Je choisis: copier les prix tels quels OU appliquer un ajustement global (%)
+* Les paliers et bonus sont copiés également
+* Les articles déjà présents ne sont pas dupliqués (avertissement)
+* La validation effectue la copie en masse
+Priorité: P2 (Souhaitable)
+Estimation: 8 points
+
+US-PRICE-035 : Modifier le prix d'un article
+En tant que Assistant Commercial
+Je veux modifier le prix d'un article existant
+Afin de ajuster les tarifs suite à une évolution du marché
+Critères d'acceptation:
+* Un bouton [??] dans le menu contextuel ouvre l'édition
+* Je peux modifier: Prix HT, Marge %, Statut
+* Le calcul automatique prix ? marge fonctionne
+* Si l'article a des paliers en %, ils se recalculent automatiquement
+* Un avertissement s'affiche si modification impacte les paliers
+* La validation enregistre les modifications
+* L'historique trace la modification (ancien prix ? nouveau prix)
+Priorité: P0 (Critique)
+Estimation: 3 points
+
+US-PRICE-036 : Voir les détails d'un article (expansion)
+En tant que Commercial Terrain
+Je veux voir les détails complets d'un article sans quitter le tableau
+Afin de consulter rapidement paliers et bonus
+Critères d'acceptation:
+* Je clique sur une ligne pour l'expandre (accordéon)
+* La zone expandue affiche: tous les paliers avec prix et remises
+* La zone affiche: toutes les règles de bonus avec labels
+* Les alertes éventuelles sont affichées (prix anormal, marge négative)
+* Un second clic referme l'expansion
+* Une seule ligne peut être expandue à la fois
+Priorité: P1 (Important)
+Estimation: 3 points
+
+US-PRICE-037 : Configurer les paliers d'un article
+En tant que Responsable Commercial
+Je veux accéder à la configuration des paliers depuis le tableau
+Afin de définir une tarification dégressive
+Critères d'acceptation:
+* Un bouton "Configurer paliers" dans le menu [?] existe
+* OU je clique sur l'indicateur ?? dans la colonne "Paliers"
+* Je suis redirigé vers PRICE-RULES avec l'onglet "Paliers" actif
+* L'article concerné est pré-sélectionné
+* Après configuration, retour à PRICE
+
+US-PRICE-038 : Configurer les bonus d'un article
+En tant que Responsable Commercial
+Je veux accéder à la configuration des bonus depuis le tableau
+Afin de définir des offres promotionnelles
+Critères d'acceptation:
+* Un bouton "Configurer bonus" dans le menu [?] existe
+* OU je clique sur l'indicateur ?? dans la colonne "Paliers"
+* Je suis redirigé vers PRICE-RULES avec l'onglet "Bonus" actif
+* L'article concerné est pré-sélectionné
+* Après configuration, retour à PRICE-ITEMS avec les bonus visibles
+Priorité: P1 (Important)
+Estimation: 2 points
+
+US-PRICE-039 : Désactiver/Activer un article
+En tant que Assistant Commercial
+Je veux désactiver temporairement un article sans le supprimer
+Afin de le retirer de la tarification sans perdre ses paramètres
+Critères d'acceptation:
+* Un bouton "Désactiver" existe dans le menu [?]
+* Si article actif, l'action le passe en statut INACTIF
+* Si article inactif, l'action le réactive (ACTIVE)
+* Une confirmation est demandée
+* Le message explique: "Article ne sera plus tarifé dans les nouvelles commandes"
+* L'indicateur visuel change (?? ? ??)
+* Un message de succès confirme l'action
+Priorité: P1 (Important)
+Estimation: 2 points
+
+US-PRICE-040 : Supprimer un article de la liste
+En tant que Assistant Commercial
+Je veux supprimer un article de la liste
+Afin de corriger une erreur d'ajout
+Critères d'acceptation:
+* Un bouton "Supprimer" existe dans le menu [?]
+* Une confirmation est demandée: "Supprimer l'article de cette liste ?"
+* Le message précise que les paliers et bonus seront aussi supprimés
+* Si l'article est utilisé dans des commandes en cours, un avertissement s'affiche
+* La suppression retire l'article du tableau
+* Le compteur total se met à jour
+* Un message de succès confirme la suppression
+Priorité: P1 (Important)
+Estimation: 3 points
+
+US-PRICE-041 : Sélection multiple d'articles
+En tant que Assistant Commercial
+Je veux sélectionner plusieurs articles via des checkboxes
+Afin de leur appliquer une action groupée
+Critères d'acceptation:
+* Chaque ligne dispose d'une checkbox
+* Une checkbox "Tout sélectionner" est dans l'en-tête
+* Le nombre d'articles sélectionnés est affiché
+* La sélection est préservée lors du changement de page
+* Un bouton "Désélectionner tout" permet de réinitialiser
+Priorité: P1 (Important)
+Estimation: 3 points
+
+US-PRICE-042 : Actions groupées sur les articles
+En tant que Assistant Commercial
+Je veux appliquer une action à plusieurs articles en une fois
+Afin de gagner du temps dans la gestion
+Critères d'acceptation:
+* Un menu [? Actions groupées] apparaît si ?1 article sélectionné
+* Actions disponibles: Modifier marge (%), Modifier marge (montant), Activer, Désactiver, Supprimer
+* "Modifier marge %" ouvre une modal pour saisir le nouveau %
+* "Modifier marge montant" ouvre une modal pour saisir l'ajustement (+/- XAF)
+* Les prix sont recalculés pour tous les articles sélectionnés
+* Une confirmation est demandée avant actions destructives
+* Un rapport de traitement indique: X articles modifiés, Y erreurs
+Priorité: P1 (Important)
+Estimation: 8 points
+
+US-PRICE-043 : Importer des articles en masse (Excel)
+En tant que Assistant Commercial
+Je veux importer des articles et leurs prix depuis un fichier Excel
+Afin de créer rapidement une liste complète
+Critères d'acceptation:
+* Un bouton [?? Import Excel] ouvre un assistant
+* Je peux télécharger un template Excel pré-formaté
+* Le template contient: Code Article, Prix HT, Marge %, Statut
+* Je sélectionne mon fichier Excel rempli
+* Le système valide le format et les données
+* Un aperçu liste: articles valides (vert), erreurs (rouge)
+* Je peux corriger les erreurs ou les ignorer
+* La validation importe les articles valides
+* Un rapport final indique: X importés, Y erreurs ignorées
+Priorité: P1 (Important)
+Estimation: 10 points
+
+US-PRICE-044 : Exporter les articles en Excel
+En tant que Contrôleur de Gestion
+Je veux exporter tous les articles de la liste en Excel
+Afin de faire des analyses ou partager avec des tiers
+Critères d'acceptation:
+* Un bouton [?? Export Excel] génère le fichier
+* Le fichier contient: Code, Nom, Conditionnement, PA, PV, Marge %, Paliers, Bonus, Statut
+* Les filtres actifs sont appliqués à l'export
+* Si articles sélectionnés, export uniquement de la sélection
+* Le nom du fichier inclut: code liste, date export
+* Le format est compatible avec import
+Priorité: P1 (Important)
+Estimation: 5 points
+
+US-PRICE-045 : Voir le tableau de bord résumé
+En tant que Responsable Commercial
+Je veux voir des statistiques globales de la liste
+Afin de évaluer sa cohérence
+Critères d'acceptation:
+* Un encart "Résumé" est affiché en bas du tableau
+* KPIs affichés: Nombre total articles, Actifs, Avec paliers, Avec bonus
+* Calculs: Marge moyenne (%), Prix moyen (XAF)
+* Les statistiques se mettent à jour en temps réel
+* Si filtres actifs, statistiques recalculées sur la sélection filtrée
+Priorité: P2 (Souhaitable)
+Estimation: 3 points
+
+US-PRICE-046 : Alertes sur les prix anormaux
+En tant que Contrôleur de Gestion
+Je veux être alerté si des prix semblent anormaux
+Afin de détecter les erreurs de saisie
+Critères d'acceptation:
+* Un indicateur ?? s'affiche si marge négative (vente à perte)
+* Un indicateur ?? s'affiche si prix significativement différent du marché (si données dispo)
+* Un indicateur ?? s'affiche si prix inférieur au prix d'achat
+* Un tooltip au survol explique l'alerte
+* Les articles avec alertes sont filtrables
+* Un compteur global indique le nombre d'alertes
+Priorité: P2 (Souhaitable)
+Estimation: 5 points
+
+US-PRICE-047 : Dupliquer un article
+En tant que Assistant Commercial
+Je veux dupliquer un article avec ses paramètres
+Afin de créer rapidement une variante
+Critères d'acceptation:
+* Un bouton "Dupliquer" existe dans le menu [?]
+* Une modal s'ouvre pour sélectionner le nouvel article
+* Les paramètres copiés: Prix, Marge, Paliers, Bonus, Statut
+* Je peux ajuster le prix avant validation
+* La validation ajoute le nouvel article à la liste
+* Un message confirme: "Article dupliqué avec succès"
+Priorité: P2 (Souhaitable)
+Estimation: 3 points
+
+US-PRICE-048 : Trier les colonnes du tableau
+En tant que Commercial Terrain
+Je veux trier le tableau par différentes colonnes
+Afin de trouver rapidement l'information recherchée
+Critères d'acceptation:
+* Les colonnes triables affichent des icônes ??
+* Colonnes triables: Article (alphabétique), Prix (numérique), Marge (numérique)
+* Tri ascendant/descendant au clic
+* Un indicateur visuel montre la colonne et le sens du tri actif
+* Le tri est préservé lors de la pagination
+* Par défaut: tri par Article A?Z
+Priorité: P2 (Souhaitable)
+Estimation: 2 points
+
+?? ÉCRAN 5 : PRICE-RULES - Configuration Règles Avancées
+US-PRICE-049 : Accéder à la configuration des règles
+En tant que Responsable Commercial
+Je veux accéder à l'écran de configuration des règles depuis un article
+Afin de définir paliers et bonus
+Critères d'acceptation:
+* L'écran affiche le contexte: liste de prix + article concerné
+* Les infos article sont visibles: code, nom, PA, PV base, marge
+* Deux onglets sont disponibles: "Paliers Quantitatifs" et "Règles de Bonus"
+* Un troisième onglet "Simulation" permet de tester
+* Des boutons d'action globaux: Enregistrer Tout, Réinitialiser, Retour
+Priorité: P0 (Critique)
+Estimation: 3 points
+
+US-PRICE-050 : Activer les paliers de prix
+En tant que Responsable Commercial
+Je veux activer/désactiver les paliers pour un article
+Afin de contrôler si la tarification dégressive s'applique
+Critères d'acceptation:
+* Une checkbox "Activer les paliers de prix" est en haut de l'onglet
+* Si décochée, aucun palier n'est appliqué (prix base uniquement)
+* Si cochée, les paliers configurés deviennent actifs
+* Une explication pédagogique du mécanisme est affichée
+* Le changement est pris en compte à l'enregistrement
+Priorité: P0 (Critique)
+Estimation: 2 points
+
+US-PRICE-051 : Ajouter un palier manuellement
+En tant que Responsable Commercial
+Je veux ajouter un palier de prix avec quantité min et prix
+Afin de définir une remise sur volume
+Critères d'acceptation:
+* Un bouton [+ Ajouter un Palier] ouvre une modal
+* Je saisis la quantité minimale (obligatoire, > 0)
+* Je choisis la méthode: Prix Fixe, Remise %, Remise Montant
+* Si Prix Fixe: je saisis le prix unitaire HT
+* Si Remise %: je saisis le % et le prix se calcule auto
+* Si Remise Montant: je saisis le montant et le prix se calcule auto
+* Un aperçu affiche: remise %, économie/unité, exemple concret
+* La validation vérifie: qté min unique, prix ? prix base
+* Le palier s'ajoute au tableau trié par qté croissante
+Priorité: P0 (Critique)
+Estimation: 5 points
+
+US-PRICE-052 : Générer des paliers automatiquement
+En tant que Assistant Commercial
+Je veux générer automatiquement des paliers réguliers
+Afin de gagner du temps dans la configuration
+Critères d'acceptation:
+* Un bouton [?? Générer Paliers Auto] ouvre un assistant
+* Je saisis: nombre de paliers souhaité (ex: 3)
+* Je saisis: quantités minimales (ex: 10, 50, 100)
+* Je saisis: remises progressives (ex: -5%, -10%, -15%)
+* Un aperçu affiche les paliers qui seront créés
+* La validation génère tous les paliers en une fois
+* Les paliers générés remplacent les existants (avec confirmation)
+Priorité: P2 (Souhaitable)
+Estimation: 8 points
+
+US-PRICE-053 : Modifier un palier existant
+En tant que Responsable Commercial
+Je veux modifier un palier déjà configuré
+Afin de ajuster la stratégie tarifaire
+Critères d'acceptation:
+* Un bouton [??] dans chaque ligne de palier ouvre l'édition
+* La modal pré-remplit les valeurs actuelles
+* Je peux modifier: quantité min, prix/remise
+* Les calculs automatiques se mettent à jour en temps réel
+* La validation vérifie la cohérence avec les autres paliers
+* Le tableau se met à jour après sauvegarde
+Priorité: P1 (Important)
+Estimation: 3 points
+
+US-PRICE-054 : Supprimer un palier
+En tant que Responsable Commercial
+Je veux supprimer un palier devenu obsolète
+Afin de simplifier la grille tarifaire
+Critères d'acceptation:
+* Un bouton [???] dans chaque ligne permet la suppression
+* Une confirmation est demandée
+* Le message indique: "Supprimer le palier ?X unités ?"
+* La suppression retire le palier du tableau
+* Le compteur de paliers se met à jour
+* La suppression prend effet à l'enregistrement global
+Priorité: P1 (Important)
+Estimation: 2 points
+
+US-PRICE-055 : Voir l'aperçu de la tarification par paliers
+En tant que Commercial Terrain
+Je veux voir un tableau récapitulatif de tous les paliers
+Afin de comprendre rapidement la grille tarifaire
+Critères d'acceptation:
+* Un encart "Aperçu Tarification" est affiché sous les paliers
+* Le tableau affiche: Plage de quantité, Prix unitaire, Prix total, Économie
+* Ex: "1-9 | 372 XAF | 1-3 348 XAF | -"
+* Ex: "10-49 | 360 XAF | 3 600-17 640 XAF | 120-1 188 XAF"
+* L'aperçu se met à jour en temps réel lors des modifications
+* Je peux imprimer cet aperçu
+Priorité: P1 (Important)
+Estimation: 3 points
+
+US-PRICE-056 : Activer les règles de bonus
+En tant que Responsable Commercial
+Je veux activer/désactiver les règles de bonus pour un article
+Afin de contrôler si les offres promotionnelles s'appliquent
+Critères d'acceptation:
+* Une checkbox "Activer les règles de bonus" est en haut de l'onglet
+* Si décochée, aucun bonus n'est appliqué
+* Si cochée, les règles configurées deviennent actives
+* Une explication pédagogique du mécanisme est affichée
+* Le changement est pris en compte à l'enregistrement
+Priorité: P1 (Important)
+Estimation: 2 points
+
+US-PRICE-057 : Ajouter une règle de bonus
+En tant que Responsable Commercial
+Je veux ajouter une règle "X achetés = Y offerts"
+Afin de créer une offre promotionnelle attractive
+Critères d'acceptation:
+* Un bouton [+ Ajouter une Règle de Bonus] ouvre une modal
+* Je saisis la quantité minimale à acheter (obligatoire, > 0)
+* Je choisis: Même article OU Autre article
+* Si "Autre article": autocomplete pour sélection
+* Je saisis la quantité offerte (obligatoire, > 0)
+* Je saisis un label promotionnel (obligatoire, max 100 car)
+* Un aperçu affiche: valeur du bonus, remise équivalente %
+* La validation vérifie la cohérence économique
+* La règle s'ajoute au tableau
+Priorité: P1 (Important)
+Estimation: 5 points
+
+US-PRICE-058 : Modifier une règle de bonus
+En tant que Responsable Commercial
+Je veux modifier une règle de bonus existante
+Afin de ajuster l'offre promotionnelle
+Critères d'acceptation:
+* Un bouton [??] dans chaque ligne ouvre l'édition
+* La modal pré-remplit toutes les valeurs actuelles
+* Je peux modifier: quantité min, article offert, quantité offerte, label
+* L'aperçu se met à jour en temps réel
+* La validation enregistre les modifications
+* Le tableau se met à jour
+Priorité: P1 (Important)
+Estimation: 3 points
+
+US-PRICE-059 : Supprimer une règle de bonus
+En tant que Responsable Commercial
+Je veux supprimer une règle de bonus
+Afin de terminer une promotion
+Critères d'acceptation:
+* Un bouton [???] dans chaque ligne permet la suppression
+* Une confirmation est demandée
+* Le message affiche le détail de la règle
+* La suppression retire la règle du tableau
+* Le compteur de règles se met à jour
+* La suppression prend effet à l'enregistrement global
+Priorité: P1 (Important)
+Estimation: 2 points
+
+US-PRICE-060 : Définir la règle de cumul des bonus
+En tant que Responsable Commercial
+Je veux définir comment se cumulent plusieurs règles de bonus
+Afin de contrôler le comportement si plusieurs conditions remplies
+Critères d'acceptation:
+* Des radio buttons permettent de choisir la stratégie
+* Option 1: "Cumuler toutes les règles applicables" (défaut)
+* Option 2: "Appliquer uniquement la meilleure règle"
+* Option 3: "Appliquer uniquement la première règle déclenchée"
+* Une explication claire de chaque option est affichée
+* Le choix est enregistré au niveau de l'article
+* Le simulateur respecte cette règle
+Priorité: P2 (Souhaitable)
+Estimation: 3 points
+
+US-PRICE-061 : Voir des exemples d'application des bonus
+En tant que Commercial Terrain
+Je veux voir des exemples concrets d'application des règles
+Afin de comprendre comment elles fonctionnent
+Critères d'acceptation:
+* Un encart "Exemples d'Application" est affiché
+* Des scénarios concrets sont simulés avec quantités réelles
+* Ex: "Commande de 75 sacs ? +2 sacs offerts"
+* Ex: "Commande de 150 sacs ? +2 sacs + 5 sacs plastiques"
+* Les exemples se mettent à jour selon les règles configurées
+* Je peux générer mes propres exemples
+Priorité: P2 (Souhaitable)
+Estimation: 3 points
+
+US-PRICE-062 : Simuler une commande
+En tant que Commercial Terrain
+Je veux simuler l'application des paliers et bonus pour une quantité donnée
+Afin de comprendre le prix final et les avantages client
+Critères d'acceptation:
+* L'onglet "Simulation" contient un calculateur
+* Je saisis une quantité commandée
+* Un bouton [Calculer] lance la simulation
+* Le résultat affiche: 
+o Tarification: prix base, palier appliqué, remise, montant HT
+o Bonus: règles déclenchées/non déclenchées avec détails
+o Récapitulatif livraison: qté payée, qté offerte, total livré
+o Avantage client total en valeur et %
+* La simulation est en lecture seule (pas de modification des règles)
+Priorité: P1 (Important)
+Estimation: 5 points
+
+US-PRICE-063 : Voir des suggestions d'optimisation
+En tant que Commercial Terrain
+Je veux voir des suggestions pour optimiser la commande client
+Afin de conseiller au mieux mes clients
+Critères d'acceptation:
+* Après simulation, un encart "Suggestions d'Optimisation" s'affiche
+* Si proche d'un seuil, suggestion d'augmenter pour meilleur palier/bonus
+* Ex: "Commander 100 au lieu de 75 ? économie de 2 431 XAF supplémentaires"
+* Si au-delà optimal, suggestion de réduire pour optimiser budget
+* Chaque suggestion détaille: quantité suggérée, économie/coût, bonus gagnés
+* Maximum 3 suggestions pertinentes
+Priorité: P2 (Souhaitable)
+Estimation: 5 points
+
+US-PRICE-064 : Valider la cohérence des paliers
+En tant que Responsable Commercial
+Je veux être alerté si les paliers sont incohérents
+Afin de éviter les erreurs de configuration
+Critères d'acceptation:
+* Alerte si prix palier > prix base (sauf exception validée)
+* Alerte si palier pas assez incitatif (remise < 2%)
+* Alerte si écart trop important entre 2 paliers consécutifs
+* Alerte si plus de 10 paliers (sur-complexité)
+* Les alertes sont des warnings (bloquants ou non selon criticité)
+* Je peux forcer l'enregistrement malgré les warnings
+Priorité: P2 (Souhaitable)
+Estimation: 5 points
+
+US-PRICE-065 : Valider la cohérence des bonus
+En tant que Responsable Commercial
+Je veux être alerté si les bonus sont trop généreux
+Afin de protéger la rentabilité
+Critères d'acceptation:
+* Alerte si bonus équivaut à > 15% de remise
+* Alerte si article offert n'existe plus au catalogue
+* Alerte si quantité offerte > quantité achetée (aberration)
+* Alerte si cumul de toutes les règles dépasse seuil de rentabilité
+* Un indicateur visuel montre l'impact sur marge globale
+* Je peux forcer l'enregistrement après validation explicite
+Priorité: P2 (Souhaitable)
+Estimation: 5 points
+
+US-PRICE-066 : Enregistrer toutes les règles
+En tant que Responsable Commercial
+Je veux enregistrer globalement toutes les modifications (paliers + bonus)
+Afin de valider ma configuration en une seule action
+Critères d'acceptation:
+* Un bouton [?? Enregistrer Tout] est toujours visible en haut
+* L'enregistrement sauvegarde: activation paliers/bonus, tous les paliers, toutes les règles, règle de cumul
+* Une validation globale est effectuée avant enregistrement
+* Si erreurs, elles sont listées avec possibilité de corriger
+* Si succès, message de confirmation: "Règles enregistrées avec succès"
+* Retour automatique à PRICE-ITEMS avec indicateurs ???? mis à jour
+Priorité: P0 (Critique)
+Estimation: 3 points
+
+US-PRICE-067 : Réinitialiser les modifications
+En tant que Assistant Commercial
+Je veux annuler toutes mes modifications en cours
+Afin de repartir de la configuration sauvegardée
+Critères d'acceptation:
+* Un bouton [?? Réinitialiser] est disponible
+* Une confirmation est demandée: "Perdre toutes les modifications ?"
+* Si confirmé, rechargement des données depuis serveur
+* Tous les onglets sont réinitialisés
+* Un message indique: "Modifications annulées"
+Priorité: P2 (Souhaitable)
+Estimation: 2 points
+
+US-PRICE-068 : Retourner à la gestion des articles
+En tant que Assistant Commercial
+Je veux retourner à l'écran PRICE-ITEMS après configuration
+Afin de poursuivre la gestion de la liste
+Critères d'acceptation:
+* Un bouton [? Retour] est toujours visible
+* Si modifications non enregistrées, confirmation demandée
+* Si confirmé, retour à PRICE-ITEMS sans sauvegarder
+* Si modifications enregistrées, retour direct
+* La position de scroll sur PRICE-ITEMS est restaurée
+Priorité: P1 (Important)
+Estimation: 2 points
+
+?? RÉCAPITULATIF DES USER STORIES
+Par Écran
+ÉcranNombre USPriorité P0Priorité P1Priorité P2PRICE-LIST10442PRICE-CREATE10721PRICE-EDIT8332PRICE-ITEMS207103PRICE-RULES204106TOTAL68252914
+

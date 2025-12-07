@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Catégories - MultiFlex GESCOM</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700;800;900&display=swap">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/catalogue-common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="flex h-16 bg-white shadow-sm z-50">
+            <!-- Logo Section -->
+            <div class="w-60 bg-[#263c89] flex items-center justify-center">
+                <img src="https://microfinance-ccm.com/iola/logo-blanc.png" alt="Multiflex" class="h-10">
+            </div>
+            
+            <!-- Right Section -->
+            <div class="flex-1 flex items-center justify-between px-6">
+                <h1 class="text-xl font-bold text-[#1A1A1A]">Gestion des Catégories de Produits</h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="cursor-pointer">
+                        <i class="fa-solid fa-bell text-[#666666] text-lg"></i>
+                    </div>
+
+                    <div class="flex items-center cursor-pointer">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full mr-3">
+                        <span class="text-[14px] text-[#1A1A1A] mr-2">Administrateur</span>
+                        <i class="fa-solid fa-chevron-down text-[#666666] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-60 bg-[#263c89] text-white overflow-y-auto">
+                <nav class="py-4">
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
+                        Catalogue Produits
+                    </div>
+                    
+                    <a href="./categories-list.html" class="block px-4 py-2 text-[14px] bg-[#152045] border-l-4 border-[#F26F21]">
+                        <i class="fa-solid fa-folder-tree mr-3"></i>
+                        <span>Catégories</span>
+                    </a>
+
+                    <a href="./products-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-box mr-3"></i>
+                        <span>Articles</span>
+                    </a>
+
+                    <a href="./variants-list.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-boxes-stacked mr-3"></i>
+                        <span>Conditionnements</span>
+                    </a>
+
+                    <div class="px-4 py-2 text-[12px] font-semibold text-white/60 uppercase tracking-wider mt-6 mb-2">
+                        Système
+                    </div>
+
+                    <a href="../dashboard.html" class="block px-4 py-2 text-[14px] hover:bg-[#152045] transition-colors">
+                        <i class="fa-solid fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 overflow-auto bg-[#F8F9FA]">
+                <div class="catalogue-container" style="max-width: none; padding: 24px;">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">
+                                    <i class="fa-solid fa-folder-tree"></i>
+                                    Gestion des Catégories de Produits
+                                </h1>
+                                <p class="page-description">
+                                    Gérer l'arborescence des catégories de votre catalogue produits
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="location.href='../dashboard.html'">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    Retour
+                                </button>
+                                <button class="btn btn-primary" onclick="openCreateModal()">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Nouvelle Catégorie
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Stats Cards -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Total Catégories</div>
+                                <div class="stat-value" id="stat-total">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Catégories Actives</div>
+                                <div class="stat-value" id="stat-active">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Catégories Feuilles</div>
+                                <div class="stat-value" id="stat-leaf">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Total Produits</div>
+                                <div class="stat-value" id="stat-products">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters Bar -->
+                    <div class="filters-bar">
+                        <div class="filters-row">
+                            <div class="filter-group" style="flex: 2;">
+                                <input 
+                                    type="text" 
+                                    class="search-input" 
+                                    id="search-input"
+                                    placeholder="Rechercher par nom ou code..."
+                                    onkeyup="applyFilters()"
+                                >
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-status" onchange="applyFilters()">
+                                    <option value="">Tous les statuts</option>
+                                    <option value="ACTIVE">Actif</option>
+                                    <option value="INACTIVE">Inactif</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="filter-level" onchange="applyFilters()">
+                                    <option value="">Tous les niveaux</option>
+                                    <option value="0">Niveau 0 (Racine)</option>
+                                    <option value="1">Niveau 1</option>
+                                    <option value="2">Niveau 2</option>
+                                    <option value="3">Niveau 3</option>
+                                </select>
+                            </div>
+                            <div class="filter-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                    Réinitialiser
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="exportData()">
+                                    <i class="fa-solid fa-download"></i>
+                                    Exporter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tree View -->
+                    <div class="table-container">
+                        <div class="tree-view" id="tree-view">
+                            <!-- Chargé dynamiquement -->
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="empty-state" class="empty-state hidden">
+                            <div class="empty-state-icon">
+                                <i class="fa-solid fa-folder-tree"></i>
+                            </div>
+                            <h3 class="empty-state-title">Aucune catégorie trouvée</h3>
+                            <p class="empty-state-description">
+                                Commencez par créer votre première catégorie racine
+                            </p>
+                            <button class="btn btn-primary mt-4" onclick="openCreateModal()">
+                                <i class="fa-solid fa-plus"></i>
+                                Nouvelle Catégorie
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Create/Edit -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Nouvelle Catégorie</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="category-form">
+                    <input type="hidden" id="category-id">
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Code</label>
+                        <input type="text" class="form-input" id="category-code" required>
+                        <small class="form-help">Format: PEIN-INT-MAT (A-Z, 0-9, -, _)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Nom</label>
+                        <input type="text" class="form-input" id="category-name" required>
+                        <small class="form-help">Nom complet de la catégorie</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Catégorie Parente</label>
+                        <select class="form-input" id="category-parent">
+                            <option value="">-- Catégorie racine --</option>
+                        </select>
+                        <small class="form-help">Laisser vide pour créer une catégorie racine</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-input form-textarea" id="category-description"></textarea>
+                        <small class="form-help">Description optionnelle</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Statut</label>
+                        <select class="form-input" id="category-status">
+                            <option value="ACTIVE">Actif</option>
+                            <option value="INACTIVE">Inactif</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveCategory()">
+                    <i class="fa-solid fa-save"></i>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal View Details -->
+    <div class="modal-overlay" id="view-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="view-modal-title">Détails de la Catégorie</h2>
+                <button class="modal-close" onclick="closeViewModal()">×</button>
+            </div>
+            <div class="modal-body" id="view-modal-body">
+                <!-- Contenu chargé dynamiquement -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeViewModal()">Fermer</button>
+                <button class="btn btn-primary" onclick="editFromView()">
+                    <i class="fa-solid fa-edit"></i>
+                    Modifier
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/categories-list.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
